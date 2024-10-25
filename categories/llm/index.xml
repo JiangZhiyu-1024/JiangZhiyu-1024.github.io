@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>LLM on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/llm/</link>
+        <description>Recent content in LLM on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Sun, 13 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/llm/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2024.10.7至13第一周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/2024.10.7%E8%87%B313%E7%AC%AC%E4%B8%80%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/2024.10.7%E8%87%B313%E7%AC%AC%E4%B8%80%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/2024.10.7%E8%87%B313%E7%AC%AC%E4%B8%80%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/banlan.jpg" alt="Featured image of post 2024.10.7至13第一周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
+&lt;/h1&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
+&lt;/h2&gt;&lt;h3 id=&#34;综述类&#34;&gt;综述类：
+&lt;/h3&gt;&lt;p&gt;2023年国内大模型发展综述与趋势研判_赵子忠&lt;/p&gt;
+&lt;p&gt;AIGC大模型测评综述：使能技术、安全隐患和应对_许志伟&lt;/p&gt;
+&lt;p&gt;AI大模型发展综述_张乾君&lt;/p&gt;
+&lt;h3 id=&#34;深入&#34;&gt;深入：
+&lt;/h3&gt;&lt;hr&gt;
+&lt;p&gt;**《A Neural Probabilistic Language Model》**是Yoshua Bengio等人在2003年发表的一篇重要论文，提出了一种基于神经网络的语言模型方法。这篇论文的主要目标是通过神经网络来改进传统的语言模型。&lt;/p&gt;
+&lt;p&gt;传统的语言模型的任务是估计一个词序列的概率：
+P(w1,w2,…,wT)
+在这种情况下，模型需要根据上下文词来预测当前词的概率。传统的做法一般是通过统计方法（如n元语法模型）来估计这些概率，但这类方法有一个很大的问题：它们无法处理高维数据，尤其是在词汇量非常大的情况下，计算复杂度极高，且泛化能力有限。&lt;/p&gt;
+&lt;p&gt;Bengio等人提出了一种新的神经网络语言模型，目的是克服这个问题。这个模型的核心思想是使用一个多层感知器来学习词的分布式表示（即词向量），并基于这些词向量来估计概率。具体过程大致如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;词嵌入&lt;/strong&gt;：每个词通过一个嵌入矩阵被映射为一个连续向量，这种向量的维度比词汇表要小得多。这一步的目的是将离散的词映射到一个连续的低维空间，减少计算复杂度。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;神经网络建模&lt;/strong&gt;：利用一个前馈神经网络（通常是多层感知器），根据前面的若干个词的词向量，来预测下一个词的条件概率。通过这个网络，模型可以学习到词与词之间的相似性和上下文关系。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;训练&lt;/strong&gt;：模型通过最大化训练数据的似然估计来进行训练。具体来说，模型会调整嵌入矩阵和网络的参数，使得预测的概率尽可能接近真实的词序列概率。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这篇论文的创新之处在于提出了“词向量”的概念，并展示了使用神经网络来处理语言建模问题的潜力。这为后来的深度学习在自然语言处理（NLP）中的应用奠定了基础。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;附录&#34;&gt;附录
+&lt;/h1&gt;&lt;h2 id=&#34;1什么是语言模型&#34;&gt;1、什么是语言模型
+&lt;/h2&gt;&lt;p&gt;语言模型（Language Model, LM）是自然语言处理中的一个核心概念，其主要任务是对一个词序列的概率分布进行建模。简单来说，语言模型的目标是估计一段文本或句子出现的概率，或者根据前面的词来预测下一个词。&lt;/p&gt;
+&lt;h3 id=&#34;语言模型的定义&#34;&gt;语言模型的定义
+&lt;/h3&gt;&lt;p&gt;给定一个词序列
+&lt;/p&gt;
+$$
+\( w_1, w_2, \dots, w_T \)
+$$&lt;p&gt;
+，语言模型的目标是计算这个序列的联合概率：
+&lt;/p&gt;
+$$
+P(w_1, w_2, \dots, w_T)
+$$&lt;p&gt;
+这通常可以分解为条件概率的乘积：
+&lt;/p&gt;
+$$
+P(w_1, w_2, \dots, w_T) = P(w_1) \cdot P(w_2 | w_1) \cdot P(w_3 | w_1, w_2) \cdot \dots \cdot P(w_T | w_1, w_2, \dots, w_{T-1})
+$$&lt;p&gt;
+这意味着每个词的概率取决于它前面的词。一个好的语言模型能够通过学习语料库中的模式，准确地捕捉这些条件概率。&lt;/p&gt;
+&lt;h3 id=&#34;语言模型的用途&#34;&gt;语言模型的用途
+&lt;/h3&gt;&lt;p&gt;语言模型有广泛的应用场景，包括但不限于：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;文本生成&lt;/strong&gt;：语言模型可以用来自动生成自然语言文本。例如，给定一部分句子，模型可以预测并生成合理的下一个词，从而逐步生成完整的句子或段落。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;机器翻译&lt;/strong&gt;：在机器翻译中，语言模型帮助翻译系统生成符合目标语言语法的翻译结果。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;语音识别&lt;/strong&gt;：语言模型能够帮助语音识别系统，在可能的识别结果中选择最合适的词序列。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;拼写纠正&lt;/strong&gt;：在文本输入或搜索引擎中，语言模型可以用于纠正拼写错误，提供更符合语言习惯的结果。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;传统语言模型&#34;&gt;传统语言模型
+&lt;/h3&gt;&lt;p&gt;在神经网络语言模型之前，最常用的语言模型是&lt;strong&gt;n元语法模型（n-gram Model）&lt;/strong&gt;。n元语法模型通过假设一个词的概率只与它前面的n-1个词有关来简化问题。举个例子，三元语法模型（trigram model）认为：
+&lt;/p&gt;
+$$
+P(w_T | w_1, w_2, \dots, w_{T-1}) \approx P(w_T | w_{T-2}, w_{T-1})
+$$&lt;p&gt;这种简化降低了计算复杂度，但也限制了模型的表达能力，因为它只能捕捉到短距离的上下文信息，无法充分考虑长距离的依赖关系。&lt;/p&gt;
+&lt;h3 id=&#34;神经网络语言模型&#34;&gt;神经网络语言模型
+&lt;/h3&gt;&lt;p&gt;传统语言模型的一个主要问题是词汇量增大时，模型的计算复杂度随之增加。为了解决这个问题，Yoshua Bengio等人在《A Neural Probabilistic Language Model》论文中提出了使用神经网络进行语言建模的想法。这种神经网络模型通过将词表示为&lt;strong&gt;词向量（word embeddings）&lt;/strong&gt;，并通过深度学习模型来捕捉更复杂的语境和词间关系，从而解决了传统语言模型的许多不足之处。&lt;/p&gt;
+&lt;p&gt;总之，语言模型的核心任务就是对自然语言的概率进行建模，并通过学习语言中的统计模式来预测文本。&lt;/p&gt;
+&lt;h2 id=&#34;2什么是纬度灾难&#34;&gt;2、什么是纬度灾难？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;维度灾难&lt;/strong&gt;（Curse of Dimensionality）是指在处理高维数据时，随着数据维度增加，问题的复杂性呈指数级增长，导致很多传统方法在高维空间中变得低效或不可行的现象。&lt;/p&gt;
+&lt;p&gt;其影响包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数据稀疏性&lt;/strong&gt;：在高维空间中，数据点变得非常稀疏，因为数据的总量相对于空间的体积变得极其小，导致模型难以从有限的数据中捕捉到模式和关系。简单来说，随着维度的增加，需要的样本量也随之爆炸性增长，否则模型可能会过拟合或无法泛化。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;计算复杂度增加&lt;/strong&gt;：在高维空间中，计算距离、相似性等操作的复杂度大大增加，使得很多算法在高维情况下效率低下。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;模型的泛化能力下降&lt;/strong&gt;：由于数据点过于稀疏，模型很难学习到有用的特征，从而可能导致泛化能力下降。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;具体来说，维度灾难对机器学习、统计学、最优化等领域带来了极大的挑战，尤其是当模型需要处理很多特征或变量时。为应对这个问题，研究人员提出了许多方法，如&lt;strong&gt;降维技术&lt;/strong&gt;（如主成分分析PCA）和&lt;strong&gt;分布式表示&lt;/strong&gt;（如词嵌入），以减少有效维度或通过分布式方法来表示复杂的数据结构。&lt;/p&gt;
+&lt;h2 id=&#34;3有概率为什么要引入似然的概念他们有什么不同&#34;&gt;3、有概率为什么要引入似然的概念，他们有什么不同？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;概率&lt;/strong&gt;和&lt;strong&gt;似然&lt;/strong&gt;虽然看起来相似，但在统计学中它们有不同的定义和用途：&lt;/p&gt;
+&lt;h3 id=&#34;1-概率probability&#34;&gt;1. &lt;strong&gt;概率（Probability）&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;概率是用来描述随机事件发生的可能性。在给定模型参数的情况下，概率告诉我们某个事件或观测结果发生的机会有多大。&lt;/p&gt;
+&lt;p&gt;假设我们有一个随机变量 \( X \)，它取某个值 \( x \) 的概率可以表示为 \( P(X = x|\theta) \)，其中 \( \theta \) 是模型的参数。例如，如果我们有一个硬币掷出的模型，参数 \( \theta \) 可以是硬币正面朝上的概率（比如 \( \theta = 0.5 \)）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心问题&lt;/strong&gt;：给定模型的参数 \( \theta \)，事件 \( X = x \) 发生的概率是多少？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-似然likelihood&#34;&gt;2. &lt;strong&gt;似然（Likelihood）&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;似然是从&lt;strong&gt;反方向&lt;/strong&gt;来考虑的。它描述的是&lt;strong&gt;在已知观测数据的前提下，模型参数的可能性&lt;/strong&gt;。具体来说，似然是给定观测数据后，模型参数如何使观测数据变得最可能的一个度量。&lt;/p&gt;
+&lt;p&gt;假设我们已经观察到数据 \( X = x \)，现在我们想知道，在不同的模型参数 \( \theta \) 下，这个数据出现的可能性有多大。似然可以表示为 \( L(\theta|X = x) \)，或者更直观地写作 \( P(X = x|\theta) \)，虽然数学表达式相同，但意义不同——在这里我们关注的是参数 \( \theta \) 的值使观测到的数据最可能。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心问题&lt;/strong&gt;：给定观测到的数据 \( X = x \)，模型参数 \( \theta \) 有多大可能是正确的？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;概率和似然的区别&#34;&gt;概率和似然的区别
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;概率&lt;/strong&gt;：我们知道参数 \( \theta \)，希望知道某个事件 \( X \) 发生的概率。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;问题：&lt;strong&gt;给定参数，事件的概率是多少？&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;似然&lt;/strong&gt;：我们知道事件（观测数据），希望推断出最有可能的参数 \( \theta \)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;问题：&lt;strong&gt;给定观测数据，哪个参数最可能是正确的？&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;例子&#34;&gt;例子
+&lt;/h3&gt;&lt;h4 id=&#34;抛硬币的例子&#34;&gt;抛硬币的例子
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;概率&lt;/strong&gt;：假设你有一枚硬币，已知它是公平的，即 \( \theta = 0.5 \)，那么掷硬币得到正面的概率是 \( P(\text{正面}) = 0.5 \)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;似然&lt;/strong&gt;：现在，你掷硬币10次，得到8次正面和2次反面。你不知道硬币的公平性（即不知道 \( \theta \) 的值）。你想根据这次实验结果估计硬币正面朝上的概率 \( \theta \)。此时，你需要用&lt;strong&gt;似然&lt;/strong&gt;来衡量在不同 \( \theta \) 值下，观测结果（8次正面，2次反面）出现的可能性有多大，从而找到最有可能的 \( \theta \)。&lt;/p&gt;
+&lt;p&gt;似然函数 \( L(\theta|X) \) 可能在某个 \( \theta \) 值处达到最大值，这个 \( \theta \) 就是最能解释观测数据的参数值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;概率&lt;/strong&gt;用于给定模型参数时预测事件的发生可能性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;似然&lt;/strong&gt;用于在已知观测数据时，推断哪个参数最能解释这些数据。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
