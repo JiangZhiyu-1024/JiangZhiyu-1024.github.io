@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>RLHF on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/rlhf/</link>
+        <description>Recent content in RLHF on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Sun, 20 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/rlhf/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2024.10.14至20第二周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/second-week/</link>
+        <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/second-week/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 2024.10.14至20第二周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
+&lt;/h1&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
+&lt;/h2&gt;&lt;p&gt;看了知乎的科普文章，先从经典的论文开始看：&lt;/p&gt;
+&lt;h4 id=&#34;attention-is-all-you-need&#34;&gt;Attention Is All You Need
+&lt;/h4&gt;&lt;p&gt;《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：传统的序列到序列模型（如RNN和LSTM）在处理长序列时存在瓶颈。Transformer模型通过自注意力机制克服了这些限制，使得模型可以并行处理数据，提升了训练效率。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;模型架构&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Encoder-Decoder结构&lt;/strong&gt;：Transformer由两个主要部分组成：编码器和解码器。编码器将输入序列转化为上下文向量，解码器则根据上下文生成输出序列。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自注意力机制&lt;/strong&gt;：每个输入的表示都通过自注意力机制与其他输入进行交互，从而捕捉序列中的依赖关系。每个位置的表示通过加权求和得到，权重由输入的相似度计算得到。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多头注意力&lt;/strong&gt;：模型使用多个注意力头并行计算不同的表示，能够更全面地捕捉信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;位置编码&lt;/strong&gt;：由于Transformer没有循环结构，论文引入了位置编码，提供序列中词语的位置信息，以保留词序信息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;训练与优化&lt;/strong&gt;：Transformer使用了残差连接和层归一化，以提高训练的稳定性和收敛速度。论文中还介绍了基于Adam优化器的训练过程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;实验结果&lt;/strong&gt;：Transformer在机器翻译任务上取得了显著的性能提升，并且在其他NLP任务中也展示了强大的通用性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;影响&lt;/strong&gt;：该论文奠定了现代NLP研究的基础，推动了基于Transformer的预训练语言模型（如BERT、GPT等）的发展。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;差分隐私深度学习deep-learning-with-differential-privacy&#34;&gt;差分隐私深度学习(Deep Learning with Differential Privacy)
+&lt;/h4&gt;&lt;p&gt;《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;差分隐私&lt;/strong&gt;：一种保护用户数据隐私的技术，旨在确保模型在训练时无法推断出任何单个用户的敏感信息。即使攻击者知道模型和数据集的其余部分，也无法有效地获取关于某个特定用户的信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;深度学习与隐私问题&lt;/strong&gt;：深度学习模型通常依赖大量数据，这使得保护用户隐私变得尤为重要。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;模型与训练&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;噪声注入&lt;/strong&gt;：通过在模型的梯度更新中添加噪声，可以达到差分隐私的效果。噪声的大小与隐私预算（ε）相关，预算越小，隐私保护越强，但模型的性能可能会受到影响。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Privacy Accounting&lt;/strong&gt;：论文提出了一种计算隐私损失的框架，确保在每次训练步骤中监控和控制隐私损失。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;算法设计&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;DP-SGD（Differentially Private Stochastic Gradient Descent）&lt;/strong&gt;：论文提出了一种改进的随机梯度下降算法，结合了梯度裁剪和噪声注入，以实现差分隐私。这种方法确保在训练过程中，个别数据对模型的影响是被限制的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;实验结果&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;论文通过实验展示了DP-SGD在图像分类任务上的有效性，同时比较了不同噪声级别对模型性能的影响，证明了在保持合理准确性的同时实现差分隐私是可行的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用与展望&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;论文强调了在各类机器学习应用中（如医疗、金融等）保护隐私的重要性，提出将差分隐私技术与深度学习结合是一个有效的解决方案，并鼓励未来的研究在这一领域的进一步探索。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;感觉偏向数学一点，全是公式和证明，好难看懂。
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;差分隐私顾名思义就是用来防范差分攻击的
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;加入噪声，改变原来的概率分布
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h4 id=&#34;deep-reinforcement-learning-from-human-preferences&#34;&gt;Deep Reinforcement Learning from Human Preferences
+&lt;/h4&gt;&lt;p&gt;《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;传统的强化学习方法通常依赖于奖励信号来指导学习，但设计有效的奖励函数在复杂任务中往往困难且耗时。&lt;/li&gt;
+&lt;li&gt;人类可以提供更直观的偏好信息，这为训练强化学习代理提供了一种新途径。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;方法概述&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;人类偏好收集&lt;/strong&gt;：论文提出了一种方法，通过收集人类对不同行为的偏好来生成奖励信号。人类评估多个策略的表现，从中选择更好的策略，以此来建立奖励模型。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;奖励模型&lt;/strong&gt;：利用收集到的人类偏好数据，训练一个深度神经网络来预测代理在给定状态下的奖励。这种奖励模型可以用来指导强化学习算法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;训练过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;深度强化学习&lt;/strong&gt;：在获得奖励模型后，使用深度强化学习算法（如Proximal Policy Optimization，PPO）来训练代理。代理通过与环境交互，不断优化其策略。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;迭代学习&lt;/strong&gt;：通过不断收集新的偏好数据并更新奖励模型，实现迭代学习，使得代理能够逐步提升性能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;实验结果&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;论文在多个复杂任务（如Atari游戏和模拟环境）中展示了该方法的有效性，代理能够通过学习人类的偏好，超越基于手动设计的奖励函数的表现。&lt;/li&gt;
+&lt;li&gt;结果表明，利用人类偏好进行训练能够加速学习过程，并提升代理的最终性能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;意义与展望&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该方法展示了人类偏好在强化学习中的潜力，提出了一种新的思路来解决奖励设计问题。&lt;/li&gt;
+&lt;li&gt;论文强调了未来研究中结合人类反馈和偏好的重要性，特别是在涉及复杂决策和安全性问题的领域。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id=&#34;附录&#34;&gt;附录
+&lt;/h1&gt;&lt;h2 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
+&lt;/h2&gt;&lt;p&gt;**残差连接（Residual Connection）&lt;strong&gt;和&lt;/strong&gt;层归一化（Layer Normalization）**是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
+&lt;h3 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+&lt;/p&gt;
+$$
+\text{Output} = \text{Layer}(x) + x
+$$&lt;p&gt;
+其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;缓解梯度消失问题&lt;/strong&gt;：在非常深的网络中，梯度可能会随着层数增加而消失，导致网络难以训练。残差连接提供了一条捷径，使得梯度可以更容易地通过网络传播。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加速收敛&lt;/strong&gt;：通过引入直接路径，残差连接有助于提高网络的收敛速度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提高模型性能&lt;/strong&gt;：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;层归一化layer-normalization&#34;&gt;层归一化（Layer Normalization）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
+&lt;/p&gt;
+$$
+\text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(x\) 是输入。&lt;/li&gt;
+&lt;li&gt;\(\mu\) 是输入的均值。&lt;/li&gt;
+&lt;li&gt;\(\sigma\) 是输入的标准差。&lt;/li&gt;
+&lt;li&gt;\(\epsilon\) 是一个小常数，避免除以零。&lt;/li&gt;
+&lt;li&gt;\(\gamma\) 和 \(\beta\) 是可学习的参数，用于缩放和平移归一化的结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;作用&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;减少内部协变量偏移&lt;/strong&gt;：层归一化帮助减少模型训练过程中每层输入的变化，使得网络在训练时更加稳定。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提高训练速度&lt;/strong&gt;：通过标准化输入，层归一化可以使得训练过程更加平滑，从而加快收敛速度。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;适用于变长序列&lt;/strong&gt;：与批量归一化（Batch Normalization）不同，层归一化可以直接应用于变长的输入序列，适合于RNN和Transformer等模型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;残差连接&lt;/strong&gt;主要通过提供捷径来缓解深层网络中的梯度消失问题，并加速训练过程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;层归一化&lt;/strong&gt;则通过标准化激活值来提高训练的稳定性和速度。这两者结合使用，能够显著提升深度学习模型的表现。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

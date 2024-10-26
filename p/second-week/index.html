@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="第二周工作总结">
+<title>2024.10.14至20第二周工作总结</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/second-week/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="2024.10.14至20第二周工作总结">
+<meta property='og:description' content="第二周工作总结">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/second-week/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-20T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-20T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg' />
+<meta name="twitter:title" content="2024.10.14至20第二周工作总结">
+<meta name="twitter:description" content="第二周工作总结"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#文献阅读">文献阅读</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#attention-is-all-you-need">Attention Is All You Need</a></li>
+            <li><a href="#差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)</a></li>
+            <li><a href="#deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+
+  <ol>
+    <li><a href="#残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？</a>
+      <ol>
+        <li><a href="#残差连接residual-connection">残差连接（Residual Connection）</a></li>
+        <li><a href="#层归一化layer-normalization">层归一化（Layer Normalization）</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/second-week/">
+                <img src="/p/second-week/leaves-6729056_640_hu5818856588720523696.jpg"
+                        srcset="/p/second-week/leaves-6729056_640_hu5818856588720523696.jpg 800w, /p/second-week/leaves-6729056_640_hu13939121746041281653.jpg 1600w"
+                        width="800" 
+                        height="800" 
+                        loading="lazy"
+                        alt="Featured image of post 2024.10.14至20第二周工作总结" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/llm/" >
+                LLM
+            </a>
+        
+            <a href="/categories/attention/" >
+                Attention
+            </a>
+        
+            <a href="/categories/differential-privacy/" >
+                Differential Privacy
+            </a>
+        
+            <a href="/categories/rlhf/" >
+                RLHF
+            </a>
+        
+            <a href="/categories/weekly-report/" >
+                Weekly Report
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/second-week/">2024.10.14至20第二周工作总结</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            第二周工作总结
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-10-20</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="工作总结"><strong>工作总结</strong>：
+</h1><h2 id="文献阅读">文献阅读
+</h2><p>看了知乎的科普文章，先从经典的论文开始看：</p>
+<h4 id="attention-is-all-you-need">Attention Is All You Need
+</h4><p>《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：</p>
+<ol>
+<li>
+<p><strong>背景</strong>：传统的序列到序列模型（如RNN和LSTM）在处理长序列时存在瓶颈。Transformer模型通过自注意力机制克服了这些限制，使得模型可以并行处理数据，提升了训练效率。</p>
+</li>
+<li>
+<p><strong>模型架构</strong>：</p>
+<ul>
+<li><strong>Encoder-Decoder结构</strong>：Transformer由两个主要部分组成：编码器和解码器。编码器将输入序列转化为上下文向量，解码器则根据上下文生成输出序列。</li>
+<li><strong>自注意力机制</strong>：每个输入的表示都通过自注意力机制与其他输入进行交互，从而捕捉序列中的依赖关系。每个位置的表示通过加权求和得到，权重由输入的相似度计算得到。</li>
+<li><strong>多头注意力</strong>：模型使用多个注意力头并行计算不同的表示，能够更全面地捕捉信息。</li>
+</ul>
+</li>
+<li>
+<p><strong>位置编码</strong>：由于Transformer没有循环结构，论文引入了位置编码，提供序列中词语的位置信息，以保留词序信息。</p>
+</li>
+<li>
+<p><strong>训练与优化</strong>：Transformer使用了残差连接和层归一化，以提高训练的稳定性和收敛速度。论文中还介绍了基于Adam优化器的训练过程。</p>
+</li>
+<li>
+<p><strong>实验结果</strong>：Transformer在机器翻译任务上取得了显著的性能提升，并且在其他NLP任务中也展示了强大的通用性。</p>
+</li>
+<li>
+<p><strong>影响</strong>：该论文奠定了现代NLP研究的基础，推动了基于Transformer的预训练语言模型（如BERT、GPT等）的发展。</p>
+</li>
+</ol>
+<hr>
+<h4 id="差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)
+</h4><p>《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：</p>
+<ol>
+<li>
+<p><strong>背景</strong>：</p>
+<ul>
+<li><strong>差分隐私</strong>：一种保护用户数据隐私的技术，旨在确保模型在训练时无法推断出任何单个用户的敏感信息。即使攻击者知道模型和数据集的其余部分，也无法有效地获取关于某个特定用户的信息。</li>
+<li><strong>深度学习与隐私问题</strong>：深度学习模型通常依赖大量数据，这使得保护用户隐私变得尤为重要。</li>
+</ul>
+</li>
+<li>
+<p><strong>模型与训练</strong>：</p>
+<ul>
+<li><strong>噪声注入</strong>：通过在模型的梯度更新中添加噪声，可以达到差分隐私的效果。噪声的大小与隐私预算（ε）相关，预算越小，隐私保护越强，但模型的性能可能会受到影响。</li>
+<li><strong>Privacy Accounting</strong>：论文提出了一种计算隐私损失的框架，确保在每次训练步骤中监控和控制隐私损失。</li>
+</ul>
+</li>
+<li>
+<p><strong>算法设计</strong>：</p>
+<ul>
+<li><strong>DP-SGD（Differentially Private Stochastic Gradient Descent）</strong>：论文提出了一种改进的随机梯度下降算法，结合了梯度裁剪和噪声注入，以实现差分隐私。这种方法确保在训练过程中，个别数据对模型的影响是被限制的。</li>
+</ul>
+</li>
+<li>
+<p><strong>实验结果</strong>：</p>
+<ul>
+<li>论文通过实验展示了DP-SGD在图像分类任务上的有效性，同时比较了不同噪声级别对模型性能的影响，证明了在保持合理准确性的同时实现差分隐私是可行的。</li>
+</ul>
+</li>
+<li>
+<p><strong>应用与展望</strong>：</p>
+<ul>
+<li>论文强调了在各类机器学习应用中（如医疗、金融等）保护隐私的重要性，提出将差分隐私技术与深度学习结合是一个有效的解决方案，并鼓励未来的研究在这一领域的进一步探索。</li>
+</ul>
+</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">感觉偏向数学一点，全是公式和证明，好难看懂。
+</span></span><span class="line"><span class="cl">差分隐私顾名思义就是用来防范差分攻击的
+</span></span><span class="line"><span class="cl">加入噪声，改变原来的概率分布
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h4 id="deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences
+</h4><p>《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：</p>
+<ol>
+<li>
+<p><strong>背景</strong>：</p>
+<ul>
+<li>传统的强化学习方法通常依赖于奖励信号来指导学习，但设计有效的奖励函数在复杂任务中往往困难且耗时。</li>
+<li>人类可以提供更直观的偏好信息，这为训练强化学习代理提供了一种新途径。</li>
+</ul>
+</li>
+<li>
+<p><strong>方法概述</strong>：</p>
+<ul>
+<li><strong>人类偏好收集</strong>：论文提出了一种方法，通过收集人类对不同行为的偏好来生成奖励信号。人类评估多个策略的表现，从中选择更好的策略，以此来建立奖励模型。</li>
+<li><strong>奖励模型</strong>：利用收集到的人类偏好数据，训练一个深度神经网络来预测代理在给定状态下的奖励。这种奖励模型可以用来指导强化学习算法。</li>
+</ul>
+</li>
+<li>
+<p><strong>训练过程</strong>：</p>
+<ul>
+<li><strong>深度强化学习</strong>：在获得奖励模型后，使用深度强化学习算法（如Proximal Policy Optimization，PPO）来训练代理。代理通过与环境交互，不断优化其策略。</li>
+<li><strong>迭代学习</strong>：通过不断收集新的偏好数据并更新奖励模型，实现迭代学习，使得代理能够逐步提升性能。</li>
+</ul>
+</li>
+<li>
+<p><strong>实验结果</strong>：</p>
+<ul>
+<li>论文在多个复杂任务（如Atari游戏和模拟环境）中展示了该方法的有效性，代理能够通过学习人类的偏好，超越基于手动设计的奖励函数的表现。</li>
+<li>结果表明，利用人类偏好进行训练能够加速学习过程，并提升代理的最终性能。</li>
+</ul>
+</li>
+<li>
+<p><strong>意义与展望</strong>：</p>
+<ul>
+<li>该方法展示了人类偏好在强化学习中的潜力，提出了一种新的思路来解决奖励设计问题。</li>
+<li>论文强调了未来研究中结合人类反馈和偏好的重要性，特别是在涉及复杂决策和安全性问题的领域。</li>
+</ul>
+</li>
+</ol>
+<h1 id="附录">附录
+</h1><h2 id="残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？
+</h2><p>**残差连接（Residual Connection）<strong>和</strong>层归一化（Layer Normalization）**是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：</p>
+<h3 id="残差连接residual-connection">残差连接（Residual Connection）
+</h3><p><strong>定义</strong>：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+</p>
+$$
+\text{Output} = \text{Layer}(x) + x
+$$<p>
+其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。</p>
+<p><strong>作用</strong>：</p>
+<ul>
+<li><strong>缓解梯度消失问题</strong>：在非常深的网络中，梯度可能会随着层数增加而消失，导致网络难以训练。残差连接提供了一条捷径，使得梯度可以更容易地通过网络传播。</li>
+<li><strong>加速收敛</strong>：通过引入直接路径，残差连接有助于提高网络的收敛速度。</li>
+<li><strong>提高模型性能</strong>：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。</li>
+</ul>
+<h3 id="层归一化layer-normalization">层归一化（Layer Normalization）
+</h3><p><strong>定义</strong>：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
+</p>
+$$
+\text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
+$$<p>
+其中：</p>
+<ul>
+<li>\(x\) 是输入。</li>
+<li>\(\mu\) 是输入的均值。</li>
+<li>\(\sigma\) 是输入的标准差。</li>
+<li>\(\epsilon\) 是一个小常数，避免除以零。</li>
+<li>\(\gamma\) 和 \(\beta\) 是可学习的参数，用于缩放和平移归一化的结果。</li>
+</ul>
+<p><strong>作用</strong>：</p>
+<ul>
+<li><strong>减少内部协变量偏移</strong>：层归一化帮助减少模型训练过程中每层输入的变化，使得网络在训练时更加稳定。</li>
+<li><strong>提高训练速度</strong>：通过标准化输入，层归一化可以使得训练过程更加平滑，从而加快收敛速度。</li>
+<li><strong>适用于变长序列</strong>：与批量归一化（Batch Normalization）不同，层归一化可以直接应用于变长的输入序列，适合于RNN和Transformer等模型。</li>
+</ul>
+<h3 id="总结">总结
+</h3><ul>
+<li><strong>残差连接</strong>主要通过提供捷径来缓解深层网络中的梯度消失问题，并加速训练过程。</li>
+<li><strong>层归一化</strong>则通过标准化激活值来提高训练的稳定性和速度。这两者结合使用，能够显著提升深度学习模型的表现。</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/first-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/first-week/banlan.c514d916917173a48a42e0114b469961_hu7626638945853200361.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2024.10.7至13第一周工作总结"
+                        data-key="first-week" 
+                        data-hash="md5-xRTZFpFxc6SKQuARS0aZYQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2024.10.7至13第一周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
