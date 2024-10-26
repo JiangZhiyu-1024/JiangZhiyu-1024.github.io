@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>对齐 on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AF%B9%E9%BD%90/</link>
+        <description>Recent content in 对齐 on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Sat, 26 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/%E5%AF%B9%E9%BD%90/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>2024.10.21至27第三周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/third-week/</link>
+        <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/third-week/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/third-week/cards-8594729_640.jpg" alt="Featured image of post 2024.10.21至27第三周工作总结" /&gt;&lt;h1 id=&#34;文献阅读&#34;&gt;文献阅读
+&lt;/h1&gt;&lt;h5 id=&#34;每周都完不成上次的任务杂事太多了尽快完成&#34;&gt;每周都完不成上次的任务，杂事太多了，尽快完成：
+&lt;/h5&gt;&lt;h2 id=&#34;detecting-formal-thought-disorder-by-deep-contextualized-word-representations&#34;&gt;Detecting formal thought disorder by deep contextualized word representations
+&lt;/h2&gt;&lt;p&gt;竟然要收费，不看了，让gpt给讲一下&lt;/p&gt;
+&lt;p&gt;这篇论文《通过深度上下文化词表示检测形式思维障碍》研究了如何使用深度学习中的上下文词嵌入模型（如ELMo）来检测精神疾病患者的形式思维障碍（Formal Thought Disorder, FTD）。FTD是一种影响语言表达和思维逻辑的精神疾病症状，常见于精神分裂症患者。&lt;/p&gt;
+&lt;p&gt;论文主要利用深度上下文化词嵌入模型，如ELMo，通过生成词在句子中的嵌入表示，捕捉语境中词的多义性和丰富的语义信息。研究团队通过分析患者的语言数据，构建模型来区分正常语言与存在思维障碍的语言表达，从而实现自动化的FTD检测。&lt;/p&gt;
+&lt;p&gt;研究的核心贡献是使用更复杂的语义表示（如上下文化词嵌入）来解决传统方法无法有效处理的词义歧义问题。&lt;/p&gt;
+&lt;h2 id=&#34;distributed-representations-of-words-and-phrases-and-their-compositionality&#34;&gt;Distributed Representations of Words and Phrases and their Compositionality
+&lt;/h2&gt;&lt;p&gt;《Distributed Representations of Words and Phrases and their Compositionality》是由Mikolov等人在2013年提出的一篇重要论文，介绍了&lt;strong&gt;Word2Vec&lt;/strong&gt;模型的改进和创新。这篇文章主要讨论了如何通过分布式词表示（distributed word representations）更好地捕捉单词和短语的语义信息，并且提出了两种核心模型：&lt;strong&gt;CBOW（Continuous Bag of Words）&lt;/strong&gt; 和  &lt;strong&gt;Skip-gram&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这篇论文的主要贡献包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Skip-gram和CBOW模型&lt;/strong&gt;：论文提出了两种用于生成词向量的架构。Skip-gram模型的目标是根据一个词预测其上下文，而CBOW模型则根据上下文词来预测目标词。这两种模型能够有效地捕捉单词之间的语义关系。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;层次Softmax和负采样&lt;/strong&gt;：为了提高训练大规模语料库的效率，作者引入了&lt;strong&gt;层次Softmax&lt;/strong&gt;和**负采样（negative sampling）**技术，这大幅降低了模型的计算复杂度，使得大规模训练变得可行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;词和短语的组合性&lt;/strong&gt;：论文不仅处理了单词的表示，还处理了短语的表示，通过数据驱动的方式将多词短语映射为词向量，捕捉更复杂的语义结构。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;向量运算反映语义关系&lt;/strong&gt;：Word2Vec生成的词向量能够通过简单的向量运算表达词语之间的关系。例如，向量运算 &lt;code&gt;vec(&amp;quot;King&amp;quot;) - vec(&amp;quot;Man&amp;quot;) + vec(&amp;quot;Woman&amp;quot;) ≈ vec(&amp;quot;Queen&amp;quot;)&lt;/code&gt; 说明了这种分布式表示在捕捉语义关系上的强大能力。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;llm-book&#34;&gt;LLM BOOK
+&lt;/h2&gt;&lt;p&gt;找到一本书，准确的来说是一个github仓库，组织者把近些年的LLM相关的东西都整进去了，好全，写的真好，库库看吧那就&lt;/p&gt;
+&lt;p&gt;先把资源放在这里：&lt;a class=&#34;link&#34; href=&#34;https://github.com/RUCAIBox/LLMSurvey/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;RUCAIBox/LLMSurvey: The official GitHub page for the survey paper &amp;ldquo;A Survey of Large Language Models&amp;rdquo;.&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;第一部分-背景与基础知识&#34;&gt;第一部分 背景与基础知识
+&lt;/h3&gt;&lt;h4 id=&#34;语言模型的发展历程p16&#34;&gt;语言模型的发展历程（P16）
+&lt;/h4&gt;&lt;p&gt;LLM大语言模型那肯定是从LM语言模型来的，语言模型的发展又经历了：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;统计语言模型（StatisticalLanguageModel, SLM）&lt;/li&gt;
+&lt;li&gt;神经语言模型（NeuralLanguageModel,NLM）&lt;/li&gt;
+&lt;li&gt;预训练语言模型（Pre-trainedLanguageModel,PLM）&lt;/li&gt;
+&lt;li&gt;大语言模型（LargeLanguageModel, LLM）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;llm的特点p19&#34;&gt;LLM的特点（P19）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;具有较为丰富的世界知识&lt;/li&gt;
+&lt;li&gt;具有较强的通用任务解决能力&lt;/li&gt;
+&lt;li&gt;具有较好的复杂任务推理能力&lt;/li&gt;
+&lt;li&gt;具有较强的人类指令遵循能力&lt;/li&gt;
+&lt;li&gt;具有较好的人类对齐能力&lt;/li&gt;
+&lt;li&gt;具有可拓展的工具使用能力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;大语言模型对于产业应用带来了变革性的技术影响，将会催生一个基于大语言模型的应用生态系统。&lt;/p&gt;
+&lt;h3 id=&#34;第二部分-预训练&#34;&gt;第二部分 预训练
+&lt;/h3&gt;&lt;p&gt;大语言模型的第一个训练阶段是预训练，预训练语料的规模和质量对于提升大语言模型的能力至关重要。&lt;/p&gt;
+&lt;h4 id=&#34;数据来源&#34;&gt;数据来源
+&lt;/h4&gt;&lt;p&gt;通用文本数据和专用文本数据。通用文本数据涵盖了网页、书籍和对话文本等。由于通用文本数据规模较大、多样性强且易于获取，大多数大语言模型都会收集大量的通用文本数据，以增强其语言建模能力。此外，为了进一步提升大语言模型在特定专业任务上的表现，人们还将预训练语料的范围扩展至更专业的数据集，如多语数据、科学数据和代码数据等。&lt;/p&gt;
+&lt;h5 id=&#34;通用文本数据&#34;&gt;通用文本数据
+&lt;/h5&gt;&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/assets/image-20241026154722061.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241026154722061&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;center&gt;现有大语言模型预训练数据中各种数据来源的比例分布图&lt;/center&gt;&gt;
+&lt;h5 id=&#34;专用文本数据&#34;&gt;专用文本数据
+&lt;/h5&gt;&lt;p&gt;多语文本、 科学文本、代码。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/assets/image-20241026155259857.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241026155259857&#34;
+	
+	
+&gt;&lt;/p&gt;
+&lt;center&gt;典型的预训练数据预处理流程图&lt;/center&gt;&gt;
+&lt;h4 id=&#34;数据预处理&#34;&gt;数据预处理
+&lt;/h4&gt;&lt;p&gt;构建并使用系统化的数据处理框架（如开源库Data-Juicer）&lt;/p&gt;
+&lt;p&gt;具体操作（P74）&lt;/p&gt;
+&lt;h1 id=&#34;附录&#34;&gt;附录
+&lt;/h1&gt;&lt;h2 id=&#34;softmax是啥&#34;&gt;softmax是啥？
+&lt;/h2&gt;&lt;h4 id=&#34;softmax是一种常用的函数特别是在多分类任务中用来将一个向量中的元素转换为0到1之间的概率分布其核心作用是&#34;&gt;Softmax是一种常用的函数，特别是在&lt;strong&gt;多分类任务&lt;/strong&gt;中，用来将一个向量中的元素转换为0到1之间的概率分布。其核心作用是：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;将实数映射为概率分布&lt;/strong&gt;：Softmax 接受一个实数向量，输出一个与输入维度相同的向量，其中每个元素的值表示该元素作为某个类别的概率，且这些概率的和为1。这样就可以根据这些概率来进行分类预测。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;公式&lt;/strong&gt;：Softmax 函数的定义如下：
+&lt;/p&gt;
+$$
+   \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
+   $$&lt;p&gt;
+其中，\( z_i \) 是输入向量中的某个元素，\( e^{z_i} \) 是该元素的指数值，分母是所有输入元素的指数值的和。这个函数将每个 \( z_i \) 映射为一个在 \( (0,1) \) 之间的概率，并且所有输出的概率之和为1。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用机制&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;指数放大效果&lt;/strong&gt;：Softmax 函数通过对输入值取指数（\( e^x \)），会将较大的输入值放大更多，而较小的值则被进一步压缩，突出更大的概率。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;归一化&lt;/strong&gt;：Softmax 保证所有输出的概率之和为1，符合概率的定义。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;应用场景&lt;/strong&gt;：在&lt;strong&gt;神经网络的最后一层&lt;/strong&gt;，特别是分类任务中，Softmax 常用于多类分类问题，比如在自然语言处理（NLP）中的词分类、图像识别中的对象分类等。它将网络的输出转化为易于理解的概率值，帮助模型决定输入属于哪个类别。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;举例&#34;&gt;举例
+&lt;/h4&gt;&lt;p&gt;假设我们有一个模型输出三个值 \( [2.0, 1.0, 0.1] \)，通过 Softmax 转换后得到的结果是大约 \( [0.71, 0.26, 0.03] \)，其中最大的值0.71表示模型认为输入属于第一个类别的概率最大。&lt;/p&gt;
+&lt;p&gt;简言之，Softmax 是一种将输出转换为概率分布的工具，特别适合多分类问题的场景。&lt;/p&gt;
+&lt;h2 id=&#34;看了半天论文感觉没有一个时间线很难受不清楚那些论文之间的关系问问gpt&#34;&gt;看了半天论文，感觉没有一个时间线很难受，不清楚那些论文之间的关系，问问gpt：
+&lt;/h2&gt;&lt;h3 id=&#34;基础概念与理论&#34;&gt;&lt;strong&gt;基础概念与理论&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;先掌握大模型背后的基本理论，这些知识是理解后续论文的基础：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;语言模型的基础：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;经典论文：《Attention Is All You Need》（Transformer）&lt;/li&gt;
+&lt;li&gt;相关概念：自注意力机制、序列到序列模型、词嵌入（如Word2Vec、GloVe）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自回归模型与自编码器：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;GPT 系列（GPT, GPT-2, GPT-3）的原理和应用&lt;/li&gt;
+&lt;li&gt;BERT 及其衍生模型的预训练与微调方式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩展学习与生成式任务：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》&lt;/li&gt;
+&lt;li&gt;生成式预训练模型的设计与任务应用（如文本生成、机器翻译）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;模型的训练与优化&#34;&gt;&lt;strong&gt;模型的训练与优化&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;学习如何高效地训练大模型，并且了解模型的优化技术：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;微调与参数高效训练：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Efficient Fine-Tuning Techniques for Large Models: Adapter, LoRA 等&lt;/li&gt;
+&lt;li&gt;探索模型压缩技术（知识蒸馏、量化、剪枝等）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对比学习与自监督学习：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;《SimCLR》、《MoCo》 等代表性论文，理解对比学习在大模型中的应用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;模型对齐与安全&#34;&gt;&lt;strong&gt;模型对齐与安全&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在大模型发展过程中，模型对齐（alignment）和伦理问题变得越来越重要：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;模型对齐与价值观嵌入：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;《InstructGPT: Training language models to follow instructions with human feedback》&lt;/li&gt;
+&lt;li&gt;RLHF（强化学习通过人类反馈）等对齐策略&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模型安全与公平性：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;探讨模型偏见问题以及在实际应用中的安全隐患&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;视觉-语言模型与多模态模型&#34;&gt;&lt;strong&gt;视觉-语言模型与多模态模型&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;学习大模型在跨模态任务中的应用，比如视觉-语言任务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CLIP（Contrastive Language-Image Pretraining）&lt;/strong&gt;：理解图像和文本共同表征的训练方法&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DALL-E、Stable Diffusion&lt;/strong&gt;：生成式视觉任务的模型设计与应用&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;视觉语言对话系统&lt;/strong&gt;：如《Visual ChatGPT》&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;前沿研究与新趋势&#34;&gt;&lt;strong&gt;前沿研究与新趋势&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在深入理解基本模型后，可以关注大模型领域的前沿研究方向：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;大模型与知识图谱的结合&lt;/strong&gt;：如何将知识图谱融入语言模型&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;领域自适应模型&lt;/strong&gt;：如何通过特定领域数据进行模型的进一步微调&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;检索增强生成（RAG）&lt;/strong&gt;：如《RAG: Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks》&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实战应用与开源框架&#34;&gt;&lt;strong&gt;实战应用与开源框架&lt;/strong&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;阅读开源项目中的技术文档，参与开源项目（如Hugging Face的模型库）&lt;/li&gt;
+&lt;li&gt;学习如何应用大模型解决实际问题，并尝试训练和微调自己的模型&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这样，你可以从基础概念、模型训练到前沿研究和实战应用，逐步深入，既能掌握理论又能结合实践。这个过程可以帮助你筛选出重要的论文和研究方向。&lt;/p&gt;
+&lt;h2 id=&#34;对齐是什么意思&#34;&gt;对齐是什么意思？
+&lt;/h2&gt;&lt;p&gt;在大型语言模型（LLM）中，“对齐”通常指的是模型的输出与人类意图或价值观的匹配程度。具体来说，它涉及确保模型在生成文本时能够产生符合人类期望的、有益的和安全的内容。对齐的目标是减少模型生成有害、误导或不准确的信息。&lt;/p&gt;
+&lt;p&gt;对齐可以通过多种方法实现，包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;训练数据的选择和清洗&lt;/strong&gt;：使用高质量的数据集进行训练，确保模型接触到的内容符合人类的价值观和期望。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;强化学习&lt;/strong&gt;：利用人类反馈来微调模型，使其在生成内容时更符合人类的意图。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;安全性和伦理性评估&lt;/strong&gt;：在模型发布之前，对其输出进行评估，以识别和修正潜在的偏见或有害内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过这些方法，可以提高模型在特定任务或应用场景中的可靠性和安全性。&lt;/p&gt;
+&lt;h2 id=&#34;arxiv-论文是什么&#34;&gt;arXiv 论文是什么？
+&lt;/h2&gt;&lt;p&gt;arXiv 是一个开放获取的电子预印本存档，主要用于科学研究领域，特别是在物理学、数学、计算机科学、统计学、金融学、生物学和其他相关学科。研究者可以在 arXiv 上免费上传和分享他们的研究论文，通常是在正式出版之前的版本。&lt;/p&gt;
+&lt;p&gt;arXiv 的特点包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;快速发布&lt;/strong&gt;：研究者可以迅速分享他们的研究成果，而不必等待同行评审和正式出版的过程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;开放获取&lt;/strong&gt;：任何人都可以访问和下载论文，无需订阅或支付费用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;广泛的学科覆盖&lt;/strong&gt;：涵盖多个领域，促进跨学科的交流和合作。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;社区反馈&lt;/strong&gt;：研究者可以在正式发表之前收到来自社区的反馈，帮助他们改进论文。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;arXiv 的论文通常以“预印本”的形式存在，因此它们可能尚未经过同行评审。这意味着在引用这些论文时，研究者需要谨慎，了解其可能的局限性。&lt;/p&gt;
+&lt;h2 id=&#34;在arxiv上发还未出版的论文不怕被别人剽窃成果吗&#34;&gt;在arXiv上发还未出版的论文不怕被别人剽窃成果吗？
+&lt;/h2&gt;&lt;p&gt;在 arXiv 上发布未出版的论文确实存在被剽窃的风险，但研究者通常认为在 arXiv 上共享研究成果是有益的，原因如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间戳和公开记录&lt;/strong&gt;：一旦论文被上传到 arXiv，上传的时间戳可以作为知识产权的证明。这在某种程度上可以保护研究者的原创性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;学术社区的支持&lt;/strong&gt;：arXiv 是一个活跃的学术社区，研究者通常会关注相关领域的论文，并且对剽窃行为持有负面态度。学术界普遍重视诚信，剽窃通常会受到严厉的谴责。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;早期反馈&lt;/strong&gt;：通过发布预印本，研究者可以获得来自同行的反馈，从而改进自己的工作。这也有助于在正式出版之前建立声誉。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;增加曝光率&lt;/strong&gt;：在 arXiv 上发布可以提高研究的可见性，吸引潜在合作者或资助者。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;通用人工智能系统是什么&#34;&gt;通用人工智能系统是什么？
+&lt;/h2&gt;&lt;p&gt;通用人工智能系统（AGI, Artificial General Intelligence）指的是一种能够理解、学习和应用知识，完成任何人类所能完成的智力任务的人工智能系统。与当前的狭义人工智能（Narrow AI）相比，后者在特定任务或领域表现出色（如图像识别、自然语言处理等），AGI 的目标是实现一种更广泛的智能，具备跨领域的学习和适应能力。&lt;/p&gt;
+&lt;p&gt;AGI 的特点包括：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自主学习&lt;/strong&gt;：能够从有限的数据中学习并推理，具备自我改进的能力。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;多任务处理&lt;/strong&gt;：能够在多个不同的领域和任务中表现出色，而不局限于特定的应用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;常识推理&lt;/strong&gt;：具备理解和应用常识的能力，能够处理复杂的、不确定的环境。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;灵活性和适应性&lt;/strong&gt;：能够适应新情况和挑战，灵活地应对不同的环境和需求。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;AGI 的发展仍然是一个前沿研究领域，目前尚未实现。许多研究者在探索如何构建这样的系统，同时也讨论其潜在的伦理和社会影响，例如对就业、隐私和安全的影响。&lt;/p&gt;
+&lt;h1 id=&#34;思考&#34;&gt;思考
+&lt;/h1&gt;&lt;p&gt;随着看的东西多了，和使用chatgpt，我隐隐感觉到，由于chatgpt的语言模型主要是通过预测下一个最可能的词来生成文本，这一过程称为自回归生成（autoregressive generation）。导致gpt经常会顺着你的话去说，即有更小的概论去反对你的话，尽量让你说的话看起来正确，当然，如果你说的是：“太阳从西边升起”，那么他会义无反顾的反驳你。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
