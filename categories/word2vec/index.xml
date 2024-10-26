@@ -57,27 +57,35 @@
 &lt;h4 id=&#34;数据来源&#34;&gt;数据来源
 &lt;/h4&gt;&lt;p&gt;通用文本数据和专用文本数据。通用文本数据涵盖了网页、书籍和对话文本等。由于通用文本数据规模较大、多样性强且易于获取，大多数大语言模型都会收集大量的通用文本数据，以增强其语言建模能力。此外，为了进一步提升大语言模型在特定专业任务上的表现，人们还将预训练语料的范围扩展至更专业的数据集，如多语数据、科学数据和代码数据等。&lt;/p&gt;
 &lt;h5 id=&#34;通用文本数据&#34;&gt;通用文本数据
-&lt;/h5&gt;&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/assets/image-20241026154722061.png&#34;
-	
-	
-	
+&lt;/h5&gt;&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/third-week/image-20241026154722061.png&#34;
+	width=&#34;792&#34;
+	height=&#34;657&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/third-week/image-20241026154722061_hu1725408825362406164.png 480w, https://JiangZhiyu-1024.github.io/p/third-week/image-20241026154722061_hu12406635621069597218.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;image-20241026154722061&#34;
 	
 	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;120&#34;
+		data-flex-basis=&#34;289px&#34;
+	
 &gt;&lt;/p&gt;
 &lt;center&gt;现有大语言模型预训练数据中各种数据来源的比例分布图&lt;/center&gt;&gt;
 &lt;h5 id=&#34;专用文本数据&#34;&gt;专用文本数据
 &lt;/h5&gt;&lt;p&gt;多语文本、 科学文本、代码。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/assets/image-20241026155259857.png&#34;
-	
-	
-	
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/third-week/image-20241026155259857.png&#34;
+	width=&#34;831&#34;
+	height=&#34;189&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/third-week/image-20241026155259857_hu14579868356241669728.png 480w, https://JiangZhiyu-1024.github.io/p/third-week/image-20241026155259857_hu13508329583982414925.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;image-20241026155259857&#34;
 	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;439&#34;
+		data-flex-basis=&#34;1055px&#34;
 	
 &gt;&lt;/p&gt;
 &lt;center&gt;典型的预训练数据预处理流程图&lt;/center&gt;&gt;
