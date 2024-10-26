@@ -270,21 +270,18 @@
   <ol>
     <li><a href="#文献阅读">文献阅读</a>
       <ol>
-        <li>
-          <ol>
-            <li><a href="#attention-is-all-you-need">Attention Is All You Need</a></li>
-            <li><a href="#差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)</a></li>
-            <li><a href="#deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences</a></li>
-          </ol>
-        </li>
+        <li><a href="#attention-is-all-you-need">Attention Is All You Need</a></li>
+        <li><a href="#差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)</a></li>
+        <li><a href="#deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences</a></li>
       </ol>
     </li>
-  </ol>
-
-  <ol>
-    <li><a href="#残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？</a>
+    <li><a href="#附录">附录</a>
       <ol>
-        <li><a href="#残差连接residual-connection">残差连接（Residual Connection）</a></li>
+        <li><a href="#残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？</a>
+          <ol>
+            <li><a href="#残差连接residual-connection">残差连接（Residual Connection）</a></li>
+          </ol>
+        </li>
         <li><a href="#层归一化layer-normalization">层归一化（Layer Normalization）</a></li>
         <li><a href="#总结">总结</a></li>
       </ol>
@@ -386,11 +383,10 @@
     <section class="article-content">
     
     
-    <h1 id="工作总结"><strong>工作总结</strong>：
-</h1><h2 id="文献阅读">文献阅读
+    <h2 id="文献阅读">文献阅读
 </h2><p>看了知乎的科普文章，先从经典的论文开始看：</p>
-<h4 id="attention-is-all-you-need">Attention Is All You Need
-</h4><p>《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：</p>
+<h3 id="attention-is-all-you-need">Attention Is All You Need
+</h3><p>《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：</p>
 <ol>
 <li>
 <p><strong>背景</strong>：传统的序列到序列模型（如RNN和LSTM）在处理长序列时存在瓶颈。Transformer模型通过自注意力机制克服了这些限制，使得模型可以并行处理数据，提升了训练效率。</p>
@@ -417,8 +413,8 @@
 </li>
 </ol>
 <hr>
-<h4 id="差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)
-</h4><p>《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：</p>
+<h3 id="差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)
+</h3><p>《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：</p>
 <ol>
 <li>
 <p><strong>背景</strong>：</p>
@@ -466,8 +462,8 @@
 </span></span></code></pre></td></tr></table>
 </div>
 </div><hr>
-<h4 id="deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences
-</h4><p>《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：</p>
+<h3 id="deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences
+</h3><p>《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：</p>
 <ol>
 <li>
 <p><strong>背景</strong>：</p>
@@ -505,11 +501,11 @@
 </ul>
 </li>
 </ol>
-<h1 id="附录">附录
-</h1><h2 id="残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？
-</h2><p>**残差连接（Residual Connection）<strong>和</strong>层归一化（Layer Normalization）**是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：</p>
-<h3 id="残差连接residual-connection">残差连接（Residual Connection）
-</h3><p><strong>定义</strong>：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+<h2 id="附录">附录
+</h2><h3 id="残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？
+</h3><p>残差连接（Residual Connection）和层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：</p>
+<h4 id="残差连接residual-connection">残差连接（Residual Connection）
+</h4><p><strong>定义</strong>：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
 </p>
 $$
 \text{Output} = \text{Layer}(x) + x

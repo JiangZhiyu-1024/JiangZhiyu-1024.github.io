@@ -13,11 +13,10 @@
         <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/second-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 2024.10.14至20第二周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
-&lt;/h1&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 2024.10.14至20第二周工作总结" /&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h2&gt;&lt;p&gt;看了知乎的科普文章，先从经典的论文开始看：&lt;/p&gt;
-&lt;h4 id=&#34;attention-is-all-you-need&#34;&gt;Attention Is All You Need
-&lt;/h4&gt;&lt;p&gt;《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：&lt;/p&gt;
+&lt;h3 id=&#34;attention-is-all-you-need&#34;&gt;Attention Is All You Need
+&lt;/h3&gt;&lt;p&gt;《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：传统的序列到序列模型（如RNN和LSTM）在处理长序列时存在瓶颈。Transformer模型通过自注意力机制克服了这些限制，使得模型可以并行处理数据，提升了训练效率。&lt;/p&gt;
@@ -44,8 +43,8 @@
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr&gt;
-&lt;h4 id=&#34;差分隐私深度学习deep-learning-with-differential-privacy&#34;&gt;差分隐私深度学习(Deep Learning with Differential Privacy)
-&lt;/h4&gt;&lt;p&gt;《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：&lt;/p&gt;
+&lt;h3 id=&#34;差分隐私深度学习deep-learning-with-differential-privacy&#34;&gt;差分隐私深度学习(Deep Learning with Differential Privacy)
+&lt;/h3&gt;&lt;p&gt;《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：&lt;/p&gt;
@@ -93,8 +92,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;hr&gt;
-&lt;h4 id=&#34;deep-reinforcement-learning-from-human-preferences&#34;&gt;Deep Reinforcement Learning from Human Preferences
-&lt;/h4&gt;&lt;p&gt;《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：&lt;/p&gt;
+&lt;h3 id=&#34;deep-reinforcement-learning-from-human-preferences&#34;&gt;Deep Reinforcement Learning from Human Preferences
+&lt;/h3&gt;&lt;p&gt;《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;：&lt;/p&gt;
@@ -132,11 +131,11 @@
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h1 id=&#34;附录&#34;&gt;附录
-&lt;/h1&gt;&lt;h2 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
-&lt;/h2&gt;&lt;p&gt;**残差连接（Residual Connection）&lt;strong&gt;和&lt;/strong&gt;层归一化（Layer Normalization）**是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
-&lt;h3 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+&lt;h2 id=&#34;附录&#34;&gt;附录
+&lt;/h2&gt;&lt;h3 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
+&lt;/h3&gt;&lt;p&gt;残差连接（Residual Connection）和层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
+&lt;h4 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
 &lt;/p&gt;
 $$
 \text{Output} = \text{Layer}(x) + x
