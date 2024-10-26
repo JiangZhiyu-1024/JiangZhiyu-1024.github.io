@@ -65,12 +65,6 @@
     <loc>https://JiangZhiyu-1024.github.io/p/test-chinese/</loc>
     <lastmod>2021-01-18T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/categories/test/</loc>
-    <lastmod>2021-01-18T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/categories/%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2021-01-18T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://JiangZhiyu-1024.github.io/page/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
   </url><url>
@@ -105,6 +99,9 @@
     <lastmod>2019-03-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/tags/tag-with-whitespaces/</loc>
+    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/test/</loc>
     <lastmod>2019-03-09T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/test-with-whitespaces/</loc>
