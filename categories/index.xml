@@ -8,6 +8,14 @@
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
         <lastBuildDate>Sat, 26 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>AGI</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/agi/</link>
+        <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/agi/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/agi/map-of-the-world-2401458_640.jpg" alt="Featured image of post AGI" /&gt;</description>
+        </item>
+        <item>
         <title>ArXiv</title>
         <link>https://JiangZhiyu-1024.github.io/categories/arxiv/</link>
         <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
@@ -32,12 +40,12 @@
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/softmax/Softmax.jpg" alt="Featured image of post Softmax" /&gt;</description>
         </item>
         <item>
-        <title>Weekly Report</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/weekly-report/</link>
+        <title>WeeklyReport</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</link>
         <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/weekly-report/</guid>
-        <description></description>
+        <guid>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/weeklyreport/WeeklyReport.jpg" alt="Featured image of post WeeklyReport" /&gt;</description>
         </item>
         <item>
         <title>Word2Vec</title>
@@ -54,14 +62,6 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AF%B9%E9%BD%90/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/%E5%AF%B9%E9%BD%90/flowers-7935944_640.jpg" alt="Featured image of post 对齐" /&gt;</description>
-        </item>
-        <item>
-        <title>通用人工智能系统</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F/</link>
-        <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E7%B3%BB%E7%BB%9F/</guid>
-        <description></description>
         </item>
         <item>
         <title>博客</title>
@@ -85,14 +85,14 @@
         <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/attention/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/triangles-1430105_640.jpg" alt="Featured image of post Attention" /&gt;</description>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/attention/triangles-1430105_640.png" alt="Featured image of post Attention" /&gt;</description>
         </item>
         <item>
-        <title>Differential Privacy</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</link>
+        <title>DifferentialPrivacy</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</link>
         <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</guid>
+        <guid>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</guid>
         <description></description>
         </item>
         <item>
@@ -112,12 +112,12 @@
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/%E7%BB%BC%E8%BF%B0/sea-2757088_640.jpg" alt="Featured image of post 综述" /&gt;</description>
         </item>
         <item>
-        <title>Differential Privacy</title>
+        <title>DifferentialPrivacy</title>
         <link>https://JiangZhiyu-1024.github.io/categories/differentprivacy/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/differentprivacy/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/differentprivacy/tree-3358468_640.jpg" alt="Featured image of post Differential Privacy" /&gt;</description>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/differentprivacy/tree-3358468_640.jpg" alt="Featured image of post DifferentialPrivacy" /&gt;</description>
         </item>
         <item>
         <title>Test</title>
@@ -126,22 +126,6 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/test/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/test/hutomo-abrianto-l2jk-uxb1BY-unsplash.jpg" alt="Featured image of post Test" /&gt;</description>
-        </item>
-        <item>
-        <title>Weekly Report</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/weeklyreport/WeeklyReport.jpg" alt="Featured image of post Weekly Report" /&gt;</description>
-        </item>
-        <item>
-        <title>通用人工智能</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/%E9%80%9A%E7%94%A8%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/map-of-the-world-2401458_640.jpg" alt="Featured image of post 通用人工智能" /&gt;</description>
         </item>
         
     </channel>
