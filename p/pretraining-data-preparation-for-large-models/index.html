@@ -10,10 +10,10 @@
 <meta property='og:description' content="数据准备">
 <meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/'>
 <meta property='og:site_name' content='Zion Blaze'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-28T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-28T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/image-20241028165311963.jpg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-28T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-28T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/seascape-4636264_640.jpg' />
 <meta name="twitter:title" content="LLM预训练数据准备">
 <meta name="twitter:description" content="数据准备"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/image-20241028165311963.jpg' />
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/seascape-4636264_640.jpg' />
     <link rel="shortcut icon" href="/favicon.ico" />
 
     </head>
@@ -324,8 +324,12 @@
     <header class="article-header">
         <div class="article-image">
             <a href="/p/pretraining-data-preparation-for-large-models/">
-                
-                    <img src="/image-20241028165311963.jpg" loading="lazy" alt="Featured image of post LLM预训练数据准备" />
+                <img src="/p/pretraining-data-preparation-for-large-models/seascape-4636264_640_hu14231764652246648834.jpg"
+                        srcset="/p/pretraining-data-preparation-for-large-models/seascape-4636264_640_hu14231764652246648834.jpg 800w, /p/pretraining-data-preparation-for-large-models/seascape-4636264_640_hu12946283033195985407.jpg 1600w"
+                        width="800" 
+                        height="450" 
+                        loading="lazy"
+                        alt="Featured image of post LLM预训练数据准备" />
                 
             </a>
         </div>
@@ -548,14 +552,18 @@ $$<h3 id="unigram-分词">Unigram 分词
 </h3><p>与BPE分词和WordPiece 分词不同，Unigram 分词方法 [21] 从语料库的一组足够大的字符串或词元初始集合开始，迭代地删除其中的词元，直到达到预期的词表大小。它假设从当前词表中删除某个词元，并计算训练语料的似然增加情况，以此来作为选择标准。这个步骤是基于一个训练好的一元语言模型来进行的。为估计一元语言模型，它采用期望最大化（Expectation–Maximization,EM）算法：在每次迭代中，首先基于旧的语言模型找到当前最优的分词方式，然后重新估计一元概率从而更新语言模型。这个过程中一般使用动态规划算法（即维特比算法，Viterbi Algorithm）来高效地找到语言模型对词汇的最优分词方式。采用这种分词方法的代表性模型包括T5和mBART。</p>
 <h2 id="数据调度">数据调度
 </h2><p>数据调度（DataScheduling）主要关注两个方面：各个数据源的混合比例以及各数据源用于训练的顺序（称为数据课程，Data Curriculum）。</p>
-<p><img src="/image-20241028165311963.png"
-	
-	
-	
+<p><img src="/p/pretraining-data-preparation-for-large-models/image-20241028165311963.png"
+	width="684"
+	height="252"
+	srcset="/p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu14172581646839069204.png 480w, /p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu10794267152505365926.png 1024w"
 	loading="lazy"
 	
 		alt="image-20241028165311963"
 	
+	
+		class="gallery-image" 
+		data-flex-grow="271"
+		data-flex-basis="651px"
 	
 ></p>
 <center>预训练大语言模型时数据调度的示意图</center>

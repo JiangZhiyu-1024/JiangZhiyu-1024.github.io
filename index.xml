@@ -13,7 +13,7 @@
         <pubDate>Mon, 28 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/image-20241028165311963.jpg" alt="Featured image of post LLM预训练数据准备" /&gt;&lt;h1 id=&#34;大模型预训练数据准备&#34;&gt;大模型预训练数据准备
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/seascape-4636264_640.jpg" alt="Featured image of post LLM预训练数据准备" /&gt;&lt;h1 id=&#34;大模型预训练数据准备&#34;&gt;大模型预训练数据准备
 &lt;/h1&gt;&lt;h2 id=&#34;数据来源&#34;&gt;数据来源
 &lt;/h2&gt;&lt;p&gt;根据来源不同，预训练数据主要分为两种类型：通用文本数据和专用文本数据&lt;/p&gt;
 &lt;h3 id=&#34;通用文本数据&#34;&gt;通用文本数据
@@ -171,14 +171,18 @@ $$&lt;h3 id=&#34;unigram-分词&#34;&gt;Unigram 分词
 &lt;/h3&gt;&lt;p&gt;与BPE分词和WordPiece 分词不同，Unigram 分词方法 [21] 从语料库的一组足够大的字符串或词元初始集合开始，迭代地删除其中的词元，直到达到预期的词表大小。它假设从当前词表中删除某个词元，并计算训练语料的似然增加情况，以此来作为选择标准。这个步骤是基于一个训练好的一元语言模型来进行的。为估计一元语言模型，它采用期望最大化（Expectation–Maximization,EM）算法：在每次迭代中，首先基于旧的语言模型找到当前最优的分词方式，然后重新估计一元概率从而更新语言模型。这个过程中一般使用动态规划算法（即维特比算法，Viterbi Algorithm）来高效地找到语言模型对词汇的最优分词方式。采用这种分词方法的代表性模型包括T5和mBART。&lt;/p&gt;
 &lt;h2 id=&#34;数据调度&#34;&gt;数据调度
 &lt;/h2&gt;&lt;p&gt;数据调度（DataScheduling）主要关注两个方面：各个数据源的混合比例以及各数据源用于训练的顺序（称为数据课程，Data Curriculum）。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/image-20241028165311963.png&#34;
-	
-	
-	
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963.png&#34;
+	width=&#34;684&#34;
+	height=&#34;252&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu14172581646839069204.png 480w, https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu10794267152505365926.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;image-20241028165311963&#34;
 	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;271&#34;
+		data-flex-basis=&#34;651px&#34;
 	
 &gt;&lt;/p&gt;
 &lt;center&gt;预训练大语言模型时数据调度的示意图&lt;/center&gt;
