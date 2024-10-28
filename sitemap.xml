@@ -3,7 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://JiangZhiyu-1024.github.io/</loc>
-    <lastmod>2024-10-26T00:00:00+00:00</lastmod>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/</loc>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/llm/</loc>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</loc>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/post/</loc>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/tokenization/</loc>
+    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/p/third-week/</loc>
     <lastmod>2024-10-26T00:00:00+00:00</lastmod>
@@ -12,15 +27,6 @@
     <lastmod>2024-10-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/arxiv/</loc>
-    <lastmod>2024-10-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/categories/</loc>
-    <lastmod>2024-10-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/categories/llm/</loc>
-    <lastmod>2024-10-26T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/post/</loc>
     <lastmod>2024-10-26T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/softmax/</loc>
