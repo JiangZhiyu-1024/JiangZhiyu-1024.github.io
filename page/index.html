@@ -459,6 +459,36 @@
         document.head.appendChild(customFont);
     }());
 </script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function() {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+
 
     </body>
 </html>
