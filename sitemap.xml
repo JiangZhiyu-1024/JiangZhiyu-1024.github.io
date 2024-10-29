@@ -3,18 +3,30 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://JiangZhiyu-1024.github.io/</loc>
-    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/</loc>
-    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/ffn/</loc>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/llm/</loc>
-    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</loc>
-    <lastmod>2024-10-28T00:00:00+00:00</lastmod>
+    <loc>https://JiangZhiyu-1024.github.io/categories/mha/</loc>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/post/</loc>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/transformer/</loc>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/p/transformermodelbase/</loc>
+    <lastmod>2024-10-29T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</loc>
     <lastmod>2024-10-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/tokenization/</loc>

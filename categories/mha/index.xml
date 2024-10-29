@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>MHA on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/mha/</link>
+        <description>Recent content in MHA on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Tue, 29 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/mha/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>transformer模型架构</title>
+        <link>https://JiangZhiyu-1024.github.io/p/transformermodelbase/</link>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/transformermodelbase/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/transformermodelbase/house-7497002_1280.png" alt="Featured image of post transformer模型架构" /&gt;&lt;h1 id=&#34;模型架构&#34;&gt;模型架构
+&lt;/h1&gt;&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029095402391.png&#34;
+	width=&#34;807&#34;
+	height=&#34;689&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029095402391_hu13532172091181392611.png 480w, https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029095402391_hu12135867853004229579.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241029095402391&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;117&#34;
+		data-flex-basis=&#34;281px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;center&gt;大语言模型架构配置表&lt;/center&gt;&gt;
+&lt;h2 id=&#34;transformer-模型&#34;&gt;🍈Transformer 模型
+&lt;/h2&gt;&lt;p&gt;当前主流的大语言模型都是基于Transformer模型进行设计的。Transformer是由多层的多头自注意力（Multi-headSelf-attention）模块堆叠而成的神经网络模型。原始的Transformer 模型由编码器和解码器两个部分构成，而这两个部分实际上可以独立使用，例如基于编码器架构的BERT模型[1]和解码器架构的GPT模型[2]。与BERT等早期的预训练语言模型相比，大语言模型的特点是使用了更长的向量维度、更深的层数，进而包含了更大规模的模型参数，并主要使用解码器架构，对于Transformer 本身的结构与配置改变并不大。&lt;/p&gt;
+&lt;h3 id=&#34;输入编码&#34;&gt;🍉输入编码
+&lt;/h3&gt;&lt;p&gt;在Transformer 模型中，输入的词元序列(𝒖 = [𝑢1,𝑢2,&amp;hellip;,𝑢𝑇]) 首先经过一个输入嵌入模块（InputEmbeddingModule）转化成词向量序列。具体来说，为了捕获词汇本身的语义信息，每个词元在输入嵌入模块中被映射成为一个可学习的、具有固定维度的词向量$v_t$ ∈$R^H$。由于Transformer的编码器结构本身无法识别序列中元素的顺序，位置编码（PositionEmbedding,PE）被引入来表示序列中的位置信息。给定一个词元$u_t$，位置编码根据其在输入中的绝对位置分配一个固定长度的嵌入向量$p_t$ ∈$R^H$。然后，每个词元对应的词向量和位置向量将直接相加，生成了最终的输入嵌入序列𝑿=[𝒙1,&amp;hellip;,𝒙𝑇]，并且被传入到后续层中：$x_t=v_t+p_t$.&lt;/p&gt;
+&lt;p&gt;通过这种建模方法的表示，Transformer 模型可以利用位置编码 𝒑𝑡 建模不同词元的位置信息。由于不同词元的位置编码仅由其位置唯一决定，因此这种位置建模方式被称为绝对位置编码。尽管绝对位置编码能够一定程度上建模位置信息，然而它只能局限于建模训练样本中出现的位置，无法建模训练数据中未出现过的位置，因此极大地限制了它们处理长文本的能力。&lt;/p&gt;
+&lt;h3 id=&#34;多头自注意力机制&#34;&gt;🍋多头自注意力机制
+&lt;/h3&gt;&lt;p&gt;多头自注意力是Transformer模型的核心创新技术。相比于循环神经网络（Recurrent Neural Network, RNN）和卷积神经网络（ConvolutionalNeuralNetwork,CNN）等传统神经网络，多头自注意力机制能够直接建模任意距离的词元之间的交互关系。作为对比，循环神经网络迭代地利用前一个时刻的状态更新当前时刻的状态，因此在处理较长序列的时候，常常会出现梯度爆炸或者梯度消失的问题。而在卷积神经网络中，只有位于同一个卷积核的窗口中的词元可以直接进行交互，通过堆叠层数来实现远距离词元间信息的交换。&lt;/p&gt;
+&lt;p&gt;多头自注意力机制通常由多个自注意力模块组成。在每个自注意力模块中，对于输入的词元序列，将其映射为相应的查询（Query,𝑸）、键（Key,𝑲）和值（Value,𝑽）三个矩阵。然后，对于每个查询，将和所有没有被掩盖的键之间计算点积。这些点积值进一步除以$\sqrt{D}$进行缩放（𝐷是键对应的向量维度），被传入到softmax函数中用于权重的计算。进一步，这些权重将作用于与键相关联的值，通过加权和的形式计算得到最终的输出。在数学上，上述过程可以表示为：
+&lt;/p&gt;
+$$
+Q = XW^Q,
+$$$$
+K = XW^K,
+$$$$
+V = XW^V,
+$$$$
+Attention(Q,K,V) = softmax(\frac{QK^T}{\sqrt{D}})V.
+$$&lt;p&gt;与单头注意力相比，多头注意力机制的主要区别在于它使用了𝐻组结构相同，但映射参数不同的自注意力模块。输入序列首先通过不同的权重矩阵被映射为一组查询、键和值。每组查询、键和值的映射构成一个“头”，并独立地计算自注意力的输出。最后，不同头的输出被拼接在一起，并通过一个权重矩阵$W^O$∈$R^{H \times H}$ 进行映射，产生最终的输出。如下面的公式所示：
+&lt;/p&gt;
+$$
+head_n = Attention(XW^Q_n,XW^K_n,XW^V_n)
+$$$$
+MHA = Concat(head_1,...,head_N)W^O
+$$&lt;p&gt;由上述内容可见，自注意力机制能够直接建模序列中任意两个位置之间的关系，进而有效捕获长程依赖关系，具有更强的序列建模能力。另一个主要的优势是，自注意力的计算过程对于基于硬件的并行优化（如GPU、TPU等）非常友好，因此能够支持大规模参数的高效优化。&lt;/p&gt;
+&lt;h3 id=&#34;前馈网络层&#34;&gt;🍏前馈网络层
+&lt;/h3&gt;&lt;p&gt;为了学习复杂的函数关系和特征，Transformer 模型引入了一个前馈网络层（Feed Forward Netwok, FFN），对于每个位置的隐藏状态进行非线性变换和特征提取。具体来说，给定输入𝒙，Transformer中的前馈神经网络由两个线性变换和一个非线性激活函数组成：
+&lt;/p&gt;
+$$
+FFN(X) = σ(XW^U + b_1)W^D + b_2
+$$&lt;p&gt;
+其中$W^U$ ∈ $R^{H \times H}$ 和$W^D$ ∈ $R^{H \times H}$  分别是第一层和第二层的线性变换权重矩阵，$b_1$ ∈ $R^{𝐻^′}$ 和 $b_2$ ∈ $R^H$ 是偏置项，𝜎是激活函数（在原始的Transformer中，采用 ReLU 作为激活函数）。前馈网络层通过激活函数引入了非线性映射变换，提升了 模型的表达能力，从而更好地捕获复杂的交互关系。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029105634440.png&#34;
+	width=&#34;650&#34;
+	height=&#34;691&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029105634440_hu8196060707081265206.png 480w, https://JiangZhiyu-1024.github.io/p/transformermodelbase/image-20241029105634440_hu16997779109624366145.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241029105634440&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;94&#34;
+		data-flex-basis=&#34;225px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;center&gt;Transformer 架构图&lt;/center&gt;
+&lt;h3 id=&#34;编码器&#34;&gt;🍐编码器
+&lt;/h3&gt;&lt;p&gt;在Transformer 模型中，编码器（Encoder）的作用是将每个输入词元都编码成一个上下文语义相关的表示向量。编码器结构由多个相同的层堆叠而成，其中每一层都包含多头自注意力模块和前馈网络模块。在注意力和前馈网络后，模型使用层归一化和残差连接来加强模型的训练稳定度。其中，残差连接（Residual Connection）将输入与该层的输出相加，实现了信息在不同层的跳跃传递，从而缓解梯度爆炸和消失的问题。而LayerNorm则对数据进行重新放缩，提升模型的训练稳定性。编码器接受经过位置编码层的词嵌入序列𝑿作为输入，通过多个堆叠的编码器层来建模上下文信息，进而对于整个输入序列进行编码表示。由于输入数据是完全可见的，编码器中的自注意力模块通常采用双向注意力，每个位置的词元表示能够有效融合上下文的语义关系。在编码器-解码器架构中，编码器的输出将作为解码器（Decoder）的输入，进行后续计算。形式化来说，第𝑙层（𝑙∈{1,&amp;hellip;,𝐿}）的编码器的数据处理过程如下所示：
+&lt;/p&gt;
+$$
+X^′_l = LayerNorm(MHA(X_{l-1})+X_{l-1})
+$$$$
+X_l = LayerNorm(FFN(X^′_l)+X^′_l)
+$$&lt;p&gt;其中，$X^′_l$ 和 $X_l$ 分别是该Transformer层的输入和输出，$X^′_l$是该层中输入经过多头注意力模块后的中间表示，LayerNorm表示层归一化。&lt;/p&gt;
+&lt;h3 id=&#34;解码器&#34;&gt;🥥解码器
+&lt;/h3&gt;&lt;p&gt;Transformer 架构中的解码器基于来自编码器编码后的最后一层的输出表示以及已经由模型生成的词元序列，执行后续的序列生成任务。与编码器不同，解码器需要引入掩码自注意力（MaskedSelf-attention）模块，用来在计算注意力分数的时候掩盖当前位置之后的词，以保证生成目标序列时不依赖于未来的信息。除了建模目标序列的内部关系，解码器还引入了与编码器相关联的多头注意力层，从而关注编码器输出的上下文信息$X_L$。同编码器类似，在每个模块之后，Transformer 解码器也采用了层归一化和残差连接。在经过解码器之后，模型会通过一个全连接层将输出映射到大小为𝑉的目标词汇表的概率分布，并基于某种解码策略生成对应的词元。在训练过程中，解码器可以通过一次前向传播，让每个词元的输出用于预测下一个词元。而在解码过程，解码器需要经过一个逐步的生成过程，将自回归地生成完整的目标序列。解码器的数据流程如下所示：
+&lt;/p&gt;
+$$
+Y^′_l = LayerNorm(MaskedMHA(Y_{l-1})+Y_{l-1})
+$$$$
+Y^&#34;_l = LayerNorm(CrossMHA(Y^′_l,X_L)+Y^′_l)
+$$$$
+Y_l = LayerNorm(FFN(Y^&#34;_l)+Y^&#34;_l)
+$$&lt;p&gt;其中，$Y_{l-1}$ 和 $Y_l$ 分别是该Transformer 层的输入和输出，$Y^′_l$ 和 $Y^&amp;quot;_l$ 是该层中输入经过掩码多头注意力MaskedMHA和交叉多头注意力CrossMHA模块后的中间表示，LayerNorm 表示层归一化。然后将最后一层的输入𝒀𝐿映射到词表的维度上：
+&lt;/p&gt;
+$$
+O = softmax(W^LY_L)
+$$&lt;p&gt;
+其中，𝑶 ∈$R^{H \times V}$ 是模型最终的输出，代表下一个词在词表上的概率分布；$W^L$ ∈ $R^{H \times V}$ 是将输入表示映射到词汇表维度的参数矩阵，而$W^LY_L$是概率化前的中间值，通常被称为logits。&lt;/p&gt;
+&lt;p&gt;[1]. JacobDevlin et al. “BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding”. In: NAACL-HLT. 2019.&lt;/p&gt;
+&lt;p&gt;[2]. Alec Radford et al. “Improving language understanding by generative pre-training”. In: OpenAI Blog (2018).&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

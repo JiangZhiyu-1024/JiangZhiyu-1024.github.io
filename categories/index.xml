@@ -7,13 +7,37 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 28 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 29 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>FFN</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/ffn/</link>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/ffn/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>LLM</title>
         <link>https://JiangZhiyu-1024.github.io/categories/llm/</link>
-        <pubDate>Mon, 28 Oct 2024 00:00:00 +0000</pubDate>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/llm/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/llm/LLM.jpg" alt="Featured image of post LLM" /&gt;</description>
+        </item>
+        <item>
+        <title>MHA</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/mha/</link>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/mha/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Transformer</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/transformer/</guid>
+        <description></description>
         </item>
         <item>
         <title>Tokenization</title>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="transformer的基础信息">
+<title>transformer模型架构</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/transformermodelbase/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="transformer模型架构">
+<meta property='og:description' content="transformer的基础信息">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/transformermodelbase/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-29T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-29T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/transformermodelbase/house-7497002_1280.png' />
+<meta name="twitter:title" content="transformer模型架构">
+<meta name="twitter:description" content="transformer的基础信息"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/transformermodelbase/house-7497002_1280.png' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#transformer-模型">🍈Transformer 模型</a>
+      <ol>
+        <li><a href="#输入编码">🍉输入编码</a></li>
+        <li><a href="#多头自注意力机制">🍋多头自注意力机制</a></li>
+        <li><a href="#前馈网络层">🍏前馈网络层</a></li>
+        <li><a href="#编码器">🍐编码器</a></li>
+        <li><a href="#解码器">🥥解码器</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/transformermodelbase/">
+                <img src="/p/transformermodelbase/house-7497002_1280_hu5606038921995204335.png"
+                        srcset="/p/transformermodelbase/house-7497002_1280_hu5606038921995204335.png 800w, /p/transformermodelbase/house-7497002_1280_hu15952257128735646419.png 1600w"
+                        width="800" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post transformer模型架构" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/transformer/" >
+                Transformer
+            </a>
+        
+            <a href="/categories/llm/" >
+                LLM
+            </a>
+        
+            <a href="/categories/ffn/" >
+                FFN
+            </a>
+        
+            <a href="/categories/mha/" >
+                MHA
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/transformermodelbase/">transformer模型架构</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            transformer的基础信息
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-10-29</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="模型架构">模型架构
+</h1><p><img src="/p/transformermodelbase/image-20241029095402391.png"
+	width="807"
+	height="689"
+	srcset="/p/transformermodelbase/image-20241029095402391_hu13532172091181392611.png 480w, /p/transformermodelbase/image-20241029095402391_hu12135867853004229579.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241029095402391"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="117"
+		data-flex-basis="281px"
+	
+></p>
+<center>大语言模型架构配置表</center>>
+<h2 id="transformer-模型">🍈Transformer 模型
+</h2><p>当前主流的大语言模型都是基于Transformer模型进行设计的。Transformer是由多层的多头自注意力（Multi-headSelf-attention）模块堆叠而成的神经网络模型。原始的Transformer 模型由编码器和解码器两个部分构成，而这两个部分实际上可以独立使用，例如基于编码器架构的BERT模型[1]和解码器架构的GPT模型[2]。与BERT等早期的预训练语言模型相比，大语言模型的特点是使用了更长的向量维度、更深的层数，进而包含了更大规模的模型参数，并主要使用解码器架构，对于Transformer 本身的结构与配置改变并不大。</p>
+<h3 id="输入编码">🍉输入编码
+</h3><p>在Transformer 模型中，输入的词元序列(𝒖 = [𝑢1,𝑢2,&hellip;,𝑢𝑇]) 首先经过一个输入嵌入模块（InputEmbeddingModule）转化成词向量序列。具体来说，为了捕获词汇本身的语义信息，每个词元在输入嵌入模块中被映射成为一个可学习的、具有固定维度的词向量$v_t$ ∈$R^H$。由于Transformer的编码器结构本身无法识别序列中元素的顺序，位置编码（PositionEmbedding,PE）被引入来表示序列中的位置信息。给定一个词元$u_t$，位置编码根据其在输入中的绝对位置分配一个固定长度的嵌入向量$p_t$ ∈$R^H$。然后，每个词元对应的词向量和位置向量将直接相加，生成了最终的输入嵌入序列𝑿=[𝒙1,&hellip;,𝒙𝑇]，并且被传入到后续层中：$x_t=v_t+p_t$.</p>
+<p>通过这种建模方法的表示，Transformer 模型可以利用位置编码 𝒑𝑡 建模不同词元的位置信息。由于不同词元的位置编码仅由其位置唯一决定，因此这种位置建模方式被称为绝对位置编码。尽管绝对位置编码能够一定程度上建模位置信息，然而它只能局限于建模训练样本中出现的位置，无法建模训练数据中未出现过的位置，因此极大地限制了它们处理长文本的能力。</p>
+<h3 id="多头自注意力机制">🍋多头自注意力机制
+</h3><p>多头自注意力是Transformer模型的核心创新技术。相比于循环神经网络（Recurrent Neural Network, RNN）和卷积神经网络（ConvolutionalNeuralNetwork,CNN）等传统神经网络，多头自注意力机制能够直接建模任意距离的词元之间的交互关系。作为对比，循环神经网络迭代地利用前一个时刻的状态更新当前时刻的状态，因此在处理较长序列的时候，常常会出现梯度爆炸或者梯度消失的问题。而在卷积神经网络中，只有位于同一个卷积核的窗口中的词元可以直接进行交互，通过堆叠层数来实现远距离词元间信息的交换。</p>
+<p>多头自注意力机制通常由多个自注意力模块组成。在每个自注意力模块中，对于输入的词元序列，将其映射为相应的查询（Query,𝑸）、键（Key,𝑲）和值（Value,𝑽）三个矩阵。然后，对于每个查询，将和所有没有被掩盖的键之间计算点积。这些点积值进一步除以$\sqrt{D}$进行缩放（𝐷是键对应的向量维度），被传入到softmax函数中用于权重的计算。进一步，这些权重将作用于与键相关联的值，通过加权和的形式计算得到最终的输出。在数学上，上述过程可以表示为：
+</p>
+$$
+Q = XW^Q,
+$$$$
+K = XW^K,
+$$$$
+V = XW^V,
+$$$$
+Attention(Q,K,V) = softmax(\frac{QK^T}{\sqrt{D}})V.
+$$<p>与单头注意力相比，多头注意力机制的主要区别在于它使用了𝐻组结构相同，但映射参数不同的自注意力模块。输入序列首先通过不同的权重矩阵被映射为一组查询、键和值。每组查询、键和值的映射构成一个“头”，并独立地计算自注意力的输出。最后，不同头的输出被拼接在一起，并通过一个权重矩阵$W^O$∈$R^{H \times H}$ 进行映射，产生最终的输出。如下面的公式所示：
+</p>
+$$
+head_n = Attention(XW^Q_n,XW^K_n,XW^V_n)
+$$$$
+MHA = Concat(head_1,...,head_N)W^O
+$$<p>由上述内容可见，自注意力机制能够直接建模序列中任意两个位置之间的关系，进而有效捕获长程依赖关系，具有更强的序列建模能力。另一个主要的优势是，自注意力的计算过程对于基于硬件的并行优化（如GPU、TPU等）非常友好，因此能够支持大规模参数的高效优化。</p>
+<h3 id="前馈网络层">🍏前馈网络层
+</h3><p>为了学习复杂的函数关系和特征，Transformer 模型引入了一个前馈网络层（Feed Forward Netwok, FFN），对于每个位置的隐藏状态进行非线性变换和特征提取。具体来说，给定输入𝒙，Transformer中的前馈神经网络由两个线性变换和一个非线性激活函数组成：
+</p>
+$$
+FFN(X) = σ(XW^U + b_1)W^D + b_2
+$$<p>
+其中$W^U$ ∈ $R^{H \times H}$ 和$W^D$ ∈ $R^{H \times H}$  分别是第一层和第二层的线性变换权重矩阵，$b_1$ ∈ $R^{𝐻^′}$ 和 $b_2$ ∈ $R^H$ 是偏置项，𝜎是激活函数（在原始的Transformer中，采用 ReLU 作为激活函数）。前馈网络层通过激活函数引入了非线性映射变换，提升了 模型的表达能力，从而更好地捕获复杂的交互关系。</p>
+<p><img src="/p/transformermodelbase/image-20241029105634440.png"
+	width="650"
+	height="691"
+	srcset="/p/transformermodelbase/image-20241029105634440_hu8196060707081265206.png 480w, /p/transformermodelbase/image-20241029105634440_hu16997779109624366145.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241029105634440"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="94"
+		data-flex-basis="225px"
+	
+></p>
+<center>Transformer 架构图</center>
+<h3 id="编码器">🍐编码器
+</h3><p>在Transformer 模型中，编码器（Encoder）的作用是将每个输入词元都编码成一个上下文语义相关的表示向量。编码器结构由多个相同的层堆叠而成，其中每一层都包含多头自注意力模块和前馈网络模块。在注意力和前馈网络后，模型使用层归一化和残差连接来加强模型的训练稳定度。其中，残差连接（Residual Connection）将输入与该层的输出相加，实现了信息在不同层的跳跃传递，从而缓解梯度爆炸和消失的问题。而LayerNorm则对数据进行重新放缩，提升模型的训练稳定性。编码器接受经过位置编码层的词嵌入序列𝑿作为输入，通过多个堆叠的编码器层来建模上下文信息，进而对于整个输入序列进行编码表示。由于输入数据是完全可见的，编码器中的自注意力模块通常采用双向注意力，每个位置的词元表示能够有效融合上下文的语义关系。在编码器-解码器架构中，编码器的输出将作为解码器（Decoder）的输入，进行后续计算。形式化来说，第𝑙层（𝑙∈{1,&hellip;,𝐿}）的编码器的数据处理过程如下所示：
+</p>
+$$
+X^′_l = LayerNorm(MHA(X_{l-1})+X_{l-1})
+$$$$
+X_l = LayerNorm(FFN(X^′_l)+X^′_l)
+$$<p>其中，$X^′_l$ 和 $X_l$ 分别是该Transformer层的输入和输出，$X^′_l$是该层中输入经过多头注意力模块后的中间表示，LayerNorm表示层归一化。</p>
+<h3 id="解码器">🥥解码器
+</h3><p>Transformer 架构中的解码器基于来自编码器编码后的最后一层的输出表示以及已经由模型生成的词元序列，执行后续的序列生成任务。与编码器不同，解码器需要引入掩码自注意力（MaskedSelf-attention）模块，用来在计算注意力分数的时候掩盖当前位置之后的词，以保证生成目标序列时不依赖于未来的信息。除了建模目标序列的内部关系，解码器还引入了与编码器相关联的多头注意力层，从而关注编码器输出的上下文信息$X_L$。同编码器类似，在每个模块之后，Transformer 解码器也采用了层归一化和残差连接。在经过解码器之后，模型会通过一个全连接层将输出映射到大小为𝑉的目标词汇表的概率分布，并基于某种解码策略生成对应的词元。在训练过程中，解码器可以通过一次前向传播，让每个词元的输出用于预测下一个词元。而在解码过程，解码器需要经过一个逐步的生成过程，将自回归地生成完整的目标序列。解码器的数据流程如下所示：
+</p>
+$$
+Y^′_l = LayerNorm(MaskedMHA(Y_{l-1})+Y_{l-1})
+$$$$
+Y^"_l = LayerNorm(CrossMHA(Y^′_l,X_L)+Y^′_l)
+$$$$
+Y_l = LayerNorm(FFN(Y^"_l)+Y^"_l)
+$$<p>其中，$Y_{l-1}$ 和 $Y_l$ 分别是该Transformer 层的输入和输出，$Y^′_l$ 和 $Y^&quot;_l$ 是该层中输入经过掩码多头注意力MaskedMHA和交叉多头注意力CrossMHA模块后的中间表示，LayerNorm 表示层归一化。然后将最后一层的输入𝒀𝐿映射到词表的维度上：
+</p>
+$$
+O = softmax(W^LY_L)
+$$<p>
+其中，𝑶 ∈$R^{H \times V}$ 是模型最终的输出，代表下一个词在词表上的概率分布；$W^L$ ∈ $R^{H \times V}$ 是将输入表示映射到词汇表维度的参数矩阵，而$W^LY_L$是概率化前的中间值，通常被称为logits。</p>
+<p>[1]. JacobDevlin et al. “BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding”. In: NAACL-HLT. 2019.</p>
+<p>[2]. Alec Radford et al. “Improving language understanding by generative pre-training”. In: OpenAI Blog (2018).</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/pretraining-data-preparation-for-large-models/">
+        
+        
+            <div class="article-image">
+                <img src="/p/pretraining-data-preparation-for-large-models/road-5710320_1280.e6b596c469d594d0c86df7960eb85364_hu10365931021314544389.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post LLM预训练数据准备"
+                        data-key="Pretraining-Data-Preparation-for-Large-Models" 
+                        data-hash="md5-5rWWxGnVlNDIbfeWDrhTZA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">LLM预训练数据准备</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/third-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/third-week/cards-8594729_640.6d4d362b955a08c1ac2883a31f793424_hu4843113531480180974.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2024.10.21至27第三周工作总结"
+                        data-key="third-week" 
+                        data-hash="md5-bU02K5VaCMGsKIOjH3k0JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2024.10.21至27第三周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/second-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/second-week/leaves-6729056_640.d8f540d517d89998772f4150b9222cbc_hu11404399883202129121.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2024.10.14至20第二周工作总结"
+                        data-key="second-week" 
+                        data-hash="md5-2PVA1RfYmZh3L0FQuSIsvA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2024.10.14至20第二周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/first-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/first-week/banlan.c514d916917173a48a42e0114b469961_hu7626638945853200361.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 2024.10.7至13第一周工作总结"
+                        data-key="first-week" 
+                        data-hash="md5-xRTZFpFxc6SKQuARS0aZYQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">2024.10.7至13第一周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function() {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+
+
+    </body>
+</html>
