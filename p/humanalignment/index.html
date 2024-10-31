@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="第二周工作总结">
-<title>2024.10.14至20第二周工作总结</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="人类对齐">
+<title>HumanAlignment</title>
 
-<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/second-week/'>
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/humanalignment/'>
 
-<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="2024.10.14至20第二周工作总结">
-<meta property='og:description' content="第二周工作总结">
-<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/second-week/'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="HumanAlignment">
+<meta property='og:description' content="人类对齐">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/humanalignment/'>
 <meta property='og:site_name' content='Zion Blaze'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-20T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-20T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg' />
-<meta name="twitter:title" content="2024.10.14至20第二周工作总结">
-<meta name="twitter:description" content="第二周工作总结"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-31T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-10-31T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/humanalignment/flowers-7382926_1920.jpg' />
+<meta name="twitter:title" content="HumanAlignment">
+<meta name="twitter:description" content="人类对齐"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/humanalignment/flowers-7382926_1920.jpg' />
     <link rel="shortcut icon" href="/favicon.ico" />
 
     </head>
@@ -268,24 +268,34 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#文献阅读">文献阅读</a>
+    <li><a href="#人类对齐的背景与标准">🍂人类对齐的背景与标准</a>
       <ol>
-        <li><a href="#attention-is-all-you-need">Attention Is All You Need</a></li>
-        <li><a href="#差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)</a></li>
-        <li><a href="#deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences</a></li>
+        <li><a href="#背景">🌰背景</a></li>
+        <li><a href="#对齐标准">🍠对齐标准</a></li>
       </ol>
     </li>
-    <li><a href="#附录">附录</a>
+    <li><a href="#基于人类反馈的强化学习">🍊基于人类反馈的强化学习</a>
       <ol>
-        <li><a href="#残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？</a>
+        <li><a href="#rlhf-概述">🥮RLHF 概述</a>
           <ol>
-            <li><a href="#残差连接residual-connection">残差连接（Residual Connection）</a></li>
+            <li><a href="#rlhf算法系统">🎑RLHF算法系统</a></li>
+            <li><a href="#rlhf的关键步骤">🥧RLHF的关键步骤</a></li>
           </ol>
         </li>
-        <li><a href="#层归一化layer-normalization">层归一化（Layer Normalization）</a></li>
-        <li><a href="#总结">总结</a></li>
+        <li><a href="#人类反馈数据的收集">🔥人类反馈数据的收集</a>
+          <ol>
+            <li><a href="#人类反馈形式">🧡人类反馈形式</a></li>
+          </ol>
+        </li>
+        <li><a href="#奖励模型的训练">🏮奖励模型的训练</a></li>
       </ol>
     </li>
+    <li><a href="#非强化学习的对齐方法">🀨非强化学习的对齐方法</a>
+      <ol>
+        <li><a href="#代表性监督对齐算法dpo">☕代表性监督对齐算法DPO</a></li>
+      </ol>
+    </li>
+    <li><a href="#参考文献">🌆参考文献</a></li>
   </ol>
 </nav>
         </div>
@@ -300,13 +310,13 @@
     <article class="has-image main-article">
     <header class="article-header">
         <div class="article-image">
-            <a href="/p/second-week/">
-                <img src="/p/second-week/leaves-6729056_640_hu5818856588720523696.jpg"
-                        srcset="/p/second-week/leaves-6729056_640_hu5818856588720523696.jpg 800w, /p/second-week/leaves-6729056_640_hu13939121746041281653.jpg 1600w"
+            <a href="/p/humanalignment/">
+                <img src="/p/humanalignment/flowers-7382926_1920_hu3888571948828468625.jpg"
+                        srcset="/p/humanalignment/flowers-7382926_1920_hu3888571948828468625.jpg 800w, /p/humanalignment/flowers-7382926_1920_hu14936393236489264642.jpg 1600w"
                         width="800" 
-                        height="800" 
+                        height="533" 
                         loading="lazy"
-                        alt="Featured image of post 2024.10.14至20第二周工作总结" />
+                        alt="Featured image of post HumanAlignment" />
                 
             </a>
         </div>
@@ -316,20 +326,16 @@
     
     <header class="article-category">
         
-            <a href="/categories/llm/" >
-                LLM
-            </a>
-        
-            <a href="/categories/attention/" >
-                Attention
+            <a href="/categories/humanalignment/" >
+                HumanAlignment
             </a>
         
             <a href="/categories/rlhf/" >
                 RLHF
             </a>
         
-            <a href="/categories/weeklyreport/" >
-                WeeklyReport
+            <a href="/categories/dpo/" >
+                DPO
             </a>
         
     </header>
@@ -337,12 +343,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/second-week/">2024.10.14至20第二周工作总结</a>
+            <a href="/p/humanalignment/">HumanAlignment</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            第二周工作总结
+            人类对齐
         </h3>
         
     </div>
@@ -363,7 +369,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">2024-10-20</time>
+                <time class="article-time--published">2024-10-31</time>
             </div>
         
 
@@ -379,165 +385,72 @@
     <section class="article-content">
     
     
-    <h2 id="文献阅读">文献阅读
-</h2><p>看了知乎的科普文章，先从经典的论文开始看：</p>
-<h3 id="attention-is-all-you-need">Attention Is All You Need
-</h3><p>《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：</p>
-<ol>
-<li>
-<p><strong>背景</strong>：传统的序列到序列模型（如RNN和LSTM）在处理长序列时存在瓶颈。Transformer模型通过自注意力机制克服了这些限制，使得模型可以并行处理数据，提升了训练效率。</p>
-</li>
-<li>
-<p><strong>模型架构</strong>：</p>
+    <h1 id="人类对齐">🍁人类对齐
+</h1><p>在大语言模型的学习过程中，如何确保大语言模型的行为与人类价值观、人类真实意图和社会伦理相一致成为了一个关键研究问题，通常称这一研究问题为人类对齐（HumanAlignment）。</p>
+<h2 id="人类对齐的背景与标准">🍂人类对齐的背景与标准
+</h2><h3 id="背景">🌰背景
+</h3><p>尽管大语言模型在下游任务中表现出优秀的性能，这些模型有时会出现错误或具有危害性的行为，例如无法正确遵循指令、生成虚假信息、以及产生有害、有误导性以及带有偏见的表达。在大语言模型的预训练和有监督微调的过程中，主要训练目标是根据上下文内容来预测下一个词元。但是，这一过程并未充分考虑人类的价值观或偏好，可能导致大语言模型从数据中学习到不符合人类期望的生成模式。为了规避这些潜在风险，研究人员提出了“人类对齐”这一关键概念，旨在保证大语言模型的行为与人类期望和价值观相一致[1,2]。</p>
+<p>与预训练和指令微调不同，人类对齐需引入全新的评估标准，如有用性、诚实性和无害性。 为了更直观地理解人类对齐对于大语言模型的重要性，例1对比了同一个语言模型在对齐前后对于相同输入的不同输出。在这个例子当中，输入的问题刻意包含了具有误导性的逻辑关系，即“土地价格”和“有污染的产业”是有直接关系的。因此，在经过人类价值观对齐之前的大语言模型会被输入中的错误逻辑所引导，产生了带有偏见的建议“农村地区更适合发展污染较严重的产业”。在经济生产中，发展有污染的产业需要综合考虑多方面的因素，不能仅仅因为土地价格更为便宜就认为适合发展相关产业。对齐前的大语言模型给出了一个错误的观点，不符合人类价值观，违背了无害性的原则。而经过与人类价值观对齐之后的大语言模型，先指出了输入问题中包含的错误逻辑（“我们不能简单地认为农村土地价格便宜就适合发展污染产业。”），并且给出了正确且合理的做法。对齐后的大语言模型的回复符合有用性和无害性，与人类价值观和偏好相符。</p>
+<p><img src="/p/humanalignment/image-20241031145634528.png"
+	width="770"
+	height="610"
+	srcset="/p/humanalignment/image-20241031145634528_hu8661545991163250632.png 480w, /p/humanalignment/image-20241031145634528_hu13213345832109560578.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241031145634528"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="126"
+		data-flex-basis="302px"
+	
+></p>
+<center>例1  大语言模型（YuLan）对于相同输入在对齐前后的不同输出</center>
+<p>思考：</p>
+<p>之前我就遇到过类似的情况，在前面的文章中我也提到过，LLM似乎就是倾向于认同人类的提问（就算那是错误的），到这里明白了，原来是没有经过对齐。那么我就有新的问题了，对齐也是要训练的吧，而且得要人来准备数据，这就又是一个耗费人力的工程了。</p>
+<h3 id="对齐标准">🍠对齐标准
+</h3><p>人类对齐是一个较为抽象的概念，难以直接进行形式化建模，关于对齐的定义和标准也存在不同的观点。这里主要围绕三个具有代表性的对齐标准展开讨论，分别是有用性（Helpfulness）、诚实性（Honesty）和无害性（Harmlessness），这三种对齐标准已被现有的大语言模型对齐研究广泛使用[1,3]。下面具体介绍这三个代表性的对齐标准。</p>
 <ul>
-<li><strong>Encoder-Decoder结构</strong>：Transformer由两个主要部分组成：编码器和解码器。编码器将输入序列转化为上下文向量，解码器则根据上下文生成输出序列。</li>
-<li><strong>自注意力机制</strong>：每个输入的表示都通过自注意力机制与其他输入进行交互，从而捕捉序列中的依赖关系。每个位置的表示通过加权求和得到，权重由输入的相似度计算得到。</li>
-<li><strong>多头注意力</strong>：模型使用多个注意力头并行计算不同的表示，能够更全面地捕捉信息。</li>
+<li>有用性. 在实际应用中，大语言模型需要提供有用的信息，能够准确完成任务，正确理解上下文，并展现出一定的创造性与多样性。模型应尽量以简洁、高效的方式协助用户完成任务。当任务描述存在歧义或涉及背景信息时，模型应具备主动询问并获取任务相关信息的能力，同时具有一定的敏感度、洞察力和审慎态度。由于用户意图的多样性，有用性这一对齐标准仍然难以进行统一的定义与刻画，需要根据不同的用户进行确定。</li>
+<li>诚实性. 模型的输出应具备真实性和客观性，不应夸大或歪曲事实，避免产生误导性陈述，并能够应对输入的多样性和复杂性。在人机交互过程中，大语言模型应向用户提供准确内容，还应适当表达对于输出信息的不确定性程度，以避免任何形式的误导。本质上，这要求模型了解自身的能力和知识水平。与有用性和无害性相比，诚实性是一个更为客观的标准，对人类标注的依赖相对较少。</li>
+<li>无害性. 大语言模型应避免生成可能引发潜在负面影响或危害的内容。在处理敏感主题时，模型应遵循道德标准和社会价值观，从而消除冒犯性与歧视性。此外，模型需要能够检测到具有恶意目的的查询请求。当模型被诱导执行危险行为（如犯罪行为）时，应直接予以拒绝。然而，何种行为被视为有害，很大程度上取决于大语言模型的使用者、用户问题类型以及使用大语言模型的背景。</li>
 </ul>
-</li>
-<li>
-<p><strong>位置编码</strong>：由于Transformer没有循环结构，论文引入了位置编码，提供序列中词语的位置信息，以保留词序信息。</p>
-</li>
-<li>
-<p><strong>训练与优化</strong>：Transformer使用了残差连接和层归一化，以提高训练的稳定性和收敛速度。论文中还介绍了基于Adam优化器的训练过程。</p>
-</li>
-<li>
-<p><strong>实验结果</strong>：Transformer在机器翻译任务上取得了显著的性能提升，并且在其他NLP任务中也展示了强大的通用性。</p>
-</li>
-<li>
-<p><strong>影响</strong>：该论文奠定了现代NLP研究的基础，推动了基于Transformer的预训练语言模型（如BERT、GPT等）的发展。</p>
-</li>
-</ol>
-<hr>
-<h3 id="差分隐私深度学习deep-learning-with-differential-privacy">差分隐私深度学习(Deep Learning with Differential Privacy)
-</h3><p>《Deep Learning with Differential Privacy》是由Martin Abadi等人在2016年提出的一篇重要论文，探讨了在深度学习中实现差分隐私的策略。以下是其主要内容的总结：</p>
-<ol>
-<li>
-<p><strong>背景</strong>：</p>
-<ul>
-<li><strong>差分隐私</strong>：一种保护用户数据隐私的技术，旨在确保模型在训练时无法推断出任何单个用户的敏感信息。即使攻击者知道模型和数据集的其余部分，也无法有效地获取关于某个特定用户的信息。</li>
-<li><strong>深度学习与隐私问题</strong>：深度学习模型通常依赖大量数据，这使得保护用户隐私变得尤为重要。</li>
+<p>上述三种通用的对齐标准较为宽泛，因此许多研究针对性地给出了一些更为细化的对齐标准，以更全面地规范大语言模型的输出。例如，行为对齐要求人工智能系统能够做出符合人类期望的行为；在此基础上，意图对齐则进一步要求大语言模型在意图和行为上都要与人类期望保持一致，这涉及到哲学、心理学以及技术细节上的多重挑战；道德对齐要求语言模型应避免涉及非法、不道德或有害的话题，在回应中优先考虑用户安全、道德准绳和行为边界。这些对齐标准在本质上与前述三个标准是相似的，研究人员可以根据任务的特定需求进行调整。</p>
+<p>在实践中，红队攻击（RedTeaming）技术也被广泛运用，通过人工或自动 化的手段，以对抗方式探测大语言模型，诱导其生成有害输出，并据此针对性地 调整大语言模型，以避免产生此类有害输出[4]。</p>
+<h2 id="基于人类反馈的强化学习">🍊基于人类反馈的强化学习
+</h2><p>由于对齐标准难以通过形式化的优化目标进行建模，因此研究人员提出了基于人类反馈的强化学习（Reinforcement Learning from Human Feedback,RLHF），引入人类反馈对大语言模型的行为进行指导。</p>
+<h3 id="rlhf-概述">🥮RLHF 概述
+</h3><p>RLHF首先需要收集人类对于不同模型输出的偏好，然后使用收集到的人类反馈数据训练奖励模型，最后基于奖励模型使用强化学习算法（例如Proximal Policy Optimization,PPO[5]）微调大语言模型。这种将人类反馈纳入大语言模型训练过程的方法已成为实现人类对齐的主要技术途径之一。</p>
+<h4 id="rlhf算法系统">🎑RLHF算法系统
+</h4><p>RLHF 算法系统主要包括三个关键组成部分：需要与人类价值观对齐的模型、基于人类反馈数据学习的奖励模型以及用于训练大语言模型的强化学习算法。</p>
+<p>具体来说，待对齐模型一般指的是经过预训练、具备一定通用能力的大语言模型。然而，这些模型并没有与人类价值观对齐，在下游任务中可能表现出不合适甚至有害的行为。</p>
+<p>奖励模型的作用是为强化学习过程提供指导信号，反映了人类对于语言模型生成文本的偏好，通常以标量值的形式呈现。奖励模型既可以采用人类偏好数据对已有的语言模型继续微调，也可以基于人类偏好数据重新训练一个新的语言模型。</p>
+<p>在训练过程中，基于奖励模型提供的反馈信号，RLHF使用特定的强化学习算法进行大语言模型的训练。目前，PPO算法[5] 是一种被广泛用于人类对齐的强化学习算法。</p>
+<h4 id="rlhf的关键步骤">🥧RLHF的关键步骤
+</h4><p>监督微调. 为了让待对齐语言模型具有较好的指令遵循能力，通常需要收集高质量的指令数据进行监督微调。指令数据一般包括任务描述和示例输出，可以由人类标注员针对特定任务编写，也可以由大语言模型自动生成。</p>
+<p>奖励模型训练.第二步是使用人类反馈数据训练奖励模型。具体来说，首先使用语言模型针对任务指令生成一定数量的候选输出。随后，邀请标注员对于输出文本进行偏好标注，这个标注过程可以采用多种形式，其中最常用的是对候选文本进行排序标注，这样可以有效减少多个标注员之间的不一致情况。进一步，使用人工标注的偏好数据进行奖励模型的训练，使其能够建模人类偏好。</p>
+<p>强化学习训练. 在这一步骤中，语言模型对齐被转化为一个强化学习问题。具体来说，待对齐语言模型担任策略实施者的角色（称为策略模型），它接收提示作为输入并返回输出文本，其动作空间是词汇表中的所有词元，状态指的是当前已生成的词元序列。</p>
+<h3 id="人类反馈数据的收集">🔥人类反馈数据的收集
+</h3><p>在预训练阶段，大语言模型通过语言建模目标在大规模无标注语料库上进行训练。然而，这一过程无法直接反映人类对于大语言模型输出的主观和定性偏好（本书中称为“人类反馈”）。为了实现有效的人类对齐，需要使用高质量的人类反馈数据（不是高质量人类，哈哈哈）对大语言模型进行针对性的微调。</p>
+<h4 id="人类反馈形式">🧡人类反馈形式
+</h4><ul>
+<li>基于评分的人类反馈.最直接的标注方式是根据预设的标准邀请标注人员对于大语言模型的输出进行打分，从而作为模型输出质量的判断。</li>
+<li>基于排序的人类反馈.排序是一种比较典型的人类偏好标注形式。最简单的方式是标注人员根据自身偏好对于大语言模型的输出进行全排序。</li>
 </ul>
-</li>
-<li>
-<p><strong>模型与训练</strong>：</p>
-<ul>
-<li><strong>噪声注入</strong>：通过在模型的梯度更新中添加噪声，可以达到差分隐私的效果。噪声的大小与隐私预算（ε）相关，预算越小，隐私保护越强，但模型的性能可能会受到影响。</li>
-<li><strong>Privacy Accounting</strong>：论文提出了一种计算隐私损失的框架，确保在每次训练步骤中监控和控制隐私损失。</li>
-</ul>
-</li>
-<li>
-<p><strong>算法设计</strong>：</p>
-<ul>
-<li><strong>DP-SGD（Differentially Private Stochastic Gradient Descent）</strong>：论文提出了一种改进的随机梯度下降算法，结合了梯度裁剪和噪声注入，以实现差分隐私。这种方法确保在训练过程中，个别数据对模型的影响是被限制的。</li>
-</ul>
-</li>
-<li>
-<p><strong>实验结果</strong>：</p>
-<ul>
-<li>论文通过实验展示了DP-SGD在图像分类任务上的有效性，同时比较了不同噪声级别对模型性能的影响，证明了在保持合理准确性的同时实现差分隐私是可行的。</li>
-</ul>
-</li>
-<li>
-<p><strong>应用与展望</strong>：</p>
-<ul>
-<li>论文强调了在各类机器学习应用中（如医疗、金融等）保护隐私的重要性，提出将差分隐私技术与深度学习结合是一个有效的解决方案，并鼓励未来的研究在这一领域的进一步探索。</li>
-</ul>
-</li>
-</ol>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">感觉偏向数学一点，全是公式和证明，好难看懂。
-</span></span><span class="line"><span class="cl">差分隐私顾名思义就是用来防范差分攻击的
-</span></span><span class="line"><span class="cl">加入噪声，改变原来的概率分布
-</span></span></code></pre></td></tr></table>
-</div>
-</div><hr>
-<h3 id="deep-reinforcement-learning-from-human-preferences">Deep Reinforcement Learning from Human Preferences
-</h3><p>《Deep Reinforcement Learning from Human Preferences》是由Christiano等人在2017年提出的一篇重要论文，探讨了如何利用人类偏好来训练强化学习模型。以下是其主要内容的总结：</p>
-<ol>
-<li>
-<p><strong>背景</strong>：</p>
-<ul>
-<li>传统的强化学习方法通常依赖于奖励信号来指导学习，但设计有效的奖励函数在复杂任务中往往困难且耗时。</li>
-<li>人类可以提供更直观的偏好信息，这为训练强化学习代理提供了一种新途径。</li>
-</ul>
-</li>
-<li>
-<p><strong>方法概述</strong>：</p>
-<ul>
-<li><strong>人类偏好收集</strong>：论文提出了一种方法，通过收集人类对不同行为的偏好来生成奖励信号。人类评估多个策略的表现，从中选择更好的策略，以此来建立奖励模型。</li>
-<li><strong>奖励模型</strong>：利用收集到的人类偏好数据，训练一个深度神经网络来预测代理在给定状态下的奖励。这种奖励模型可以用来指导强化学习算法。</li>
-</ul>
-</li>
-<li>
-<p><strong>训练过程</strong>：</p>
-<ul>
-<li><strong>深度强化学习</strong>：在获得奖励模型后，使用深度强化学习算法（如Proximal Policy Optimization，PPO）来训练代理。代理通过与环境交互，不断优化其策略。</li>
-<li><strong>迭代学习</strong>：通过不断收集新的偏好数据并更新奖励模型，实现迭代学习，使得代理能够逐步提升性能。</li>
-</ul>
-</li>
-<li>
-<p><strong>实验结果</strong>：</p>
-<ul>
-<li>论文在多个复杂任务（如Atari游戏和模拟环境）中展示了该方法的有效性，代理能够通过学习人类的偏好，超越基于手动设计的奖励函数的表现。</li>
-<li>结果表明，利用人类偏好进行训练能够加速学习过程，并提升代理的最终性能。</li>
-</ul>
-</li>
-<li>
-<p><strong>意义与展望</strong>：</p>
-<ul>
-<li>该方法展示了人类偏好在强化学习中的潜力，提出了一种新的思路来解决奖励设计问题。</li>
-<li>论文强调了未来研究中结合人类反馈和偏好的重要性，特别是在涉及复杂决策和安全性问题的领域。</li>
-</ul>
-</li>
-</ol>
-<h2 id="附录">附录
-</h2><h3 id="残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？
-</h3><p>残差连接（Residual Connection）和 层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：</p>
-<h4 id="残差连接residual-connection">残差连接（Residual Connection）
-</h4><p><strong>定义</strong>：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
-</p>
-$$
-\text{Output} = \text{Layer}(x) + x
-$$<p>
-其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。</p>
-<p><strong>作用</strong>：</p>
-<ul>
-<li><strong>缓解梯度消失问题</strong>：在非常深的网络中，梯度可能会随着层数增加而消失，导致网络难以训练。残差连接提供了一条捷径，使得梯度可以更容易地通过网络传播。</li>
-<li><strong>加速收敛</strong>：通过引入直接路径，残差连接有助于提高网络的收敛速度。</li>
-<li><strong>提高模型性能</strong>：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。</li>
-</ul>
-<h3 id="层归一化layer-normalization">层归一化（Layer Normalization）
-</h3><p><strong>定义</strong>：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
-</p>
-$$
-\text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
-$$<p>
-其中：</p>
-<ul>
-<li>\(x\) 是输入。</li>
-<li>\(\mu\) 是输入的均值。</li>
-<li>\(\sigma\) 是输入的标准差。</li>
-<li>\(\epsilon\) 是一个小常数，避免除以零。</li>
-<li>\(\gamma\) 和 \(\beta\) 是可学习的参数，用于缩放和平移归一化的结果。</li>
-</ul>
-<p><strong>作用</strong>：</p>
-<ul>
-<li><strong>减少内部协变量偏移</strong>：层归一化帮助减少模型训练过程中每层输入的变化，使得网络在训练时更加稳定。</li>
-<li><strong>提高训练速度</strong>：通过标准化输入，层归一化可以使得训练过程更加平滑，从而加快收敛速度。</li>
-<li><strong>适用于变长序列</strong>：与批量归一化（Batch Normalization）不同，层归一化可以直接应用于变长的输入序列，适合于RNN和Transformer等模型。</li>
-</ul>
-<h3 id="总结">总结
-</h3><ul>
-<li><strong>残差连接</strong>主要通过提供捷径来缓解深层网络中的梯度消失问题，并加速训练过程。</li>
-<li><strong>层归一化</strong>则通过标准化激活值来提高训练的稳定性和速度。这两者结合使用，能够显著提升深度学习模型的表现。</li>
-</ul>
+<h3 id="奖励模型的训练">🏮奖励模型的训练
+</h3><p>由于RLHF的训练过程中需要依赖大量的人类偏好数据进行学习，因此很难在训练过程中要求人类标注者实时提供偏好反馈。为此，我们需要训练一个模型来替代人类在RLHF训练过程中实时提供反馈，这个模型被称为奖励模型。</p>
+<p>思考：</p>
+<p>这里倒是解决我的疑问了，可以训练一个奖励模型干这个事。</p>
+<h2 id="非强化学习的对齐方法">🀨非强化学习的对齐方法
+</h2><p>尽管RLHF已被证明是一种较为有效的语言模型对齐技术，但是它也存在一些局限性。首先，在RLHF的训练过程中，需要同时维护和更新多个模型，这些模型包括策略模型、奖励模型、参考模型以及评价模型。这不仅会占用大量的内存资源，而且整个算法的执行过程也相对复杂。此外，RLHF中常用的近端策略优化算法在优化过程中的稳定性欠佳，对超参数的取值较为敏感，这进一步增加了模型训练的难度和不确定性。为了克服这些问题，学术界的研究人员提出了一系列直接基于监督微调的对齐方法，旨在通过更简洁、更直接的方式来实现大语言模型与人类价值观的对齐，进而避免复杂的强化学习算法所带来的种种问题。</p>
+<h3 id="代表性监督对齐算法dpo">☕代表性监督对齐算法DPO
+</h3><p>直接偏好优化（DirectPreference Optimization, DPO）是一种不需要强化学习的对齐算法。由于去除了复杂的强化学习算法，DPO可以通过与有监督微调相似的复杂度实现模型对齐，不再需要在训练过程中针对大语言模型进行采样，同时超参数的选择更加容易。</p>
+<h2 id="参考文献">🌆参考文献
+</h2><p>[1]. Long Ouyang et al. “Training language models to follow instructions with human feed back”. In: arXiv preprint arXiv:2203.02155 (2022).</p>
+<p>[2]. Daniel M. Ziegler et al. “Fine-Tuning Language Models from Human Preferences”. In: arXiv preprint arXiv:1909.08593 (2019).</p>
+<p>[3]. Amelia Glaese et al. “Improving alignment of dialogue agents via targeted human judge ments”. In: arXiv preprint arXiv:2209.14375 (2022).</p>
+<p>[4]. Ethan Perez et al. “Red Teaming Language Models with Language Models”. In: EMNLP. 2022.</p>
+<p>[5]. John Schulman et al. “Proximal policy optimization algorithms”. In: arXiv preprint arXi v:1707.06347 (2017).</p>
 
 </section>
 
@@ -598,119 +511,23 @@ $$<p>
             
                 
 <article class="has-image">
-    <a href="/p/third-week/">
+    <a href="/p/second-week/">
         
         
             <div class="article-image">
-                <img src="/p/third-week/cards-8594729_640.6d4d362b955a08c1ac2883a31f793424_hu4843113531480180974.jpg" 
+                <img src="/p/second-week/leaves-6729056_640.d8f540d517d89998772f4150b9222cbc_hu11404399883202129121.jpg" 
                         width="250" 
                         height="150" 
                         loading="lazy"
-                        alt="Featured image of post 2024.10.21至27第三周工作总结"
-                        data-key="third-week" 
-                        data-hash="md5-bU02K5VaCMGsKIOjH3k0JA==">
+                        alt="Featured image of post 2024.10.14至20第二周工作总结"
+                        data-key="second-week" 
+                        data-hash="md5-2PVA1RfYmZh3L0FQuSIsvA==">
                 
             </div>
         
 
         <div class="article-details">
-            <h2 class="article-title">2024.10.21至27第三周工作总结</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/first-week/">
-        
-        
-            <div class="article-image">
-                <img src="/p/first-week/banlan.c514d916917173a48a42e0114b469961_hu7626638945853200361.jpg" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy"
-                        alt="Featured image of post 2024.10.7至13第一周工作总结"
-                        data-key="first-week" 
-                        data-hash="md5-xRTZFpFxc6SKQuARS0aZYQ==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">2024.10.7至13第一周工作总结</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/humanalignment/">
-        
-        
-            <div class="article-image">
-                <img src="/p/humanalignment/flowers-7382926_1920.8314d6e36e9ab049d758ee7bbd34bf28_hu18137167310522520042.jpg" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy"
-                        alt="Featured image of post HumanAlignment"
-                        data-key="HumanAlignment" 
-                        data-hash="md5-gxTW426asEnXWO57vTS/KA==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">HumanAlignment</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/transformermodelbase/">
-        
-        
-            <div class="article-image">
-                <img src="/p/transformermodelbase/house-7497002_1280.db5d8d10c07a318d1548ccc1c8785778_hu3374130842880547652.png" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy"
-                        alt="Featured image of post transformer模型架构"
-                        data-key="transformerModelbase" 
-                        data-hash="md5-212NEMB6MY0VSMzByHhXeA==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">transformer模型架构</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="has-image">
-    <a href="/p/pretraining-data-preparation-for-large-models/">
-        
-        
-            <div class="article-image">
-                <img src="/p/pretraining-data-preparation-for-large-models/road-5710320_1280.e6b596c469d594d0c86df7960eb85364_hu10365931021314544389.jpg" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy"
-                        alt="Featured image of post LLM预训练数据准备"
-                        data-key="Pretraining-Data-Preparation-for-Large-Models" 
-                        data-hash="md5-5rWWxGnVlNDIbfeWDrhTZA==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">LLM预训练数据准备</h2>
+            <h2 class="article-title">2024.10.14至20第二周工作总结</h2>
         </div>
     </a>
 </article>

@@ -8,6 +8,22 @@
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
         <lastBuildDate>Thu, 31 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>DPO</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/dpo/</link>
+        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/dpo/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>HumanAlignment</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/humanalignment/</link>
+        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/humanalignment/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>InstructionTuning</title>
         <link>https://JiangZhiyu-1024.github.io/categories/instructiontuning/</link>
         <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
@@ -22,6 +38,14 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/lora/</guid>
         <description></description>
+        </item>
+        <item>
+        <title>RLHF</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/rlhf/</link>
+        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/rlhf/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/rlhf/plouzane-1758197_640.jpg" alt="Featured image of post RLHF" /&gt;</description>
         </item>
         <item>
         <title>FFN</title>
@@ -134,14 +158,6 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/attention/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/attention/triangles-1430105_640.png" alt="Featured image of post Attention" /&gt;</description>
-        </item>
-        <item>
-        <title>RLHF</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/rlhf/</link>
-        <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/rlhf/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/rlhf/plouzane-1758197_640.jpg" alt="Featured image of post RLHF" /&gt;</description>
         </item>
         <item>
         <title>综述</title>
