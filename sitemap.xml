@@ -3,10 +3,28 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://JiangZhiyu-1024.github.io/</loc>
-    <lastmod>2024-10-31T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/</loc>
-    <lastmod>2024-10-31T00:00:00+00:00</lastmod>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/post/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/p/decoderbs/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/%E9%87%8F%E5%8C%96/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/%E6%A8%A1%E5%9E%8B%E8%A7%A3%E7%A0%81/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://JiangZhiyu-1024.github.io/categories/%E6%A8%A1%E5%9E%8B%E8%92%B8%E9%A6%8F/</loc>
+    <lastmod>2024-11-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/dpo/</loc>
     <lastmod>2024-10-31T00:00:00+00:00</lastmod>
@@ -24,9 +42,6 @@
     <lastmod>2024-10-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/lora/</loc>
-    <lastmod>2024-10-31T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://JiangZhiyu-1024.github.io/post/</loc>
     <lastmod>2024-10-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://JiangZhiyu-1024.github.io/categories/rlhf/</loc>

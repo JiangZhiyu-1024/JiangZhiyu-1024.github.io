@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="💐解码与部署 大语言模型是通过文本生成的方式进行工作的。在自回归架构中，模型针对输入内容逐个单词生成输出内容的文本。这个过程一般被称为 解码。\n🌸解码策略 大语言模型的生成方式本质上是一个概率采样过程，需要合适的解码策略来生成合适的输出内容。\n">
+<title>解码与部署</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/decoderbs/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="解码与部署">
+<meta property='og:description' content="💐解码与部署 大语言模型是通过文本生成的方式进行工作的。在自回归架构中，模型针对输入内容逐个单词生成输出内容的文本。这个过程一般被称为 解码。\n🌸解码策略 大语言模型的生成方式本质上是一个概率采样过程，需要合适的解码策略来生成合适的输出内容。\n">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/decoderbs/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-11-01T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-11-01T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/decoderbs/roses-7314623_1280.jpg' />
+<meta name="twitter:title" content="解码与部署">
+<meta name="twitter:description" content="💐解码与部署 大语言模型是通过文本生成的方式进行工作的。在自回归架构中，模型针对输入内容逐个单词生成输出内容的文本。这个过程一般被称为 解码。\n🌸解码策略 大语言模型的生成方式本质上是一个概率采样过程，需要合适的解码策略来生成合适的输出内容。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/decoderbs/roses-7314623_1280.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#解码策略">🌸解码策略</a>
+      <ol>
+        <li><a href="#语言模型解码的背景知识">🌹语言模型解码的背景知识</a>
+          <ol>
+            <li><a href="#贪心搜索">🌺贪心搜索</a></li>
+            <li><a href="#概率采样">🌻概率采样</a></li>
+          </ol>
+        </li>
+        <li><a href="#贪心搜索的改进">🌼贪心搜索的改进</a></li>
+        <li><a href="#随机采样的改进策略">🌷随机采样的改进策略</a></li>
+      </ol>
+    </li>
+    <li><a href="#低资源部署策略">🌱低资源部署策略</a>
+      <ol>
+        <li><a href="#量化基础知识">🌲量化基础知识</a>
+          <ol>
+            <li><a href="#量化的数学表述">🌳量化的数学表述</a></li>
+            <li><a href="#量化的策略">🌴量化的策略</a></li>
+          </ol>
+        </li>
+        <li><a href="#大模型训练后量化方法">🌵大模型训练后量化方法</a>
+          <ol>
+            <li><a href="#权重量化">🌿权重量化</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#模型蒸馏">☘️模型蒸馏</a></li>
+    <li><a href="#参考文献">🍀参考文献</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/decoderbs/">
+                <img src="/p/decoderbs/roses-7314623_1280_hu11500104946998335474.jpg"
+                        srcset="/p/decoderbs/roses-7314623_1280_hu11500104946998335474.jpg 800w, /p/decoderbs/roses-7314623_1280_hu12715192342550458368.jpg 1600w"
+                        width="800" 
+                        height="534" 
+                        loading="lazy"
+                        alt="Featured image of post 解码与部署" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E6%A8%A1%E5%9E%8B%E8%A7%A3%E7%A0%81/" >
+                模型解码
+            </a>
+        
+            <a href="/categories/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/" >
+                模型部署
+            </a>
+        
+            <a href="/categories/%E9%87%8F%E5%8C%96/" >
+                量化
+            </a>
+        
+            <a href="/categories/%E6%A8%A1%E5%9E%8B%E8%92%B8%E9%A6%8F/" >
+                模型蒸馏
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/decoderbs/">解码与部署</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-11-01</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="解码与部署">💐解码与部署
+</h1><p>大语言模型是通过文本生成的方式进行工作的。在自回归架构中，模型针对输入内容逐个单词生成输出内容的文本。这个过程一般被称为 解码。</p>
+<h2 id="解码策略">🌸解码策略
+</h2><p>大语言模型的生成方式本质上是一个概率采样过程，需要合适的解码策略来生成合适的输出内容。</p>
+<h3 id="语言模型解码的背景知识">🌹语言模型解码的背景知识
+</h3><p>模型M每次根据当前上下文词元序列𝒖=[𝑢1,𝑢2,··· ,𝑢𝑡]建模下一个词的概率分布𝑃（即公式$O = softmax(W^LY_L)$的输出），然后根据一定的解码策略选择下一个词𝑢′，之后再将𝒖和𝑢′作为新的上下文重复上述步骤，直到生成结束词元或者达到长度上限为止。在这个流程中，解码策略将主要关注如何基于概率分布𝑃选择合适的下一个词𝑢′。自回归的解码策略并不局限于特定架构，常见的编码器-解码器、因果解码器和前缀解码器均可适用。</p>
+<p><img src="/p/decoderbs/image-20241101095949003.png"
+	width="825"
+	height="261"
+	srcset="/p/decoderbs/image-20241101095949003_hu12975133203137575490.png 480w, /p/decoderbs/image-20241101095949003_hu12752602229915317363.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241101095949003"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="316"
+		data-flex-basis="758px"
+	
+></p>
+<h4 id="贪心搜索">🌺贪心搜索
+</h4><p>目前常见的大语言模型主要是通过语言建模任务进行预训练的。基于这种训练方式，一种直观的解码策略是贪心搜索（Greedy Search）。具体来说，贪心搜索在每个生成步骤中都选择概率最高的词元， 其可以描述为以下形式:
+</p>
+$$
+u_i = \text{argmax}_{u}P(u|U_{<i}).
+$$<p>
+<img src="/p/decoderbs/image-20241101100407951.png"
+	width="782"
+	height="310"
+	srcset="/p/decoderbs/image-20241101100407951_hu18145890914685294099.png 480w, /p/decoderbs/image-20241101100407951_hu13445056324940742564.png 1024w"
+	loading="lazy"
+	
+		alt="贪心搜索示意图"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="252"
+		data-flex-basis="605px"
+	
+></p>
+<h4 id="概率采样">🌻概率采样
+</h4><p>该方法根据模型建模的概率分布采样得到下一个词元，旨在增强生成过程中的随机性和结果的多样性：</p>
+<p><img src="/p/decoderbs/image-20241101101405007.png"
+	width="510"
+	height="201"
+	srcset="/p/decoderbs/image-20241101101405007_hu15109640633028076707.png 480w, /p/decoderbs/image-20241101101405007_hu5138290837623247879.png 1024w"
+	loading="lazy"
+	
+		alt="“Iamsleepy. I start a pot of” 语境中下一个词元的降序排列概率分布"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="253"
+		data-flex-basis="608px"
+	
+></p>
+<p>在图中展示了下一个词元的概率分布，虽然单词“coffee”被选中的概率较高，但基于采样的策略同时也为选择其他单词（如“water”、“tea”等）留有一定的可能性，从而增加了生成文本的多样性和随机性。</p>
+<h3 id="贪心搜索的改进">🌼贪心搜索的改进
+</h3><p>贪心搜索在每个生成步骤中均选择最高概率的词元，这可能会由于忽略在某些步骤中概率不是最高、但是整体生成概率更高的句子而造成局部最优。</p>
+<ul>
+<li>
+<p>束搜索. 在解码过程中，束搜索（BeamSearch）[1]会保留前𝑛个具有最高概率的句子，并最终选取整体概率最高的生成回复。这里的𝑛被称为束大小（Beam Size）。当 𝑛 = 1，束搜索就退化为贪心搜索。如图9.3所示（𝑛=2），第一步保留了概率最高的两个词“coffee” 和 “water” 作为候选；第二步基于 “coffee” 和 “water” 均进行扩展，得到模型在两个上下文内容下的概率分布，最后选择联合概率最高的两个句子 “coffee then” 和 “coffee and” 作为候选。在下面的生成步骤中，将会继续基于这两个候选去进行扩展，每次都选择联合概率最高的两个句子。最后，当两个束的句子均生成结束后，选择整体生成概率最高的候选句子作为最终的输出。在实践中，束的数量通常设定在3到6的范围内，设置过大的束会显著增加运算开销，并可能会导致性能下降。</p>
+<p><img src="/p/decoderbs/image-20241101101436913.png"
+	width="811"
+	height="310"
+	srcset="/p/decoderbs/image-20241101101436913_hu7206092375177728480.png 480w, /p/decoderbs/image-20241101101436913_hu8943785241907144639.png 1024w"
+	loading="lazy"
+	
+		alt="束搜索示意图（𝑛=2）"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="261"
+		data-flex-basis="627px"
+	
+></p>
+</li>
+<li>
+<p>长度惩罚. 由于束搜索中需要比较不同长度候选句子的概率，往往需要引入长度惩罚（LengthPenalty）（亦称为长度归一化）技术。如果没有长度惩罚，传统的束搜索会倾向于生成较短的句子，因为每生成一个单词，都会乘以一个小于1的概率，使得句子的生成概率逐渐变小。因此，可以在生成概率的计算中引入长度惩罚，通过将句子概率除以其长度的指数幂𝛼，对于句子概率进行归一化处理，从而鼓励模型生成更长的句子。在实践中，𝛼通常设置为0.6到0.7之间的数值。</p>
+</li>
+<li>
+<p>重复惩罚.为了缓解贪心搜索重复生成的问题，可以使用𝑛-元惩罚（𝑛-gram Penalty）来强制避免生成重复的连续𝑛个词元，实践中𝑛通常设置为3到5之间的整数。进一步地，研究人员还提出了相对“温和”的惩罚机制来降低生成重复词元的概率，而不是“一刀切”地完全避免某些短语的生成，如出现惩罚（Presence Penalty）和频率惩罚（FrequencyPenalty）。具体地，出现惩罚在生成过程中会将已经生成词元的logits减去惩罚项𝛼来降低该词元之后生成的概率。频率惩罚相较于出现惩罚，会记录每个词元生成的数目，然后减去出现次数乘以惩罚项𝛼，因此如果一个词元生成得越多，惩罚也就越大。在实践中，𝛼的取值范围通常在0.1到1之间。这些重复惩罚方法不止适用于贪心搜索，对于随机采样也均适用。</p>
+</li>
+</ul>
+<h3 id="随机采样的改进策略">🌷随机采样的改进策略
+</h3><p>基于概率采样的方法会在整个词表中选择词元，这可能会导致生成不相干的词元。为了进一步提高生成质量，可以进一步使用一些改进的采样策略，减少具有极低概率词汇对于生成结果的影响。</p>
+<p>温度采样（TemperatureSampling）. 为了调节采样过程中的随机性，一种有效的方法是调整softmax函数中的温度系数。具体来说，公式5.11中的$l = W^LyL$ 称为logits，调整温度系数后的softmax计算式如下：
+</p>
+$$
+P(u_j | \mathbf{u}_i) = \frac{\exp(l_j / t)}{\sum_{j'} \exp(l_{j'} / t)}
+$$<p>
+其中，$l_{j^′ }$表示每个候选词元的logit，𝑡是温度系数。具体来说，降低温度系数𝑡会使得概率分布更加集中，从而增加了高概率词元的采样可能性，同时降低了低概率词元的采样可能；当温度系数𝑡设置为1时，该公式退化为标准的随机采样方法；而当𝑡趋近于0时，实际上等同于贪心搜索，即总是选择概率最高的词。此外，当𝑡趋近于无穷大时，温度采样会退化为均匀采样。</p>
+<p><img src="/p/decoderbs/image-20241101102926570.png"
+	width="779"
+	height="300"
+	srcset="/p/decoderbs/image-20241101102926570_hu4149375308625516168.png 480w, /p/decoderbs/image-20241101102926570_hu16440094783273864492.png 1024w"
+	loading="lazy"
+	
+		alt="温度设置为1.3、1.0和0.7时的下一个词的概率分布变化"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="259"
+		data-flex-basis="623px"
+	
+></p>
+<h2 id="低资源部署策略">🌱低资源部署策略
+</h2><p>由于大模型的参数量巨大，在解码阶段需要占用大量的显存资源，因而在实际应用中的部署代价非常高。这里介绍一种常用的模型压缩方法，即模型量化（Model Quantization），来减少大模型的显存占用，从而使得能够在资源有限的环境下使用大模型.</p>
+<h3 id="量化基础知识">🌲量化基础知识
+</h3><p>在神经网络压缩中，量化通常是指从浮点数到整数的映射过程[2]，目前比较常用的是8比特整数量化，即INT8量化。针对神经网络模型，通常有两种类型的数据需要进行量化，分别为权重量化（也称为模型参数量化）和激活（值）量化，它们都以浮点数形式进行表示与存储。</p>
+<h4 id="量化的数学表述">🌳量化的数学表述
+</h4><p>量化的过程可以表示为一个函数，该函数将连续的输入映射到离散的输出集合。一般来说，这个过程涉及到四舍五入或截断等近似操作。下面介绍一个一般形式的量化函数：
+</p>
+$$
+x_q = R(x/S)-Z.
+$$<p>
+通过上述数学变换，量化算法将浮点数向量𝒙转化为量化值𝒙𝒒。其中，𝑆表示缩放因子，用于确定裁剪范围，𝑍表示零点因子，用于确定对称或非对称量化，𝑅(·) 表示将缩放后的浮点值映射为近似整数的取整操作。一般来说，裁剪范围对于量化性能有很大影响，通常需要根据实际数据分布进行校准，可以通过静态（离线）或动态（运行时）方式。</p>
+<p>作为上述变换的逆过程，反量化（Dequantization）对应地从量化值中恢复原始值，该过程首先加上零点因子，然后乘以缩放因子：
+</p>
+$$
+\tilde{\mathbf{x}} = \mathbf{S} \cdot (\mathbf{x}_q + \mathbf{Z})
+$$<p>
+进一步，可以定义量化误差是原始值𝒙和恢复值$\tilde{\mathbf{x}}$之间的数值差异：$Δ=∥𝒙−\tilde{\mathbf{x}}∥^2_2$。</p>
+<h4 id="量化的策略">🌴量化的策略
+</h4><p>基于上述量化函数的定义形式，下面介绍一些对于量化函数常见的分类与实现策略。</p>
+<ul>
+<li>
+<p>均匀量化和非均匀量化.根据映射函数的数值范围是否均匀，可以将量化分为两类：均匀量化和非均匀量化。均匀量化是指在量化过程中，量化函数产生的量化值之间的间距是均匀分布的。这种方法通常用于将连续的数据转换为离散的表示，以便在计算机中进行高效处理。与此不同，在非均匀量化方法中，它的量化值不一定均匀分布，可以根据输入数据的分布范围而进行调整。其中，均匀量化方法因其简单和高效的特点而在实际中被广泛使用。</p>
+<p><img src="/p/decoderbs/image-20241101110603458.png"
+	width="699"
+	height="232"
+	srcset="/p/decoderbs/image-20241101110603458_hu12814023126450044580.png 480w, /p/decoderbs/image-20241101110603458_hu6369628559836161934.png 1024w"
+	loading="lazy"
+	
+		alt="对称量化和非对称量化对比"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="301"
+		data-flex-basis="723px"
+	
+></p>
+</li>
+<li>
+<p>对称量化和非对称量化. 根据零点因子𝑍是否为零，均匀量化可以进一步分为两类：对称量化（𝑍=0）和非对称量化（𝑍≠0）。对称量化与非对称量化的一个关键区别在于整数区间零点的映射，对称量化需要确保原始输入数据中的零点（𝑥=0）在量化后仍然对应到整数区间的零点。而非对称量化则不同，根据前面的公式可以看出此时整数区间的零点对应到输入数值的𝑆·𝑍。为了方便讨论，这里以一个常见的8比特量化为例进行介绍。如图9.6(a)和图9.6(b)所示，对称量化将输入数值𝒙通过一个映射公式转换为八比特整数的表示范围内，如果是有符号整数，则该范围可以设置为[−128,127]，适用于𝒙的数值大致分布在零点两侧的情况，如果是无符号整数，则设置为[0,255]，适用于输入数值基本都分布在零点一侧的情况。</p>
+</li>
+<li>
+<p>量化粒度的选择. 量化算法通常针对一个批次的数据进行处理，其中批次的规模大小就反应了量化粒度，可以由算法设计人员进行选择。在神经网络模型中，输入数据和模型权重通常是以张量的形式进行表示与组织的。首先，如果每个张量只定义一组量化参数（即𝑆和𝑍），这称为按张量量化。为了进一步提高量化的精度，可以针对每个张量定义多组量化参数，例如可以为权重矩阵的列维度（也称为“通道”）设置特定的量化参数，称为按通道量化。还有一些研究工作采用了更细粒度的量化方案，对一个通道的数值细分为多个组，即按组的方式进行量化。在神经网络量化中，从按张量到按组，量化粒度越来越小，且使用较小的粒度通常可以提高量化的准确性，有效保持原始模型的性能。但是由于引入了更多的量化参数，在使用时会带来额外的计算开销。相反，按张量量化的粒度较粗，可能会引入较大的误差，但由于在硬件实现上更加简单，也是一种常见的量化粒度选择策略。在实践中，量化粒度需要根据具体任务和模型进行选择，应该采用可以平衡量化准确性以及额外计算开销的合适粒度。</p>
+</li>
+</ul>
+<h3 id="大模型训练后量化方法">🌵大模型训练后量化方法
+</h3><p>基于上述的量化基础知识，本部分将主要介绍大语言模型相关的量化方法。通常来说，模型量化方法可以分为两大类，即量化感知训练（Quantization-Aware Training,QAT）和训练后量化（Post-Training Quantization,PTQ）。从方法的名字可以看出，量化感知训练方法需要更新权重进而完成模型量化，而训练后量化方法则无需更新模型权重。与小型语言模型相比，在为大语言模型设计或选择量化方法时需要侧重关注两个主要因素。首先，大语言模型由大规模神经网络参数组成，在设计量化算法时需要考虑到所需要花费的计算开销。一般来说，训练后量化方法需要更少的算力开销，实践中应用更为广泛。其次，大语言模型中具有不同的数值分布特征（如激活值中存在较大的数值），这使得对于大语言模型进行低比特量化变得非常困难，特别是对于激活值。</p>
+<h4 id="权重量化">🌿权重量化
+</h4><p>首先介绍主要面向模型权重的量化方法。其中，主流的权重量化方法通常是基于逐层量化的方法进行设计的，旨在通过最小化逐层的重构损失来优化模型的量化权重，可以刻画为：$\text{argmin}_{\mathbf{W}} | \mathbf{X} \mathbf{W} - \mathbf{X} \mathbf{W} |_2^2$，其中𝑾，𝑾 分别表示原始权重和量化后的权重，𝑿为输入。</p>
+<p>为了有效地优化该目标函数，GPTQ[3]的基本想法是在逐层量化的基础上，进一步将权重矩阵按照列维度分组（例如128个列为一组），对一个组内逐列进行量化，每列参数量化后，需要适当调整组内其他未量化的参数，以弥补当前量化造成的精度损失。在具体的实现中，GPTQ还进一步采用了特殊设计的优化方法来加速整个过程，如延迟批次更新、Cholesky重构等。GPTQ可以在3比特或4比特精度下实现对于大语言模型的有效权重量化。</p>
+<p>进一步，AWQ[4]发现在逐层和逐组权重量化过程中，对于模型性能重要的权重只占全部参数的一小部分（0.1%∼1%），并且应该更加关注那些与较大激活值维度相对应的关键权重，因为它们对应着更为重要的特征。为了加强对于这部分关键权重的关注，AWQ方法提出引入针对权重的激活感知缩放策略。具体来说，AWQ的优化目标将逐层的重构损失$| \mathbf{X} \mathbf{W} - \mathbf{X} \mathbf{W} |_2^2$修改为：$\left| \left( \text{diag}(\mathbf{s})^{-1} \cdot \mathbf{X} \right) \cdot \mathbf{Q}(\mathbf{W} \cdot \text{diag}(\mathbf{s})) - \mathbf{X} \mathbf{W} \right|_2^2$，其中𝑄 为量化函数。通过引入缩放因子𝒔，AWQ算法可以使得量化方法更为针对性地处理关键权重所对应的权重维度。</p>
+<h2 id="模型蒸馏">☘️模型蒸馏
+</h2><p>模型蒸馏（ModelDistillation）的目标是将复杂模型（称为教师模型）包含的知识迁移到简单模型（称为学生模型）中，从而实现复杂模型的压缩。一般来说，通常会使用教师模型的输出来训练学生模型，以此来传递模型知识。以分类问题为例，教师模型和学生模型在中间每一层会输出特征表示（特指神经网络模型），在最后一层会输出针对标签集合的概率分布。模型蒸馏的核心思想是，引入额外的损失函数（称为蒸馏损失函数），训练学生模型的输出尽可能接近教师模型的输出。在实际应用中，蒸馏损失函数通常与分类损失函数（交叉熵损失函数）联合用于训练学生模型。下面首先介绍传统的知识蒸馏方法，再介绍其在大语言模型中的应用。</p>
+<h2 id="参考文献">🍀参考文献
+</h2><p>[1]. CARNEGIE-MELLON UNIV PITTSBURGH PA DEPT OF COMPUTER SCIENCE. Speech Understanding Systems. Summary of Results of the Five-Year Research Effort at Carnegie-Mellon University. 1977.</p>
+<p>[2]. Amir Gholami et al. “A Survey of Quantization Methods for Efficient Neural Network Inference”. In: arXiv preprint arXiv:2103.13630 (2021).</p>
+<p>[3]. EliasFrantaretal.“GPTQ:AccuratePost-TrainingQuantizationforGenerativePre-trained Transformers”. In: arXiv preprint arXiv:2210.17323 (2022).</p>
+<p>[4]. Ji Lin et al. “AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration”. In: arXiv preprint arXiv:2306.00978 (2023).</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function() {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+
+
+    </body>
+</html>
