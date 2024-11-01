@@ -38,14 +38,13 @@
 &lt;/p&gt;
 $$
 u_i = \text{argmax}_{u}P(u|U_{&lt;i}).
-$$&lt;p&gt;
-&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951.png&#34;
+$$&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951.png&#34;
 	width=&#34;782&#34;
 	height=&#34;310&#34;
 	srcset=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951_hu18145890914685294099.png 480w, https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951_hu13445056324940742564.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
-		alt=&#34;贪心搜索示意图&#34;
+		alt=&#34;1&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -53,6 +52,7 @@ $$&lt;p&gt;
 		data-flex-basis=&#34;605px&#34;
 	
 &gt;&lt;/p&gt;
+&lt;center&gt;贪心搜索示意图&lt;/center&gt;
 &lt;h4 id=&#34;概率采样&#34;&gt;🌻概率采样
 &lt;/h4&gt;&lt;p&gt;该方法根据模型建模的概率分布采样得到下一个词元，旨在增强生成过程中的随机性和结果的多样性：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101101405007.png&#34;
