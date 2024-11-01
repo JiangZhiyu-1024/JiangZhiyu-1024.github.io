@@ -34,11 +34,22 @@
 	
 &gt;&lt;/p&gt;
 &lt;h4 id=&#34;贪心搜索&#34;&gt;🌺贪心搜索
-&lt;/h4&gt;&lt;p&gt;目前常见的大语言模型主要是通过语言建模任务进行预训练的。基于这种训练方式，一种直观的解码策略是贪心搜索（Greedy Search）。具体来说，贪心搜索在每个生成步骤中都选择概率最高的词元， 其可以描述为以下形式:
-&lt;/p&gt;
-$$
-u_i = \text{argmax}_{u}P(u|U_{&lt;i}).
-$$&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951.png&#34;
+&lt;/h4&gt;&lt;p&gt;目前常见的大语言模型主要是通过语言建模任务进行预训练的。基于这种训练方式，一种直观的解码策略是贪心搜索（Greedy Search）。具体来说，贪心搜索在每个生成步骤中都选择概率最高的词元， 其可以描述为以下形式:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101171614302.png&#34;
+	width=&#34;267&#34;
+	height=&#34;42&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101171614302_hu7922445418515866011.png 480w, https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101171614302_hu2751309916288702486.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241101171614302&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;635&#34;
+		data-flex-basis=&#34;1525px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951.png&#34;
 	width=&#34;782&#34;
 	height=&#34;310&#34;
 	srcset=&#34;https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951_hu18145890914685294099.png 480w, https://JiangZhiyu-1024.github.io/p/decoderbs/image-20241101100407951_hu13445056324940742564.png 1024w&#34;
