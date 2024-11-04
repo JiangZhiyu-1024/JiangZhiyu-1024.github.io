@@ -305,6 +305,103 @@ $$ |\hat{D}| &lt; |D| $$&lt;p&gt; 的事实，即匹配任何查询的数据库�
 </description>
         </item>
         <item>
+        <title>第三周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.jpg" alt="Featured image of post 第三周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+&lt;/h1&gt;&lt;p&gt;这一周高强度阅读把书都读完了，但是没看代码，后果是有点记不住，等有需要时再去看吧。&lt;/p&gt;
+&lt;p&gt;这周看了大模型内容比较多，主要是为了快点看完相关内容找ZD哥确定毕设方向，早点开始，做的好一点。&lt;/p&gt;
+&lt;p&gt;周五下午找了ZD哥确定方向，看完方向人有点蒙，可能是大模型看得多，安全那方面看得少，导致我不知道这个方向在干什么，于是开始沉思，思考了半天感觉确实不会，找gpt老师询问，没有得到结果，故有些惆怅，周日又坐在实验室上了一天的软件工程实训，还好马上就结束了，太烦了。今天是周一，先把上周周报做了&lt;/p&gt;
+&lt;p&gt;我又重新换了问法，问了gpt老师，这次得到了满意的结果，找到了几篇论文，这周就读这几篇。&lt;/p&gt;
+&lt;p&gt;感觉这才是周报，之前的都是书的摘抄。&lt;/p&gt;
+&lt;h2 id=&#34;阅读&#34;&gt;阅读
+&lt;/h2&gt;&lt;p&gt;LLM预训练数据准备&lt;/p&gt;
+&lt;p&gt;transformer模型架构（不知道是不是我本，这个我从不同的地方看了听了好多遍，现在才刚有点感觉）&lt;/p&gt;
+&lt;p&gt;Instruction Tuning&lt;/p&gt;
+&lt;p&gt;提示学习（实在不行，没有研究天赋就去干点轻松的(bushi)）&lt;/p&gt;
+&lt;p&gt;解码与部署&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;后面就是补了两篇差分隐私的文献，读完感觉对要研究的方向还是不清楚，故又找了几篇：&lt;/p&gt;
+&lt;h2 id=&#34;计划&#34;&gt;计划
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Machine Learning: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文综述了在机器学习中实现安全和隐私保护的各种方法，包括使用同态加密和安全多方计算的技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Deep Learning via Additively Homomorphic Encryption&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该论文研究了通过可加同态加密实现隐私保护的深度学习推理，探讨了如何在保留数据隐私的同时利用深度学习模型进行推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文介绍了在联邦学习框架中使用加密数据的方案，虽然主要聚焦于模型训练，但也讨论了如何在推理阶段保护数据隐私。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Inference with Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了如何在不暴露数据的情况下，安全地使用深度学习模型进行推理，涉及多种加密和隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Homomorphic Encryption for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了同态加密在隐私保护机器学习中的应用，特别是在数据持有方希望使用外部模型进行推理的情况下。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Inference of Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文提出了一种框架，用于在保护隐私的情况下安全地进行深度学习模型的推理，涵盖了多个隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Machine Learning: A Practical Approach&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了一种实用的方法，通过使用加密技术保护数据隐私，同时实现机器学习模型的推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Outsourced Computation in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文探讨了如何将机器学习任务外包给持有模型的方，同时保证数据的隐私不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Differentially Private Inference in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文介绍了如何在机器学习模型推理过程中实现差分隐私，保证输出结果不泄露输入数据的信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Towards Secure and Private Machine Learning: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇综述论文涵盖了各种保护数据隐私的技术，包括同态加密和安全多方计算在推理中的应用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了在联邦学习框架下如何处理加密数据，适用于在不暴露数据的情况下进行模型推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Model Inference: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文回顾了与安全和隐私相关的模型推理方法，强调在使用外部模型时的隐私保护需求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>Differential Privacy</title>
         <link>https://JiangZhiyu-1024.github.io/p/differential_privacy/</link>
         <pubDate>Sat, 02 Nov 2024 00:00:00 +0000</pubDate>
