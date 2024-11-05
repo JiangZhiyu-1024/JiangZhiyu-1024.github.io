@@ -7,7 +7,47 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 04 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 05 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Differential Privacy</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</link>
+        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Homomorphic Encryption</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/homomorphic-encryption/</link>
+        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/homomorphic-encryption/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>PPML</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/ppml/</link>
+        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/ppml/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Privacy Violation</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/privacy-violation/</link>
+        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/privacy-violation/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Safe Multi-Party Computation</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/safe-multi-party-computation/</link>
+        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/safe-multi-party-computation/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>DifferentialPrivacy</title>
         <link>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</link>
         <pubDate>Mon, 04 Nov 2024 00:00:00 +0000</pubDate>
