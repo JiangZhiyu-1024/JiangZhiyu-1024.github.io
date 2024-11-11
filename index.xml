@@ -7,7 +7,101 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Tue, 05 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 10 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>第5周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC5%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Sun, 10 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC5%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC5%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/ai-generated-7926621_1280.jpg" alt="Featured image of post 第5周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;🎵总结
+&lt;/h1&gt;&lt;p&gt;这一周没干啥正经事，周一周二库库读了两天论文，初步了解了一下安全推理的基础知识（就看了一点点），周三图书馆闭馆，晚上上课，所以周三休息一天，周三下午参加了理想汽车AI算法实习生的面试，想找一个这种实习边干活边学习，可惜这并不是啥也不会就能行的，还得学习，沉淀一下。一开始挺紧张的，在脑海里思考了好多遍我该怎么解释，表现自己，结果面试官让我开始自我介绍，他就一只在笑😁（牙很齐很白），不知道他在笑什么，但是看他笑得那么开心我就不紧张了，问了一下transformer为什么要加入位置编码来表示位置信息，LLM微调除了LoRA还有什么，还了解那些大模型，一个也不会，哈哈哈，真不是啥也不会就可以找工作的，不过此行并非失败，而是挺有收获的，面试官一直说，没关系，不会咱就换一个，下去把这个搞清楚就行了，搞得我有点不好意思，在问问题的过程中，面试官还顺带给我解释解释，增长了一些知识，最后我反问到该怎么系统的学习一下才能找到实习（我真是个鬼才🤣，问面试官这问题）&lt;/p&gt;
+&lt;p&gt;面试官说：建议我先不要着急找面试，用几个月学习一下，把基础的机器学习和深度学习过一遍，代码复现都能看懂，还问了我研究生方向是大模型安全，看看这方面的论文，把基础知识掌握扎实，上Kaggle上参加或者复现两个项目放到简历里，会更加出色。&lt;/p&gt;
+&lt;p&gt;非常感谢面试官的指导，没有想象中的KPI面试，不会有脸色看，更像是前辈教育后辈如何学习🤩。&lt;/p&gt;
+&lt;p&gt;周四上午起了个大早直奔图书馆找同学，同学给占了一个之前我没有坐过的位置，有点风，恰好我没有棉袄，差点冻死，于是下午就回了宿舍，周四周五周六就在宿舍待着，写软件工程的文档，哎呦，忒难写，还得画图，周日棉袄到位，在图书馆待了一天，把所有文档完结，做了一个PPT，顺手的事。&lt;/p&gt;
+&lt;p&gt;于是这一周就这么过完了&lt;/p&gt;
+&lt;h2 id=&#34;阅读&#34;&gt;🎧阅读
+&lt;/h2&gt;&lt;p&gt;Secure and Private Machine Learning: A Survey of  Techniques and Applications&lt;/p&gt;
+&lt;p&gt;Differential Privacy: A Survey of Results&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;计划&#34;&gt;🥁计划
+&lt;/h2&gt;&lt;p&gt;计划就是完成上周未完成的计划，开干！&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Machine Learning: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文综述了在机器学习中实现安全和隐私保护的各种方法，包括使用同态加密和安全多方计算的技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Deep Learning via Additively Homomorphic Encryption&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该论文研究了通过可加同态加密实现隐私保护的深度学习推理，探讨了如何在保留数据隐私的同时利用深度学习模型进行推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文介绍了在联邦学习框架中使用加密数据的方案，虽然主要聚焦于模型训练，但也讨论了如何在推理阶段保护数据隐私。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Inference with Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了如何在不暴露数据的情况下，安全地使用深度学习模型进行推理，涉及多种加密和隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Homomorphic Encryption for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了同态加密在隐私保护机器学习中的应用，特别是在数据持有方希望使用外部模型进行推理的情况下。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Inference of Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文提出了一种框架，用于在保护隐私的情况下安全地进行深度学习模型的推理，涵盖了多个隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Machine Learning: A Practical Approach&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了一种实用的方法，通过使用加密技术保护数据隐私，同时实现机器学习模型的推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Outsourced Computation in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文探讨了如何将机器学习任务外包给持有模型的方，同时保证数据的隐私不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Differentially Private Inference in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文介绍了如何在机器学习模型推理过程中实现差分隐私，保证输出结果不泄露输入数据的信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Towards Secure and Private Machine Learning: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇综述论文涵盖了各种保护数据隐私的技术，包括同态加密和安全多方计算在推理中的应用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了在联邦学习框架下如何处理加密数据，适用于在不暴露数据的情况下进行模型推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Model Inference: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文回顾了与安全和隐私相关的模型推理方法，强调在使用外部模型时的隐私保护需求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>安全与隐私机器学习：技术与应用的综述</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E5%AE%89%E5%85%A8%E4%B8%8E%E9%9A%90%E7%A7%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%8A%80%E6%9C%AF%E4%B8%8E%E5%BA%94%E7%94%A8%E7%9A%84%E7%BB%BC%E8%BF%B0/</link>
         <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
@@ -439,12 +533,12 @@ $$ |\hat{D}| &lt; |D| $$&lt;p&gt; 的事实，即匹配任何查询的数据库�
 </description>
         </item>
         <item>
-        <title>第三周工作总结</title>
-        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <title>第4周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.jpg" alt="Featured image of post 第三周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.jpg" alt="Featured image of post 第4周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
 &lt;/h1&gt;&lt;p&gt;这一周高强度阅读把书都读完了，但是没看代码，后果是有点记不住，等有需要时再去看吧。&lt;/p&gt;
 &lt;p&gt;这周看了大模型内容比较多，主要是为了快点看完相关内容找ZD哥确定毕设方向，早点开始，做的好一点。&lt;/p&gt;
 &lt;p&gt;周五下午找了ZD哥确定方向，看完方向人有点蒙，可能是大模型看得多，安全那方面看得少，导致我不知道这个方向在干什么，于是开始沉思，思考了半天感觉确实不会，找gpt老师询问，没有得到结果，故有些惆怅，周日又坐在实验室上了一天的软件工程实训，还好马上就结束了，太烦了。今天是周一，先把上周周报做了&lt;/p&gt;
@@ -1425,12 +1519,12 @@ $$&lt;h3 id=&#34;unigram-分词&#34;&gt;🐉Unigram 分词
 </description>
         </item>
         <item>
-        <title>2024.10.21至27第三周工作总结</title>
+        <title>第3周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/third-week/</link>
         <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/third-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/third-week/cards-8594729_640.jpg" alt="Featured image of post 2024.10.21至27第三周工作总结" /&gt;&lt;h1 id=&#34;文献阅读&#34;&gt;文献阅读
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/third-week/cards-8594729_640.jpg" alt="Featured image of post 第3周工作总结" /&gt;&lt;h1 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h1&gt;&lt;h5 id=&#34;每周都完不成上次的任务杂事太多了尽快完成&#34;&gt;每周都完不成上次的任务，杂事太多了，尽快完成：
 &lt;/h5&gt;&lt;h2 id=&#34;detecting-formal-thought-disorder-by-deep-contextualized-word-representations&#34;&gt;Detecting formal thought disorder by deep contextualized word representations
 &lt;/h2&gt;&lt;p&gt;竟然要收费，不看了，让gpt给讲一下&lt;/p&gt;
@@ -1744,12 +1838,12 @@ $$
 </description>
         </item>
         <item>
-        <title>2024.10.14至20第二周工作总结</title>
+        <title>第2周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/second-week/</link>
         <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/second-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 2024.10.14至20第二周工作总结" /&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 第2周工作总结" /&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h2&gt;&lt;p&gt;看了知乎的科普文章，先从经典的论文开始看：&lt;/p&gt;
 &lt;h3 id=&#34;attention-is-all-you-need&#34;&gt;Attention Is All You Need
 &lt;/h3&gt;&lt;p&gt;《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：&lt;/p&gt;
@@ -1911,12 +2005,12 @@ $$&lt;p&gt;
 </description>
         </item>
         <item>
-        <title>2024.10.7至13第一周工作总结</title>
+        <title>第1周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/first-week/</link>
         <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/first-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/first-week/banlan.jpg" alt="Featured image of post 2024.10.7至13第一周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/first-week/banlan.jpg" alt="Featured image of post 第1周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
 &lt;/h1&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h2&gt;&lt;h3 id=&#34;综述类&#34;&gt;综述类：
 &lt;/h3&gt;&lt;p&gt;2023年国内大模型发展综述与趋势研判_赵子忠&lt;/p&gt;

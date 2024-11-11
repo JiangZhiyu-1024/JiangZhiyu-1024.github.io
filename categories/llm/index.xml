@@ -8,12 +8,12 @@
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
         <lastBuildDate>Sun, 03 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/llm/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>第三周工作总结</title>
-        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <title>第4周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC%E4%B8%89%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.jpg" alt="Featured image of post 第三周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.jpg" alt="Featured image of post 第4周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
 &lt;/h1&gt;&lt;p&gt;这一周高强度阅读把书都读完了，但是没看代码，后果是有点记不住，等有需要时再去看吧。&lt;/p&gt;
 &lt;p&gt;这周看了大模型内容比较多，主要是为了快点看完相关内容找ZD哥确定毕设方向，早点开始，做的好一点。&lt;/p&gt;
 &lt;p&gt;周五下午找了ZD哥确定方向，看完方向人有点蒙，可能是大模型看得多，安全那方面看得少，导致我不知道这个方向在干什么，于是开始沉思，思考了半天感觉确实不会，找gpt老师询问，没有得到结果，故有些惆怅，周日又坐在实验室上了一天的软件工程实训，还好马上就结束了，太烦了。今天是周一，先把上周周报做了&lt;/p&gt;
@@ -408,12 +408,12 @@ $$&lt;h3 id=&#34;unigram-分词&#34;&gt;🐉Unigram 分词
 </description>
         </item>
         <item>
-        <title>2024.10.21至27第三周工作总结</title>
+        <title>第3周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/third-week/</link>
         <pubDate>Sat, 26 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/third-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/third-week/cards-8594729_640.jpg" alt="Featured image of post 2024.10.21至27第三周工作总结" /&gt;&lt;h1 id=&#34;文献阅读&#34;&gt;文献阅读
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/third-week/cards-8594729_640.jpg" alt="Featured image of post 第3周工作总结" /&gt;&lt;h1 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h1&gt;&lt;h5 id=&#34;每周都完不成上次的任务杂事太多了尽快完成&#34;&gt;每周都完不成上次的任务，杂事太多了，尽快完成：
 &lt;/h5&gt;&lt;h2 id=&#34;detecting-formal-thought-disorder-by-deep-contextualized-word-representations&#34;&gt;Detecting formal thought disorder by deep contextualized word representations
 &lt;/h2&gt;&lt;p&gt;竟然要收费，不看了，让gpt给讲一下&lt;/p&gt;
@@ -666,12 +666,12 @@ $$
 </description>
         </item>
         <item>
-        <title>2024.10.14至20第二周工作总结</title>
+        <title>第2周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/second-week/</link>
         <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/second-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 2024.10.14至20第二周工作总结" /&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/second-week/leaves-6729056_640.jpg" alt="Featured image of post 第2周工作总结" /&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h2&gt;&lt;p&gt;看了知乎的科普文章，先从经典的论文开始看：&lt;/p&gt;
 &lt;h3 id=&#34;attention-is-all-you-need&#34;&gt;Attention Is All You Need
 &lt;/h3&gt;&lt;p&gt;《Attention is All You Need》是由Vaswani等人在2017年提出的一篇重要论文，首次引入了Transformer模型。以下是其主要内容的总结：&lt;/p&gt;
@@ -833,12 +833,12 @@ $$&lt;p&gt;
 </description>
         </item>
         <item>
-        <title>2024.10.7至13第一周工作总结</title>
+        <title>第1周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/first-week/</link>
         <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/first-week/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/first-week/banlan.jpg" alt="Featured image of post 2024.10.7至13第一周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/first-week/banlan.jpg" alt="Featured image of post 第1周工作总结" /&gt;&lt;h1 id=&#34;工作总结&#34;&gt;&lt;strong&gt;工作总结&lt;/strong&gt;：
 &lt;/h1&gt;&lt;h2 id=&#34;文献阅读&#34;&gt;文献阅读
 &lt;/h2&gt;&lt;h3 id=&#34;综述类&#34;&gt;综述类：
 &lt;/h3&gt;&lt;p&gt;2023年国内大模型发展综述与趋势研判_赵子忠&lt;/p&gt;
