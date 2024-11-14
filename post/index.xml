@@ -7,7 +7,330 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 11 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 12 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>FEDML-HE：一种基于同态加密的高效隐私保护联邦学习系统</title>
+        <link>https://JiangZhiyu-1024.github.io/p/fedml-he%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86%E7%9A%84%E9%AB%98%E6%95%88%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E8%81%94%E9%82%A6%E5%AD%A6%E4%B9%A0%E7%B3%BB%E7%BB%9F/</link>
+        <pubDate>Tue, 12 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/fedml-he%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86%E7%9A%84%E9%AB%98%E6%95%88%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E8%81%94%E9%82%A6%E5%AD%A6%E4%B9%A0%E7%B3%BB%E7%BB%9F/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/tree-3072431_1280.jpg" alt="Featured image of post FEDML-HE：一种基于同态加密的高效隐私保护联邦学习系统" /&gt;&lt;h1 id=&#34;fedml-he一种基于同态加密的高效隐私保护联邦学习系统&#34;&gt;FEDML-HE：一种基于同态加密的高效隐私保护联邦学习系统
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;摘要
+&lt;/h2&gt;&lt;p&gt;联邦学习通过聚合本地模型更新而非本地数据，在分布式设备上训练机器学习模型。然而，由于聚合的本地模型可能会被反向攻击泄露敏感的个人信息，因此引入隐私问题。隐私保护方法，如同态加密 (HE)，因此在联邦学习训练中变得必要。尽管HE具有隐私优势，但其应用面临不切实际的开销，尤其是在基础模型中。在本文中，我们提出了FedML-HE，这是第一个实用的、基于高效HE的安全模型聚合联邦学习系统。FedML-HE提出选择性加密敏感参数，显著减少了训练过程中的计算和通信开销，同时提供可定制的隐私保护。我们的优化系统展示了显著的开销减少，尤其是在大型基础模型上（例如，对ResNet-50减少约10倍，对BERT减少至多40倍），展示了基于HE的联邦学习扩展部署的潜力。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;引言
+&lt;/h2&gt;&lt;p&gt;联邦学习 (FL) 因其能够让分布式客户端在不直接共享数据的情况下共同训练全局模型，在当代机器学习实践中越来越受欢迎。在标准联邦学习系统中，隐私保护依赖于分布式训练过程和模型聚合函数，例如 FedAvg (McMahan 等, 2017)、FedSGD (Shokri &amp;amp; Shmatikov, 2015) 和 FedGAN (Rasouli 等, 2020)。在 FL 中，客户端不上传原始数据到中央服务器进行训练，而是本地训练模型并将模型上传到服务器，由服务器根据聚合函数对本地模型进行聚合。尽管 FL 确保了本地原始数据不会离开其原始位置，但它仍然容易受到窃听者和恶意 FL 服务器的攻击，这些攻击可能利用本地模型（或模型更新）的明文来重建敏感训练数据，即文献中的数据重建攻击或梯度反演攻击 (Zhu 等, 2019; Criswell 等, 2014; Bhowmick 等, 2018; Hitaj 等, 2017; Han 等, 2023; Hatamizadeh 等, 2022; Fowl 等, 2022)，如图 1 所示。特别是在本地模型是在小型本地数据集上训练的情况下，这种隐私漏洞尤为明显，这是现实应用中常见的场景，例如用于大型语言模型的智能手机文本数据。这些小数据集训练的本地模型固有地包含了细粒度的信息，使得对手更容易从小型模型更新中提取敏感信息。现有的防御方法包括差分隐私 (DP) (Truex 等, 2019a; Byrd &amp;amp; Polychroniadou, 2020) 和安全聚合 (Bonawitz 等, 2017; So 等, 2022)，用于防止明文本地模型的隐私泄露。DP 在原始模型上添加噪声，但可能由于引入的隐私噪声而导致模型性能下降。另一方面，安全聚合使用零和掩码来保护本地模型更新，确保每次更新的细节保持私密。然而，安全聚合需要额外的交互式同步步骤，并对客户端掉线敏感，在实际 FL 应用中不太实用，因为客户端的不稳定环境会面临诸如不可靠的网络连接和软件崩溃等挑战。&lt;/p&gt;
+&lt;p&gt;如表 1 所示，与上述非同态加密 (HE) 联邦学习解决方案相比，同态加密 (HE) (Paillier, 1999; Gentry, 2009; Fan &amp;amp; Vercauteren, 2012; Brakerski 等, 2014; Cheon 等, 2017) 提供了一种稳健的抗量子安全解决方案，能够防止本地模型遭受攻击，并在保持模型聚合的精确梯度的同时提供更强的隐私保证。基于 HE 的联邦学习 (HE-FL) 在客户端加密本地模型，并在服务器上对密文进行模型聚合。这种方法使安全的联邦学习部署能够实现与普通 FL 完全相同的模型性能，且已被多个 FL 系统 (Roth 等, 2022; IBM, 2022; Zhang 等, 2020; Du 等, 2023) 以及一些特定领域应用 (Stripelis 等, 2021; Yao 等, 2023) 采用。&lt;/p&gt;
+&lt;p&gt;尽管同态加密具有诸多优势，但 HE 仍然是一种强大却复杂的加密基础，且在大多数实际应用中存在不切实际的开销（如图 2 所示）。先前的 FL-HE 解决方案主要采用现有的通用 HE 方法，而缺乏针对大规模 FL 部署的充分优化 (Roth 等, 2022; IBM, 2022; Zhang 等, 2020; Du 等, 2023)。在联邦训练期间，加密计算和通信的可扩展性因此成为瓶颈，限制了其在实际场景中的可行性。这种 HE 开销限制在跨资源受限设备训练大型基础模型时尤其明显（计算和通信通常增加约 15 倍 (Gouert 等, 2022)），因为大模型的加密计算和通信可能比实际模型训练花费更长时间。众所周知，HE 不可避免地在计算和通信方面引入了大量开销 (Gouert 等, 2022)。为了验证这一点，我们对基础 HE 实现进行了评估，以定位开销瓶颈。&lt;/p&gt;
+&lt;p&gt;观察结果：正如图 2 中的评估结果所示，由 HE 引入的计算和通信（包大小）开销为 O(n)，即与输入大小 n（在本案例中为聚合模型的大小）成线性增长。尽管未优化的系统比 Nvidia FLARE 更快，但其执行时间和文件大小依然不切实际，特别是在处理大型模型时。&lt;/p&gt;
+&lt;p&gt;为了解决这些挑战，我们提出了FedML-HE，一种基于同态加密的高效隐私保护联邦学习系统，采用选择性参数加密，旨在实现跨分布式边缘设备的实际部署。我们的系统显著减少了通信和计算开销，使得基于同态加密的联邦学习在现实场景中更加可访问和高效（与其他流行的基于同态加密的联邦学习工作对比可见于表2）。&lt;/p&gt;
+&lt;h2 id=&#34;fedml-he-系统设计&#34;&gt;FEDML-HE 系统设计
+&lt;/h2&gt;&lt;p&gt;在本节中，我们首先在§2.1中提供FedML-HE系统的概述，在§2.2中定义威胁模型，在§2.3中描述FedML-HE的算法设计，在§2.4中通过定位开销瓶颈提出我们高效的优化方法——选择性参数加密，并在§2.5中从软件框架的角度解释我们如何将同态加密集成到联邦学习中。&lt;/p&gt;
+&lt;h3 id=&#34;系统概述&#34;&gt;系统概述
+&lt;/h3&gt;&lt;p&gt;如图3所示，我们基于同态加密的高效联邦训练过程主要经历三个阶段：&lt;/p&gt;
+&lt;p&gt;(1) 加密密钥协议：客户端使用阈值同态加密密钥协议或受信任的密钥授权机构生成同态加密密钥；&lt;/p&gt;
+&lt;p&gt;(2) 加密掩码计算：客户端和服务器使用同态加密应用选择性参数加密方法，共同生成选择性加密掩码；&lt;/p&gt;
+&lt;p&gt;(3) 加密联邦学习：客户端使用同态加密密钥和加密掩码选择性加密本地模型更新，以实现高效的隐私保护训练。&lt;/p&gt;
+&lt;h3 id=&#34;威胁模型&#34;&gt;威胁模型
+&lt;/h3&gt;&lt;p&gt;我们定义一个半诚实的对手A，该对手可以破坏聚合服务器或任何子集的本地客户端。A遵循协议，但试图尽可能多地获取信息。粗略地说，在这种对手模型下，安全性定义要求，当A破坏一部分客户端时，只有来自被破坏客户端的本地模型中的私人信息会被泄露；当A破坏聚合服务器时，不会泄露任何本地模型或全局模型中的私人信息。 当A同时破坏聚合服务器和多个客户端时，默认设置下私钥与所有客户端共享（包括被破坏的客户端），这将允许A解密来自正常客户端的本地模型（通过结合被破坏的服务器接收到的加密本地模型和任何被破坏客户端接收到的私钥）。这一问题可以通过采用同态加密的阈值或多密钥变体来缓解，其中解密必须由一定数量的客户端共同执行（Aloufi et al., 2021; Ma et al., 2022; Du et al., 2023）。由于多方同态加密问题不是本文的重点，本文其余部分默认使用单密钥同态加密设置，但阈值同态加密联邦学习设置和微基准的详细信息将在附录中提供。&lt;/p&gt;
+&lt;p&gt;基于同态加密的联邦聚合算法 隐私保护的联邦学习系统利用同态加密，使得聚合服务器能够在不查看加密前数据的情况下，结合本地模型参数，从而设计出同态加密的聚合函数。我们主要关注FedAvg（McMahan等，2017），该算法被证明仍然是最强大的联邦聚合策略之一，同时保持计算简洁性（Wang等，2022）。我们的基于同态加密的安全聚合算法，如算法1所示，可以总结为：给定一个聚合服务器和N个客户端，每个客户端i ∈ [N]拥有一个本地数据集Di，并初始化一个本地模型Wi，并为其分配聚合权重因子αi；密钥授权机构或分布式阈值密钥协议生成一对密钥(pk, sk)和加密上下文，然后将其分发给客户端和服务器（但服务器仅获取加密上下文，这是公共配置）。客户端和服务器随后共同计算加密掩码M，以进行选择性参数加密，同样使用同态加密。在每轮通信t ∈ [T]中，服务器执行聚合：
+&lt;/p&gt;
+$$
+[W_{\text{glob}}] = \sum_{i=1}^{N} \alpha_i \left[ M \odot W_i \right] + \sum_{i=1}^{N} \alpha_i \left( (1 - M) \odot W_i \right)
+$$&lt;p&gt;
+其中，$[W_{\text{glob}}]$ 是部分加密的全局模型，$W_i$ 是第i个明文本地模型，$[[\cdot]]$ 表示模型的加密部分，$\alpha_i$ 是客户端i的聚合权重，$M$ 是模型加密掩码。&lt;/p&gt;
+&lt;p&gt;请注意，聚合权重可以是加密的，也可以是明文的，这取决于聚合服务器是否足够可信，能够获得这些信息。在我们的系统中，默认情况下，我们将聚合权重设置为明文。在我们的算法中，权重计算仅需要一次同态加密乘法深度，这样有助于减少同态加密乘法操作。我们的系统还可以轻松扩展，以支持通过加密并计算这些算法中的新参数来支持更多的联邦学习聚合函数（例如FedProx（Li等，2020））。此外，在算法1中，如果需要差分隐私，可以在本地模型训练完成后轻松添加可选的本地差分隐私噪声。&lt;/p&gt;
+&lt;p&gt;算法 1 基于同态加密的联邦聚合&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;[[W]]：完全加密的模型 | [W]：部分加密的模型；&lt;/li&gt;
+&lt;li&gt;p：选择性加密的参数比例；&lt;/li&gt;
+&lt;li&gt;b：（可选）差分隐私参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;// 密钥授权生成密钥&lt;br&gt;
+&lt;/p&gt;
+$$(pk, sk) \leftarrow HE.KeyGen(λ);$$&lt;p&gt;// 本地敏感度映射计算&lt;br&gt;
+对于每个客户端 &lt;/p&gt;
+$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
+&lt;/p&gt;
+$$
+W_i \leftarrow Init(W); \\
+S_i \leftarrow Sensitivity(W, D_i); \\
+[[S_i]] \leftarrow Enc(pk, S_i); \\
+$$&lt;p&gt;
+将 &lt;/p&gt;
+$$[[S_i]]$$&lt;p&gt; 发送给服务器;&lt;br&gt;
+结束循环&lt;/p&gt;
+&lt;p&gt;// 服务器加密掩码聚合&lt;br&gt;
+&lt;/p&gt;
+$$
+[[M]] \leftarrow Select\left(\sum_{i=1}^N \alpha_i [[S_i]], p\right);
+$$&lt;p&gt;// 训练&lt;br&gt;
+对于 &lt;/p&gt;
+$$t = 1, 2, \dots, T$$&lt;p&gt; 循环&lt;br&gt;
+对于每个客户端 &lt;/p&gt;
+$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
+如果 &lt;/p&gt;
+$$t = 1$$&lt;p&gt; 则&lt;br&gt;
+接收 &lt;/p&gt;
+$$[[M]]$$&lt;p&gt; 来自服务器;&lt;br&gt;
+&lt;/p&gt;
+$$M \leftarrow HE.Dec(sk, [[M]]);$$&lt;p&gt;&lt;br&gt;
+结束条件&lt;/p&gt;
+&lt;p&gt;如果 &lt;/p&gt;
+$$t &gt; 1$$&lt;p&gt; 则&lt;br&gt;
+接收 &lt;/p&gt;
+$$[W_{glob}]$$&lt;p&gt; 来自服务器;&lt;br&gt;
+&lt;/p&gt;
+$$W_i \leftarrow HE.Dec(sk, M \odot [W_{glob}]) + (1 - M) \odot [W_{glob}];$$&lt;p&gt;&lt;br&gt;
+结束条件&lt;/p&gt;
+$$W_i \leftarrow Train(W_i, D_i);$$&lt;p&gt;// 增加差分隐私&lt;br&gt;
+如果开启差分隐私（Add DP）则&lt;br&gt;
+&lt;/p&gt;
+$$W_i \leftarrow W_i + Noise(b);$$&lt;p&gt;&lt;br&gt;
+结束条件&lt;/p&gt;
+$$[W_i] \leftarrow HE.Enc(pk, M \odot W_i) + (1 - M) \odot W_i;$$&lt;p&gt;&lt;br&gt;
+将 &lt;/p&gt;
+$$[W_i]$$&lt;p&gt; 发送给服务器 &lt;/p&gt;
+$$S$$&lt;p&gt;;&lt;br&gt;
+结束循环&lt;/p&gt;
+&lt;p&gt;// 服务器模型聚合&lt;br&gt;
+&lt;/p&gt;
+$$
+[W_{glob}] \leftarrow \sum_{i=1}^N \alpha_i[[M \odot W_i]] + \sum_{i=1}^N \alpha_i((1 - M) \odot W_i);
+$$&lt;p&gt;
+结束循环&lt;/p&gt;
+&lt;p&gt;我们将在第 §2.4 节详细解释加密掩码 &lt;/p&gt;
+$$M$$&lt;p&gt; 的形式化过程。&lt;/p&gt;
+&lt;h3 id=&#34;通过选择性参数加密实现高效优化&#34;&gt;通过选择性参数加密实现高效优化
+&lt;/h3&gt;&lt;p&gt;完全加密模型能够确保对抗者无法访问明文的本地模型，但会带来高开销。然而，隐私泄漏分析的研究表明，“部分透明性”，例如隐藏部分模型（Hatamizadeh等, 2022; Mo等, 2020），可以限制对抗者成功执行攻击（如梯度反演攻击）的能力（Lu等, 2022）。因此，我们提出了选择性参数加密方法，选择性地加密最隐私敏感的参数，以在降低不可行的开销的同时提供可定制的隐私保护；见图4。&lt;/p&gt;
+&lt;p&gt;步骤 1：客户端隐私泄漏分析。直接执行梯度反演攻击（Wei等人，2020年）并评估攻击成功率的时间远远超过模型训练时间。我们因此采用敏感度（Novak等人，2018年；Sokolić等人，2017年；Mo等人，2020年）来衡量梯度相对于输入的总体隐私风险。给定模型&lt;/p&gt;
+$$W$$&lt;p&gt;和包含输入矩阵&lt;/p&gt;
+$$X$$&lt;p&gt;与真实标签向量&lt;/p&gt;
+$$y$$&lt;p&gt;的&lt;/p&gt;
+$$K$$&lt;p&gt;个数据样本，我们计算每个参数&lt;/p&gt;
+$$w_m$$&lt;p&gt;的敏感度为&lt;/p&gt;
+$$\frac{1}{K} \sum_{k=1}^{K} \| J_m(y_k) \|$$&lt;p&gt;，其中&lt;/p&gt;
+$$J_m(y_k) = \frac{\partial}{\partial y_k} \frac{\partial l(X, y, W)}{\partial w_m} \in \mathbb{R}$$&lt;p&gt;，&lt;/p&gt;
+$$l(\cdot)$$&lt;p&gt;为基于&lt;/p&gt;
+$$X$$&lt;p&gt;、&lt;/p&gt;
+$$y$$&lt;p&gt;和&lt;/p&gt;
+$$W$$&lt;p&gt;的损失函数，&lt;/p&gt;
+$$\|\cdot\|$$&lt;p&gt;表示绝对值。直观上，这计算了参数梯度对每个数据点&lt;/p&gt;
+$$k$$&lt;p&gt;的真实输出&lt;/p&gt;
+$$y_k$$&lt;p&gt;的变化程度。每个客户端&lt;/p&gt;
+$$i$$&lt;p&gt;然后将加密的参数敏感度矩阵&lt;/p&gt;
+$$[[S_i]]$$&lt;p&gt;发送至服务器。如图5所示，模型的不同部分通过暴露不均等的信息量对攻击做出贡献。基于此见解，我们建议仅选择和加密模型中更重要且易受攻击的部分，以减少同态加密（HE）开销，同时保持足够的隐私保护。&lt;/p&gt;
+&lt;p&gt;步骤 2：客户端间的加密掩码协议。敏感度映射取决于所处理的数据。在可能存在异构数据分布的情况下，服务器将本地敏感度映射聚合为全局隐私映射 &lt;/p&gt;
+$$P = \sum_{i=1}^N \alpha_i [[S_i]]$$&lt;p&gt;。然后，使用隐私开销比率 &lt;/p&gt;
+$$p \in [0, 1]$$&lt;p&gt; 配置全局加密掩码 &lt;/p&gt;
+$$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例。最后，将全局加密掩码作为联邦学习配置的一部分共享给客户端。&lt;/p&gt;
+&lt;h3 id=&#34;软件框架同态加密在联邦学习中的应用&#34;&gt;软件框架：同态加密在联邦学习中的应用
+&lt;/h3&gt;&lt;p&gt;在本节中，我们将从软件框架的角度说明如何设计基于同态加密（HE）的聚合机制。图 6 展示了我们框架的高层次设计，框架由三个主要层次构成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加密基础层&lt;/strong&gt;。基础层通过 Python 包装器实现同态加密功能，包括密钥生成、加密/解密、安全聚合以及密文序列化，使用的是开源的同态加密库；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;机器学习桥接层&lt;/strong&gt;。桥接层连接联邦学习系统的编排功能和加密功能。具体来说，我们设计了机器学习处理 API，用于将本地训练过程的输入转化为同态加密功能的输入，并处理相应输出。此外，我们在此层实现了优化模块，以减少同态加密带来的开销；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;联邦学习编排层&lt;/strong&gt;。在联邦学习系统层，密钥管理服务器负责密钥分发，(服务器/客户端)管理器和任务执行器用于组织参与方的协作。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们的分层设计使得同态加密基础层和优化模块具有半独立性，便于在 FedML-HE 中切换不同的同态加密库，并易于将进一步的联邦学习优化技术添加到系统中。&lt;/p&gt;
+&lt;h2 id=&#34;通过选择性参数加密实现隐私保护&#34;&gt;通过选择性参数加密实现隐私保护
+&lt;/h2&gt;&lt;p&gt;在本节中，我们首先提供证明来分析完全加密联邦学习的隐私性，然后分析选择性参数加密的隐私保障。&lt;/p&gt;
+&lt;h3 id=&#34;基础协议的证明&#34;&gt;基础协议的证明
+&lt;/h3&gt;&lt;p&gt;在本小节中，我们证明了基础协议的隐私性，其中基于同态加密的联邦学习使用完全模型参数加密（即选择性参数加密率设置为1）。我们在定义 3.1 中定义了攻击者，并在定义 3.3 中定义了隐私性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 3.1（单密钥攻击者）&lt;/strong&gt;
+一个半诚实的攻击者 A 可以同时破坏任何 n 个学习者和聚合服务器的子集，但不能同时破坏它们。
+请注意，证明的参考假设了单密钥设置，并且同态加密联邦学习（HE-FL）阈值变体的隐私性（如定义 3.2 所示）可以通过扩展阈值同态加密的证明（Boneh 等，2006；Laud &amp;amp; Ngo，2008；Asharov 等，2012）来轻松证明。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 3.2（阈值攻击者）&lt;/strong&gt;
+一个半诚实的攻击者 $A_T$ 可以同时破坏任何 n − k 个学习者和聚合服务器的子集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 3.3（隐私性）&lt;/strong&gt;
+在半诚实攻击者 A 存在的情况下，基于同态加密的联邦学习协议 π 是模拟安全的。即存在一个理想世界中的模拟器 S，该模拟器与 A 破坏的相同参与方交互，并生成一个与 A 在实际世界中输出分布相同的输出。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;理想世界&lt;/strong&gt;
+我们理想世界的功能 F 与学习者和聚合服务器的交互如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个学习者向 F 发送注册消息以获取联邦训练模型任务 $W_{glob}$。F 确定一个学习者子集 N′ ⊂ N，其数据可以用于计算全局模型  $W_{glob}$。&lt;/li&gt;
+&lt;li&gt;无论是诚实的还是被破坏的学习者都会将他们的本地模型上传到 F。&lt;/li&gt;
+&lt;li&gt;如果 N′ 中学习者的本地模型 ⃗W 足以计算  $W_{glob}$，F 会将 $W_{glob} ← \sum_{i=1}^{N^′}α_iW_i$发送给 N′ 中的所有学习者，否则 F 会发送空消息 ⊥。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;实际世界&lt;/strong&gt;
+在实际世界中，F 被我们在算法 1 中描述的协议替代，该协议使用完全模型参数加密。
+我们描述一个模拟器 S，它模拟攻击者 A 在我们协议的实际执行中的视图。我们的隐私定义 3.3 和模拟器 S 证明了机密性和正确性。我们省略了模拟攻击者 A 破坏聚合服务器的视图，因为在执行 π 时，学习者不会收到其他学习者的本地模型的密文，因此这种模拟是直接且简单的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;模拟器&lt;/strong&gt;
+在理想世界中，S 从 F 接收 λ 和 $1^n$，并执行以下步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;S 选择一个均匀分布的随机数带 &lt;/p&gt;
+$$r$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;S 运行密钥生成函数来生成公钥 &lt;/p&gt;
+$$pk$$&lt;p&gt;：&lt;/p&gt;
+$$(pk, sk) \leftarrow HE.\text{KeyGen}(\lambda)$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于选定的第 &lt;/p&gt;
+$$i$$&lt;p&gt; 个学习者，S 运行加密函数来生成采样值：&lt;/p&gt;
+$$(c_i) \leftarrow HE.\text{Enc}(pk, r^{|W_i|})$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;S 对所有其他学习者重复步骤 3 以获得 &lt;/p&gt;
+$$\vec{c}$$&lt;p&gt;，并运行联邦聚合函数 &lt;/p&gt;
+$$f$$&lt;p&gt; 来生成采样值：&lt;/p&gt;
+$$(c_{\text{glob}}) \leftarrow HE.\text{Eval}(\vec{c}, f)$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;S 的执行意味着：&lt;/p&gt;
+$$
+\{(c_i, c_{\text{glob}})\} \overset{s}{\equiv} \left\{ HE.\text{Enc}(pk, W_i), HE.\text{Eval}(\vec{W}, f) \right\}
+$$&lt;p&gt;因此，我们可以得出结论，S 在理想世界中的输出在计算上与 A 在实际执行中的视图不可区分：&lt;/p&gt;
+$$
+\{S (1^n, \lambda)\} \overset{s}{\equiv} \{\text{view}^\pi (\lambda)\}
+$$&lt;p&gt;其中 &lt;/p&gt;
+$$\text{view}$$&lt;p&gt; 表示 A 在协议 &lt;/p&gt;
+$$\pi$$&lt;p&gt; 实际执行中的视图。&lt;/p&gt;
+&lt;h3 id=&#34;通过差分隐私理论对加密学习的证明&#34;&gt;通过差分隐私理论对加密学习的证明
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义 3.4（相邻数据集）&lt;/strong&gt;&lt;br&gt;
+当两个数据集 &lt;/p&gt;
+$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
+$$D_2$$&lt;p&gt; 仅在一个个体的数据上有所不同时，称它们为相邻数据集。形式化地，若满足 &lt;/p&gt;
+$$|D_1 \triangle D_2| = 1$$&lt;p&gt;，则它们为相邻数据集。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 3.5（$$\varepsilon$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
+若一个随机算法 &lt;/p&gt;
+$$M$$&lt;p&gt; 满足 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt;-差分隐私，则对于任何两个相邻的数据集 &lt;/p&gt;
+$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
+$$D_2$$&lt;p&gt;，以及任意可能的输出 &lt;/p&gt;
+$$O \subseteq \text{Range}(F)$$&lt;p&gt;，以下不等式成立：&lt;/p&gt;
+$$
+\frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
+$$&lt;p&gt;隐私参数 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt; 的较小值意味着更强的隐私保障。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 3.6（拉普拉斯机制）&lt;/strong&gt;&lt;br&gt;
+给定一个函数 &lt;/p&gt;
+$$f : D \to \mathbb{R}$$&lt;p&gt;，其中 &lt;/p&gt;
+$$D$$&lt;p&gt; 是数据集的定义域，&lt;/p&gt;
+$$d$$&lt;p&gt; 是输出的维度，拉普拉斯机制向 &lt;/p&gt;
+$$f$$&lt;p&gt; 的输出添加拉普拉斯噪声。&lt;br&gt;
+令 &lt;/p&gt;
+$$b$$&lt;p&gt; 为拉普拉斯分布的尺度参数，其定义如下：&lt;/p&gt;
+$$
+\text{Lap}(x | b) = \frac{1}{2b} e^{-\frac{|x|}{b}}
+$$&lt;p&gt;给定数据集 &lt;/p&gt;
+$$D$$&lt;p&gt;，拉普拉斯机制 &lt;/p&gt;
+$$F$$&lt;p&gt; 定义为：&lt;/p&gt;
+$$
+M(D) = f(D) + \text{Lap}(0 | b)^d
+$$&lt;p&gt;&lt;strong&gt;定义 3.7（敏感度）&lt;/strong&gt;&lt;br&gt;
+为了确保 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt;-差分隐私，我们需要确定适当的尺度参数 &lt;/p&gt;
+$$b$$&lt;p&gt;。这就涉及到函数 &lt;/p&gt;
+$$f$$&lt;p&gt; 的敏感度。函数 &lt;/p&gt;
+$$f$$&lt;p&gt; 的敏感度 &lt;/p&gt;
+$$\Delta f$$&lt;p&gt; 是 &lt;/p&gt;
+$$f$$&lt;p&gt; 应用于任意两个相邻数据集时输出的最大差值：&lt;/p&gt;
+$$
+\Delta f = \max_{D_1 ,D_2 :|D_1 \triangle D_2 |=1} \|f(D_1) - f(D_2)\|_1
+$$&lt;p&gt;基于定义 3.4、3.5、3.6 和 3.7，我们得出以下引理：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;引理 3.8（通过拉普拉斯机制实现 $$\varepsilon$$-差分隐私（Dwork, 2008；Abadi 等, 2016））&lt;/strong&gt;&lt;br&gt;
+为实现 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt;-差分隐私，我们选择尺度参数 &lt;/p&gt;
+$$b$$&lt;p&gt; 为：&lt;/p&gt;
+$$
+b = \frac{\Delta f}{\varepsilon}
+$$&lt;p&gt;在该 &lt;/p&gt;
+$$b$$&lt;p&gt; 的选择下，拉普拉斯机制 &lt;/p&gt;
+$$F$$&lt;p&gt; 满足 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;通过在模型梯度的一个参数上添加 &lt;/p&gt;
+$$\text{Lap}(0 | b)^d$$&lt;p&gt; 噪声，其中 &lt;/p&gt;
+$$b = \frac{\Delta f}{\varepsilon}$$&lt;p&gt;，我们可以实现 &lt;/p&gt;
+$$\varepsilon$$&lt;p&gt;-差分隐私。随后我们表明同态加密提供了更强的差分隐私保障。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定理 3.9（通过同态加密实现 0-差分隐私）&lt;/strong&gt;&lt;br&gt;
+对于任意两个相邻的数据集 &lt;/p&gt;
+$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
+$$D_2$$&lt;p&gt;，由于 &lt;/p&gt;
+$$M(D)$$&lt;p&gt; 在计算上不可区分，因此：&lt;/p&gt;
+$$
+\frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
+$$&lt;p&gt;若 &lt;/p&gt;
+$$O$$&lt;p&gt; 是加密的，则 &lt;/p&gt;
+$$\varepsilon = 0$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;换句话说，攻击者无法从加密的参数中获取敏感信息。&lt;/p&gt;
+&lt;h3 id=&#34;选择性参数选择的证明&#34;&gt;&lt;strong&gt;选择性参数选择的证明&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;引理 3.10（顺序组合（Dwork, 2008））&lt;/strong&gt;&lt;br&gt;
+如果 &lt;/p&gt;
+$$M_1(x)$$&lt;p&gt; 满足 &lt;/p&gt;
+$$\varepsilon_1$$&lt;p&gt;-差分隐私，且 &lt;/p&gt;
+$$M_2(x)$$&lt;p&gt; 满足 &lt;/p&gt;
+$$\varepsilon_2$$&lt;p&gt;-差分隐私，那么发布两个结果的机制 &lt;/p&gt;
+$$G(x) = (M_1(x), M_2(x))$$&lt;p&gt; 满足 &lt;/p&gt;
+$$(\varepsilon_1 + \varepsilon_2)$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;基于引理 3.8、3.10 和定理 3.9，现在我们可以分析选择性参数加密的隐私性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定理 3.11（通过部分加密实现 $$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
+如果我们对部分模型参数 &lt;/p&gt;
+$$S$$&lt;p&gt; 应用同态加密，并在剩余的模型参数 &lt;/p&gt;
+$$[N]/S$$&lt;p&gt; 上使用拉普拉斯机制，且噪声尺度固定为 &lt;/p&gt;
+$$b$$&lt;p&gt;，则对于每个参数 &lt;/p&gt;
+$$i \in [N]/S$$&lt;p&gt;，有 &lt;/p&gt;
+$$\varepsilon_i = \frac{\Delta f_i}{b}$$&lt;p&gt;。这样的部分加密满足 &lt;/p&gt;
+$$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;令 &lt;/p&gt;
+$$J = \sum_{i=1}^{N} \frac{\Delta f_i}{b}$$&lt;p&gt;，并假设 &lt;/p&gt;
+$$\Delta f \sim U(0,1)$$&lt;p&gt;，其中 &lt;/p&gt;
+$$U$$&lt;p&gt; 表示均匀分布，那么我们可以证明在所有参数上添加拉普拉斯噪声、随机参数加密以及选择性参数加密的隐私代价。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注解 3.12（通过在所有模型参数上添加拉普拉斯噪声实现 $$J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
+如果在所有参数上添加尺度为 &lt;/p&gt;
+$$b$$&lt;p&gt; 的拉普拉斯噪声，则满足 &lt;/p&gt;
+$$J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注解 3.13（通过随机选择实现 $$(1 - p)J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
+如果以概率 &lt;/p&gt;
+$$p$$&lt;p&gt; 随机选择模型参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
+$$(1 - p)J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注解 3.14（通过敏感参数选择实现 $$(1 - p)^2 J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
+如果按比例 &lt;/p&gt;
+$$p$$&lt;p&gt; 选择最敏感的参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
+$$(1 - p)^2 J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;关键观察&lt;/strong&gt;：选择性参数加密比随机选择和完全差分隐私在相同的隐私保护下所需的隐私预算减少了 &lt;/p&gt;
+$$(1 - p)^2$$&lt;p&gt; 倍。&lt;/p&gt;
+&lt;h2 id=&#34;评估&#34;&gt;评估
+&lt;/h2&gt;&lt;p&gt;在本节中，我们关注评估结果，以展示我们提出的通用优化方案如何在实际应用中大幅减少这些开销，同时仍能有效抵御隐私攻击。此外，有关其他联邦学习系统方面的实验结果已包含在附录中。&lt;/p&gt;
+&lt;h3 id=&#34;实验设置&#34;&gt;&lt;strong&gt;实验设置&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;模型&lt;/strong&gt;
+我们在不同机器学习领域的模型上测试了我们的框架，包含不同规模的模型，例如 Llama-2（70 亿参数）（附录中提供了更多详细信息）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;同态加密（HE）库&lt;/strong&gt;
+我们使用 PALISADE 和 TenSEAL 实现了我们的 HE 核心模块。除非另有说明，否则我们的结果显示 PALISADE 版本的评估。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;默认加密参数&lt;/strong&gt;
+除非另有说明，评估中我们选择的默认 HE 加密参数包括：乘法深度为 1，缩放因子位数为 52，HE 批处理大小为 4096，安全等级为 128。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;微基准测试&lt;/strong&gt;
+为了对 HE 开销进行微基准测试，我们使用了一台带有 32 GB 内存和 NVIDIA Tesla T4 GPU 的 Intel 8 核 3.60GHz i7-7700 CPU，在 Ubuntu 18.04.6 上运行。&lt;/p&gt;
+&lt;h3 id=&#34;优化&#34;&gt;&lt;strong&gt;优化&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;为了缓解 HE 开销激增，我们的优化方案选择性参数加密通过选取部分敏感参数进行加密计算，而其余部分按预期的开销和隐私要求保持明文。在本节中，我们首先评估选择性参数加密带来的开销优化，然后使用最先进的隐私攻击来评估我们的选择性防御在联邦学习训练过程中的效果。&lt;/p&gt;
+&lt;p&gt;请注意，其他参数效率技术（Tang 等, 2019；Hu 等, 2021）在从头训练和微调场景中都可以在选择性参数加密前应用，并且直接减少共享模型的大小有助于 HE 计算和通信效率（我们在附录中还包含了该部分的初步结果）。&lt;/p&gt;
+&lt;h4 id=&#34;优化的开销&#34;&gt;&lt;strong&gt;优化的开销&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;我们首先检查选择性参数加密带来的开销优化效果。在选择并加密具有较高隐私重要性的参数时，观察开销的变化。图 7 显示了仅加密模型的某些部分所带来的开销减少情况，这种开销与加密模型参数的大小几乎成比例，这符合 HE 开销与输入大小之间的普遍关系。值得注意的是，在按选择性参数加密加密 10% 参数后，开销接近于明文聚合的开销。&lt;/p&gt;
+&lt;p&gt;图 8 从开销分布的角度分析了 HE 框架（优化前和优化后）和明文框架在单个 AWS 区域带宽下的训练周期组成。对于中型模型，HE 带来的开销（包括计算和通信）将本地训练过程的一部分转移到聚合相关步骤中，但与非 HE 相比差距相对可接受。尽管一般而言较小的模型需要较短的训练时间，但 HE 聚合的开销也成比例下降。&lt;/p&gt;
+&lt;h4 id=&#34;选择性防御的效果&#34;&gt;&lt;strong&gt;选择性防御的效果&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;为了评估选择性参数加密的防御效果，我们首先使用隐私敏感性生成隐私映射（图 5），然后通过执行梯度反演（DLG (Zhu 等, 2019)）验证选择性的有效性。我们还提供了 BERT 模型在语言模型反演攻击（Fowl 等, 2022）下的防御结果。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;计算机视觉任务的防御效果&lt;/strong&gt;
+我们使用 CIFAR-100 数据集的图像样本来计算模型参数的敏感性。在 DLG 攻击实验中，我们采用多尺度结构相似性指数 (MSSSIM)、视觉信息保真度 (VIF) 和通用质量图像指数 (UQI) 作为指标，以衡量恢复图像与原始训练图像的相似性，从而评估攻击质量和隐私泄露程度。如图 9 所示，相较于随机加密选择（需要加密 42.5% 的参数才能开始防御攻击），通过我们基于模型隐私映射的前 10% 参数加密选择即可抵御攻击，这意味着在相同隐私保护水平下能够实现更低的整体开销。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;自然语言处理任务的防御效果&lt;/strong&gt;
+我们在实验中使用了 wikitext 数据集的语言样本。如图 10 所示，通过我们的敏感性映射确定的前 30% 隐私敏感参数加密掩码能够有效防止反演攻击，其防御效果优于随机加密 75% 模型参数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;经验选择策略&lt;/strong&gt;
+我们的选择策略通过优先加密更重要的模型参数实现防御效果。根据实验结果，优先加密最敏感的前 30% 参数，以及模型的首层和末层，通常可以有效防止信息泄露 (Hatamizadeh 等, 2022) 和攻击 (如图 5)，这一策略可作为在模型隐私映射基础上的通用指导方针。&lt;/p&gt;
+&lt;h2 id=&#34;相关工作&#34;&gt;&lt;strong&gt;相关工作&lt;/strong&gt;
+&lt;/h2&gt;&lt;h3 id=&#34;现有的联邦学习隐私攻击&#34;&gt;&lt;strong&gt;现有的联邦学习隐私攻击&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;近年来，针对联邦学习（FL）领域的隐私威胁和攻击进行了深入研究 (Mothukuri 等, 2021)。FL 隐私攻击通常分为两类：推断攻击 (Nasr 等, 2019; Wang 等, 2019; Truex 等, 2019b) 和数据泄露/重构攻击 (Criswell 等, 2014; Bhowmick 等, 2018; Hitaj 等, 2017)。攻击者通常通过对模型进行攻击，以获取数据提供者的某些特性，甚至重构训练数据集中的数据。在使用较小数据集训练的更精细的本地模型上直接访问 (Wang 等, 2019) 时，攻击成功的几率更高。此外，还可以使用基于生成对抗网络（GAN）的攻击来完全恢复原始数据 (Hitaj 等, 2017)。大多数隐私攻击的根源在于本地模型的明文访问被暴露给其他方（通常是服务器）。&lt;/p&gt;
+&lt;h3 id=&#34;现有的非同态加密防御机制&#34;&gt;&lt;strong&gt;现有的非同态加密防御机制&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;局部差分隐私已被采用来保护本地模型更新，通过在客户端在服务器聚合之前添加差分噪声实现 (Truex 等, 2019a; Byrd 和 Polychroniadou, 2020)。然而，为了保证隐私，细粒度的本地更新需要大量的统计噪声，通常会显著降低模型性能。另一方面，也有工作提出应用零和掩码（通常是成对的）来掩盖本地模型更新，使得任何单个本地更新对服务器是不可区分的 (Bonawitz 等, 2017; So 等, 2022)。但这种策略带来了许多挑战，包括密钥/掩码同步要求以及联邦学习参与者的掉线问题。相比这些提供 FL 隐私保护的解决方案，同态加密（HE）是非交互式的，并且对掉线具有鲁棒性（与一般的安全聚合协议 (Bonawitz 等, 2017; So 等, 2022) 相比），且其对模型性能的影响微乎其微（相比基于噪声的差分隐私解决方案 (Truex 等, 2019a; Byrd 和 Polychroniadou, 2020)）。&lt;/p&gt;
+&lt;h3 id=&#34;现有的基于同态加密的联邦学习工作&#34;&gt;&lt;strong&gt;现有的基于同态加密的联邦学习工作&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;目前的基于 HE 的 FL 工作或是应用有限的 HE 方案（如加法方案 Paillier）(Zhang 等, 2020; Fang 和 Qian, 2021; Jiang 等, 2021)，但无法扩展至更复杂的 FL 聚合函数，同时在性能和安全性方面难以保障（受限于 Paillier）；或是提供了通用的 HE 实现用于 FL 聚合 (Roth 等, 2022; IBM, 2022; Jiang 等, 2021; Du 等, 2023; Ma 等, 2022)。然而，之前的工作在 HE 开销增加问题上仍未提供解决方案。在本研究中，我们提出了一种通用的优化方案，在系统和算法层面大幅降低了开销，同时确保了隐私保护，使基于 HE 的 FL 能够在实际部署中具有可行性。&lt;/p&gt;
+&lt;h2 id=&#34;结论&#34;&gt;&lt;strong&gt;结论&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;本文提出了 FedML-HE，这是首个实用的基于同态加密的隐私保护联邦学习（FL）系统，支持加密密钥管理、加密 FL 平台部署，以及通过加密优化来降低系统开销，并设计用于支持高效的大模型联邦训练。我们设计了选择性参数加密（Selective Parameter Encryption），可以有选择性地加密最隐私敏感的参数，从而最小化加密模型更新的大小，同时提供可定制的隐私保护。未来的工作包括对隐私保障、系统开销和模型性能之间的权衡进行定量和理论分析，与其他方法（如差分隐私和安全聚合方法）进行对比，并提升在 FL 场景中门限同态加密的性能，支持去中心化的技术如代理重加密（Proxy Re-Encryption，Ateniese 等，2006）。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>端到端隐私保护的多机构医学影像深度学习</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AB%AF%E5%88%B0%E7%AB%AF%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%A4%9A%E6%9C%BA%E6%9E%84%E5%8C%BB%E5%AD%A6%E5%BD%B1%E5%83%8F%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</link>
         <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
