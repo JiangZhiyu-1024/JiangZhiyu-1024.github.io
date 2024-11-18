@@ -7,7 +7,89 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Sun, 10 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/weeklyreport/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 18 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/weeklyreport/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>第6周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/ai-generated-8787240_1280.jpg" alt="Featured image of post 第6周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+&lt;/h1&gt;&lt;p&gt;这一周又没干啥正经事，学科前沿讲座结课了，整了一下结课论文，把软件工程实训汇报完了，有惊无险，但却有点轻微感冒+上火+口腔溃疡，痛不欲生，虽已习惯了高三时期留下的旧疾，但得了口腔溃疡还是痛。&lt;/p&gt;
+&lt;p&gt;这周又读了几篇论文，还是没有找到与我要研究东西特别相近的论文，都是关于深度学习的，没有大模型这方面的，这周继续探索一下。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;计划&#34;&gt;计划
+&lt;/h2&gt;&lt;p&gt;计划就是完成上周以及上上周未完成的计划，继续干&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Deep Learning via Additively Homomorphic Encryption&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该论文研究了通过可加同态加密实现隐私保护的深度学习推理，探讨了如何在保留数据隐私的同时利用深度学习模型进行推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文介绍了在联邦学习框架中使用加密数据的方案，虽然主要聚焦于模型训练，但也讨论了如何在推理阶段保护数据隐私。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Inference with Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了如何在不暴露数据的情况下，安全地使用深度学习模型进行推理，涉及多种加密和隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Homomorphic Encryption for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了同态加密在隐私保护机器学习中的应用，特别是在数据持有方希望使用外部模型进行推理的情况下。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Inference of Deep Learning Models&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文提出了一种框架，用于在保护隐私的情况下安全地进行深度学习模型的推理，涵盖了多个隐私保护技术。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Privacy-Preserving Machine Learning: A Practical Approach&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文讨论了一种实用的方法，通过使用加密技术保护数据隐私，同时实现机器学习模型的推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure Outsourced Computation in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇论文探讨了如何将机器学习任务外包给持有模型的方，同时保证数据的隐私不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Differentially Private Inference in Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文介绍了如何在机器学习模型推理过程中实现差分隐私，保证输出结果不泄露输入数据的信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Towards Secure and Private Machine Learning: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这篇综述论文涵盖了各种保护数据隐私的技术，包括同态加密和安全多方计算在推理中的应用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Federated Learning with Encrypted Data for Privacy-Preserving Machine Learning&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该研究探讨了在联邦学习框架下如何处理加密数据，适用于在不暴露数据的情况下进行模型推理。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Secure and Private Model Inference: A Survey&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本文回顾了与安全和隐私相关的模型推理方法，强调在使用外部模型时的隐私保护需求。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
         <title>第5周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC5%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 10 Nov 2024 00:00:00 +0000</pubDate>
