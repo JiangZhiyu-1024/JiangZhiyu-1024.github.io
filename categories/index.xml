@@ -7,10 +7,66 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 18 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 03 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Transformer</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
+        <pubDate>Tue, 03 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/transformer/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>安全推理</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Tue, 03 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>哈达玛积</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%93%88%E8%BE%BE%E7%8E%9B%E7%A7%AF/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%93%88%E8%BE%BE%E7%8E%9B%E7%A7%AF/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>拉格朗日插值法</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC%E6%B3%95/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%8F%92%E5%80%BC%E6%B3%95/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>秘密共享</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>密码学</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>隐私保护</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/</link>
+        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>WeeklyReport</title>
         <link>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</link>
-        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        <pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/weeklyreport/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/weeklyreport/WeeklyReport.jpg" alt="Featured image of post WeeklyReport" /&gt;</description>
@@ -85,14 +141,6 @@
         <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/smpc/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>安全推理</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</link>
-        <pubDate>Sun, 10 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</guid>
         <description></description>
         </item>
         <item>
@@ -269,14 +317,6 @@
         <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/mha/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Transformer</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
-        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/transformer/</guid>
         <description></description>
         </item>
         <item>

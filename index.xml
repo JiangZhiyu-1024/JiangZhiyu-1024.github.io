@@ -7,10 +7,717 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 18 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 03 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>BumbleBee 大型变换器模型的安全双方推理框架</title>
+        <link>https://JiangZhiyu-1024.github.io/p/bumblebee-%E5%A4%A7%E5%9E%8B%E5%8F%98%E6%8D%A2%E5%99%A8%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AE%89%E5%85%A8%E5%8F%8C%E6%96%B9%E6%8E%A8%E7%90%86%E6%A1%86%E6%9E%B6/</link>
+        <pubDate>Tue, 03 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/bumblebee-%E5%A4%A7%E5%9E%8B%E5%8F%98%E6%8D%A2%E5%99%A8%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AE%89%E5%85%A8%E5%8F%8C%E6%96%B9%E6%8E%A8%E7%90%86%E6%A1%86%E6%9E%B6/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/bumblebee-%E5%A4%A7%E5%9E%8B%E5%8F%98%E6%8D%A2%E5%99%A8%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AE%89%E5%85%A8%E5%8F%8C%E6%96%B9%E6%8E%A8%E7%90%86%E6%A1%86%E6%9E%B6/cottage-2955582_1280.jpg" alt="Featured image of post BumbleBee 大型变换器模型的安全双方推理框架" /&gt;&lt;h1 id=&#34;bumblebee-大型变换器模型的安全双方推理框架&#34;&gt;&lt;strong&gt;BumbleBee: 大型变换器模型的安全双方推理框架&lt;/strong&gt;
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;&lt;strong&gt;摘要&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;基于大型变换器模型的技术已在自然语言处理、计算机视觉等许多实际任务中实现了最先进的性能。然而，随着它们处理的数据和任务敏感性增加，隐私问题在模型部署过程中成为了一个主要关注点。在这项工作中，我们关注于在两方设置下进行私密推理的场景，其中一方持有私密输入，另一方持有模型。我们介绍了BumbleBee，一个快速且适合通信的双方私密变换器推理系统。我们的贡献主要有三点：首先，我们提出了优化的矩阵乘法协议，相较于以往技术，显著降低了80%-90%的通信成本。其次，我们开发了一种针对变换器模型中非线性激活函数的高效协议构建方法。所提出的激活协议在处理速度上实现了显著提升，同时与之前的两种方法相比，通信成本降低了80%-95%。最后，我们对五个变换器模型进行了广泛的基准测试。BumbleBee通过评估LLaMA-7B模型展示了其能力，使用CPU生成一个token大约需要14分钟。我们的结果进一步表明，BumbleBee在性能上超越了Iron（NeurIPS22）一个数量级，并且比BOLT（Oakland24）快三倍，同时通信成本仅为BOLT的十分之一。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;&lt;strong&gt;引言&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;基于大型变换器模型，如BERT [19]、GPT [60] 和 ViT [22]，在许多实际任务中实现了最先进（SOTA）的性能，包括人员重识别 [47]、语音助手 [14] 和代码自动补全 [75]。随着变换器模型处理的数据和任务越来越敏感，隐私问题已成为模型部署中的主要关注点之一。私密推理旨在保护模型权重免受用户的干扰，同时确保服务器无法获取用户私密输入的信息。许多近期的研究引入了基于安全多方计算（MPC）[8]、[27]的加密框架，以实现深度学习模型（如卷积神经网络（CNN）[36]、[2]、[41]、[62]）和变换器模型的私密推理[48]、[33]、[79]、[73]。尽管安全双方计算（2PC）可以高效地在几分钟内推理CNN，但在变换器模型上的私密推理则带来了新的挑战，特别是在通信开销方面。例如，[33]、[30]等研究表明，对12层BERT模型的单次私密推理可能需要高达90 GB的通信。此外，[73，表1]报告称，12层ViT模型的单次私密推理可能需要交换约262 GB的消息。因此，这些通信密集型方法对高带宽的需求不可或缺。我们总结了开发高效、通信友好的2PC框架，用于大规模变换器私密评估的两个主要挑战。&lt;/p&gt;
+&lt;h4 id=&#34;大规模矩阵的乘法&#34;&gt;&lt;strong&gt;大规模矩阵的乘法&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;变换器模型的推理可能涉及数百次大矩阵的乘法。例如，自然语言处理（NLP）变换器使用嵌入表将一组单词查询转换为数值表示。嵌入表查找可以定义为矩阵乘法 $EV$，其中 $E$ 的每一行是一个对应于输入查询中每个单词索引的独热向量。换句话说，这种乘法的维度可以解析为：单词数 × 词汇表大小 × 嵌入大小，这比卷积神经网络（CNN）中的矩阵要大得多。由于相对于NLP变换器而言，视觉变换器通常具有更大的嵌入大小，因此也可能涉及较大的矩阵。现有的大多数加密协议用于私密矩阵乘法，都依赖于“不可知转移”（Oblivious Transfer，OT）[18]、[57]、[59] 或同态加密（Homomorphic Encryption，HE）[41]、[12]、[36]、[35]。然而，这两种方法各有其局限性。基于OT的私密矩阵乘法方法计算时间较少，但需要传输大量消息；另一方面，基于HE的方法计算量显著增加，但比OT方法更加适合通信。第一个挑战是开发一种既快速又通信友好的矩阵乘法协议。&lt;/p&gt;
+&lt;h4 id=&#34;更复杂的激活函数&#34;&gt;&lt;strong&gt;更复杂的激活函数&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;与CNN中使用的简单ReLU激活函数不同，变换器模型包含复杂的激活函数，如softmax、Gaussian Error Linear Unit（GeLU）和Sigmoid Linear Unit（SiLU）。这些激活函数的计算需要基本的数学函数，如指数运算、除法和双曲函数。尽管研究人员已经为这些基本函数开发了特定的协议[11]、[61]、[62]、[44]，但直接在变换器模型中使用这些协议仍然不切实际。主要原因是变换器模型中的激活数量非常庞大。例如，GPT2模型[15]的单次推理需要计算大约 3.9 × 10⁶ 次点对点的GeLU激活。我们的第二个挑战是为这些复杂的激活函数设计高效的2PC协议。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A. 技术细节&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;高效的线性函数协议&lt;/strong&gt;
+我们提出了一种叫做“不可知线性变换”（Oblivious Linear Transformation，OLT）的原语。我们将OLT描述为一个双方协议，其中两方分别提供私密矩阵 $Q \in \mathbb{Z}_2^{* 2l}$ 和 $V \in \mathbb{Z}_2^{* 2l}$，并生成它们之间的共享 $QV$。使用OLT，我们可以在模 $2l$ 的环上实现两个加法共享矩阵的乘法。基于同态加密（HE）的方法[36]、[54]提供了一个很好的起点。这些方法的一个重要局限性是显著的通信开销，这来自于输出密文的“稀疏”格式。更具体地说，[36]、[54]中的每个输出密文加密了一个长向量。然而，乘法结果只需要该向量中的一小部分元素。为了进行解密，仍然需要传输整个加密向量。为了克服这一不足，我们提出了一种压缩过程，通过同态方式将加密向量中不必要的条目归零，从而将多个“稀疏”向量合并为一个“密集”向量。因此，通信开销减少，因为需要发送的密文数量变少。与之前的密文压缩方法[13]相比，我们的压缩过程快了大约50倍。总体而言，我们观察到与[36]、[54]相比，通信成本减少了80%-90%。&lt;/p&gt;
+&lt;p&gt;除了矩阵乘法，点对点乘法 $x_0 \cdot y_0, x_1 \cdot y_1, \dots$ 也是变换器推理中的一个重要计算。许多基于同态加密的点对点乘法协议[18]、[63]需要设置一个相对较大的明文模数$t$。例如，[18]、[63]都设置HE参数 $t &amp;gt; 22l+40$ 来加密来自 $\mathbb{Z}_2^l$ 的值。在这项工作中，我们提出了一种模数提升函数，用于统一底层HE的秘密共享模数和明文模数。提升函数使我们能够在HE密文上执行模 $2l$ 的算术运算。这使我们能够选择较小的HE参数，即 $t \approx 22l$。我们的实验结果表明，在[63]中应用提升函数后，性能提高了1.3倍。&lt;/p&gt;
+$$
+\text{SiLU}(x) \approx 
+\begin{cases} 
+-10^{-5} &amp; \text{if } x &lt; -8 \\
+P(x) &amp; \text{if } -8 &lt; x \leq -4 \\
+Q(x) &amp; \text{if } -4 &lt; x \leq 4 \\
+x - 10^{-5} &amp; \text{if } x &gt; 4 
+\end{cases}
+$$&lt;p&gt;
+接着，我们基于两个关键的见解提出了优化方法。首先，我们利用激活函数的平滑性来提高效率。例如，对于输入 $x = -3.98$，即便使用（错误的）第二段，也能得到类似的结果，即 $P(-3.98) \approx Q(-3.98)$。这种平滑性为我们设计一种高效的评估方法提供了空间，尽管会引入轻微的误差。其次，我们提出了优化措施，以提高在对相同输入点评估多个多项式时的摊销效率。具体来说，我们优化后的激活协议比当前在[61]、[53]中详细描述的数值方法快了9到20倍，通信成本减少了80%到95%。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;B. 贡献&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;总结来说，我们做出了三项关键贡献：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;我们开发了一个基于同态加密（HE）的矩阵乘法协议，特别针对模 $2l$ 运算进行了优化，以提升通信效率。事实上，我们的协议已被证明与现有的基于HE的方法相比，通信成本减少了80%。此外，我们的协议还具有高速度。例如，私密矩阵乘法操作（维度为 $128 \times 768 \times 768$）可以在1秒钟内完成，使用一个中等规格的云实例。&lt;/li&gt;
+&lt;li&gt;我们实现了所有提出的协议，并开发了一个新的MPC后端，称为BumbleBee，并将其集成到SPU库[53]中。为了进行比较，我们还基于SPU库实现了一个基准版本，使用了几种最先进的2PC协议。通过简单的对比，图1展示了与基准版本相比，提出的协议所带来的改进。总的来说，我们在SIGMA[30]的基础上减少了84%的通信成本，在BOLT[58]的基础上减少了90%，在Iron[33]的基础上减少了92%。&lt;/li&gt;
+&lt;li&gt;BumbleBee使得私密变换器推理变得易于使用。现有的工作[48]、[33]、[58]仅考虑了BERT系列模型。与之对比，我们成功地在5个预训练变换器模型上运行了BumbleBee，利用了HuggingFace网站上提供的模型权重和Python程序，包括BERT-base、BERT-large、GPT2-base、LLaMA-7B和ViT-base。我们还在四个公开数据集上评估了BumbleBee的准确性。所有实验都使用了我们提出的协议，而不是通过模拟进行的。我们提供了可重现的实现，网址为：https://github.com/AntCPLab/OpenBumbleBee。我们的方法为精确且可行的私密变换器推理提供了有力证据，即使在不改变神经网络结构的情况下，也能实现这一目标。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;II. 基础知识&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A. 符号约定&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们用 $x = y$ 表示 $x$ 等于 $y$，用 $x := y$ 表示将 $y$ 的值赋给变量 $x$。对于一个交互协议 $\Pi$，我们用 $JxK \gets \Pi$ 表示协议的执行。我们用 $[n]$ 来表示集合 ${0, \dots, n - 1}$，其中 $n \in \mathbb{N}$。对于一个集合 $D$，$x \in R^D$ 表示 $x$ 是从 $D$ 中均匀随机采样的。我们使用 $\lceil \cdot \rceil$、$\lfloor \cdot \rfloor$ 和 $\lfloor \cdot \rceil$ 来分别表示天花板函数、地板函数和四舍五入函数。逻辑与和异或分别表示为 $\land$ 和 $\oplus$。令 $1{P}$ 表示指示函数，当谓词 $P$ 为真时，$1{P}$ 为 1，$P$ 为假时，$1{P}$ 为 0。我们用带有“帽”符号的小写字母，例如 $\hat{a}$，来表示多项式，用 $\hat{a}[j]$ 表示多项式 $\hat{a}$ 的第 $j$ 个系数。我们用点符号 $\cdot$，例如 $\hat{a} \cdot \hat{b}$，来表示多项式的乘法。我们用 $Z_q = Z \cap [0, q)$ 来表示 $q \geq 2$ 时的整数模 $q$。同余式 $x \equiv y \mod 2^l$ 将简写为 $x \equiv_l y$。对于一个二次幂数 $N$，和 $q &amp;gt; 0$，我们写 $R_q$ 来表示整数多项式环 $R_q = Z_q[X] / (X^N + 1)$。我们用粗体字母如 $\mathbf{a}$、$\mathbf{M}$ 来表示向量和矩阵，用 $a[j]$ 来表示向量 $\mathbf{a}$ 的第 $j$ 个分量，用 $M[j, i]$ 来表示矩阵 $\mathbf{M}$ 的 $(j, i)$ 项。Hadamard 乘积表示为 $\mathbf{a} \odot \mathbf{b}$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;B. 加密原语&lt;/strong&gt;&lt;/p&gt;
+$$
+JxK⋅JyK≡l(JxK0+JxK1)⋅(JyK0+JyK1)≡lJxK0JyK0+JxK1JyK1+JxK0JyK1+JxK1JyK0JxK \cdot JyK \equiv_l (JxK_0 + JxK_1) \cdot (JyK_0 + JyK_1)\equiv_l JxK_0JyK_0 + JxK_1JyK_1 + JxK_0JyK_1 + JxK_1JyK_0
+$$&lt;p&gt;
+其中，混合项 $JxK_0 JyK_1$ 和 $JxK_1 JyK_0$ 是通过同态加密计算的。对于一个实值 $x ̃ \in \mathbb{R}$，我们首先将其编码为一个定点值 $x = \lfloor x ̃ 2^f \rfloor \in [-2^{l-1}, 2^{l-1})$，并在指定精度 $f &amp;gt; 0$ 下进行秘密共享。我们用 $J·; f K$ 明确表示 $f$ 位定点精度的共享值。当 $l = 1$ 时，我们使用 $JzK_B$ 表示布尔共享。此外，当所有权与上下文无关时，我们省略下标，仅写 $JxK$ 或 $JzK_B$。&lt;/p&gt;
+&lt;p&gt;2.&lt;strong&gt;遗忘传输&lt;/strong&gt;：我们依赖于遗忘传输（OT）来进行非线性计算。在一般的 1-out-of-2 OT 协议（$2^1$-OT）中，发送方输入两个长度为 $l$ 位的消息 $m_0$ 和 $m_1$，接收方输入一个选择位 $c \in {0, 1}$。协议结束时，接收方学习到消息 $m_c$，而发送方则什么也不知道。当发送方的消息相关时，相关 OT（COT）在通信上更为高效 [6]。在我们的加法 COT 中，发送方输入一个函数 $f(x) = x + \Delta$，其中 $\Delta \in Z_{2^l}$，接收方输入选择位 $c$。协议结束时，发送方学到 $x \in Z_{2^l}$，而接收方学到 $x + c \cdot \Delta \in Z_{2^l}$。在本工作中，我们使用 Ferret 协议 [77] 来实现低通信量的 COT。&lt;/p&gt;
+&lt;p&gt;3.&lt;strong&gt;基于格的加法同态加密&lt;/strong&gt;：同态加密（HE）允许在不知晓解密密钥的情况下，计算函数 $F(x)$ 的加密结果。在本研究中，我们使用基于环学习与误差（RLWE）的同态加密方案 [52]。RLWE方案由一组公共参数 $HE.pp = {N, q, t}$ 定义。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;KeyGen&lt;/strong&gt;：生成RLWE密钥对 $(sk, pk)$，其中私钥 $sk \in R_q$，公钥 $pk \in R_{q^2}$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加密&lt;/strong&gt;：RLWE密文表示为多项式元组 $(\hat{b}, \hat{a}) \in R_{q^2}$。我们使用 $RLWE_{q,t}  pk(\hat{m})$ 来表示在公钥 $pk$ 下加密的 $m \in R_t$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加法 (⊞)&lt;/strong&gt;：给定两个RLWE密文 $ct_0 = (\hat{b}_0, \hat{a}_0)$ 和 $ct_1 = (\hat{b}_1, \hat{a}_1)$，它们分别加密了 $m_0, m_1 \in R_t$，并使用相同的密钥，则操作 $ct_0 \oplus ct_1$ 计算 RLWE 元组 $(\hat{b}_0 + \hat{b}_1, \hat{a}_0 + \hat{a}_1) \in R_q^2$，并且该元组可以解密为 $\hat{m}_0 + \hat{m}_1 \mod R_t$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;乘法 (⊠)&lt;/strong&gt;：给定一个RLWE密文 $ct = (\hat{b}, \hat{a})$，它加密了 $m \in R_t$，以及一个普通多项式 $\hat{c} \in R_t$，则操作 $ct \otimes \hat{c}$ 计算元组 $(\hat{b} \cdot \hat{c}, \hat{a} \cdot \hat{c}) \in R_{q^2}$，并且该元组可以解密为$ \hat{m} \cdot \hat{c} \mod R_t$。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SIMD 编码&lt;/strong&gt;：通过选择一个素数 $t$，使得 $t \equiv 1 \mod 2N$，SIMD 技术 [66] 允许将 $v, u \in Z_t^N$ 的 N 个元素向量转换为多项式 $\hat{v}, \hat{u} \in R_t$。多项式 $\hat{v} \cdot \hat{u}$ 可以解码为按点相乘 $u \odot v \mod t$。在私有评估的上下文中，SIMD 技术可以通过一个因子 $1/N$ 来摊销按点相乘的成本。我们用 $\hat{v} := SIMD(v)$ 来表示SIMD编码，并用 $SIMD^{-1}(\cdot)$ 表示解码函数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自同态变换&lt;/strong&gt;：给定一个RLWE密文 $ct \in R_q^2$，它加密了一个多项式 $\hat{m}(X) \in R_t$，以及一个奇数 $g \in [1, 2N)$，操作 $ct&amp;rsquo; := Auto(ct, g)$ 计算新的密文 $ct&amp;rsquo; \in R_q^2$，解密后得到 $m&amp;rsquo;(X) = \hat{m}(X^g) \in R_t$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;C. &lt;strong&gt;基于Transformer的模型&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;许多现代语言预处理器，如GPT [15] 和 BERT [19]，由一个输入嵌入层和多个Transformer层组成 [70]。类似地，视觉Transformer（ViTs）[22], [5] 也采用了类似的架构，不过它们没有输入嵌入层。基于Transformer的模型主要有两个计算模块：多头注意力机制和前馈神经网络。此外，层归一化（Layer Normalization）用于两个连续层之间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多头注意力&lt;/strong&gt;：一个注意力机制 $Attention(Q, K, V)$ 计算的是 $softmax(QK^\top + M)V$，它可以被描述为将一个查询 $Q$ 和一组键值对 $(K, V)$ 映射为一个加权和。这里，$Q, K, V$ 是输入矩阵的不同线性变换。多头注意力的变体计算 $H$ 个并行的注意力：$Attention(Q_j, K_j, V_j)$，其中 $j \in [H]$，然后将这些 $H$ 个结果矩阵拼接起来。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;层归一化&lt;/strong&gt;：对于一个向量 $x \in \mathbb{R}^d$，令 $\mu = \frac{1}{d} \sum_{j} x[j] \in \mathbb{R}$ 和 $\sigma = \sum_{j \in [d]} (x[j] - \mu)^2 \in \mathbb{R}$。层归一化表示为：&lt;/p&gt;
+&lt;p&gt;$LayerNorm(x) = \gamma \cdot \frac{x - \mu}{\sigma} + \beta$&lt;/p&gt;
+&lt;p&gt;其中 $\gamma, \beta \in \mathbb{R}$ 是两个超参数。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;前馈神经网络&lt;/strong&gt;：前馈神经网络通常包括两个线性变换，并在它们之间应用激活函数，即：&lt;/p&gt;
+&lt;p&gt;$FFN(X) = W_0 \cdot F(W_1 \cdot X)$&lt;/p&gt;
+&lt;p&gt;其中，$F: \mathbb{R}^* \to \mathbb{R}^*$ 是一个激活函数，如 GeLU 或 SiLU。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;D. 威胁模型与私密推理&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;类似于之前的工作 [41], [55], [62], [36], [3]，我们针对一个静态且半诚实的概率多项式时间（PPT）对手，遵循理想/现实世界范式 [10]。也就是说，我们考虑一个计算能力有限的对手，在协议执行开始时腐化了其中一个方，并遵循协议规范，但试图学习有关诚实方输入的附加信息。BumbleBee 调用了几个小规模私密计算的子协议，概要见表 I。为了简化协议描述和安全性证明，我们使用混合模型描述 BumbleBee。一个调用功能 $F$ 的协议称为在“$F$-混合模型”中。此外，BumbleBee 中某些函数为了更好的效率进行了近似计算。根据定义 [25]，如果一个协议的近似计算揭示的输入信息不比 $F$ 本身更多，则该协议构成了 $F$ 的私密近似。&lt;/p&gt;
+&lt;p&gt;在私密 2PC 推理（图 2）中，服务器 $S$ 持有一个 transformer 模型，而客户端 $C$ 向该模型发送查询，如一段文本。假设 $S$ 和 $C$ 均为半诚实模型，BumbleBee 使得 $C$ 只能得知两项信息：transformer 的架构和推理结果。$S$ 要么可以得知结果，要么什么都不能得知，具体取决于应用场景。关于 $C$ 的私密输入和 $S$ 的模型权重的所有其他信息应保持秘密。威胁模型的正式定义见附录。&lt;/p&gt;
+&lt;h2 id=&#34;安全矩阵乘法&#34;&gt;安全矩阵乘法
+&lt;/h2&gt;&lt;p&gt;在私有变换器推理中，我们需要两种类型的矩阵乘法：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;共享矩阵与明文矩阵的乘法。例如，对于每个Transformer模块（参见图2），我们计算共享输入矩阵（由前一个模块计算得出）与服务器的明文权重矩阵之间的乘法。&lt;/li&gt;
+&lt;li&gt;注意力机制内部两个秘密共享矩阵的乘法。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我们提出了一种原语，称为&amp;quot;隐式线性变换&amp;quot;（Oblivious Linear Transformation，OLT），用于实现这两种矩阵乘法。我们将OLT描述为一种二方协议，分别从两个方获取两个私有矩阵Q和V，并生成它们之间的共享矩阵JQVK。通过OLT原语，我们可以使用一次OLT执行计算共享矩阵JQK和明文矩阵V之间的乘法。另一方面，对于两个共享矩阵的乘法，我们需要进行两次OLT。也就是说，我们通过两个OLT计算两个混合项JQK1 · JVK0和JQK0 · JVK1。&lt;/p&gt;
+&lt;h3 id=&#34;基于同态加密he的olt现有方法&#34;&gt;基于同态加密（HE）的OLT现有方法
+&lt;/h3&gt;&lt;p&gt;我们的出发点是许多研究中使用的基于同态加密（HE）的OLT方法，例如[54]、[36]、[33]（以下简称为KRDY风格）。KRDY需要两个函数：
+πlhs : Zkw×mw  2l 7→ R2l 和 πrhs : Zmw ×nw  2l 7→ R2l，用于将矩阵编码为可以使用RLWE加密的多项式系数。假设 1 ≤ kw · mw · nw ≤ N，这两个函数定义如下：
+qˆ := πlhs(Q) 和 vˆ := πrhs(V)，使得
+(1) qˆ[0] = Q[i, j]，当 i = 0 且 j = 0 时，
+qˆ[N + i · kw · mw − j] = −Q[i, j]，当 i = 0 且 j ∈ [mw]/{0} 时，
+qˆ[i · kw · mw − j] = Q[i, j]，当 i &amp;gt; 0 且 j ∈ [mw] 时，
+vˆ[k · mw + j] = V[j, k]，当 j ∈ [mw] 且 k ∈ [nw] 时。
+qˆ 和 vˆ 的所有其他系数设置为0。
+乘积多项式 qˆ · vˆ 直接给出结果矩阵 QV 的一些系数，如以下命题所示。&lt;/p&gt;
+&lt;p&gt;命题 1. [54，改编] 假设 1 ≤ kw · mw · nw ≤ N。给定两个多项式 qˆ = πlhs(Q)，vˆ = πrhs(V) ∈ R2l，乘法 U ≡l Q · V 可以通过在环 R2l 上计算多项式的乘积 uˆ = qˆ · vˆ 来评估。即 U[i, k] = uˆ[i · mw · nw + k · mw]，对于所有 i ∈ [kw]，k ∈ [nw]。&lt;/p&gt;
+&lt;p&gt;图3提供了πlhs和πrhs编码方法背后的基本思想的简单示意图。在OLT的背景下，我们让P0使用P0的密钥将同态加密的RLWEpk0(πlhs(Q))发送给P1。然后，P1可以通过单次同态乘法，即RLWEpk0(πlhs(Q))⊠πrhs(V)，同态地评估矩阵乘法 Q · V。为了将加密后的矩阵转换为算术共享，P0和P1接着共同调用FH2A功能（参见表I）。当矩阵形状 k·m·n &amp;gt; N 时，我们可以将其拆分成更小的子矩阵，并将KRDY应用于每对对应的子矩阵。我们将划分窗口表示为(kw, mw, nw)。&lt;/p&gt;
+&lt;p&gt;在通信成本方面，KRDY需要交换 O(min(km / kwmw, mn / mwnw) + kn / kwnw) 个密文。与[55]、[62]中使用的其他基于HE的OLT方法相比，KRDY OLT不需要任何旋转（在HE中旋转操作非常昂贵），因此相对高效。然而，KRDY OLT的结果中有许多“无用”的系数。根据命题1，结果多项式uˆ中只有kwnw个系数是“有用的”，而N个系数中KRDY仍然需要传输整个uˆ的RLWE密文进行解密，这可能会浪费通信资源。为了提供一个例子，我们考虑一个在变换器模型中常用的维度集合，如k = 16，m = 768，n = 3072。在这种情况下，KRDY协议可能需要交换约25MB的密文。这可能是一个可观的通信开销，因为变换器模型通常包含数百个这样的超大规模矩阵。接下来的部分将详细讨论减少这种通信负担的方法。&lt;/p&gt;
+&lt;h3 id=&#34;通过密文打包的首次尝试&#34;&gt;通过密文打包的首次尝试
+&lt;/h3&gt;&lt;p&gt;我们的首次尝试是将PackLWEs [13]过程应用于KRDY，我们将其称为KRDY+。PackLWEs过程允许我们从多个RLWE密文中选择任意系数，并通过执行同态自同构将它们组合成一个单一的RLWE密文。在KRDY+的情况下，我们可以将密文数量从 O(kn/(kwnw)) 减少到 O(kn/N)，代价是 O(kn) 的同态自同构操作。再次考虑矩阵形状 (k, m, n) = (16, 768, 3072)。现在，KRDY+交换大约2.9 MB的密文，相较于KRDY的25 MB，这是一个显著的减少。然而，在HE中，自同构操作非常缓慢，实际上对于具有较大kn的矩阵，KRDY+使用的自同构可能比同态乘法本身更为计算密集。&lt;/p&gt;
+&lt;h3 id=&#34;密文交织优化&#34;&gt;密文交织优化
+&lt;/h3&gt;&lt;p&gt;我们在矩阵乘法的背景下提出了针对PackLWEs过程[13]的专门优化。其主要思路是，与其按照PackLWEs过程逐个“挑选”有用的系数，我们更倾向于“清理”结果密文中的无用系数，然后将它们合并成一个单一的密文。我们简要描述清理过程。让我们以 N = 8 和 aˆ(X) = ∑ᵢ=0⁷ aiXi 为例。根据定义，自同构Auto(ˆa, 9)生成 ∑ᵢ=0⁷ aiXi·9，这相当于 ∑ᵢ=0³ a2iX2i − ∑ᵢ=0³ a2i+1X2i+1 mod X8 + 1。在这里，奇数位置的系数符号被翻转。因此，评估 ˆa + Auto(ˆa, N + 1) 会消除奇数索引的系数，并将偶数索引的系数加倍。更一般地，令我们计算 ˆa + Auto(ˆa, N/2j + 1) 对于任何 N 的2的幂因子。再次以N = 8为例，我们考虑 2j = 2。Auto(ˆa, 8/2 + 1) 等于 ∑ᵢ=0⁷ aiXi·5 ≡ a0 − a2X2 + a4X4 − a6X6 + ∑ᵢ≠0 mod 2 aiXi·5。简而言之，2j倍数位置的系数符号被翻转。假设对于所有 i ≠ 0 mod 2j 的 ˆa[i] 系数已经为零。那么，ˆa + Auto(ˆa, N/2j + 1) 会消除2j的奇数倍位置的系数，同时加倍偶数倍位置的系数。我们定义一个函数 ZeroGap(ˆa, 2r)，它重复公式 r 次 ˆa := aˆ + Auto(ˆa, N/2j + 1) 对于 j = 0, 1, · · · , r − 1。执行这些操作后，结果是一个多项式，其中只有在2r倍数位置的系数是非零的。然而，这些系数被2r的倍数缩放。为了修正这个缩放，我们首先将多项式乘以逆缩放因子 2−r mod q。这隐式地要求使用奇数模数q，这在使用模数 q ≡ 1 mod 2N 的基于RLWE的HE中通常是满足的。此外，ZeroGap过程要求两个需要的系数之间的间隔是2的幂数。这等同于πlhs和πrhs编码中的分区窗口 mw。请注意，只要满足 1 ≤ kwmwnw ≤ N，可以自由选择这个分区窗口。&lt;/p&gt;
+&lt;p&gt;有了ZeroGap过程，我们提出了我们的关键贡献之一，即InterLeave过程。InterLeave过程将2r个多项式交织成一个单一的多项式，输入系数以2r步的跨度排列。我们首先给出InterLeave的简单版本，如图4所示。在这个简单版本中，我们分别对每个输入多项式应用ZeroGap过程（步骤2到步骤5）来清理无关系数。然后，我们通过简单的旋转-求和计算（步骤6到步骤8）得到最终结果。我们想强调的是，密文域中的系数旋转可以比SIMD旋转[32]更高效地实现。事实上，图4计算了 O(r · 2r) 次自同构操作，将 N 个系数合并成一个多项式。图5给出了一个InterLeave（简单版本）的玩具示例。&lt;/p&gt;
+&lt;p&gt;最终版本。我们现在展示图6中的优化版本，它将图4中的复杂度从 O(r · 2r) 次自同构操作降低到了 O(2r) 次自同构操作。我们将展示这个优化版本的直觉。直观上，利用自同构函数的双线性性质，将两个具有相同索引的自同构操作合并为一个自同构操作是合理的。即，对于任何有效的索引 g，两个自同构操作的和 Auto(ˆa, g) + Auto(ˆb, g) 等于对多项式和的自同构操作。然而，应用相同自同构索引的多项式在求和步骤（图4的步骤8）之前，需要先进行不同单位的右移（即图4的步骤6）。为了解决这个问题，我们利用以下方程。即，当 ˆb[i] = 0 对于所有 i ≠ 0 mod 2j 时，&lt;/p&gt;
+$$
+Auto(ˆa,N/2j+1)+Auto(ˆb,N/2j+1)⋅X2j=Auto(ˆa−ˆb⋅X2j,N/2j+1)Auto(ˆa, N/2j + 1) + Auto(ˆb, N/2j + 1) \cdot X^{2j} = Auto(ˆa - ˆb \cdot X^{2j}, N/2j + 1)
+$$$$
+Auto(ˆb,N/2j+1)⋅X2jAuto(ˆb, N/2j + 1) \cdot X^{2j}
+$$$$
+Auto(−ˆb⋅X2j,N/2j+1)Auto(-ˆb \cdot X^{2j}, N/2j + 1)
+$$&lt;p&gt;
+这样，我们就可以利用双线性特性，将具有相同索引的两个自同构操作合并为一个自同构操作。&lt;/p&gt;
+&lt;h3 id=&#34;提出的olt协议&#34;&gt;提出的OLT协议
+&lt;/h3&gt;&lt;p&gt;我们现在在算法1中描述我们的OLT协议。前三个步骤与KRDY风格的协议 [54]，[36] 类似。具体来说，我们将一个大矩阵分割成子块，并使用 πlhs 和 πrhs 将每个块编码为多项式。然而，在我们的方案中，我们故意选择了一个2的幂次方的分区窗口 mw。我们协议与他们的主要区别在于，在步骤4中使用了 InterLeave 操作，以减少RLWE密文的数量，从 O(kn/(kwnw)) 降低到 O(kn/N )。解析交织多项式并构造结果矩阵的过程在附录的图8中进行了说明。为了在计算和通信开销之间取得良好的平衡，选择合适的分区窗口 mw 是至关重要的。较小的 mw 值可能会在步骤1中过度增加通信开销，而较大的 mw 值会导致步骤4中更多的同态自同构操作。给定矩阵形状 (k, m, n) 和分区窗口 (kw, mw, nw)，步骤1中发送的密文数量为 n1 := m′·min(k′, n′)。执行 InterLeave 所需的同态自同构操作总数为 n2 := ⌈k′n′/mw⌉mw。交织后，步骤5中发送的密文数量为 n3 := ⌈ k′n′ / mw ⌉。为了选择合适的分区窗口，我们可以通过最小化以下目标函数来优化：&lt;/p&gt;
+&lt;p&gt;$\ argmin_{kw, mw, nw} ; PC \cdot n2 + PB \cdot (n1 + n3)$&lt;/p&gt;
+&lt;p&gt;其中，mw 必须是2的幂，并且满足 $1 \leq kw \cdot mw \cdot nw \leq N$ 的约束。这里，PC 表示计算一个同态自同构操作的成本，PB 表示发送一个密文的成本。较小的 PC/PB 比率可能表明计算能力强大或带宽受限的情景。在这种情况下，我们倾向于选择较大的 mw。相反，如果带宽充足，可以选择较小的 mw 值，以减轻密文交织所需的时间。&lt;/p&gt;
+&lt;p&gt;复杂度。根据我们的经验结果，选择 mw ≈ √N 是一个可行的选择。然后，算法1中的协议需要大约 O(kn/√N) 次同态自同构操作用于密文交织。相比之下，KRDY+ 基准协议需要 O(kn) 次同态自同构操作。举个例子，设 mw = 26 且 N = 213。在这种设置下，我们协议的密文压缩时间大约是 KRDY+ 密文压缩时间的 1/26 ≈ 1.6%。KRDY+ 和我们协议的通信开销都是 O(kn/N) 个密文。请注意，BOLT 的主模OLT可能根据矩阵维度 [58] 需要更少的同态自同构操作 O(pk²m²n/N²)。&lt;/p&gt;
+&lt;p&gt;安全性。我们仅增加了一个密文压缩步骤来减少通信开销，我们发送的信息是 KRDY 协议的子集，因此我们的安全级别与其相同。定理1的证明参考了 [54]，[36]。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;算法 1 提议的不可知线性变换 \( $ \Pi_{OLT} $\)&lt;/strong&gt;&lt;/p&gt;
+$$ Q \in \mathbb{Z}^{k \times m} $$$$ 2^l $$$$ V \in \mathbb{Z}^{m \times n} $$$$ 2^l $$&lt;p&gt;。&lt;/p&gt;
+$$ JUK $$$$ U \equiv_l Q \cdot V $$$$ pp = (\text{HE.pp}, pk, (kw, mw, nw)) $$&lt;ul&gt;
+&lt;li&gt;大小 \( mw \) 是一个 2 的幂，且&lt;br&gt;
+$$ 1 \leq kw \cdot mw \cdot nw \leq N $$&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;/ul&gt;
+$$ k&#39; = \lceil \frac{k}{kw} \rceil $$$$ m&#39; = \lceil \frac{m}{mw} \rceil $$$$ n&#39; = \lceil \frac{n}{nw} \rceil $$$$ \tilde{m} = \lceil \frac{k&#39; \cdot n&#39;}{mw} \rceil $$&lt;ul&gt;
+&lt;li&gt;注意：如果&lt;br&gt;
+$$ k&#39; &gt; n&#39; $$，则交换发送方和接收方的角色。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$ Q_{\alpha, \beta} \in \mathbb{Z}^{kw \times mw} $$$$ \hat{q}_{\alpha, \beta} := \pi_{\text{lhs}}(Q_{\alpha, \beta}) $$$$ ct&#39;_{\alpha, \beta} := \text{RLWE}_{q, 2l}^{pk} (\hat{q}_{\alpha, \beta}) $$&lt;p&gt;&lt;br&gt;
+发送给 \( R \)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$ V_{\beta, \gamma} \in \mathbb{Z}^{mw \times nw} $$$$ \hat{v}_{\beta, \gamma} := \pi_{\text{rhs}}(V_{\beta, \gamma}) $$&lt;p&gt;&lt;br&gt;
+其中 \( \beta \in [m&#39;] \) 且 \( \gamma \in [n&#39;] \)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$ \{ct&#39;_{\alpha, \beta}\} $$$$ c[\alpha \cdot n&#39; + \gamma] := \bigoplus_{\beta \in [m&#39;]} ct&#39;_{\alpha, \beta} \odot \hat{v}_{\beta, \alpha} $$&lt;p&gt;&lt;br&gt;
+对于 \( \alpha \in [k&#39;] \)，\( \gamma \in [n&#39;] \)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$ \tilde{c}[\theta] := \text{InterLeave}([c[\theta \cdot mw], c[\theta \cdot mw + 1], \cdots \mid \{z\} mw]) $$&lt;p&gt;&lt;br&gt;
+对于 \( \theta \in [\tilde{m}] \)。&lt;br&gt;
+▷ 当 \( k&#39; \cdot n&#39; \) 无法被 \( mw \) 整除时，填充零。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$ \hat{c}_{i, 0}, \hat{c}_{i, 1} \leftarrow \text{FH2A}(\tilde{c}[i]) $$$$ JUK_l := \text{ParseMat}(\hat{c}_{0, l}, \hat{c}_{1, l}, \cdots) $$&lt;p&gt;&lt;br&gt;
+来获取各自的分享。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;定理 1. 算法 1 中的协议 ΠOLT 在 FH2A 混合模型下，能够在半诚实对手存在的情况下，私密地实现 OLT 功能。&lt;/p&gt;
+&lt;p&gt;E. 进一步优化&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;批量矩阵乘法：回顾一下，变换器模型中的每个多头注意力涉及 H &amp;gt; 1 个并行的矩阵乘法，例如，Qj · Kj，其中 j ∈ [H]。当这些结果矩阵较小时，即 |Qj · Kj| ≤ N/2 时，我们倾向于应用 InterLeave 对批量乘法的密文进行压缩。简而言之，批量乘法的 O(H) 个 RLWE 密文将进一步打包成 O((H · kn)/N) 个密文。&lt;/li&gt;
+&lt;li&gt;动态压缩策略：我们采用一种动态的密文压缩策略，使我们能够在减少通信成本和增加计算成本之间取得平衡。具体来说，当只有一个 RLWE 密文需要发送时，即 ⌈k/kw⌉ · ⌈n/nw⌉ = 1，我们不使用任何密文压缩。另外，当 kn ≪ N 时，我们使用 PackLWEs 而不是 InterLeave，因为前者在小规模情况下可以运行得更快。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;基于-rlwe-的更快批量-ole&#34;&gt;基于 RLWE 的更快批量 OLE
+&lt;/h2&gt;&lt;p&gt;除了矩阵乘法，变换器模型中还需要标量乘法（或按批次处理的 Hadamard 乘积）。我们使用符号 Batch OLE（bOLE）[17] 来描述一个二方计算协议，该协议接收一个发送方 S 的向量 x 和接收方 R 的向量 y，并生成它们 Hadamard 乘积的秘密共享 Jx ⊙ yK。在私有推理的背景下，我们证明了带误差的 bOLE 变体（bOLEe）是足够的。我们可以使用更小的 RLWE 参数构建更高效的 bOLEe 协议。我们的 bOLEe 可能会在最终输出中引入最低有效位（LSB）误差。然而，由于在多方计算（MPC）中使用了定点表示，这些 LSB 误差将通过后续的截断被移除，因此我们的方法不会影响整体准确性。与 [63] 中基于 RLWE 的 bOLE 类似，我们还应用了 SIMD 技术 [66] 来实现 bOLE，但具有更好的摊销效率。在 [63] 中，发送方 S 对其私有输入 x ∈ ZN 2l 进行预处理为 SIMD(x)，并将密文 RLWEq,t S (SIMD(x)) 发送给接收方 R。然后，R 回应密文 RLWEq,t S (SIMD(x)) ⊠ SIMD(y) ⊞ SIMD(r) 给 S，r 是一个掩码向量，r ∈ ZN 。实际上，这里的算术运算 x⊙y+r 是在模 t 下进行的，尽管 x 和 y 中的值来自环 Z2l 。由于模 t 与 2l 不可整除，掩码向量 r 应从更大的环中采样以提供统计安全性。具体来说，[63] 从 ZN 22l+σ 中采样 r，以提供 σ 位的统计安全性。此外，为了防止加法溢出，他们需要设置一个较大的明文模 t &amp;gt; 22l+σ+1。我们展示了如何避免这种额外的 σ 位开销，代价是引入 1 位的 LSB 误差。基本上，我们使用提升函数在质数明文模 t 上引入一个中间层的 2l 模。
+Lift(x) : ZN 2l → ZN t 通过 ⌊ t / 2l · x⌉ mod t
+Down(y) : ZN t → ZN 2l 通过 ⌊ 2l / t · y⌉ mod 2l&lt;/p&gt;
+&lt;p&gt;命题 2. 如果 t &amp;gt; 22l，则对于任意 x, y ∈ Z2l，有 Down(Lift(x)·y mod t) ≡l x·y。也就是说，我们可以在质数模 t 上进行模 2l 运算。&lt;/p&gt;
+&lt;p&gt;证明. 只需证明误差项可以被舍入为零。Lift(x) · y mod t 可以写为 t / 2l · ((x · y mod 2l) + re · y，其中 re 是舍入误差，|re| ≤ 1/2。然后，误差项被舍入为 ⌊ 2l / t · (re · y)⌉ = 0，当 t &amp;gt; 22l 且 y &amp;lt; 2l 时。
+现在，我们可以使用信息学随机掩码 r ∈ ZtN 代替统计掩码。结果中可能会引入 1 位误差。&lt;/p&gt;
+&lt;p&gt;命题 3. 设 u′ := Down(Lift(x) · y − r mod t)，v′ := Down(r)，其中 x, y ∈ Z2l 且 r ∈ Zt。如果 t &amp;gt; 22l 且 r 在 Zt 上均匀分布，则 u′ + v′ ≡l x · y + e，其中 e ∈ {0, ±1}。&lt;/p&gt;
+&lt;p&gt;算法 2 带误差的 bOLE 协议 ΠbOLEe&lt;/p&gt;
+&lt;p&gt;输入：
+发送方 S：x ∈ ZN 2l ，私钥 sk。
+接收方 R：y ∈ ZN 2l 。
+公共参数 pp = {N, t}，其中 t = 1 mod 2N 为质数，且 t &amp;gt; 22l，以及公共密钥 pk。&lt;/p&gt;
+&lt;p&gt;输出：
+JzK ∈ ZN 2l，使得 ∥z − x ⊙ y mod 2l∥∞ ≤ 1。&lt;/p&gt;
+&lt;p&gt;步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;S 将 RLWEq,t pk (xˆ) 发送给 R，其中 xˆ := SIMD(Lift(x))。&lt;/li&gt;
+&lt;li&gt;R 计算 yˆ := SIMD(y)。&lt;/li&gt;
+&lt;li&gt;收到密文 RLWEq,t sk (xˆ) 后，R 计算 ct := RLWEq,t pk (xˆ) ⊠ yˆ。&lt;/li&gt;
+&lt;li&gt;JuˆK ← FH2A(ct) 将其转换为算术共享。假设 S 的共享为 JuˆK0 ∈ Rt，R 的共享为 JuˆK1 ∈ Rt。请注意，我们让 FH2A 函数来捕捉电路隐私（参见备注 1）。&lt;/li&gt;
+&lt;li&gt;S 输出 Down(SIMD−1(JuˆK0))。&lt;/li&gt;
+&lt;li&gt;R 输出 Down(SIMD−1(JuˆK1))。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;该证明基本遵循 [36, 完整版本，附录 C] 中的类似论证。&lt;/p&gt;
+&lt;p&gt;定理 2. 算法 2 中的协议 ΠbOLEe 在 FH2A 混合模型下，能够在半诚实对手存在的情况下，私密地实现 bOLEe 功能（参见表 I）。
+定理 2 的正确性简单地遵循 SIMD 打包和命题 3。对于具体的改进，我们的 bOLEe 协议在 l = 64 时需要 t ≈ 2128，而 [63] 的方法需要更大的 t ≈ 2168。我们的实证结果表明，我们的协议比他们的协议快约 1.3 倍。&lt;/p&gt;
+&lt;h2 id=&#34;激活函数协议&#34;&gt;激活函数协议
+&lt;/h2&gt;&lt;p&gt;我们首先描述用于 GeLU 函数的协议。本节中描述的方法和优化也可以应用于其他函数，如 SiLU 和 ELU（见附录 D）。&lt;/p&gt;
+&lt;p&gt;A. 高斯误差线性单元（GeLU）&lt;/p&gt;
+&lt;p&gt;GeLU 函数的常见定义是：&lt;/p&gt;
+&lt;p&gt;$GeLU(x)=0.5x(1+tanh⁡(2π(x+0.044715x3))).\text{GeLU}(x) = 0.5x(1 + \tanh\left(\frac{\sqrt{2}}{\pi}(x + 0.044715x^3)\right)).$&lt;/p&gt;
+$$
+\text{Seg4GeLU}(x) = 
+\begin{cases}
+-\epsilon &amp; \text{if } x &lt; -5 \\
+P_3(x) &amp; \text{if } -5 \leq x \leq -1.97 \\
+P_6(x) &amp; \text{if } -1.97 \leq x \leq 3 \\
+x - \epsilon &amp; \text{if } x &gt; 3
+\end{cases}
+$$&lt;p&gt;
+其中 $P_b(x)$ 是近似 GeLU 函数的 b 次多项式，定义在一个较短的区间上。例如，设定 $\epsilon = 10^{-5}$，我们绘制了 Seg4GeLU 如图 7a 所示。从图中可以看到，Seg4GeLU 很好地近似了 GeLU 函数。&lt;/p&gt;
+&lt;p&gt;我们在算法 3 中的 GeLU 协议基本上遵循（2），使用 Fless 和 Fmux 进行分支选择。为了进一步提高效率，我们讨论并引入了三个独立的优化，这些优化在之前的研究工作 [58]、[49]、[24]、[21] 中未提及。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;近似分支选择&lt;/strong&gt;：第一个优化利用了激活函数的平滑性。具体来说，我们首先找到近似多项式 $P_3(x)$ 和 $P_6(x)$，使得 $P_3(x) \approx P_6(x)$，特别是在枢轴点附近，例如在我们的案例中，$x = -1.97$。公式（2）中的选择可以通过一个小于协议 $1{x &amp;lt; y}$ 来私密地实现，其中 $x, y \in Z_{2l}$。基于这些观察，我们建议计算小于位时忽略一些低位 f′ 位，以减少通信开销。这是一个常见的优化方法，用于在固定点值的秘密共享上执行比较。然而，确保正确的近似多项式至关重要，因为超出枢轴点的波动可能会破坏近似。经验表明，近似的分段选择有助于将算法 3 中 GeLU 协议的通信开销减少 5%。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;批量（近似）分支选择&lt;/strong&gt;：我们的第二个优化是针对 [46] 和 [36] 中基于 OT 的 MSB 协议。该协议使用公式 $MSB(JxK_0) \oplus MSB(JxK_1) \oplus 1{(JxK_0 \mod 2^{l-1}) + (JxK_1 \mod 2^{l-1}) \geq 2^{l-1}}$ 计算算术共享 $JxK$ 的 MSB，其中最后一位的计算需要一个 $M_1$-OT2。因此，对于公式（2）中的分支选择，我们需要 3 次 $M_1$-OT2 调用。请注意，这些“批量”比较是通过一个秘密共享和多个明文阈值进行的。通过这种安排，我们可以将 3 次 $M_1$-OT2 调用合并为一次 $M_1$-OT6，即在 6 位消息上进行 1-of-M OT。尽管这种 OT 组合可能不会显著减少通信开销，但根据我们的实验，它可以将 GeLU 的计算时间减少 35%。这是因为在使用 Ferret OT 时，调用一次 $M_1$-OT2 和调用一次 $M_1$-OT6 的运行时间相似。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优化多项式评估&lt;/strong&gt;：对于公式（2）中的 $P_3(x)$ 和 $P_6(x)$ 的评估，我们建议使用更快的平方协议 $\Pi_{\text{square}}$ 来计算所有偶次幂项，如 $x^2$、$x^4$ 和 $x^6$。实际上，在 2PC 中，执行平方操作的成本是标准乘法操作的一半。此外，我们还提出通过减少一半的通信成本来优化奇次幂项的计算。举个例子，考虑给定 $JxK$ 和 $Jx^2K$ 时，如何计算 $Jx^3K$。我们可以使用两次 bOLE 调用来计算 $Jx^3K$，即 $FbOLE(JxK_0, Jx^2K_1)$ 和 $FbOLE(Jx^2K_0, JxK_1)$。对于算法 2 中的 bOLE 构造，P0 将 SIMD(Lift(JxK_0)) 和 SIMD(Lift(Jx^2K_0)) 的密文发送给 P1。我们注意到，当计算 $Jx^2K$ 和 $Jx^4K$ 时，这两个密文已经被发送给 P1。因此，为了计算立方项，玩家可以跳过算法 2 中的步骤 1，按照其余步骤相同地执行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;权衡。在我们的评估中，我们证明了这三种优化可以使时间减少35%，通信减少7%。需要注意的是，这些改进伴随着近似误差的增加。具体来说，我们的GeLU评估的平均ULP误差约为11，而[58]的平均ULP误差为4。此外，我们在四个transformer模型中测试了提出的GeLU协议，结果表明推理精度的降级非常小，不超过1%。我们认为这是精度和效率之间的合理权衡。&lt;/p&gt;
+$$
+softmax(x)[i]=exp⁡(x[i]−xˉ)∑jexp⁡(x[j]−xˉ),\text{softmax}(x)[i] = \frac{\exp(x[i] - \bar{x})}{\sum_j \exp(x[j] - \bar{x})},
+$$&lt;p&gt;
+其中 $\bar{x}$ 是输入向量 $x$ 的最大元素。对于二维矩阵，我们对其每一行向量应用公式(3)。值得注意的是，公式(3)中的所有指数操作的输入都是负数。我们利用负操作数来加速私有softmax。具体来说，我们通过简单的裁剪分支来近似指数操作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于 $x \in [T_{\text{exp}}, 0]$，我们有 $\exp(x) \approx 1 + \frac{x}{2^n}$；&lt;/li&gt;
+&lt;li&gt;对于 $x &amp;lt; T_{\text{exp}}$，则 $\exp(x) \approx 0$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;对于裁剪范围 $T_{\text{exp}}$，我们简单地设置 $T_{\text{exp}}$ 使得 $\exp(T_{\text{exp}}) \approx 2^{-f}$，其中 $f$ 是定点精度。假设我们设置 $f = 18$，那么我们设置 $T_{\text{exp}} = -13$，因为 $\exp(-13) &amp;lt; 2^{-18}$。当 $T_{\text{exp}}$ 固定后，我们可以经验性地设置泰勒展开的次数 $n$。例如，在我们的实验中，对于 $T_{\text{exp}} = -13$，我们设置 $n = 6$，以使平均误差在 $2^{-10}$ 之内。此外，我们还使用上一节提出的近似“小于”操作进行分支选择，因为负输入的指数操作也是平滑的。通过调用 $F_{\text{tnrunc}}$ 可以实现除以 $2^n$，而 $2^n$ 的幂运算是通过一系列的 $\Pi_{\text{square}}$ 来计算的。&lt;/p&gt;
+&lt;p&gt;C. &lt;strong&gt;混合位宽评估&lt;/strong&gt;
+在运行我们的激活协议之前，我们可以先将共享值切换到较小的环 $l&amp;rsquo; &amp;lt; l$ 以节省通信开销。大环 $Z_{2^l}$ 到小环 $Z_{2^{l&amp;rsquo;}}$ 的共享转换可以通过局部设置 $JxK_l \mod 2^{l&amp;rsquo;}$ 来完成。反方向的转换，我们结合了[61]中的环扩展协议和[16]中的启发式优化。在我们的实现中，每次从 $Z_{2^{l&amp;rsquo;}}$ 到 $Z_{2^l}$ 的转换将在两轮中交换大约 $O(2^{(l - l&amp;rsquo;)})$ 位。这个混合位宽评估的主要问题是乘法引起的溢出。例如，双精度定点 $2^f$ 可能已经大于 $l&amp;rsquo;$。为了解决这个问题，我们必须做出两个妥协：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用额外一次对 $F_{\text{trunc}}$ 的调用来降低激活函数中的定点精度；&lt;/li&gt;
+&lt;li&gt;缩小近似区间或增加分支数，以便可以使用较低次数的多项式。&lt;/li&gt;
+&lt;/ol&gt;
+$$
+GeLU(x)≈P4(x)=0.5x+∑i=04ci∣x∣iforx∈[−2.7,2.7].\text{GeLU}(x) \approx P_4(x) = 0.5x + \sum_{i=0}^{4} c_i |x|^i \quad \text{for} \quad x \in [-2.7, 2.7].
+$$&lt;p&gt;
+在我们的一些实验中，我们对GeLU应用了这个 $P_4(x)$，但对于SiLU函数，我们仍然需要使用两个多项式。&lt;/p&gt;
+&lt;h2 id=&#34;related-work&#34;&gt;&lt;strong&gt;RELATED WORK&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Low Communication OLT&lt;/strong&gt;
+许多利用同态SIMD [66] 技术的工作可以直接用于OLT功能，并具有相对较小的通信开销，例如 [32]、[12]、[39]、[35] 等。SIMD技术要求使用质数明文模数 $t$，而不是秘密共享中使用的 $2^l$ 模数。可以利用中国剩余定理接受来自 $Z_{2^l}$ 的秘密共享，但这会使得同态加密侧的计算和通信开销大大增加。另一种构建低通信OLT的策略是使用向量隐式线性评估（VOLE）[9]、[77]、[7]，正如CipherGPT [34]中提出的。然而，这种基于VOLE的方法要求较大的矩阵维度 $k \approx 10^7$ 才能实现低（摊销）通信，因此只适用于自回归变换器。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Non-linear Functions&lt;/strong&gt;
+对于softmax函数，[45]、[68] 也使用泰勒级数 $(1 + x/2^n)^{2^n}$ 来近似指数运算，只是他们没有应用范围裁剪。例如，CryptGPU根据对一些数据集的检查经验性地设置了 $n = 9$。SiRNN [61] 使用查找表进行初步猜测，并通过几次牛顿迭代进行修正。这些方法提供了精确的指数运算，但在2PC中计算开销较大。[80] 使用另一种数值方法近似softmax函数。然而，它可能需要超过64轮乘法，这使得它在通信上非常密集。Kelkar等人[42]提出了一种新的2PC指数协议，但由于失败概率，它的局限性在于必须使用较大的环 $l \approx 128$ 或严格约束输入域（例如，$|x| \leq 5$）。[49] 通过加扰电路[78]使用12个一次多项式来近似激活函数。最近的研究方法也[20]、[21]、[24]、[58] 使用多个低次多项式来近似GeLU函数。然而，这些方法都没有考虑GeLU函数的平滑性以及批量比较来减少分支选择的开销。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Private Transformer Inference (2PC)&lt;/strong&gt;
+Iron [33]、BOLT [58] 和 CipherGPT [34] 是为变换器设计的2PC推理框架。这三个框架都大量复用了SiRNN框架 [61]、[23] 中基于OT的协议来评估激活函数。BOLT [58] 被认为是安全的双方变换器推理的最先进框架。BumbleBee与BOLT共享一些设计元素，例如非线性函数的分段近似和使用同态加密（HE）的私有矩阵乘法。然而，BumbleBee在通信效率方面超越了BOLT（见图1）。BumbleBee优于BOLT的主要原因总结如下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;共享类型一致的乘法&lt;/strong&gt;
+BOLT的矩阵乘法协议在质数模数$p$上运行，而他们的非线性协议则在环模数$2^l$上运行。在私有推理过程中，它们必须在不同的共享类型之间来回切换。为了集成环到质数的转换（例如，参考[42]），BOLT需要一种特殊的共享乘法，其中输出的位宽可以大于输入的位宽。具体来说，BOLT复用了EzPC框架[23]、[61]中的基于OT的协议来实现这种不均匀的共享乘法。相比之下，在BumbleBee中，矩阵乘法协议和共享乘法协议都在环模数$2^l$上运行。这些共享类型一致的乘法使我们能够基于HE构建更高效的共享乘法协议。现有的工作如[63]已经表明，基于HE的共享乘法协议在通信方面比基于OT的协议高效5到6倍。需要注意的是，我们进一步优化了[63]的通信开销，提升了1.3倍。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;平方操作的成本是标准乘法的一半&lt;/strong&gt;
+为了私密评估分段函数，我们需要对秘密共享输入$JxK$评估低次多项式。BOLT采用霍纳法则来评估多项式。例如，BOLT评估一个四次多项式如下：&lt;/p&gt;
+&lt;p&gt;$P4(JxK)=(((((a4⋅JxK+a3)⋅JxK)+a2)⋅JxK)+a1)⋅JxK+a0,P_4(JxK) = (((((a_4 \cdot JxK + a_3) \cdot JxK) + a_2) \cdot JxK) + a_1) \cdot JxK + a_0$,&lt;/p&gt;
+&lt;p&gt;这需要3次标准的共享乘法。BOLT通过Motzkin多项式预处理将标准乘法的次数减少到2次。相比之下，在BumbleBee中，我们倾向于利用平方操作，因为执行平方操作的成本是标准乘法操作的一半。例如，我们需要两个平方操作（用于二次项和四次项）以及“一半”的标准乘法（用于三次项）来评估四次多项式，更不用说更高效的共享乘法协议了。我们评估低次多项式的方式也比BOLT使用的霍纳法则更高效，尤其是在私有计算的背景下。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Lower Communication OT&lt;/strong&gt;
+最后一个优势来自于OT协议的具体选择。具体来说，BOLT选择使用IKNP OT [38]作为其基础OT协议，而我们则利用Ferret OT [77]。Ferret OT的通信开销比IKNP OT小，但代价是更多的本地计算。我们在工程上进行了努力，将Ferret OT集成到多核CPU中，以最小化其运行时间，包括跨多个线程的同步。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;从上述总结来看&lt;/strong&gt;，我们强调了支持环模数的矩阵乘法协议的重要性。正是我们乘法协议中的共享类型一致性，使得BumbleBee能够显著超越BOLT。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;私有变换器推理 ((2+1)-PC)&lt;/strong&gt;
+最近的研究，如[48]、[31]、[67]、[30]，已经探讨了双方（例如S和C）可以访问受信任第三方（TTP）帮助的场景。这些方法通常将私有计算过程分为两个独立的阶段：初步预处理阶段，随后是评估阶段。值得注意的是，在预处理阶段，TTP负责生成并分发双方随后在评估阶段使用的所有相关随机性。参照[67]的命名，我们将这种TTP辅助的计算过程称为(2+1)-PC，以便与我们的2PC设置清晰区分。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;私有变换器推理 (3PC)&lt;/strong&gt;
+PrivFormer [3] 和 PUMA [21] 是为变换器设计的两种基于三方设置 [4]、[56] 的私有推理框架。具体来说，PrivFormer通过使用MPC友好的替代方案（即ReLU注意力机制）替代了softmax注意力，但这需要对模型进行微调。PUMA与BumbleBee共享一些设计元素，如GeLU的分段近似和指数函数的泰勒近似。简而言之，这些3PC方法不使用OT和HE，但通信开销比我们的方案要大。其他相关工作[79]、[48]、[3]考虑了使用不同近似结构的替代模型，这些模型在MPC中更易计算。然而，已有研究表明粗略的近似可能会显著降低模型的准确性[43]，因此他们的工作需要进行模型微调。BumbleBee的一个优势是它不需要任何模型微调；相反，我们的重点是在给定的预训练变换器模型上进行私有推理。值得注意的是，我们的方法也可以适配到他们的模型中，从而实现更好的性能。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;VII. 评估&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;模型与数据集&lt;/strong&gt;
+我们在5个变换器模型上评估BumbleBee，包括四个NLP模型，即BERT-base、BERT-large [19]、GPT2-base [15]、LLaMA-7B [69]，以及一个计算机视觉模型ViT-base [74]、[22]。这些模型通过三个超参数进行参数化：块数B、表示的维度D和头数H。我们直接复用了来自公开源的训练模型。为了展示BumbleBee的有效性，我们在4个数据集上进行了私有推理，包括来自GLUE基准的CoLA、RTE和QNLI（用于NLP任务），以及用于图像分类的ImageNet-1k [64]。具体来说，ImageNet-1k数据集是一个1000个不同类别的分类任务，而来自GLUE基准的三个数据集是二分类任务。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;评估指标&lt;/strong&gt;
+在2PC设置下，我们不区分“离线”和“在线”成本，如一些先前的(2+1)-PC工作所做的那样[55]、[30]。我们报告端到端的运行时间，包括通过网络传输密文的时间。但我们没有包括从硬盘加载模型所花费的时间。我们测量了总通信量，包括双方发送的所有消息。我们使用1GB = 210MB = 230字节。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;实验环境&lt;/strong&gt;
+本文描述的实验主要在两台阿里巴巴云实例（ecs.g7.16xlarge）上进行，这些实例配备了64个vCPU，主频为2.70GHz，内存为256GB。我们尽可能使用多线程。为了模拟不同的网络条件，我们通过Linux中的流量控制命令操控了云实例之间的带宽。具体而言，我们在两种网络设置下进行了基准测试：局域网（LAN），带宽为1Gbps（单向1Gbps），延迟为0.5ms，以及广域网（WAN），带宽为400Mbps，延迟为4ms。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;具体参数&lt;/strong&gt;
+我们将秘密共享的l设置为64，将定点精度f设置为18。在对GeLU和指数运算进行混合环优化时，我们将l′设置为32，f′设置为12。具体来说，我们对BERT-base、GPT2-base和ViT-base模型应用了GeLU和指数运算的混合环优化，而对于其他较大的模型，我们仅对GeLU/SiLU激活进行优化。我们扩展了Yacl库中的Ferret实现[1]，以支持各种应用级的OT类型，例如M 1-OT6。对于RLWE，我们使用SEAL库[65]并借助[37]加速在Intel CPU上的计算。对于近似小于运算，我们在50位输入上评估了MSB协议，以进行(2)中的区段选择。对于近似指数运算，我们将Texp设置为-14，并使用n = 6。有关实现参数的更多细节，请参见附录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可用性&lt;/strong&gt;
+我们提供了可复现的实现，网址为：https://github.com/AntCPLab/OpenBumbleBee。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>密码学部分问题</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/wave-7726187_1280.jpg" alt="Featured image of post 密码学部分问题" /&gt;&lt;h2 id=&#34;hadamard-product是什么&#34;&gt;Hadamard product是什么？
+&lt;/h2&gt;&lt;p&gt;Hadamard product（哈达玛积），也称为元素乘积，是指两个相同维度的矩阵或向量之间的逐元素相乘。与矩阵乘法不同，Hadamard积不涉及矩阵的行列运算，而是直接对对应位置的元素进行相乘。&lt;/p&gt;
+$$
+C = A \circ B =  \begin{bmatrix} a_{11} \cdot b_{11} &amp; a_{12} \cdot b_{12} &amp; \dots &amp; a_{1n} \cdot b_{1n} \\ a_{21} \cdot b_{21} &amp; a_{22} \cdot b_{22} &amp; \dots &amp; a_{2n} \cdot b_{2n} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ a_{m1} \cdot b_{m1} &amp; a_{m2} \cdot b_{m2} &amp; \dots &amp; a_{mn} \cdot b_{mn} \end{bmatrix}
+$$&lt;p&gt;
+Hadamard积常用于各种机器学习和深度学习的操作，如神经网络中的门控机制（例如LSTM和GRU），以及图像处理中的卷积操作等。&lt;/p&gt;
+&lt;p&gt;注意，Hadamard积仅适用于两个维度相同的矩阵或向量。&lt;/p&gt;
+&lt;h2 id=&#34;什么是秘密共享&#34;&gt;什么是秘密共享?
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;秘密共享&lt;/strong&gt;（Secret Sharing）是一种密码学技术，用于将一个秘密（如密钥、密码或敏感数据）分割成多个部分，并将这些部分分发给不同的参与者。只有在一定数量的参与者合作时，才能恢复原始的秘密。通过这种方式，秘密共享可以增强安全性，因为即使某些参与者的部分被泄露或丢失，其他部分仍然无法恢复完整的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;主要类型&#34;&gt;主要类型
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;阈值秘密共享（Threshold Secret Sharing）&lt;/strong&gt; 这种方法要求至少$t$ 个参与者合作才能恢复秘密。每个参与者得到一个秘密份额，只有在$t$ 个或更多参与者联合时，才能重构出原始秘密。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Shamir’s Secret Sharing&lt;/p&gt;
+&lt;p&gt;：这是最著名的阈值秘密共享方案，由Adi Shamir在1979年提出。其核心思想是通过多项式插值来实现秘密的分割和恢复。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是一个 ss，可以选择一个 $(t−1)$ 次多项式 $f(x)$，其中常数项 $f(0) = s$ 即为秘密。&lt;/li&gt;
+&lt;li&gt;然后根据多项式生成 $n$ 个不同的点分发给 $n$ 个参与者。&lt;/li&gt;
+&lt;li&gt;任何 $t$ 个参与者可以使用拉格朗日插值法恢复原始秘密。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对称秘密共享&lt;/strong&gt; 在这种方法中，每个参与者获得一个共享密钥，这些密钥通过某种方式结合来恢复原始秘密。常见的算法包括加密技术、异或操作等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加密的秘密共享&lt;/strong&gt; 这种方法利用加密技术对秘密进行分割，确保即使单个参与者泄露了他们的份额，其他人也无法访问秘密。例如，通过同态加密（homomorphic encryption）或基于门限加密的秘密共享方案。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用场景&#34;&gt;应用场景
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;：通过将密钥分散到多个地点或参与者之间，提高密钥管理的安全性。例如，如果加密系统的密钥被分为多个部分，只有通过参与者之间的协作才能解密数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;防止单点故障&lt;/strong&gt;：秘密共享技术可以防止某个单一参与者或设备故障导致秘密丢失。通过适当选择阈值，可以确保即使部分参与者不可用，剩余的参与者仍能恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分布式计算&lt;/strong&gt;：在分布式环境中，多个节点可以合作进行秘密的计算或解密，而不需要暴露各自的数据。例如，在加密计算或保密计算（Secure Multi-Party Computation, MPC）中，多个计算节点共同参与计算秘密，但每个节点仅持有部分数据，保护了每个节点的隐私。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;区块链与去中心化系统&lt;/strong&gt;：在去中心化系统中，秘密共享可用于增强安全性和隐私保护。例如，在某些区块链协议中，多个节点可以共同持有私钥的份额，用于签名交易或执行智能合约，只有满足一定数量的节点签名才能完成操作。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;优点和缺点&#34;&gt;优点和缺点
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;增强安全性&lt;/strong&gt;：通过分割秘密，即使某些份额泄露，其他人也无法恢复原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容错性&lt;/strong&gt;：可以容忍一定数量的参与者失效或泄露信息，只要满足阈值条件，秘密仍能恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灵活性&lt;/strong&gt;：可以根据需求调整参与者数量和阈值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参与者管理复杂&lt;/strong&gt;：需要管理和协调多个参与者。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算成本&lt;/strong&gt;：某些秘密共享方案，如Shamir的方案，可能需要额外的计算来分割和恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;通信开销&lt;/strong&gt;：分发和恢复秘密可能需要较大的通信开销，尤其是在参与者数量多时。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;总的来说，秘密共享技术是提升系统安全性和隐私保护的重要工具，广泛应用于多种安全和加密场景中。&lt;/p&gt;
+&lt;h2 id=&#34;任何-ttt-个参与者可以使用拉格朗日插值法恢复原始秘密这是怎么做到的&#34;&gt;任何 ttt 个参与者可以使用拉格朗日插值法恢复原始秘密,这是怎么做到的?
+&lt;/h2&gt;&lt;p&gt;要理解如何通过&lt;strong&gt;拉格朗日插值法&lt;/strong&gt;来恢复原始秘密，首先我们需要了解&lt;strong&gt;Shamir的秘密共享&lt;/strong&gt;的工作原理。简单来说，Shamir的秘密共享方案通过将秘密转换为一个多项式的常数项，并通过给定的点分发给参与者。在恢复秘密时，tt 个参与者可以使用这些点和拉格朗日插值法来重建原始多项式，从而恢复秘密。&lt;/p&gt;
+&lt;h3 id=&#34;shamir的秘密共享原理&#34;&gt;Shamir的秘密共享原理
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;构造多项式&lt;/strong&gt;：首先，选择一个秘密 ss 作为常数项，然后构造一个 $(t-1)$ 次的多项式 $f(x)$，使得：&lt;/p&gt;
+&lt;p&gt;$f(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{t-1} x^{t-1}$&lt;/p&gt;
+&lt;p&gt;其中，$f(0) = a_0 = s$ 为秘密。其余的系数 $a_1, a_2, \dots, a_{t-1}$ 是随机选择的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成份额&lt;/strong&gt;：然后，选择 $n$ 个不同的 xx 值（例如$x_1, x_2, \dots, x_n$），并计算对应的 $f(x_i)$ 值。每个参与者将收到一对$(x_i, f(x_i))$，即他们的“份额”。这些份额分别分配给 $n$ 个参与者。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重建秘密&lt;/strong&gt;：任何 $t$ 个份额就足以恢复原始秘密。通过拉格朗日插值法，可以使用这 $t$ 个点（$x_i, f(x_i)$）来求解多项式的常数项 $f(0)$，从而恢复秘密。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;拉格朗日插值法&#34;&gt;拉格朗日插值法
+&lt;/h3&gt;&lt;p&gt;拉格朗日插值法是一个用于构造多项式的数学方法，给定一组数据点$(x_1, y_1), (x_2, y_2), \dots, (x_t, y_t)$，我们可以构造一个唯一的多项式，使得它通过所有这些点。&lt;/p&gt;
+&lt;p&gt;在Shamir的秘密共享中，我们有$t $个点 ($(x_i, f(x_i)$)，要恢复秘密 $f(0)$ 即常数项，我们可以通过以下拉格朗日插值公式来计算：&lt;/p&gt;
+&lt;p&gt;$f(0) = \sum_{i=1}^{t} f(x_i) \cdot \ell_i(0)$&lt;/p&gt;
+&lt;p&gt;其中，$\ell_i(x)$ 是第 $i$ 个拉格朗日基多项式，定义如下：&lt;/p&gt;
+&lt;p&gt;ℓ$\ell_i(x) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{x - x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;为了恢复 $f(0)$，我们将 $x = 0$ 代入上式：&lt;/p&gt;
+&lt;p&gt;$\ell_i(0) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{0 - x_j}{x_i - x_j} = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{-x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;然后，通过上面得到的每个 $\ell_i(0)$ 值，乘上对应的 $f(x_i)$，并将所有结果求和，就能得到 $f(0)$，即原始的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;例子&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有三个参与者（$t = 3$），他们分别获得了以下份额：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$(x_1 = 1, f(x_1) = 5)$&lt;/li&gt;
+&lt;li&gt;$(x_2 = 2, f(x_2) = 8)$&lt;/li&gt;
+&lt;li&gt;$(x_3 = 3, f(x_3) = 11)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们要恢复秘密 $f(0)$，即常数项。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;计算每个 $\ell_i(0)$：&lt;/p&gt;
+&lt;p&gt;$\ell_1(0) = \frac{(0 - 2)(0 - 3)}{(1 - 2)(1 - 3)} = \frac{6}{2} = 3$&lt;/p&gt;
+&lt;p&gt;$\ell_2(0) = \frac{(0 - 1)(0 - 3)}{(2 - 1)(2 - 3)} = \frac{3}{-1} = -3$&lt;/p&gt;
+&lt;p&gt;$\ell_3(0) = \frac{(0 - 1)(0 - 2)}{(3 - 1)(3 - 2)} = \frac{2}{2} = 1$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;计算秘密：&lt;/p&gt;
+&lt;p&gt;$f(0) = f(x_1) \cdot \ell_1(0) + f(x_2) \cdot \ell_2(0) + f(x_3) \cdot \ell_3(0)$&lt;/p&gt;
+&lt;p&gt;$f(0) = 5 \cdot 3 + 8 \cdot (-3) + 11 \cdot 1 = 15 - 24 + 11 = 2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，原始的秘密 $f(0) = 2$。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;通过拉格朗日插值法，$t$ 个参与者的份额可以恢复原始的秘密。该过程利用了每个参与者的份额和拉格朗日基多项式的计算，以重建出秘密所对应的多项式，并提取出常数项。&lt;/p&gt;
+&lt;h2 id=&#34;2-out-of-2-加法秘密共享方案是什么&#34;&gt;2-out-of-2 加法秘密共享方案是什么？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;是一种非常基础的秘密共享方案，专门用于将一个秘密分配给两个参与者，并且要求两个参与者必须共同合作才能恢复秘密。在这种方案中，秘密通过加法分割为两个部分，每个参与者都持有一个秘密份额，只有两个参与者联合时才能恢复原始秘密。&lt;/p&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;工作原理
+&lt;/h3&gt;&lt;p&gt;在&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;方案中，假设原始秘密为 $s$，我们将这个秘密分割成两个部分，分别给两个参与者。我们使用以下方法进行分割：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是 $s$，我们随机选择一个数 rr 作为第一个份额，计算第二个份额 $s&amp;rsquo; = s - r$。&lt;/li&gt;
+&lt;li&gt;然后，将这两个份额分别分配给两个参与者：
+&lt;ul&gt;
+&lt;li&gt;参与者1收到份额 $r$&lt;/li&gt;
+&lt;li&gt;参与者2收到份额 $s&amp;rsquo; = s - r$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;恢复秘密&#34;&gt;恢复秘密
+&lt;/h3&gt;&lt;p&gt;为了恢复秘密 $s$，两个参与者需要将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = r + (s - r)$&lt;/p&gt;
+&lt;p&gt;通过这种方式，两个参与者的份额加在一起，恢复出原始的秘密 $s$。&lt;/p&gt;
+&lt;h3 id=&#34;特点&#34;&gt;特点
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;加法操作&lt;/strong&gt;：在这个方案中，秘密的分割和恢复都基于加法。每个参与者只知道一个加法部分，只有通过相加才能恢复出原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完全安全&lt;/strong&gt;：如果只有一个参与者知道自己的份额，那么他无法单独恢复秘密，因为他只有一个部分，缺少了另一个部分的信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;简单实现&lt;/strong&gt;：这是一个非常简单和高效的秘密共享方案，适用于只有两个参与者的场景。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;例子-1&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有一个秘密 $s = 100$，我们将其分配给两个参与者。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;随机选择一个份额 $r = 30$，那么第二个份额 $s&amp;rsquo; = 100 - 30 = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参与者1得到份额$r = 30$，参与者2得到份额 $s&amp;rsquo; = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为了恢复秘密，参与者1和参与者2将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = 30 + 70 = 100$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用&#34;&gt;应用
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;可以应用于很多场景，尤其是需要确保两个参与者必须合作才能访问某个秘密的情况。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;安全存储密钥&lt;/strong&gt;：将加密密钥分成两个部分，分别存储在不同的地点，只有两个存储位置都可访问时，密钥才可以恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;两方合谋&lt;/strong&gt;：在某些加密协议中，两个参与者需要共同合作解密数据，单独任何一个参与者都无法获得数据的任何信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-1&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;通过将秘密分割成两个部分，确保只有在两个参与者合作的情况下才能恢复原始秘密。这种方案简单易实现，但仅适用于参与者数量为2的场景。如果需要更高的容错能力（比如 t-out-of-n 的方案），则需要使用更复杂的算法，如Shamir的秘密共享。&lt;/p&gt;
+&lt;h2 id=&#34;oblivious-transfer是什么&#34;&gt;oblivious transfer是什么？
+&lt;/h2&gt;&lt;p&gt;**Oblivious Transfer（OT，盲传输）**是一种重要的加密协议，广泛应用于多方计算（Secure Multi-Party Computation, MPC）和隐私保护计算领域。其基本思想是在两方或多方之间进行信息传输时，保证发送方和接收方的隐私。特别地，&lt;strong&gt;Oblivious Transfer&lt;/strong&gt; 保护了发送方的信息不被泄露给接收方，而接收方也不会知道其他的消息，只有选择的信息才能被接收。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的基本概念&#34;&gt;Oblivious Transfer的基本概念
+&lt;/h3&gt;&lt;p&gt;在OT协议中，存在两个主要参与方：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方（Sender）&lt;/strong&gt;：拥有若干个消息，并希望将其中一个消息传递给接收方，但不希望接收方得知其他消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方（Receiver）&lt;/strong&gt;：接收方可以选择想要接收的消息，并且只会获得它所选择的消息，但发送方无法知道接收方选择了哪一个。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;有几种常见的&lt;strong&gt;Oblivious Transfer&lt;/strong&gt;类型，其中最常见的有以下两种：&lt;/p&gt;
+&lt;h3 id=&#34;1-1-out-of-2-oblivious-transfer-1-2-ot&#34;&gt;1. &lt;strong&gt;1-out-of-2 Oblivious Transfer (1-2 OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在1-out-of-2 OT协议中，发送方有两个消息 $m_0$ 和 $m_1$，接收方选择一个索引（例如 0 或 1），然后接收方获得选择的消息，而发送方并不知道接收方选择了哪个消息。&lt;/p&gt;
+&lt;h4 id=&#34;工作流程&#34;&gt;工作流程：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;发送方将两个消息 $m_0 $和 $m_1 $发送给接收方，但不直接告诉接收方哪个消息是哪个。&lt;/li&gt;
+&lt;li&gt;接收方选择一个索引（0 或 1），并且只获得对应索引的消息。接收方不会知道其他的消息内容。&lt;/li&gt;
+&lt;li&gt;发送方无法知道接收方选择了哪一个消息，接收方只能获得所选的消息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;安全性&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方隐私性&lt;/strong&gt;：发送方无法知道接收方选择了哪个消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方隐私性&lt;/strong&gt;：接收方无法知道未选择的消息，也无法从其它信息中推测出未选的消息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-k-out-of-n-oblivious-transfer-k-n-ot&#34;&gt;2. &lt;strong&gt;k-out-of-n Oblivious Transfer (k-n OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在k-out-of-n OT协议中，发送方有 n 个消息$m_1, m_2, &amp;hellip;, m_n$，接收方可以选择 k 个消息，并且获得这 k 个消息，但不透露选择的其他 n-k 个消息。接收方只会知道自己选择的 k 个消息，而发送方不会知道接收方选择了哪些消息。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的应用&#34;&gt;&lt;strong&gt;Oblivious Transfer的应用&lt;/strong&gt;
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安全多方计算（MPC）&lt;/strong&gt;：在多方计算中，OT协议用于保护各方的隐私，使得各方可以在不知道对方输入的情况下共同计算某个函数的结果。例如，在两个公司进行联合数据分析时，可以使用OT协议来确保各自的数据不被泄露。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;私密信息检索（Private Information Retrieval, PIR）&lt;/strong&gt;：PIR是指用户在不透露查询内容的情况下，从数据库中检索信息。OT协议可以用于构建PIR方案，确保查询者的隐私得到保护。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字货币和区块链&lt;/strong&gt;：OT协议也可以用于增强区块链系统中的隐私保护，尤其是在匿名交易中。它可以让交易双方在不暴露其具体信息的情况下，完成加密验证和交易。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加密货币钱包&lt;/strong&gt;：例如，在一些加密货币钱包中，OT协议可用于确保钱包私钥的安全转移，同时防止第三方在转移过程中获得不必要的敏感信息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;ot协议的实际构建&#34;&gt;&lt;strong&gt;OT协议的实际构建&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;OT协议可以通过不同的加密技术实现，常见的方式包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;公钥加密&lt;/strong&gt;：例如使用 RSA 加密或椭圆曲线加密来实现 OT 协议。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同态加密&lt;/strong&gt;：可以通过同态加密协议来构建OT协议，以便在加密状态下进行数据传输。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零知识证明&lt;/strong&gt;：通过零知识证明机制，保证消息传输过程中各方的信息不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-2&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;**Oblivious Transfer（盲传输）**是一种重要的加密协议，它保证了信息在传输过程中各方的隐私性。特别地，发送方和接收方都不会得知对方的敏感信息，只有接收方能够获得自己所选择的消息。这一协议被广泛应用于多方计算、私密信息检索、数字货币隐私保护等领域，是现代密码学和隐私保护技术的核心组件之一。&lt;/p&gt;
+&lt;h2 id=&#34;秘密共享中使用的-2l-模数是什么&#34;&gt;秘密共享中使用的 $2^l$ 模数是什么？
+&lt;/h2&gt;&lt;p&gt;在秘密共享（Secret Sharing）方案中，特别是在 Shamir 的秘密共享协议中，$2^l$ 模数通常指的是一个大素数或一个足够大的整数，用于确保秘密能够在模运算中适当地加密和解密。在这种情况下，$2^l$ 表示对一个长度为 $l$ 的二进制数据进行处理时所需要的模数。&lt;/p&gt;
+&lt;p&gt;具体来说，$l$ 是密钥或秘密的比特长度，因此 $2^l$ 是一个足够大的数，通常用于分割秘密的范围。例如，在 Shamir 的方案中，秘密通常被视为一个 $l$ 比特的数值，而将其分割成多个份额时，使用 $2^l$ 来确保数值保持在所需范围内。这也意味着，每个份额的大小由 $2^l$ 限定，从而保证了秘密的安全性和正确的恢复。&lt;/p&gt;
+&lt;p&gt;简而言之，$2^l$ 模数的使用帮助在加密和共享过程中处理大的整数，确保秘密在分发和恢复时不被泄露，同时也方便进行数学运算。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>基于秘密共享的隐私保护和可验证深度学习推理</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280.jpg" alt="Featured image of post 基于秘密共享的隐私保护和可验证深度学习推理" /&gt;&lt;h1 id=&#34;基于秘密共享的隐私保护和可验证深度学习推理&#34;&gt;基于秘密共享的隐私保护和可验证深度学习推理
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;摘要
+&lt;/h2&gt;&lt;p&gt;深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;引言
+&lt;/h2&gt;&lt;p&gt;近年来，深度神经网络（DNN）在多个领域取得了显著进展，例如目标检测【39,26】、目标分类【18,10】、机器翻译【6,7】和人脸识别【40,33】。随着数据集规模的不断扩大，深度学习的计算强度也随之成比例增长。尽管近期在GPU硬件、网络架构和算法方面取得了重要突破，对于资源受限的客户端而言，大规模DNN的训练和推理仍需耗费无法接受的长时间和巨大的计算资源。&lt;/p&gt;
+&lt;p&gt;幸运的是，许多DNN框架建议利用云服务来完成大量计算。然而，这些基于云的框架也带来了新的安全和隐私挑战。隐私泄露可能发生在训练阶段和推理阶段。针对训练阶段的隐私问题，已有许多隐私保护框架被提出【27,8,28,37,23,4,13,19】；而针对推理阶段的隐私问题，也有相关研究【46,12,16,32,42】。本文主要聚焦于与本研究最相关的推理阶段的隐私问题。&lt;/p&gt;
+&lt;p&gt;在深度学习的推理阶段，隐私泄露主要来源于输入数据和深度模型本身。具体而言，输入数据通常包含大量敏感信息，这些信息应对云服务器保持隐私，因为云服务器可能无法完全信任。此外，经过充分训练的模型参数也不应暴露给未经授权的方。由于经过充分训练的模型因其高昂的训练成本而被视为重要资产，因此保护模型参数隐私与保护输入数据隐私同等重要。&lt;/p&gt;
+&lt;p&gt;为了解决这些问题，Ocia等【24,25】和Chi等【5】提出将神经网络拆分为两部分：一部分在本地执行，另一部分在云端运行。Xu等【43】和Shen等【36】建议使用混淆神经网络【43】或数据变形【36】来在本地保护输入数据隐私。此外，为了提供更高的安全性，Zhang等【46】和Tian等【41】引入了同态加密（HE）【2】，以加密推理中部分计算。他们将所有DNN计算分为两类：线性计算和非线性计算。在线性计算在加密域中由云服务器完成。&lt;/p&gt;
+&lt;p&gt;尽管上述框架保护了输入隐私，但并未考虑模型参数的隐私。近年来，一些旨在同时保护输入和模型参数隐私的框架得到了研究。相关工作【12,9,15】利用同态加密（HE）对整个网络进行加密，并在加密域中执行推理。Juvekar等【16】提出了一种框架，结合了混淆电路（GC）【44】和HE，用于同时保护输入和模型的隐私，与框架【32,29,31,30】类似。此外，许多工作借助安全多方计算（SMPC）来实现输入和模型参数的保护。Ma等【22】提出了在两个非共谋服务器下的完全非交互隐私保护推理框架。Liu等【21】提出了MiniONN，用于将训练好的神经网络转换为高效的无泄漏神经网络。Shamsabadi等【35】研究了一种用于分类的私有DNN训练和推理框架，其中基于秘密共享方案【34】的私有推理在两个非共谋服务器之间进行。&lt;/p&gt;
+&lt;p&gt;此外，云服务器可能会出于经济利益返回无效结果。在许多基于深度学习的应用中，例如自动驾驶和金融风险评估，无效结果可能导致灾难性后果。因此，为用户提供一种机制验证云服务器返回结果的正确性显得尤为重要。同时，执行验证所引入的开销应尽可能低。&lt;/p&gt;
+&lt;p&gt;为此，我们提出了一种隐私保护且可验证的深度学习推理（PVDLI）框架，能够在低通信和计算成本下同时保护输入和模型参数的隐私。此外，用户还可以以较小的开销验证推理结果的正确性。受软件设计模式中的代理模式【11】启发，我们引入了N+1个节点，称为代理层，用于协作执行推理中涉及的安全计算。为安全地执行激活函数（非线性操作），我们在微调阶段用多项式近似激活函数【3】。通过在输入中注入标记的可验证数据，我们可以以高概率有效验证推理结果的正确性。借助秘密共享，注入的验证数据与正常数据无法区分，从而防止仅针对验证数据返回正确结果的潜在攻击。&lt;/p&gt;
+&lt;p&gt;理论分析表明，即使在参与者之间存在共谋的情况下，所提出的框架仍能够针对“诚实但好奇”的参与者提供输入和模型参数的可验证性和隐私性。此外，我们还提供了大量实验结果以验证所提出的PVDLI框架的优越性。&lt;/p&gt;
+&lt;p&gt;本文其余部分组织如下：第2节介绍相关基础知识。第3节给出了系统模型和设计目标。第4节阐述了所提出的子协议。第5节详细描述了PVDLI框架。第6节提供了基于设计的安全实验的可验证性分析和安全性分析。第7节展示了实验结果，最后在第8节进行总结。&lt;/p&gt;
+&lt;h2 id=&#34;预备知识&#34;&gt;预备知识
+&lt;/h2&gt;&lt;p&gt;深度学习旨在从高维数据中提取复杂特征，并利用这些特征构建一个能够将输入与输出关联起来的模型。通常，深度学习架构由多层网络构成，以便将低层次特征通过非线性函数计算为更抽象的特征。每一层的输出与前一层相连接。&lt;/p&gt;
+&lt;p&gt;在&lt;strong&gt;图1&lt;/strong&gt;中，我们展示了一个深度神经网络（DNN）推理的示例。通过执行一系列计算，DNN输出对数值（logit），随后通过对该对数值执行&lt;strong&gt;softmax&lt;/strong&gt;函数生成输入的类别预测概率。&lt;/p&gt;
+&lt;p&gt;在不失一般性的情况下，我们详细描述了VGG16模型【38】中一个典型块的组成。该块包含线性计算、批归一化、激活函数和池化操作。&lt;/p&gt;
+&lt;h4 id=&#34;线性计算&#34;&gt;&lt;strong&gt;线性计算&lt;/strong&gt;
+&lt;/h4&gt;$$x \in \mathbb{R}^n$$$$
+z = W x + b \tag{1}
+$$$$W$$$$b$$&lt;p&gt; 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。&lt;/p&gt;
+&lt;h4 id=&#34;批归一化&#34;&gt;&lt;strong&gt;批归一化&lt;/strong&gt;
+&lt;/h4&gt;$$
+u = c z + b \tag{2}
+$$$$c$$$$b$$&lt;p&gt; 是经过充分训练的固定参数。&lt;/p&gt;
+&lt;h4 id=&#34;激活函数&#34;&gt;&lt;strong&gt;激活函数&lt;/strong&gt;
+&lt;/h4&gt;$$
+t = \text{ReLU}(u) \tag{3}
+$$&lt;h4 id=&#34;池化&#34;&gt;&lt;strong&gt;池化&lt;/strong&gt;
+&lt;/h4&gt;$$\text{Avg}$$$$
+y = \text{Avg}(t) \tag{4}
+$$&lt;p&gt;随后，池化层的输出被送入下一层进行后续计算。最终，DNN 网络输出一个对数值（logit），并通过 &lt;strong&gt;softmax&lt;/strong&gt; 函数生成类别预测概率。&lt;/p&gt;
+&lt;h2 id=&#34;系统模型与设计目标&#34;&gt;系统模型与设计目标
+&lt;/h2&gt;&lt;p&gt;在本节中，我们详细介绍所提出框架的设计目标和系统模型。&lt;/p&gt;
+&lt;h3 id=&#34;设计目标&#34;&gt;设计目标
+&lt;/h3&gt;&lt;p&gt;我们提出了一个隐私保护且可验证的深度学习推理框架，涉及三个实体：&lt;strong&gt;模型所有者（O）&lt;/strong&gt;、&lt;strong&gt;用户（U）&lt;/strong&gt; 和 &lt;strong&gt;N+1 个节点&lt;/strong&gt;（称为代理层），代理层位于用户与模型所有者之间。一般来说，所提出的 PVDLI 框架面临的安全威胁主要来自代理层的行为。假设框架在**“诚实但好奇”**的设置下运行，这意味着攻击者会遵循框架规范，但可能对输入数据和模型参数产生兴趣。此外，从可验证性的角度来看，代理层中的某些节点可能会偷懒，即生成随机或错误结果以节省计算资源。&lt;/p&gt;
+&lt;p&gt;为了实现框架的隐私保护和可验证性，我们确定了以下四个设计目标：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;隐私&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的输入数据必须对代理层保密。&lt;/li&gt;
+&lt;li&gt;模型的参数不应被代理层泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;效率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的计算复杂度应显著低于直接进行完整推理计算的复杂度。&lt;/li&gt;
+&lt;li&gt;各参与方之间的通信成本应尽可能降低。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;可验证性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户必须能够成功验证推理结果的正确性。作弊的代理层生成的错误结果不能以非可忽略的概率通过验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;准确性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模型推理的准确性应接近于在单一服务器上执行深度学习推理时的准确性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;系统模型&#34;&gt;系统模型
+&lt;/h3&gt;$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt; 作为代理层，其灵感来源于&lt;strong&gt;代理模式&lt;/strong&gt;【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。&lt;/p&gt;
+&lt;p&gt;框架的伪代码见&lt;strong&gt;算法1&lt;/strong&gt;。具体而言：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$F$$$$H = \{h_1, h_2, \dots, h_M\}$$$$M$$&lt;p&gt; 是网络中的总参数数量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$x$$$$F$$&lt;p&gt; 中进行推理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代理层（E）&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;辅助节点（$$E_0$$）&lt;/strong&gt;&lt;br&gt;
+负责与各计算节点之间的通信，收集和分发推理过程中涉及的临时结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt;&lt;br&gt;
+负责执行深度神经网络（DNN）的推理计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在推理开始之前，模型所有者（O）会与用户（U）协商选择一个由 &lt;strong&gt;1 个辅助节点（$$E_0$$）&lt;/strong&gt; 和 &lt;strong&gt;N 个计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt; 组成的代理层（E）。&lt;/p&gt;
+&lt;h3 id=&#34;算法-1-执行-pvdli-的步骤&#34;&gt;算法 1: 执行 PVDLI 的步骤
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全参数 $$k$$&lt;/li&gt;
+&lt;li&gt;输入数据 $$x \in \mathbb{Z}_p^n$$&lt;/li&gt;
+&lt;li&gt;深度学习模型 $$F$$&lt;/li&gt;
+&lt;li&gt;计算节点数量 $$N$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;推理结果 $$y$$ 或错误标志 $$\perp$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;模型所有者&lt;/strong&gt; $$O$$ 和 &lt;strong&gt;用户&lt;/strong&gt; $$U$$ 选择一个由 $$N+1$$ 个节点组成的代理层 $$E = \{E_0, E_1, \dots, E_N\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 生成一个可验证数据集 $$D$$。&lt;/li&gt;
+&lt;li&gt;模型所有者 $$O$$ 通过多项式近似获取近似模型 $$F$$，然后将模型参数 $$H$$ 分成 $$N$$ 份：&lt;br&gt;
+$$H^{(1)}, H^{(2)}, \dots, H^{(N)} \gets \text{Split}(H, k, N)$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 将可验证数据 $$\{X, V, r_v\}$$ 插入到输入数据中：&lt;br&gt;
+$$\{X, V, r_v\} \gets \text{Insert}(x, D)$$。&lt;/li&gt;
+&lt;li&gt;用户将混合数据 $$X$$ 分成 $$N$$ 份：&lt;br&gt;
+$$X^{(1)}, X^{(2)}, \dots, X^{(N)} \gets \text{Split}(X, k, N)$$。&lt;/li&gt;
+&lt;li&gt;代理层执行一系列深度学习推理计算，得到 logits：&lt;br&gt;
+$$L^{(1)}, L^{(2)}, \dots, L^{(N)} \gets \{f(X^{(1)}, H^{(1)}), \dots, f(X^{(N)}, H^{(N)})\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 聚合 logits：&lt;br&gt;
+$$R \gets \text{Aggregation}(L^{(1)}, L^{(2)}, \dots, L^{(N)})$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 提取结果：&lt;br&gt;
+$$y = R_{r_v}$$ （推理结果），&lt;br&gt;
+$$R&#39; = \{R_i \mid i \in \{1, 2, \dots, N\} \setminus r_v\}$$ （可验证结果）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如果&lt;/strong&gt;可验证结果 $$R&#39;$$ 满足 $$R&#39; = V$$：
+&lt;ul&gt;
+&lt;li&gt;返回 $$y$$ 作为输入数据 $$x$$ 的推理结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;否则：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;返回错误标志 $$\perp$$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结束。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+$$O$$$$F$$$$H$$$$N$$&lt;p&gt; 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。&lt;/p&gt;
+$$U$$$$x$$$$X$$$$U$$$$X$$$$N$$&lt;p&gt; 份，并分发到代理层以保护输入隐私。&lt;/p&gt;
+$$H^{(i)}$$$$X^{(i)}$$$$E_i$$$$L^{(i)}$$$$U$$$$U$$$$R$$$$U$$$$U$$$$x$$$$y$$&lt;p&gt;；否则，拒绝结果并输出错误。&lt;/p&gt;
+&lt;h3 id=&#34;提出的-pvdli-框架包含以下六个关键模块&#34;&gt;提出的 PVDLI 框架包含以下六个关键模块：
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+$$O$$$$U$$$$N+1$$$$E = \{E_0, E_1, \dots, E_N\}$$$$U$$$$D$$&lt;p&gt;，用于后续验证。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$O$$$$F$$$$k$$$$N$$&lt;p&gt; 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$k$$$$U$$$$D$$$$V$$$$r_v$$$$x$$$$X$$$$X$$$$N$$$$X^{(i)}$$$$E_i$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$X^{(i)}$$$$H^{(i)}$$$$E_i$$$$1 \leq i \leq N$$$$E_i$$$$L^{(i)}$$$$U$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$L^{(1)}, \dots, L^{(N)}$$$$U$$$$X$$$$F$$$$R$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$R$$$$r_v$$$$U$$$$V$$$$x$$$$y$$$$\perp$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;基于秘密共享的安全子协议&#34;&gt;基于秘密共享的安全子协议
+&lt;/h2&gt;&lt;p&gt;本质上，深度学习推理由一系列数学操作完成。在我们提出的框架中，为了避免输入数据和模型参数的泄露，所有操作必须以隐私保护的方式进行。基于秘密共享方案，我们设计并实现了三个安全计算子协议：安全加法协议、安全除法协议和安全矩阵乘法协议。&lt;/p&gt;
+&lt;h4 id=&#34;安全加法协议secadd&#34;&gt;&lt;strong&gt;安全加法协议（SecAdd）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$&lt;p&gt;。在执行过程中，不会交换任何中间值。&lt;/p&gt;
+$$E_i$$$$A$$$$B$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$C^{(i)}$$$$E_0$$&lt;p&gt; 不参与计算。&lt;/p&gt;
+&lt;h4 id=&#34;安全除法协议secdiv&#34;&gt;&lt;strong&gt;安全除法协议（SecDiv）：&lt;/strong&gt;
+&lt;/h4&gt;$$k \in \mathbb{Z}_p$$$$A \in \mathbb{Z}_p^{u \times n}$$$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$A$$$$A^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$k$$$$C^{(i)}$$&lt;p&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;安全矩阵乘法协议secmul&#34;&gt;&lt;strong&gt;安全矩阵乘法协议（SecMul）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$&lt;p&gt;。&lt;/p&gt;
+$$E_0$$&lt;p&gt;。辅助节点仅与计算节点通信，用于收集和分发乘法过程中的临时结果。&lt;/p&gt;
+$$E_i$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$A$$$$B$$$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$$$O = P \cdot Q$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E_0$$&lt;p&gt;）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。&lt;/p&gt;
+&lt;h3 id=&#34;安全矩阵乘法过程&#34;&gt;安全矩阵乘法过程
+&lt;/h3&gt;&lt;p&gt;如图 3 所示，该协议包含以下四个部分：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050.png&#34;
+	width=&#34;1266&#34;
+	height=&#34;704&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu17449839447597289103.png 480w, https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu8223726548956333695.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241117192123050&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;431px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;生成辅助随机矩阵份额-genaux&#34;&gt;&lt;strong&gt;生成辅助随机矩阵份额 (GenAux):&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给定安全参数 $$k$$，代理层协商选择辅助随机矩阵的份额 $$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$，其中 $$P^{(i)}, Q^{(i)}, O^{(i)}$$ 表示矩阵 $$P \in \mathbb{Z}_p^{u \times n}$$、$$Q \in \mathbb{Z}_p^{n \times v}$$ 和 $$O \in \mathbb{Z}_p^{u \times v}$$ 的第 $$i$$ 个份额，且 $$O = P \cdot Q$$。代理层的计算节点 $$E_i$$ 只能拥有对应的份额 $$P^{(i)}, Q^{(i)}, O^{(i)}$$，其中 $$1 \leq i \leq N$$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;对输入矩阵份额进行掩码处理-mask&#34;&gt;&lt;strong&gt;对输入矩阵份额进行掩码处理 (Mask):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$
+E^{(i)} = A^{(i)} - P^{(i)} \quad;\quad F^{(i)} = B^{(i)} - Q^{(i)}  
+$$$$E_i$$$$E^{(i)}, F^{(i)}$$$$E_0$$$$1 \leq i \leq N$$&lt;p&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;重构并分割结果-split&#34;&gt;&lt;strong&gt;重构并分割结果 (Split):&lt;/strong&gt;
+&lt;/h4&gt;$$E_0$$$$N$$$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$$$E$$$$F$$$$
+E = \sum_{i=1}^{N} E^{(i)} \quad;\quad F = \sum_{i=1}^{N} F^{(i)} \quad;\quad G = E \cdot F  
+$$$$E_0$$$$G$$$$\{G^{(i)}\}_{i=1}^{N}$$$$E_0$$$$E, F, G^{(i)}$$$$E_i$$$$1 \leq i \leq N$$&lt;p&gt;）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;计算最终份额-cal&#34;&gt;&lt;strong&gt;计算最终份额 (Cal):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$E, F, G^{(i)}$$$$
+S^{(i)} = E \cdot Q^{(i)} \quad;\quad T^{(i)} = P^{(i)} \cdot F  
+$$$$E_i$$$$
+C^{(i)} = G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}  
+$$$$
+C = \sum_{i=1}^{N} C^{(i)} = A \cdot B  
+$$&lt;hr&gt;
+&lt;h4 id=&#34;安全矩阵乘法的正确性证明&#34;&gt;&lt;strong&gt;安全矩阵乘法的正确性证明：&lt;/strong&gt;
+&lt;/h4&gt;$$
+C = \sum_{i=1}^{N} C^{(i)} = \sum_{i=1}^{N} (G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}) = G + S + T + O  
+$$$$
+= (E \cdot F) + (E \cdot Q) + (P \cdot F) + (P \cdot Q)  
+$$$$
+= (A - P) \cdot (B - Q) + (A - P) \cdot Q + P \cdot (B - Q) + P \cdot Q  
+$$$$
+= A \cdot B
+$$$$P, Q, O$$&lt;p&gt; 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。&lt;/p&gt;
+&lt;h2 id=&#34;提出的框架&#34;&gt;提出的框架
+&lt;/h2&gt;&lt;h3 id=&#34;initn--e-d&#34;&gt;Init（N） → （E; D)
+&lt;/h3&gt;&lt;p&gt;首先，模型所有者O与用户U协商，选择一个包含N + 1个节点的代理层，其中包括一个辅助节点E₀和N个计算节点E₁, &amp;hellip;, EN进行后续的协同计算。在这里，合理的假设是N ≥ 2，这是由于所采用的秘密共享方案提出的要求。需要注意的是，节点数量不会影响推理的准确性，因为所有节点只涉及安全子协议，这些协议已经被证明与原始计算等效。然而，节点数量确实会影响隐私保护的水平。具体来说，节点数量越多，当节点发生串通时，隐私保护的级别越高。更多的安全性分析将在第6节中提供。
+接下来，为了提供可验证性，用户U生成一个可验证的数据集D = {d₁, &amp;hellip;, dL}。这里，可验证数据集可以离线生成并且可重复使用。每个数据项dᵢ的要求是，它的推理结果（标签）可以很容易地估计或获得。由于通过秘密共享方案可以很好地保护输入数据的隐私，从代理层的角度来看，所有输入数据都是随机值。因此，代理层无法区分可验证数据dᵢ和输入x。选择可验证数据dᵢ时有很多选择；它可以是标记的测试数据，甚至是可以轻松验证的虚拟数据（噪声或无意义的数据）。&lt;/p&gt;
+&lt;h3 id=&#34;deploymodelðf-k-nþ--h1--hm&#34;&gt;&lt;strong&gt;DeployModelðF; k; NÞ → H(1), &amp;hellip;, H(M)&lt;/strong&gt;
+&lt;/h3&gt;$$f(x) = a_0 + a_1x + ... + a_d x^d$$&lt;p&gt;&lt;br&gt;
+其中，所有的系数$a_0, a_1, &amp;hellip;, a_d$在多项式中都是可训练的。替代后，模型所有者O继续通过少量迭代微调模型F，以获得新的近似模型F。令$H = {h_1, &amp;hellip;, h_M}$表示深度学习模型F中所有权重变量的平坦化向量，其中M表示模型中的参数数量。为了保护模型参数$H$的隐私，我们提出使用一个简单而有效的N-out-of-N加法秘密共享方案[34]。具体来说，模型所有者O将模型参数$H$分割成N个份额，并将份额$H(i)$分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。通过这种方式，代理层中的每个计算节点只拥有模型参数$H$的一个份额。具体地，生成参数份额的过程包括以下两个部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Setup 1k → Ko&lt;/strong&gt;: 给定安全参数k，模型所有者O从指定的密钥空间${0, 1}^k$生成一个秘密密钥Ko。加密算法的资源需求和攻击者破解安全的概率可以通过安全参数k来表达。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$Alg(H; ro; N) → H(1), ..., H(N) \in \mathbb{Z}_M^N$$&lt;p&gt;&lt;br&gt;
+最后，模型所有者O将份额$H(i)$分别分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;gensplitdataðx-d-k-nþ--x1--xn-v-rv&#34;&gt;GenSplitDataðx; D; k; NÞ → X(1), &amp;hellip;, X(N); V; rv
+&lt;/h3&gt;&lt;p&gt;在给定安全参数k和可验证数据集D的情况下，用户U将可验证数据和输入数据混合生成混合数据X。然后，用户U将混合数据X分割成N个份额，并将它们分发到代理层。具体来说，为了提供可验证性，用户U从数据集D中随机选择J个可验证数据$I_1, &amp;hellip;, I_J \in \mathbb{R}^{n \times J}$。这里，令$V = {V_1, &amp;hellip;, V_J}$表示这J个可验证数据的标签。接着，用户U随机选择一个索引$rv$，其中$1 \leq rv \leq J$，并将输入数据$x$与可验证数据$I$混合，构造混合数据$X = {I_1, &amp;hellip;, I_{rv-1}, x, I_{rv}, &amp;hellip;, I_J} \in \mathbb{R}^{n \times (J+1)}$。&lt;br&gt;
+类似地，从所有长度为k的比特串中随机选择一个秘密密钥$K_u$，然后用户U使用[8]中的份额生成算法将混合数据X分割成N个份额$X(1), &amp;hellip;, X(N)$。此外，用户U将份额$X(i)$分别分发给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。在这种情况下，代理层中的每个计算节点只访问混合数据X的一个份额，这意味着可以提供输入数据的隐私保护。由于混合数据被分割成多个份额，且可验证数据与输入数据可以完美混合，暗示着攻击者无法将它们分开。&lt;/p&gt;
+&lt;h3 id=&#34;compute-h1--hn-x1--xn--l1--ln&#34;&gt;&lt;strong&gt;Compute H(1), &amp;hellip;, H(N); X(1), &amp;hellip;, X(N) → L(1), &amp;hellip;, L(N)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在本模块中，代理层使用输入和模型参数的份额安全地执行深度学习推理。基于秘密共享方案，我们提出了三种安全子协议：SecAdd、SecDiv和SecMul，其详细信息已在第4节中提供。如第2节所述，深度学习推理中的操作包括线性计算、批量归一化、激活和池化。所有这些计算都可以通过利用提出的子协议来安全执行。为了不失一般性，我们考虑VGG16中的一个典型模块[38]，该模块由线性计算、批量归一化、激活和平均池化组成，如图4所示。为了提供可验证性，我们将一批数据X（包括原始输入x和可验证数据I）输入网络进行推理。此模块的计算可以表示为：&lt;/p&gt;
+$$ Z = W \cdot X + B $$$$ U = c \cdot Z + b $$$$ T = a_1 \cdot U + \dots + a_d \cdot U_d $$$$ Y = \text{Avg}(T) $$&lt;p&gt;其中，Avg表示平均操作，c和b是经过训练并固定的。随后，我们将详细介绍如何在代理层中安全地执行这些计算。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线性计算&lt;/strong&gt;&lt;br&gt;
+回顾一下，每个计算节点$E_i$拥有模型参数的份额$H(i)$和输入数据的份额$X(i)$，它们包含输入数据$x$和可验证数据$I$的份额。首先，计算节点$E_i$提取并重新格式化$H(i)$，以获得权重矩阵$W(i) \in \mathbb{Z}_u^{n \times p}$和偏置$b(i) \in \mathbb{Z}_u^p$。这里，由于输入数据$X(i) \in \mathbb{Z}_n^{(J+1) \times p}$（而不是原始输入$x \in \mathbb{Z}_n^p$）的变化，偏置$b(i) \in \mathbb{Z}_u^p$需要扩展为矩阵$B(i) \in \mathbb{Z}_u^{(J+1) \times p}$以进行批量推理，其中$B(i) = \left[ b(i) , \cdots , b(i) \right]$。然后，为了执行线性计算$Z = W \cdot X + B$，代理层仅需执行安全矩阵乘法和安全加法，表示为：&lt;/p&gt;
+$$ \text{SecMul}(W(i), X(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), B(i)) \rightarrow Z(1), \dots, Z(N) $$&lt;p&gt;输出$Z(1), \dots, Z(N)$是$Z = W \cdot X + B$的份额。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;批量归一化&lt;/strong&gt;&lt;br&gt;
+在进行线性计算后，批量归一化被应用于解决内部协变量偏移。由于批量归一化中的参数在推理阶段是固定的，因此批量归一化操作可以作为线性计算（如式（14）所述）进行。类似地，代理层中的每个计算节点$E_i$可以从$H(i)$中提取并重新格式化，以获得份额$c(i)$和$b(i)$，其中$1 \leq i \leq N$。然后，代理层执行安全矩阵乘法和安全加法来完成批量归一化，表示为：&lt;/p&gt;
+$$ \text{SecMul}(c(i), Z(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), b(i)) \rightarrow U(1), \dots, U(N) $$&lt;p&gt;&lt;strong&gt;激活&lt;/strong&gt;&lt;br&gt;
+如第5.2节所述，我们已经用近似多项式替代了激活函数[3]。通过这种方式，非线性操作被转化为线性计算。由于它与上述线性计算类似，我们只提供主要过程。具体来说，在式（16）中，系数$a_1, a_2, \dots, a_d$从$H(i)$中提取。逐元素的指数运算可以通过多个乘法来安全实现。因此，激活的计算可以通过安全地执行一系列安全的乘法和加法来通过多项式进行逼近。最终，每个计算节点$E_i$输出一个份额$T(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;平均池化&lt;/strong&gt;&lt;br&gt;
+平均池化的主要过程是对矩形区域中的值进行加和并计算平均值。它由加法和除法与池大小组成。因此，我们也可以利用安全加法和安全除法来完成平均池化。最终，深度学习推理中的所有计算可以逐层执行。最后，在最后一层，每个计算节点$E_i$输出一个logit值份额，表示为$L(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;h3 id=&#34;聚合&#34;&gt;&lt;strong&gt;聚合&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;当用户U接收到代理层的所有logit值份额$L(1), &amp;hellip;, L(N)$时，用户U将它们聚合以获得深度模型的logit值。&lt;/p&gt;
+$$ L = \frac{1}{N} \sum_{i=1}^{N} L(i) $$&lt;p&gt;最终推理结果$R$取决于深度学习任务的类型。如果深度学习模型是预测任务，则$R = L$。如果是分类任务，则$R = \text{softmax}(L)$。&lt;/p&gt;
+&lt;h3 id=&#34;验证&#34;&gt;&lt;strong&gt;验证&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在聚合所有份额以获得推理结果$R$后，用户$U$检查推理的正确性。具体来说，用户$U$在输入密钥$rv$后，提取第$rv$列向量$y = R_{rv}$。令$R$表示矩阵$R$的其余部分。然后，用户$U$将结果$R$与标签$V$进行比较。如果相同，用户$U$接受$y$作为输入$x$的推理结果。否则，用户$U$拒绝并输出错误$?$。需要注意的是，如果没有提供输入隐私，这意味着代理层可以轻松地区分可验证数据和输入数据$x$，则代理层可以输出可验证数据的正确结果和输入数据的错误结果，从而破坏可验证性。因此，验证的成功与输入隐私的保护密切相关。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>第6周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
-        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        <pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/ai-generated-8787240_1280.jpg" alt="Featured image of post 第6周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
@@ -721,8 +1428,6 @@ $$&lt;p&gt;从上述算法可以看出，使用 $\alpha$ 代替 $\lambda$ 的最
 &lt;p&gt;(3) 加密联邦学习：客户端使用同态加密密钥和加密掩码选择性加密本地模型更新，以实现高效的隐私保护训练。&lt;/p&gt;
 &lt;h3 id=&#34;威胁模型&#34;&gt;威胁模型
 &lt;/h3&gt;&lt;p&gt;我们定义一个半诚实的对手A，该对手可以破坏聚合服务器或任何子集的本地客户端。A遵循协议，但试图尽可能多地获取信息。粗略地说，在这种对手模型下，安全性定义要求，当A破坏一部分客户端时，只有来自被破坏客户端的本地模型中的私人信息会被泄露；当A破坏聚合服务器时，不会泄露任何本地模型或全局模型中的私人信息。 当A同时破坏聚合服务器和多个客户端时，默认设置下私钥与所有客户端共享（包括被破坏的客户端），这将允许A解密来自正常客户端的本地模型（通过结合被破坏的服务器接收到的加密本地模型和任何被破坏客户端接收到的私钥）。这一问题可以通过采用同态加密的阈值或多密钥变体来缓解，其中解密必须由一定数量的客户端共同执行（Aloufi et al., 2021; Ma et al., 2022; Du et al., 2023）。由于多方同态加密问题不是本文的重点，本文其余部分默认使用单密钥同态加密设置，但阈值同态加密联邦学习设置和微基准的详细信息将在附录中提供。&lt;/p&gt;
-&lt;p&gt;基于同态加密的联邦聚合算法 隐私保护的联邦学习系统利用同态加密，使得聚合服务器能够在不查看加密前数据的情况下，结合本地模型参数，从而设计出同态加密的聚合函数。我们主要关注FedAvg（McMahan等，2017），该算法被证明仍然是最强大的联邦聚合策略之一，同时保持计算简洁性（Wang等，2022）。我们的基于同态加密的安全聚合算法，如算法1所示，可以总结为：给定一个聚合服务器和N个客户端，每个客户端i ∈ [N]拥有一个本地数据集Di，并初始化一个本地模型Wi，并为其分配聚合权重因子αi；密钥授权机构或分布式阈值密钥协议生成一对密钥(pk, sk)和加密上下文，然后将其分发给客户端和服务器（但服务器仅获取加密上下文，这是公共配置）。客户端和服务器随后共同计算加密掩码M，以进行选择性参数加密，同样使用同态加密。在每轮通信t ∈ [T]中，服务器执行聚合：
-&lt;/p&gt;
 $$
 [W_{\text{glob}}] = \sum_{i=1}^{N} \alpha_i \left[ M \odot W_i \right] + \sum_{i=1}^{N} \alpha_i \left( (1 - M) \odot W_i \right)
 $$&lt;p&gt;
@@ -734,84 +1439,31 @@ $$&lt;p&gt;
 &lt;li&gt;p：选择性加密的参数比例；&lt;/li&gt;
 &lt;li&gt;b：（可选）差分隐私参数。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;// 密钥授权生成密钥&lt;br&gt;
-&lt;/p&gt;
-$$(pk, sk) \leftarrow HE.KeyGen(λ);$$&lt;p&gt;// 本地敏感度映射计算&lt;br&gt;
-对于每个客户端 &lt;/p&gt;
-$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
-&lt;/p&gt;
-$$
+$$(pk, sk) \leftarrow HE.KeyGen(λ);$$$$i \in [N]$$$$
 W_i \leftarrow Init(W); \\
 S_i \leftarrow Sensitivity(W, D_i); \\
 [[S_i]] \leftarrow Enc(pk, S_i); \\
-$$&lt;p&gt;
-将 &lt;/p&gt;
-$$[[S_i]]$$&lt;p&gt; 发送给服务器;&lt;br&gt;
+$$$$[[S_i]]$$&lt;p&gt; 发送给服务器;&lt;br&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;// 服务器加密掩码聚合&lt;br&gt;
-&lt;/p&gt;
 $$
 [[M]] \leftarrow Select\left(\sum_{i=1}^N \alpha_i [[S_i]], p\right);
-$$&lt;p&gt;// 训练&lt;br&gt;
-对于 &lt;/p&gt;
-$$t = 1, 2, \dots, T$$&lt;p&gt; 循环&lt;br&gt;
-对于每个客户端 &lt;/p&gt;
-$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
-如果 &lt;/p&gt;
-$$t = 1$$&lt;p&gt; 则&lt;br&gt;
-接收 &lt;/p&gt;
-$$[[M]]$$&lt;p&gt; 来自服务器;&lt;br&gt;
-&lt;/p&gt;
-$$M \leftarrow HE.Dec(sk, [[M]]);$$&lt;p&gt;&lt;br&gt;
+$$$$t = 1, 2, \dots, T$$$$i \in [N]$$$$t = 1$$$$[[M]]$$$$M \leftarrow HE.Dec(sk, [[M]]);$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-&lt;p&gt;如果 &lt;/p&gt;
-$$t &gt; 1$$&lt;p&gt; 则&lt;br&gt;
-接收 &lt;/p&gt;
-$$[W_{glob}]$$&lt;p&gt; 来自服务器;&lt;br&gt;
-&lt;/p&gt;
-$$W_i \leftarrow HE.Dec(sk, M \odot [W_{glob}]) + (1 - M) \odot [W_{glob}];$$&lt;p&gt;&lt;br&gt;
+$$t &gt; 1$$$$[W_{glob}]$$$$W_i \leftarrow HE.Dec(sk, M \odot [W_{glob}]) + (1 - M) \odot [W_{glob}];$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-$$W_i \leftarrow Train(W_i, D_i);$$&lt;p&gt;// 增加差分隐私&lt;br&gt;
-如果开启差分隐私（Add DP）则&lt;br&gt;
-&lt;/p&gt;
-$$W_i \leftarrow W_i + Noise(b);$$&lt;p&gt;&lt;br&gt;
+$$W_i \leftarrow Train(W_i, D_i);$$$$W_i \leftarrow W_i + Noise(b);$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-$$[W_i] \leftarrow HE.Enc(pk, M \odot W_i) + (1 - M) \odot W_i;$$&lt;p&gt;&lt;br&gt;
-将 &lt;/p&gt;
-$$[W_i]$$&lt;p&gt; 发送给服务器 &lt;/p&gt;
-$$S$$&lt;p&gt;;&lt;br&gt;
+$$[W_i] \leftarrow HE.Enc(pk, M \odot W_i) + (1 - M) \odot W_i;$$$$[W_i]$$$$S$$&lt;p&gt;;&lt;br&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;// 服务器模型聚合&lt;br&gt;
-&lt;/p&gt;
 $$
 [W_{glob}] \leftarrow \sum_{i=1}^N \alpha_i[[M \odot W_i]] + \sum_{i=1}^N \alpha_i((1 - M) \odot W_i);
 $$&lt;p&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;我们将在第 §2.4 节详细解释加密掩码 &lt;/p&gt;
 $$M$$&lt;p&gt; 的形式化过程。&lt;/p&gt;
 &lt;h3 id=&#34;通过选择性参数加密实现高效优化&#34;&gt;通过选择性参数加密实现高效优化
 &lt;/h3&gt;&lt;p&gt;完全加密模型能够确保对抗者无法访问明文的本地模型，但会带来高开销。然而，隐私泄漏分析的研究表明，“部分透明性”，例如隐藏部分模型（Hatamizadeh等, 2022; Mo等, 2020），可以限制对抗者成功执行攻击（如梯度反演攻击）的能力（Lu等, 2022）。因此，我们提出了选择性参数加密方法，选择性地加密最隐私敏感的参数，以在降低不可行的开销的同时提供可定制的隐私保护；见图4。&lt;/p&gt;
-&lt;p&gt;步骤 1：客户端隐私泄漏分析。直接执行梯度反演攻击（Wei等人，2020年）并评估攻击成功率的时间远远超过模型训练时间。我们因此采用敏感度（Novak等人，2018年；Sokolić等人，2017年；Mo等人，2020年）来衡量梯度相对于输入的总体隐私风险。给定模型&lt;/p&gt;
-$$W$$&lt;p&gt;和包含输入矩阵&lt;/p&gt;
-$$X$$&lt;p&gt;与真实标签向量&lt;/p&gt;
-$$y$$&lt;p&gt;的&lt;/p&gt;
-$$K$$&lt;p&gt;个数据样本，我们计算每个参数&lt;/p&gt;
-$$w_m$$&lt;p&gt;的敏感度为&lt;/p&gt;
-$$\frac{1}{K} \sum_{k=1}^{K} \| J_m(y_k) \|$$&lt;p&gt;，其中&lt;/p&gt;
-$$J_m(y_k) = \frac{\partial}{\partial y_k} \frac{\partial l(X, y, W)}{\partial w_m} \in \mathbb{R}$$&lt;p&gt;，&lt;/p&gt;
-$$l(\cdot)$$&lt;p&gt;为基于&lt;/p&gt;
-$$X$$&lt;p&gt;、&lt;/p&gt;
-$$y$$&lt;p&gt;和&lt;/p&gt;
-$$W$$&lt;p&gt;的损失函数，&lt;/p&gt;
-$$\|\cdot\|$$&lt;p&gt;表示绝对值。直观上，这计算了参数梯度对每个数据点&lt;/p&gt;
-$$k$$&lt;p&gt;的真实输出&lt;/p&gt;
-$$y_k$$&lt;p&gt;的变化程度。每个客户端&lt;/p&gt;
-$$i$$&lt;p&gt;然后将加密的参数敏感度矩阵&lt;/p&gt;
-$$[[S_i]]$$&lt;p&gt;发送至服务器。如图5所示，模型的不同部分通过暴露不均等的信息量对攻击做出贡献。基于此见解，我们建议仅选择和加密模型中更重要且易受攻击的部分，以减少同态加密（HE）开销，同时保持足够的隐私保护。&lt;/p&gt;
-&lt;p&gt;步骤 2：客户端间的加密掩码协议。敏感度映射取决于所处理的数据。在可能存在异构数据分布的情况下，服务器将本地敏感度映射聚合为全局隐私映射 &lt;/p&gt;
-$$P = \sum_{i=1}^N \alpha_i [[S_i]]$$&lt;p&gt;。然后，使用隐私开销比率 &lt;/p&gt;
-$$p \in [0, 1]$$&lt;p&gt; 配置全局加密掩码 &lt;/p&gt;
-$$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例。最后，将全局加密掩码作为联邦学习配置的一部分共享给客户端。&lt;/p&gt;
+$$W$$$$X$$$$y$$$$K$$$$w_m$$$$\frac{1}{K} \sum_{k=1}^{K} \| J_m(y_k) \|$$$$J_m(y_k) = \frac{\partial}{\partial y_k} \frac{\partial l(X, y, W)}{\partial w_m} \in \mathbb{R}$$$$l(\cdot)$$$$X$$$$y$$$$W$$$$\|\cdot\|$$$$k$$$$y_k$$$$i$$$$[[S_i]]$$&lt;p&gt;发送至服务器。如图5所示，模型的不同部分通过暴露不均等的信息量对攻击做出贡献。基于此见解，我们建议仅选择和加密模型中更重要且易受攻击的部分，以减少同态加密（HE）开销，同时保持足够的隐私保护。&lt;/p&gt;
+$$P = \sum_{i=1}^N \alpha_i [[S_i]]$$$$p \in [0, 1]$$$$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例。最后，将全局加密掩码作为联邦学习配置的一部分共享给客户端。&lt;/p&gt;
 &lt;h3 id=&#34;软件框架同态加密在联邦学习中的应用&#34;&gt;软件框架：同态加密在联邦学习中的应用
 &lt;/h3&gt;&lt;p&gt;在本节中，我们将从软件框架的角度说明如何设计基于同态加密（HE）的聚合机制。图 6 展示了我们框架的高层次设计，框架由三个主要层次构成：&lt;/p&gt;
 &lt;ul&gt;
@@ -851,24 +1503,16 @@ $$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例
 在理想世界中，S 从 F 接收 λ 和 $1^n$，并执行以下步骤：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;S 选择一个均匀分布的随机数带 &lt;/p&gt;
 $$r$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;S 运行密钥生成函数来生成公钥 &lt;/p&gt;
-$$pk$$&lt;p&gt;：&lt;/p&gt;
-$$(pk, sk) \leftarrow HE.\text{KeyGen}(\lambda)$$&lt;p&gt;。&lt;/p&gt;
+$$pk$$$$(pk, sk) \leftarrow HE.\text{KeyGen}(\lambda)$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;对于选定的第 &lt;/p&gt;
-$$i$$&lt;p&gt; 个学习者，S 运行加密函数来生成采样值：&lt;/p&gt;
-$$(c_i) \leftarrow HE.\text{Enc}(pk, r^{|W_i|})$$&lt;p&gt;。&lt;/p&gt;
+$$i$$$$(c_i) \leftarrow HE.\text{Enc}(pk, r^{|W_i|})$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;S 对所有其他学习者重复步骤 3 以获得 &lt;/p&gt;
-$$\vec{c}$$&lt;p&gt;，并运行联邦聚合函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 来生成采样值：&lt;/p&gt;
-$$(c_{\text{glob}}) \leftarrow HE.\text{Eval}(\vec{c}, f)$$&lt;p&gt;。&lt;/p&gt;
+$$\vec{c}$$$$f$$$$(c_{\text{glob}}) \leftarrow HE.\text{Eval}(\vec{c}, f)$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;S 的执行意味着：&lt;/p&gt;
@@ -877,112 +1521,41 @@ $$
 $$&lt;p&gt;因此，我们可以得出结论，S 在理想世界中的输出在计算上与 A 在实际执行中的视图不可区分：&lt;/p&gt;
 $$
 \{S (1^n, \lambda)\} \overset{s}{\equiv} \{\text{view}^\pi (\lambda)\}
-$$&lt;p&gt;其中 &lt;/p&gt;
-$$\text{view}$$&lt;p&gt; 表示 A 在协议 &lt;/p&gt;
-$$\pi$$&lt;p&gt; 实际执行中的视图。&lt;/p&gt;
+$$$$\text{view}$$$$\pi$$&lt;p&gt; 实际执行中的视图。&lt;/p&gt;
 &lt;h3 id=&#34;通过差分隐私理论对加密学习的证明&#34;&gt;通过差分隐私理论对加密学习的证明
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义 3.4（相邻数据集）&lt;/strong&gt;&lt;br&gt;
-当两个数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt; 仅在一个个体的数据上有所不同时，称它们为相邻数据集。形式化地，若满足 &lt;/p&gt;
-$$|D_1 \triangle D_2| = 1$$&lt;p&gt;，则它们为相邻数据集。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定义 3.5（$$\varepsilon$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-若一个随机算法 &lt;/p&gt;
-$$M$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，则对于任何两个相邻的数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt;，以及任意可能的输出 &lt;/p&gt;
-$$O \subseteq \text{Range}(F)$$&lt;p&gt;，以下不等式成立：&lt;/p&gt;
+&lt;/h3&gt;$$D_1$$$$D_2$$$$|D_1 \triangle D_2| = 1$$&lt;p&gt;，则它们为相邻数据集。&lt;/p&gt;
+$$M$$$$\varepsilon$$$$D_1$$$$D_2$$$$O \subseteq \text{Range}(F)$$&lt;p&gt;，以下不等式成立：&lt;/p&gt;
 $$
 \frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
-$$&lt;p&gt;隐私参数 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt; 的较小值意味着更强的隐私保障。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定义 3.6（拉普拉斯机制）&lt;/strong&gt;&lt;br&gt;
-给定一个函数 &lt;/p&gt;
-$$f : D \to \mathbb{R}$$&lt;p&gt;，其中 &lt;/p&gt;
-$$D$$&lt;p&gt; 是数据集的定义域，&lt;/p&gt;
-$$d$$&lt;p&gt; 是输出的维度，拉普拉斯机制向 &lt;/p&gt;
-$$f$$&lt;p&gt; 的输出添加拉普拉斯噪声。&lt;br&gt;
-令 &lt;/p&gt;
-$$b$$&lt;p&gt; 为拉普拉斯分布的尺度参数，其定义如下：&lt;/p&gt;
+$$$$\varepsilon$$&lt;p&gt; 的较小值意味着更强的隐私保障。&lt;/p&gt;
+$$f : D \to \mathbb{R}$$$$D$$$$d$$$$f$$$$b$$&lt;p&gt; 为拉普拉斯分布的尺度参数，其定义如下：&lt;/p&gt;
 $$
 \text{Lap}(x | b) = \frac{1}{2b} e^{-\frac{|x|}{b}}
-$$&lt;p&gt;给定数据集 &lt;/p&gt;
-$$D$$&lt;p&gt;，拉普拉斯机制 &lt;/p&gt;
-$$F$$&lt;p&gt; 定义为：&lt;/p&gt;
+$$$$D$$$$F$$&lt;p&gt; 定义为：&lt;/p&gt;
 $$
 M(D) = f(D) + \text{Lap}(0 | b)^d
-$$&lt;p&gt;&lt;strong&gt;定义 3.7（敏感度）&lt;/strong&gt;&lt;br&gt;
-为了确保 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，我们需要确定适当的尺度参数 &lt;/p&gt;
-$$b$$&lt;p&gt;。这就涉及到函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 的敏感度。函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 的敏感度 &lt;/p&gt;
-$$\Delta f$$&lt;p&gt; 是 &lt;/p&gt;
-$$f$$&lt;p&gt; 应用于任意两个相邻数据集时输出的最大差值：&lt;/p&gt;
+$$$$\varepsilon$$$$b$$$$f$$$$f$$$$\Delta f$$$$f$$&lt;p&gt; 应用于任意两个相邻数据集时输出的最大差值：&lt;/p&gt;
 $$
 \Delta f = \max_{D_1 ,D_2 :|D_1 \triangle D_2 |=1} \|f(D_1) - f(D_2)\|_1
 $$&lt;p&gt;基于定义 3.4、3.5、3.6 和 3.7，我们得出以下引理：&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;引理 3.8（通过拉普拉斯机制实现 $$\varepsilon$$-差分隐私（Dwork, 2008；Abadi 等, 2016））&lt;/strong&gt;&lt;br&gt;
-为实现 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，我们选择尺度参数 &lt;/p&gt;
-$$b$$&lt;p&gt; 为：&lt;/p&gt;
+$$\varepsilon$$$$b$$&lt;p&gt; 为：&lt;/p&gt;
 $$
 b = \frac{\Delta f}{\varepsilon}
-$$&lt;p&gt;在该 &lt;/p&gt;
-$$b$$&lt;p&gt; 的选择下，拉普拉斯机制 &lt;/p&gt;
-$$F$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;通过在模型梯度的一个参数上添加 &lt;/p&gt;
-$$\text{Lap}(0 | b)^d$$&lt;p&gt; 噪声，其中 &lt;/p&gt;
-$$b = \frac{\Delta f}{\varepsilon}$$&lt;p&gt;，我们可以实现 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私。随后我们表明同态加密提供了更强的差分隐私保障。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定理 3.9（通过同态加密实现 0-差分隐私）&lt;/strong&gt;&lt;br&gt;
-对于任意两个相邻的数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt;，由于 &lt;/p&gt;
-$$M(D)$$&lt;p&gt; 在计算上不可区分，因此：&lt;/p&gt;
+$$$$b$$$$F$$$$\varepsilon$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$\text{Lap}(0 | b)^d$$$$b = \frac{\Delta f}{\varepsilon}$$$$\varepsilon$$&lt;p&gt;-差分隐私。随后我们表明同态加密提供了更强的差分隐私保障。&lt;/p&gt;
+$$D_1$$$$D_2$$$$M(D)$$&lt;p&gt; 在计算上不可区分，因此：&lt;/p&gt;
 $$
 \frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
-$$&lt;p&gt;若 &lt;/p&gt;
-$$O$$&lt;p&gt; 是加密的，则 &lt;/p&gt;
-$$\varepsilon = 0$$&lt;p&gt;。&lt;/p&gt;
+$$$$O$$$$\varepsilon = 0$$&lt;p&gt;。&lt;/p&gt;
 &lt;p&gt;换句话说，攻击者无法从加密的参数中获取敏感信息。&lt;/p&gt;
 &lt;h3 id=&#34;选择性参数选择的证明&#34;&gt;&lt;strong&gt;选择性参数选择的证明&lt;/strong&gt;
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;引理 3.10（顺序组合（Dwork, 2008））&lt;/strong&gt;&lt;br&gt;
-如果 &lt;/p&gt;
-$$M_1(x)$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon_1$$&lt;p&gt;-差分隐私，且 &lt;/p&gt;
-$$M_2(x)$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon_2$$&lt;p&gt;-差分隐私，那么发布两个结果的机制 &lt;/p&gt;
-$$G(x) = (M_1(x), M_2(x))$$&lt;p&gt; 满足 &lt;/p&gt;
-$$(\varepsilon_1 + \varepsilon_2)$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;/h3&gt;$$M_1(x)$$$$\varepsilon_1$$$$M_2(x)$$$$\varepsilon_2$$$$G(x) = (M_1(x), M_2(x))$$$$(\varepsilon_1 + \varepsilon_2)$$&lt;p&gt;-差分隐私。&lt;/p&gt;
 &lt;p&gt;基于引理 3.8、3.10 和定理 3.9，现在我们可以分析选择性参数加密的隐私性。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定理 3.11（通过部分加密实现 $$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果我们对部分模型参数 &lt;/p&gt;
-$$S$$&lt;p&gt; 应用同态加密，并在剩余的模型参数 &lt;/p&gt;
-$$[N]/S$$&lt;p&gt; 上使用拉普拉斯机制，且噪声尺度固定为 &lt;/p&gt;
-$$b$$&lt;p&gt;，则对于每个参数 &lt;/p&gt;
-$$i \in [N]/S$$&lt;p&gt;，有 &lt;/p&gt;
-$$\varepsilon_i = \frac{\Delta f_i}{b}$$&lt;p&gt;。这样的部分加密满足 &lt;/p&gt;
-$$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;令 &lt;/p&gt;
-$$J = \sum_{i=1}^{N} \frac{\Delta f_i}{b}$$&lt;p&gt;，并假设 &lt;/p&gt;
-$$\Delta f \sim U(0,1)$$&lt;p&gt;，其中 &lt;/p&gt;
-$$U$$&lt;p&gt; 表示均匀分布，那么我们可以证明在所有参数上添加拉普拉斯噪声、随机参数加密以及选择性参数加密的隐私代价。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.12（通过在所有模型参数上添加拉普拉斯噪声实现 $$J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果在所有参数上添加尺度为 &lt;/p&gt;
-$$b$$&lt;p&gt; 的拉普拉斯噪声，则满足 &lt;/p&gt;
-$$J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.13（通过随机选择实现 $$(1 - p)J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果以概率 &lt;/p&gt;
-$$p$$&lt;p&gt; 随机选择模型参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
-$$(1 - p)J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.14（通过敏感参数选择实现 $$(1 - p)^2 J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果按比例 &lt;/p&gt;
-$$p$$&lt;p&gt; 选择最敏感的参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
-$$(1 - p)^2 J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;关键观察&lt;/strong&gt;：选择性参数加密比随机选择和完全差分隐私在相同的隐私保护下所需的隐私预算减少了 &lt;/p&gt;
+$$S$$$$[N]/S$$$$b$$$$i \in [N]/S$$$$\varepsilon_i = \frac{\Delta f_i}{b}$$$$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$J = \sum_{i=1}^{N} \frac{\Delta f_i}{b}$$$$\Delta f \sim U(0,1)$$$$U$$&lt;p&gt; 表示均匀分布，那么我们可以证明在所有参数上添加拉普拉斯噪声、随机参数加密以及选择性参数加密的隐私代价。&lt;/p&gt;
+$$b$$$$J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$p$$$$(1 - p)J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$p$$$$(1 - p)^2 J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
 $$(1 - p)^2$$&lt;p&gt; 倍。&lt;/p&gt;
 &lt;h2 id=&#34;评估&#34;&gt;评估
 &lt;/h2&gt;&lt;p&gt;在本节中，我们关注评估结果，以展示我们提出的通用优化方案如何在实际应用中大幅减少这些开销，同时仍能有效抵御隐私攻击。此外，有关其他联邦学习系统方面的实验结果已包含在附录中。&lt;/p&gt;
@@ -1207,8 +1780,6 @@ $$(1 - p)^2$$&lt;p&gt; 倍。&lt;/p&gt;
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;差分隐私&#34;&gt;🍹差分隐私
 &lt;/h3&gt;&lt;p&gt;差分隐私提供了数据分析中隐私保证的精确规范。它确保在分析结果中不会泄露任何数据集参与者的私人信息。&lt;/p&gt;
-&lt;p&gt;“隐私损失”和“隐私预算”的概念可以用来解释差分隐私的思想。当一个人的数据被添加到或从数据集中删除时，机制的输出不会发生显著改变，则该机制被称为具有差分隐私。数学上，随机算法或机制被称为满足ε-差分隐私，如果对于任何一对由于包含或排除单个个体数据而有所不同的数据集D和D&amp;rsquo;，以及对于任何可能的输出集合S，以下不等式成立：
-&lt;/p&gt;
 $$
 Pr [M(D) ∈ S] ≤ exp(ε) Pr [M(D′) ∈ S]
 $$&lt;p&gt;
@@ -1231,14 +1802,9 @@ $$&lt;p&gt;
 &lt;p&gt;该论文提供了对PPML领域最新进展的全面且易于理解的总结，并强调了该领域需要进一步研究和发展的必要性，以应对机器学习中隐私保护不断变化的风险和需求。&lt;/p&gt;
 &lt;h4 id=&#34;liu-guo-lam--zhao-2022&#34;&gt;🧃Liu, Guo, Lam, &amp;amp; Zhao, 2022
 &lt;/h4&gt;&lt;p&gt;本文的作者提出了一种可扩展的隐私保护方案，该方案能够容忍任何参与者在任何时候的掉线。他们在提案中使用了同态加密伪随机生成器（HPRG）和沙密尔秘密共享方案。该提议的解决方案通过避免从客户端构造用于生成掩码的种子，减少了通信开销。此外，在客户端掉线的情况下，也无需像他们在比较中使用的基于SecAgg的方案那样向服务器发送额外的沙密尔共享数据。他们声称，提出的方案在抗掉线恢复能力上比其他解决方案更强。&lt;/p&gt;
-&lt;p&gt;在该方案的安全性分析中，提到了四个理论及其证明。其中两个理论讨论了系统在半诚实方的保护级别。在他们的定义中，半诚实参与者“不会偏离协议，但会试图推测诚实方的信息。” 第一个定理涉及排除服务器端的半诚实参与者。对于所有的 U, t, k，其中 |C| &amp;lt; t, $x_U$, U1, U2, U3 和 C，其中 C ⊆ U 且 U3 ⊆ U2 ⊆ U1，存在一个概率多项式时间（PPT）模拟器 SIM，使得：&lt;br&gt;
-&lt;/p&gt;
 $$
 SIM^{U,t,k}_C (x_U, U_1, U_2, U_3) ≡ REAL^{U,t,k}_C (x_U, U_1, U_2, U_3)
-$$&lt;p&gt;
-第二个定理则关注包括服务器在内的半诚实参与者的安全性。对于所有的 U, t, k，其中 |C{S}| &amp;lt; t, $x_U$, U1, U2, U3 和 C，其中 C ⊆ U ∪ S 且 U3 ⊆ U2 ⊆ U1 ⊆ U，存在一个概率多项式时间（PPT）模拟器 SIM，使得：
-&lt;/p&gt;
-$$
+$$$$
 SIM^{U,t,k}_C (x_U, U_1, U_2, U_3) ≡ REAL^{U,t,k}_C (x_U, U_1, U_2, U_3)
 $$&lt;p&gt;
 另外两个理论讨论了防御活跃恶意客户端的安全性。为提供所需的安全性，提出了一种基于 HPRG 的安全聚合协议。第三个定理关注恶意客户端和诚实服务器。对于所有的 U, t, k，其中 |C| &amp;lt; t, $x_{U/C}$ 和 C，使用算法 MC，其中 C ⊆ U，所提出的协议是一个计算 FHSecAgg 的安全协议。最后一个定理涉及包括服务器在内的恶意客户端的安全性。&lt;/p&gt;
@@ -1313,8 +1879,6 @@ $$&lt;p&gt;
 &lt;/h2&gt;&lt;p&gt;隐私保护的数据分析也被称为统计披露控制、推断控制、隐私保护数据挖掘和私密数据分析。我们的主要动机场景是统计数据库。统计量是从样本中计算出的数量。假设一个受信任且值得信赖的管理者从大量受访者（样本）中收集敏感信息，目的是学习（并向公众发布）关于潜在群体的统计事实。问题在于如何在不侵犯个别受访者隐私的情况下发布统计信息。有两种设置：在非交互式设置中，管理者计算并发布一些统计信息，数据不会再被进一步使用。隐私问题可能会影响管理者发布的精确答案，甚至影响发布的统计量的集合。请注意，由于数据不会再被使用，管理者可以在统计信息发布后销毁数据（和自己）。在交互式设置中，管理者处于用户和数据库之间。用户提出的查询和/或对这些查询的响应，可能会被管理者修改，以保护受访者的隐私。数据不能被销毁，管理者必须在数据库的整个生命周期中保持在场。当然，任何交互式解决方案都能产生一个非交互式解决方案，前提是查询在此之前已知：管理者可以模拟一个互动，其中这些已知查询被提出，并发布结果记录。关于这个问题的文献丰富，主要来自统计学界（见，例如，[10, 14, 27, 28, 29, 38, 40, 26, 39]以及有关表格数据的受控发布、列联表和单元抑制的文献），也来自计算机科学的各种分支，如算法、数据库理论和密码学，例如在[3, 4, 21, 22, 23, 33, 34, 41, 48]，[1, 24, 25, 31]，以及[6, 9, 11, 12, 13, 18, 7, 19]中；有关1989年前领域总结的文献，见调查[2]。本次综述关于差分隐私。粗略来说，差分隐私确保删除或添加单个数据库项不会（实质性地）影响任何分析的结果。因此，加入数据库不会产生风险，提供了一种在分布信息可能导致泄露的情况下进行严格数学处理的方法。我们将首先描述三种针对特定、不相关的数据分析任务的差分隐私算法。然后，我们将提出三条关于当需要保护个别数据项隐私时的计算学习的一般结果。这在学习理论文献中通常不是一个关注点，标志着一条新研究方向的出现。&lt;/p&gt;
 &lt;h2 id=&#34;2differential-privacy&#34;&gt;🍧2.Differential Privacy
 &lt;/h2&gt;&lt;p&gt;在后续中，随机化函数 K 是管理者在发布信息时应用的算法。因此，输入是数据集，输出是发布的信息或记录。我们不需要区分交互式和非交互式设置。可以将数据库视为一组行。如果数据库 D1 和 D2 仅在一个元素上有所不同，我们称其为 D1 和 D2 的关系：一个是另一个的真子集，而较大的数据库仅包含一行附加的记录。&lt;/p&gt;
-&lt;p&gt;定义 1. 随机化函数 K 具有 ε-differential privacy，当且仅当对于所有在最多一个元素上有所不同的数据集 D1 和 D2，以及所有 S ⊆ Range(K)，以下不等式成立：
-&lt;/p&gt;
 $$
 \Pr[K(D_1) \in S] \leq \exp(ε) \times \Pr[K(D_2) \in S]
 $$&lt;p&gt;
@@ -1326,8 +1890,6 @@ $$&lt;p&gt;
 &lt;h2 id=&#34;3achieving-differential-privacy-in-statistical-databases&#34;&gt;🍨3.Achieving Differential Privacy in Statistical Databases
 &lt;/h2&gt;&lt;p&gt;在统计数据库中实现差分隐私&lt;/p&gt;
 &lt;p&gt;我们将介绍一种由 Dwork、McSherry、Nissim 和 Smith 提出的交互机制 K，适用于连续值查询的情况。在本节中，查询是一个将数据库映射到（向量形式的）实数的函数。例如，查询“计数 P”统计数据库中具有属性 P 的行数。当查询为函数 f，而数据库为 X 时，真实答案是值 f(X)。机制 K 向真实答案添加适当选择的随机噪声，以生成我们所称的响应。通过用真实答案的嘈杂版本进行回应来保护隐私的想法并不新鲜，但这种方法非常微妙。例如，如果噪声是关于原点对称的，并且同样的问题被多次询问，则响应可能会被平均，从而抵消噪声。我们必须考虑这些因素。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定义 2.&lt;/strong&gt; 对于 f : D → $R^k$，f 的敏感性为:
-&lt;/p&gt;
 $$
 Δf = \underset{\text{ D1, D2}}{\max} \| f(D_1) - f(D_2) \|_1
 $$&lt;p&gt;
@@ -1343,8 +1905,6 @@ $$&lt;p&gt;在查询函数 \(f\) 上，隐私机制 \(K\) 的响应为&lt;/p&gt;
 $$
 f(X) + (\text{Lap}(\Delta f/\epsilon))^k
 $$&lt;p&gt;即独立地向 $f(x)$的每个$k$ 个分量添加分布为 $\text{Lap}(\Delta f / \epsilon)$的噪声。注意，减少已知的公共参数 $\epsilon$ 会使 $\text{Lap}(\Delta f / \epsilon)$曲线变平，从而产生更大的期望噪声幅度。当 $\epsilon$ 固定时，具有高敏感性的函数 f 会产生更平坦的曲线，同样导致更高的期望噪声幅度。&lt;/p&gt;
-&lt;p&gt;为了简化，考虑 k = 1 的情况。证明 \(K\) 在单个查询函数$f$上产生$\epsilon$差分隐私是直接的。考虑任何子集$S \subseteq \text{Range}(K)$，令 $D_1, D_2$为任何在最多一个元素上不同的数据库对。当数据库为$D_1$时，任何$r \in \text{Range}(K)$ 处的概率质量与
-&lt;/p&gt;
 $$
 \exp(-|f(D_1) - r|\frac{\Delta f}{\epsilon})
 $$&lt;p&gt;成正比，$D_2$亦然。应用三角不等式，我们得到的比值最多为&lt;/p&gt;
@@ -1374,9 +1934,7 @@ $$&lt;p&gt;的最大可能值。由于查询的潜在自适应选择，陈述的
 &lt;h4 id=&#34;符号和预备知识&#34;&gt;🧁符号和预备知识。
 &lt;/h4&gt;&lt;p&gt;回想一下，设 $k$ 表示（布尔）属性的数量，我们可以将数据集视为一个向量 $x \in \mathbb{R}^{2^k}$，以属性元组为索引。对于每个 $\alpha \in {0, 1}^k$，数量 $x_\alpha$ 是具有该属性设置的数据元素的数量。我们令 $n = |x|_1$ 表示数据集中元组或行的总数。对于任意 $\alpha \in {0, 1}^k$，我们使用 $|\alpha|_1$ 表示非零位置的数量。我们写作 $\beta \preceq \alpha$，表示 $\alpha, \beta \in {0, 1}^k$，如果 $\alpha$ 中的每个零位置在 $\beta$ 中也是零。&lt;/p&gt;
 &lt;h4 id=&#34;边际算子&#34;&gt;🥧边际算子
-&lt;/h4&gt;&lt;p&gt;Barak 等人将一组边际的计算描述为对 contingency 表向量 $x$ 应用边际算子的结果。算子 $C_\alpha : \mathbb{R}^{2^k} \to \mathbb{R}^{2^{|\alpha|&lt;em&gt;1}}$，对于 $\alpha \in {0, 1}^k$，将 contingency 表映射到在 $\alpha$ 中正设置的属性的边际（这些属性有 $2^{|\alpha|&lt;em&gt;1}$ 种可能的设置）。为了简化记号，$C&lt;/em&gt;\alpha x$ 仅在那些满足 $\beta \preceq \alpha$ 的位置定义：对于任何 $\beta \preceq \alpha$，$C&lt;/em&gt;\alpha x$ 在位置 $\beta$ 的结果是 $x$ 中与 $\beta$ 在由 $\alpha$ 描述的坐标上相同的坐标的总和：
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 (C_\alpha(x))_\beta = \sum_{\gamma : \gamma \land \alpha = \beta} x_\gamma \tag{3}
 $$&lt;p&gt;注意，算子 $C_\alpha$ 对于所有 $\alpha$ 是线性的。&lt;/p&gt;
 &lt;p&gt;定理 2. ${f_\alpha}$ 形式构成了 $\mathbb{R}^{2^k}$ 的正交归一基。因此，可以将任何边际写成与相关的傅里叶系数的小和：&lt;/p&gt;
@@ -1436,14 +1994,10 @@ $$&lt;p&gt;因此，查询$H_y$ \(  \) 的答案可以通过对投影半空间�
 &lt;p&gt;定理 6 ([8])。设&lt;/p&gt;
 $$
 n \geq \log(1/\delta) + \log m + (k - 1) \log(1/\gamma) + m O\left(\frac{1}{\gamma}\right) k - 1 2\alpha.
-$$&lt;p&gt;则上述算法在保持 &lt;/p&gt;
-$$ \alpha $$&lt;p&gt;-差分隐私的同时，是 &lt;/p&gt;
-$$ (\epsilon, \gamma, \delta) $$&lt;p&gt;-有用的，适用于大小为 &lt;/p&gt;
-$$ n $$&lt;p&gt; 的数据库。该算法的运行时间为多项式级别，具体为&lt;/p&gt;
+$$$$ \alpha $$$$ (\epsilon, \gamma, \delta) $$$$ n $$&lt;p&gt; 的数据库。该算法的运行时间为多项式级别，具体为&lt;/p&gt;
 $$
 \text{poly}(\log(1/\delta), 1/\epsilon, 1/\alpha, b, d)
-$$&lt;p&gt;对于常数 &lt;/p&gt;
-$$ \gamma $$&lt;p&gt;。&lt;/p&gt;
+$$$$ \gamma $$&lt;p&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;5-一般学习理论结果&#34;&gt;🍬5 一般学习理论结果
 &lt;/h2&gt;&lt;p&gt;我们简要概述三个关于在交互模型中可以私密学习的常规结果。首先，我们介绍Blum、Dwork、McSherry和Nissim的结果，表明在统计查询学习模型中可学习的任何内容也可以通过交互方式有效地私密学习[7]。然后，我们转向忽略计算问题的结果，表明McSherry和Talwar的指数机制[35]可以用于：&lt;/p&gt;
 &lt;ol&gt;
@@ -1452,147 +2006,37 @@ $$ \gamma $$&lt;p&gt;。&lt;/p&gt;
 &lt;/ol&gt;
 &lt;p&gt;在这种情况下使用指数机制的工作归功于Kasiviswanathan、Lee、Nissim、Raskhodnikova和Smith[32]。&lt;/p&gt;
 &lt;h3 id=&#34;51-模拟统计查询模型&#34;&gt;🍭5.1 模拟统计查询模型
-&lt;/h3&gt;&lt;p&gt;统计查询（SQ）模型由Kearns在[10]中提出，是一个用于考察在从基础分布独立抽样中执行的统计算法的框架。在该框架中，算法指定谓词 &lt;/p&gt;
-$$ f_1, \ldots, f_k $$&lt;p&gt; 及其对应的准确度 &lt;/p&gt;
-$$ \tau_1, \ldots, \tau_k $$&lt;p&gt;，并返回在 &lt;/p&gt;
-$$ 1 \leq i \leq k $$&lt;p&gt; 的情况下，满足 &lt;/p&gt;
-$$ f_i $$&lt;p&gt; 的样本的期望比例，误差为 &lt;/p&gt;
-$$ \tau_i $$&lt;p&gt;。从概念上讲，该框架建模抽取足够数量的样本，以便观察到的满足每个 &lt;/p&gt;
-$$ f_i $$&lt;p&gt; 的样本计数是实际期望的良好估计。统计查询模型在计算学习理论社区中最为常用，其目标通常是学习一个（在本例中为布尔）概念，即数据上的谓词，达到一定的准确度。形式上，如果算法 &lt;/p&gt;
-$$ \delta $$&lt;p&gt; 学习一个概念 &lt;/p&gt;
-$$ c $$&lt;p&gt;，则它生成的谓词在潜在分布下的误分类概率至多为 &lt;/p&gt;
-$$ 1 - \delta $$&lt;p&gt;。&lt;/p&gt;
-&lt;p&gt;Blum、Dwork、McSherry和Nissim表明，任何可以在统计查询模型中学习的概念都可以使用等效算法在所谓的“SuLQ”数据库上私密学习[7]；该证明并不复杂。利用本调查中呈现的稍有不同的技术重述这些结果，使得该结果的论证更加简单。假设我们在SQ模型中有一个算法，该算法进行 &lt;/p&gt;
-$$ k $$&lt;p&gt; 次统计查询 &lt;/p&gt;
-$$ f_1, \ldots, f_k $$&lt;p&gt;，并令 &lt;/p&gt;
-$$ \tau = \min\{\tau_1, \ldots, \tau_k\} $$&lt;p&gt; 为SQ算法中所需的最小容忍度。假设 &lt;/p&gt;
-$$ n $$&lt;p&gt;，数据库的大小是已知的。在这种情况下，我们可以通过询问与 &lt;/p&gt;
-$$ f_i $$&lt;p&gt; 对应的谓词/计数查询（称为 &lt;/p&gt;
-$$ p_i $$&lt;p&gt;）来计算 &lt;/p&gt;
-$$ f_i $$&lt;p&gt; 的答案，并将结果除以 &lt;/p&gt;
-$$ n $$&lt;p&gt;。因此，我们处理的查询序列的灵敏度至多为 &lt;/p&gt;
-$$ k $$&lt;p&gt;。设 &lt;/p&gt;
-$$ b = k/\epsilon $$&lt;p&gt;。将 &lt;/p&gt;
-$$ \tau = \rho/n $$&lt;p&gt;，其中 &lt;/p&gt;
-$$ \rho $$&lt;p&gt; 稍后确定，这样当对真实答案添加的噪声在计数查询 &lt;/p&gt;
-$$ p_i $$&lt;p&gt; 时，其大小被限制在 &lt;/p&gt;
-$$ \rho $$&lt;p&gt; 以内，统计查询的响应就在容忍度 &lt;/p&gt;
-$$ \tau $$&lt;p&gt; 之内。我们希望找到 &lt;/p&gt;
-$$ \rho $$&lt;p&gt;，使得当噪声根据 &lt;/p&gt;
-$$ \text{Lap}(k/\epsilon) $$&lt;p&gt; 生成时，响应的噪声大小至少为 &lt;/p&gt;
-$$ \rho $$&lt;p&gt; 的概率被限制为 &lt;/p&gt;
-$$ \delta/k $$&lt;p&gt;。由于拉普拉斯分布是对称的，因此只需找到 &lt;/p&gt;
-$$ x &lt; 0 $$&lt;p&gt; 使得在 &lt;/p&gt;
-$$ x $$&lt;p&gt; 处的累积分布函数被限制为 &lt;/p&gt;
-$$ \delta/2k $$&lt;p&gt;：&lt;/p&gt;
+&lt;/h3&gt;$$ f_1, \ldots, f_k $$$$ \tau_1, \ldots, \tau_k $$$$ 1 \leq i \leq k $$$$ f_i $$$$ \tau_i $$$$ f_i $$$$ \delta $$$$ c $$$$ 1 - \delta $$&lt;p&gt;。&lt;/p&gt;
+$$ k $$$$ f_1, \ldots, f_k $$$$ \tau = \min\{\tau_1, \ldots, \tau_k\} $$$$ n $$$$ f_i $$$$ p_i $$$$ f_i $$$$ n $$$$ k $$$$ b = k/\epsilon $$$$ \tau = \rho/n $$$$ \rho $$$$ p_i $$$$ \rho $$$$ \tau $$$$ \rho $$$$ \text{Lap}(k/\epsilon) $$$$ \rho $$$$ \delta/k $$$$ x &lt; 0 $$$$ x $$$$ \delta/2k $$&lt;p&gt;：&lt;/p&gt;
 $$
 \frac{1}{2} e^{-|x|/b} &lt; \frac{\delta}{2k} 
-$$&lt;p&gt;通过简单计算，当 &lt;/p&gt;
-$$ |x| &gt; b \ln(k/\delta) $$&lt;p&gt; 时，这成立，即当 &lt;/p&gt;
-$$ |x| &gt; (k/\epsilon) \ln(k/\delta) $$&lt;p&gt;。因此，我们设 &lt;/p&gt;
-$$ \rho &gt; (k/\epsilon) \ln(k/\delta) $$&lt;p&gt;。只要 &lt;/p&gt;
-$$ \rho/n &lt; \tau $$&lt;p&gt;，或者更确切地说，只要 &lt;/p&gt;
-$$ n &gt; \rho/\tau $$&lt;p&gt;，我们就可以模拟SQ算法。该分析仅考虑由 &lt;/p&gt;
-$$ K $$&lt;p&gt; 引入的噪声；即，它假设&lt;/p&gt;
+$$$$ |x| &gt; b \ln(k/\delta) $$$$ |x| &gt; (k/\epsilon) \ln(k/\delta) $$$$ \rho &gt; (k/\epsilon) \ln(k/\delta) $$$$ \rho/n &lt; \tau $$$$ n &gt; \rho/\tau $$$$ K $$&lt;p&gt; 引入的噪声；即，它假设&lt;/p&gt;
 $$
 \frac{1}{n} \sum_{i=1}^{n} f_j(d_i) = \Pr_{x \in D}[f_j(x)], \quad 1 \leq j \leq k, 
-$$&lt;p&gt;其中 &lt;/p&gt;
-$$ D $$&lt;p&gt; 是示例上的分布。以上结果同样适用，当我们假设数据库中的行是根据 &lt;/p&gt;
-$$ D $$&lt;p&gt; 以独立同分布的方式抽取时，利用众所周知的事实，确保对于所有 &lt;/p&gt;
-$$ f_j $$&lt;p&gt;（&lt;/p&gt;
-$$ 1 \leq j \leq k $$&lt;p&gt;）同时满足容忍度 &lt;/p&gt;
-$$ \tau $$&lt;p&gt; 的概率至少为 &lt;/p&gt;
-$$ 1 - \delta $$&lt;p&gt; 的条件是 &lt;/p&gt;
-$$ n &gt; \tau^{-2} \log(k/\delta) $$&lt;p&gt;。通过在所有地方将 &lt;/p&gt;
-$$ \tau $$&lt;p&gt; 替换为 &lt;/p&gt;
-$$ \tau/2 $$&lt;p&gt; 并找到 &lt;/p&gt;
-$$ n $$&lt;p&gt; 的最大下界，可以处理这两种类型的错误。&lt;/p&gt;
+$$$$ D $$$$ D $$$$ f_j $$$$ 1 \leq j \leq k $$$$ \tau $$$$ 1 - \delta $$$$ n &gt; \tau^{-2} \log(k/\delta) $$$$ \tau $$$$ \tau/2 $$$$ n $$&lt;p&gt; 的最大下界，可以处理这两种类型的错误。&lt;/p&gt;
 &lt;h3 id=&#34;52-私密pac学习&#34;&gt;🍮5.2 私密PAC学习
-&lt;/h3&gt;&lt;p&gt;本节的结果源于Kasiviswanathan、Lee、Nissim、Raskhodnikova和Smith [32]。我们首先对“概率近似正确”（PAC）学习的概念进行非正式和不完整的回顾，这是Valiant提出的一个概念[47]。考虑一个概念 &lt;/p&gt;
-$$ t: X \rightarrow Y $$&lt;p&gt;，它将从域 &lt;/p&gt;
-$$ X $$&lt;p&gt; 中取出的每个示例分配一个来自范围 &lt;/p&gt;
-$$ Y $$&lt;p&gt; 的标签。与前一节相似，学习算法会从目标概念的分布 &lt;/p&gt;
-$$ D $$&lt;p&gt; 中获取带标签的示例；目标是从指定的假设类中生成一个假设 &lt;/p&gt;
-$$ h: X \rightarrow Y $$&lt;p&gt;，使得错误率较小，定义为：&lt;/p&gt;
+&lt;/h3&gt;$$ t: X \rightarrow Y $$$$ X $$$$ Y $$$$ D $$$$ h: X \rightarrow Y $$&lt;p&gt;，使得错误率较小，定义为：&lt;/p&gt;
 $$
 \text{error}(h) = \Pr_{x \in R^D}[t(x) = h(x)].
-$$&lt;p&gt;概念类是概念的集合。学习理论研究哪些类型的概念类是可学习的。设 &lt;/p&gt;
-$$ \alpha $$&lt;p&gt; 和 &lt;/p&gt;
-$$ \beta $$&lt;p&gt; 表示两个错误界限，如果目标概念属于 &lt;/p&gt;
-$$ C $$&lt;p&gt;，则目标是最小化错误，或至少确保以概率 &lt;/p&gt;
-$$ 1 - \beta $$&lt;p&gt; 错误被限制在 &lt;/p&gt;
-$$ \alpha $$&lt;p&gt; 之内。这是传统PAC学习的设定。如果目标概念不必属于 &lt;/p&gt;
-$$ C $$&lt;p&gt;，则目标是产生一个假设，该假设在直观上与 &lt;/p&gt;
-$$ C $$&lt;p&gt; 中的任何概念几乎同样有效：设 &lt;/p&gt;
-$$ \text{OPT} = \min_{c \in C}\{\text{error}(c)\} $$&lt;p&gt;，我们希望&lt;/p&gt;
+$$$$ \alpha $$$$ \beta $$$$ C $$$$ 1 - \beta $$$$ \alpha $$$$ C $$$$ C $$$$ \text{OPT} = \min_{c \in C}\{\text{error}(c)\} $$&lt;p&gt;，我们希望&lt;/p&gt;
 $$
 \Pr[\text{error}(h) \leq \text{OPT} + \alpha] \geq 1 - \beta,
 $$&lt;p&gt;其中概率是关于学习者看到的样本和学习者的随机性的。这个过程称为不可知学习。&lt;/p&gt;
-&lt;p&gt;根据[32]的定义，我们将用其二进制编码的长度 &lt;/p&gt;
-$$ d $$&lt;p&gt; 索引概念类、域和范围。对于目标概念 &lt;/p&gt;
-$$ t: X_d \rightarrow Y_d $$&lt;p&gt; 和在 &lt;/p&gt;
-$$ X_d $$&lt;p&gt; 上的分布 &lt;/p&gt;
-$$ D $$&lt;p&gt;，令 &lt;/p&gt;
-$$ Z \in D^n $$&lt;p&gt; 为一个数据库，其中包含从 &lt;/p&gt;
-$$ D $$&lt;p&gt; 独立抽取的 &lt;/p&gt;
-$$ n $$&lt;p&gt; 个带标签的样本。即，&lt;/p&gt;
-$$ Z $$&lt;p&gt; 包含 &lt;/p&gt;
-$$ n $$&lt;p&gt; 对 &lt;/p&gt;
-$$ (x_i, y_i) $$&lt;p&gt;，其中 &lt;/p&gt;
-$$ y_i = t(x_i) $$&lt;p&gt;，&lt;/p&gt;
-$$ 1 \leq i \leq n $$&lt;p&gt;。数据分析师的目标是不可知地学习假设类 &lt;/p&gt;
-$$ C $$&lt;p&gt;；策展人的目标是确保 &lt;/p&gt;
-$$ \epsilon $$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;定理 7 ([32])。每个概念类 &lt;/p&gt;
-$$ C $$&lt;p&gt; 都是 &lt;/p&gt;
-$$ \epsilon $$&lt;p&gt;-差分隐私地不可知学习的，使用的假设类为 &lt;/p&gt;
-$$ H = C $$&lt;p&gt;，其中 &lt;/p&gt;
-$$ n \in O(\log |C|d + \log(1/\beta) \cdot \max\{1/\alpha, 1/\alpha^2\}) $$&lt;p&gt;。学习者可能不是高效的。&lt;/p&gt;
+$$ d $$$$ t: X_d \rightarrow Y_d $$$$ X_d $$$$ D $$$$ Z \in D^n $$$$ D $$$$ n $$$$ Z $$$$ n $$$$ (x_i, y_i) $$$$ y_i = t(x_i) $$$$ 1 \leq i \leq n $$$$ C $$$$ \epsilon $$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$ C $$$$ \epsilon $$$$ H = C $$$$ n \in O(\log |C|d + \log(1/\beta) \cdot \max\{1/\alpha, 1/\alpha^2\}) $$&lt;p&gt;。学习者可能不是高效的。&lt;/p&gt;
 &lt;p&gt;该定理是通过McSherry和Talwar的指数机制证明的，效用函数为&lt;/p&gt;
 $$
 u(Z, h) = -| \{ i : t(x_i) = h(x_i) \} | 
-$$&lt;p&gt;对于 &lt;/p&gt;
-$$ Z \in (X \times Y)^n $$&lt;p&gt; 和 &lt;/p&gt;
-$$ h \in H_d $$&lt;p&gt;。注意，&lt;/p&gt;
-$$ u $$&lt;p&gt; 的敏感度为1，因为数据库中任何元素的改变最多只能导致一个错误分类的变化。该（低效）算法以与 &lt;/p&gt;
-$$ \exp(u(Z, c)/2) $$&lt;p&gt; 成正比的概率输出 &lt;/p&gt;
-$$ c \in H_d $$&lt;p&gt;。隐私性源于指数机制的性质和 &lt;/p&gt;
-$$ u $$&lt;p&gt; 的小敏感度。准确性（以高概率低错误）稍微难以论证；证明直观上源于输出的概率随着错误分类数量的增加而呈指数下降。&lt;/p&gt;
+$$$$ Z \in (X \times Y)^n $$$$ h \in H_d $$$$ u $$$$ \exp(u(Z, c)/2) $$$$ c \in H_d $$$$ u $$&lt;p&gt; 的小敏感度。准确性（以高概率低错误）稍微难以论证；证明直观上源于输出的概率随着错误分类数量的增加而呈指数下降。&lt;/p&gt;
 &lt;h3 id=&#34;53-差分隐私的多项式-vc-维度类查询&#34;&gt;🍯5.3 差分隐私的多项式 VC 维度类查询
-&lt;/h3&gt;&lt;p&gt;我们最后一个例子来自 Blum、Ligett 和 Roth [8]，并受到上一节结果的启发。这个学习结果再次忽略了计算效率，使用了 McSherry 和 Talwar 的指数机制。这里的目标是发布一个“合成数据集”，以确保对特定类 &lt;/p&gt;
-$$ C $$&lt;p&gt; 中所有查询的“合理”准确回答。读者应该对概念类的 Vapnick-Chervonenkis (VC) 维度有所了解。粗略来说，VC 维度是衡量类中概念复杂度的一种度量。&lt;/p&gt;
-&lt;p&gt;定义 6（[8]）。一个数据库机制 &lt;/p&gt;
-$$ A $$&lt;p&gt; 对于类 &lt;/p&gt;
-$$ C $$&lt;p&gt; 是 $(\gamma, \delta)$-有用的，如果以概率 $1 - \delta$，对于每个 &lt;/p&gt;
-$$ Q \in C $$&lt;p&gt; 和每个数据库 &lt;/p&gt;
-$$ D $$&lt;p&gt;，对于 &lt;/p&gt;
-$$ \hat{D} = A(D) $$&lt;p&gt;，有&lt;/p&gt;
+&lt;/h3&gt;$$ C $$&lt;p&gt; 中所有查询的“合理”准确回答。读者应该对概念类的 Vapnick-Chervonenkis (VC) 维度有所了解。粗略来说，VC 维度是衡量类中概念复杂度的一种度量。&lt;/p&gt;
+$$ A $$$$ C $$$$ Q \in C $$$$ D $$$$ \hat{D} = A(D) $$&lt;p&gt;，有&lt;/p&gt;
 $$
 |\ Q(\hat{D}) - Q(D)| \leq \gamma.
-$$&lt;p&gt;令 &lt;/p&gt;
-$$ C $$&lt;p&gt; 为固定的查询类。给定一个大小为 &lt;/p&gt;
-$$ n $$&lt;p&gt; 的数据库 &lt;/p&gt;
-$$ D \in ({0, 1}^d)^n $$&lt;p&gt;，其中 &lt;/p&gt;
-$$ n $$&lt;p&gt; 足够大（作为 &lt;/p&gt;
-$$ C $$&lt;p&gt; 的 VC 维度以及 &lt;/p&gt;
-$$ \epsilon $$&lt;p&gt; 和 &lt;/p&gt;
-$$ \delta $$&lt;p&gt; 的函数），目标是生成一个合成数据集 &lt;/p&gt;
-$$ \hat{D} $$&lt;p&gt;，使其对类 &lt;/p&gt;
-$$ C $$&lt;p&gt; 中的查询是 $(\gamma, \delta)$-有用的，同时确保 &lt;/p&gt;
-$$ \epsilon $$&lt;p&gt;-差分隐私。合成数据集将包含 &lt;/p&gt;
-$$ m = O\left(\frac{\text{VC dim}(C)}{\gamma^2}\right) $$&lt;p&gt; 个 &lt;/p&gt;
-$$ d $$&lt;p&gt; 元组。它是根据指数机制选择的，使用的效用函数为&lt;/p&gt;
+$$$$ C $$$$ n $$$$ D \in ({0, 1}^d)^n $$$$ n $$$$ C $$$$ \epsilon $$$$ \delta $$$$ \hat{D} $$$$ C $$$$ \epsilon $$$$ m = O\left(\frac{\text{VC dim}(C)}{\gamma^2}\right) $$$$ d $$&lt;p&gt; 元组。它是根据指数机制选择的，使用的效用函数为&lt;/p&gt;
 $$
 u(D, \hat{D}) = - \max_{h \in C} \left| h(D) - \frac{n}{m} h(\hat{D}) \right| .
-$$&lt;p&gt;定理 8（[8]）。对于任何函数类 &lt;/p&gt;
-$$ C $$&lt;p&gt;，以及任何数据库 &lt;/p&gt;
-$$ D \subset \{0, 1\}^d $$&lt;p&gt;，如果 &lt;/p&gt;
-$$ |D| \geq O\left( \frac{d \cdot \text{VC dim}(C)}{\gamma^3} + \frac{\log(1/\delta)}{\gamma} \right) $$&lt;p&gt;，我们可以输出一个 $(\gamma, \delta)$-有用的数据库 &lt;/p&gt;
-$$ \hat{D} $$&lt;p&gt;，同时保持 &lt;/p&gt;
-$$ \epsilon $$&lt;p&gt;-差分隐私。请注意，该算法不一定是高效的。Blum 等人指出，这对于 $(\gamma, \delta)$-有用性是足够的，因为所有这种大小的数据库的集合在 &lt;/p&gt;
-$$ C $$&lt;p&gt; 上形成了所有可能数据库集合的 &lt;/p&gt;
-$$ \gamma $$&lt;p&gt;-覆盖。可以通过考虑匹配任何查询的条目比例来解决 &lt;/p&gt;
-$$ |\hat{D}| &lt; |D| $$&lt;p&gt; 的事实，即匹配任何查询的数据库条目的数量会成比例地较小。&lt;/p&gt;
+$$$$ C $$$$ D \subset \{0, 1\}^d $$$$ |D| \geq O\left( \frac{d \cdot \text{VC dim}(C)}{\gamma^3} + \frac{\log(1/\delta)}{\gamma} \right) $$$$ \hat{D} $$$$ \epsilon $$$$ C $$$$ \gamma $$$$ |\hat{D}| &lt; |D| $$&lt;p&gt; 的事实，即匹配任何查询的数据库条目的数量会成比例地较小。&lt;/p&gt;
 &lt;h2 id=&#34;6-总结&#34;&gt;🍼6 总结
 &lt;/h2&gt;&lt;p&gt;在本节中，我们探讨了隐私机制如何根据数据库上应用的查询序列的复杂性增加噪声。尽管使用高斯噪声可以在一定程度上缓解这一问题，但Dinur和Nissim [13]（参见[17, 20]）所开始的研究表明，这种增加是必不可少的。Dinur和Nissim的结果在很大程度上推动了机制K的开发以及本综述中倡导的整个交互方法。为了更精确地分析现实攻击，并更好地理解未能提供$\epsilon$-差分隐私在实践中可能意味着什么，我们需要进一步研究以改善这些结果，或者确认这种改进是不可能的，从而理解如何在除非常大、“互联网规模”的数据集之外有效利用这些技术。&lt;/p&gt;
 </description>
@@ -1706,8 +2150,6 @@ $$ |\hat{D}| &lt; |D| $$&lt;p&gt; 的事实，即匹配任何查询的数据库�
 &lt;h2 id=&#34;错误-1将定义与特定算法混淆&#34;&gt;💖错误 1：将定义与特定算法混淆
 &lt;/h2&gt;&lt;h4 id=&#34;原文&#34;&gt;原文
 &lt;/h4&gt;&lt;p&gt;差分隐私是一个定义。它是一个数学保证，可以通过一个发布数据集统计信息的算法来满足。许多不同的算法都可以满足这一定义。接下来，我们将假设有一个包含 n 行的数据库 X，每一行的数据属于单个个体。如果每个个体的数据被描述为集合 U 的一个元素，那么我们可以将数据集视为 U 中的一个多重集（即每个元素可以出现多次的集合）。设 D 表示可能的数据集空间。存在一个算法 M，它以数据库和（可选）查询作为输入，并返回响应。我们将这种算法称为机制。我们将在后面陈述差分隐私的定义。不过，现在我们注意到，如果一个随机机制 M 在所有数据库上具有相同的输出分布，那么它的输出就不会泄露任何关于其输入的信息。实际上，这等同于以下陈述，其中 D 是所有可能数据库的集合，Q 是所有可能查询的集合：&lt;/p&gt;
-&lt;p&gt;对于所有的数据库 X 和 X′ 属于 D，对于所有的查询 q 属于 Q，以及对于所有的 S⊆Range(M)
-&lt;/p&gt;
 $$
 \frac{\Pr[M(X, q) \in S]}{\Pr[M(X&#39;, q) \in S]} = e^0 = 1
 $$&lt;p&gt;
@@ -1729,8 +2171,6 @@ $$&lt;p&gt;
 &lt;/ul&gt;
 &lt;h4 id=&#34;原文-1&#34;&gt;原文
 &lt;/h4&gt;&lt;p&gt;这是香农（Shannon）在加密上下文中提出的完美保密的定义。这不是一个算法，而是对随机算法概率分布的条件；任何满足这一条件的算法在信息论意义上都不会泄露关于数据的信息。两个数据库X和X′之间的对称差（symmetric difference），记作X⊕X′，是指出现在X或X′中但不在它们交集中的元素或行的集合。例如，如果X′是X的一个子集，且X中仅包含一行不在X′中，那么对称差的基数为1。（由于X和X′可以是多重集合，对称差实际上要复杂一些：如果一个项在一个数据库中比另一个数据库多出现k次，那么它在对称差中出现k次）。我们现在准备阐述差分隐私的定义。它的形式与方程1完全相同，只是现在我们允许释放一些信息：&lt;/p&gt;
-&lt;p&gt;定义1：一个机制满足ε-差分隐私，如果对于每对数据库X和X′，以及每个子集S ⊆ Range(M)，和每个查询q ∈ Q（如果使用可选的“查询”参数）：
-&lt;/p&gt;
 $$
 \frac{\Pr[M(X, q) \in S]}{\Pr[M(X&#39;, q) \in S]} = e^{ε|X Θ X&#39;|}
 $$&lt;p&gt;
@@ -1756,8 +2196,6 @@ $$&lt;p&gt;
 &lt;h2 id=&#34;错误2混淆输出与生成它们的过程&#34;&gt;💗错误2：混淆输出与生成它们的过程
 &lt;/h2&gt;&lt;h4 id=&#34;原文-2&#34;&gt;原文
 &lt;/h4&gt;&lt;p&gt;考虑著名的1位一次性密码机制，它提供完美的保密性。该随机机制的输入是一个位b ∈ {0, 1}。该机制选择一个新的随机位p ∈R {0, 1}，并输出b + p mod 2。”&lt;/p&gt;
-&lt;p&gt;声明1：1位一次性密码机制提供完美的保密性。证明：证明是显而易见的，因为该机制满足方程1。具体而言：人数n为1，数据库的空间是D = {0, 1}；没有‘查询’参数，机制的范围是{0, 1}。通过逐一检查所有可能性，我们看到1/2 = Pr[M(0) = 1] = Pr[M(0) = 0] = Pr[M(1) = 1] = Pr[M(1) = 0]。因此，
-&lt;/p&gt;
 $$
 \forall X, X&#39; \in D, \forall q \in Q, \forall S \subseteq \text{Range}(M) :\frac{\Pr[M(X, q) \in S]}{\Pr[M(X&#39;, q) \in S]} = 1
 $$&lt;p&gt;
@@ -1934,8 +2372,6 @@ $$&lt;p&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;随机采样的改进策略&#34;&gt;🌷随机采样的改进策略
 &lt;/h3&gt;&lt;p&gt;基于概率采样的方法会在整个词表中选择词元，这可能会导致生成不相干的词元。为了进一步提高生成质量，可以进一步使用一些改进的采样策略，减少具有极低概率词汇对于生成结果的影响。&lt;/p&gt;
-&lt;p&gt;温度采样（TemperatureSampling）. 为了调节采样过程中的随机性，一种有效的方法是调整softmax函数中的温度系数。具体来说，公式5.11中的$l = W^LyL$ 称为logits，调整温度系数后的softmax计算式如下：
-&lt;/p&gt;
 $$
 P(u_j | \mathbf{u}_i) = \frac{\exp(l_j / t)}{\sum_{j&#39;} \exp(l_{j&#39;} / t)}
 $$&lt;p&gt;
@@ -1959,14 +2395,10 @@ $$&lt;p&gt;
 &lt;h3 id=&#34;量化基础知识&#34;&gt;🌲量化基础知识
 &lt;/h3&gt;&lt;p&gt;在神经网络压缩中，量化通常是指从浮点数到整数的映射过程[2]，目前比较常用的是8比特整数量化，即INT8量化。针对神经网络模型，通常有两种类型的数据需要进行量化，分别为权重量化（也称为模型参数量化）和激活（值）量化，它们都以浮点数形式进行表示与存储。&lt;/p&gt;
 &lt;h4 id=&#34;量化的数学表述&#34;&gt;🌳量化的数学表述
-&lt;/h4&gt;&lt;p&gt;量化的过程可以表示为一个函数，该函数将连续的输入映射到离散的输出集合。一般来说，这个过程涉及到四舍五入或截断等近似操作。下面介绍一个一般形式的量化函数：
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 x_q = R(x/S)-Z.
 $$&lt;p&gt;
 通过上述数学变换，量化算法将浮点数向量𝒙转化为量化值𝒙𝒒。其中，𝑆表示缩放因子，用于确定裁剪范围，𝑍表示零点因子，用于确定对称或非对称量化，𝑅(·) 表示将缩放后的浮点值映射为近似整数的取整操作。一般来说，裁剪范围对于量化性能有很大影响，通常需要根据实际数据分布进行校准，可以通过静态（离线）或动态（运行时）方式。&lt;/p&gt;
-&lt;p&gt;作为上述变换的逆过程，反量化（Dequantization）对应地从量化值中恢复原始值，该过程首先加上零点因子，然后乘以缩放因子：
-&lt;/p&gt;
 $$
 \tilde{\mathbf{x}} = \mathbf{S} \cdot (\mathbf{x}_q + \mathbf{Z})
 $$&lt;p&gt;
@@ -2254,14 +2686,9 @@ $$&lt;p&gt;
 &gt;&lt;/p&gt;
 &lt;center&gt;LoRA微调示意图&lt;/center&gt;
 &lt;h4 id=&#34;lora基础&#34;&gt;🏬LoRA基础
-&lt;/h4&gt;&lt;p&gt;大语言模型中包含大量的线性变换层，其中参数矩阵的维度通常很高。研究人员[6]发现模型在针对特定任务进行适配时，参数矩阵往往是过参数化（Over-parametrized）的，其存在一个较低的内在秩。为了解决这一问题，LoRA[6] 提出在预训练模型的参数矩阵上添加低秩分解矩阵来近似每层的参数更新，从而减少适配下游任务所需要训练的参数。给定一个参数矩阵𝑾，其更新过程可以一般性地表达为以下形式：
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 W = W_0 +ΔW
-$$&lt;p&gt;
-其中，$W_0$是原始参数矩阵，Δ𝑾是更新的梯度矩阵。LoRA的基本思想是冻结原始矩阵$W_0 ∈ R^{H \times H}$，通过低秩分解矩阵$A ∈ R^{H \times H}$和$B ∈ R^{H \times H}$来近似参数更新矩阵$Δ𝑾 = A·B^T$，其中𝑅≪𝐻是减小后的秩。在微调期间，原始的矩阵参数$W_0$不会被更新，低秩分解矩阵𝑨和𝑩则是可训练参数用于适配下游任务。在前向传播过程中，原始计算中间状态$h=W_0·x$的公式修改为：
-&lt;/p&gt;
-$$
+$$$$
 h = W_0·x + A·B^T·x
 $$&lt;p&gt;
 在训练完成后，进一步将原始参数矩阵$W_0$和训练得到的权重𝑨和𝑩进行合并：$W = W_0 + A·B^T$，得到更新后的参数矩阵。因此，LoRA微调得到的模型在解码过程中不会增加额外的开销。&lt;/p&gt;
@@ -2309,8 +2736,6 @@ $$&lt;p&gt;
 &lt;p&gt;通过这种建模方法的表示，Transformer 模型可以利用位置编码 𝒑𝑡 建模不同词元的位置信息。由于不同词元的位置编码仅由其位置唯一决定，因此这种位置建模方式被称为绝对位置编码。尽管绝对位置编码能够一定程度上建模位置信息，然而它只能局限于建模训练样本中出现的位置，无法建模训练数据中未出现过的位置，因此极大地限制了它们处理长文本的能力。&lt;/p&gt;
 &lt;h3 id=&#34;多头自注意力机制&#34;&gt;🍋多头自注意力机制
 &lt;/h3&gt;&lt;p&gt;多头自注意力是Transformer模型的核心创新技术。相比于循环神经网络（Recurrent Neural Network, RNN）和卷积神经网络（ConvolutionalNeuralNetwork,CNN）等传统神经网络，多头自注意力机制能够直接建模任意距离的词元之间的交互关系。作为对比，循环神经网络迭代地利用前一个时刻的状态更新当前时刻的状态，因此在处理较长序列的时候，常常会出现梯度爆炸或者梯度消失的问题。而在卷积神经网络中，只有位于同一个卷积核的窗口中的词元可以直接进行交互，通过堆叠层数来实现远距离词元间信息的交换。&lt;/p&gt;
-&lt;p&gt;多头自注意力机制通常由多个自注意力模块组成。在每个自注意力模块中，对于输入的词元序列，将其映射为相应的查询（Query,𝑸）、键（Key,𝑲）和值（Value,𝑽）三个矩阵。然后，对于每个查询，将和所有没有被掩盖的键之间计算点积。这些点积值进一步除以$\sqrt{D}$进行缩放（𝐷是键对应的向量维度），被传入到softmax函数中用于权重的计算。进一步，这些权重将作用于与键相关联的值，通过加权和的形式计算得到最终的输出。在数学上，上述过程可以表示为：
-&lt;/p&gt;
 $$
 Q = XW^Q,
 $$$$
@@ -2319,17 +2744,13 @@ $$$$
 V = XW^V,
 $$$$
 Attention(Q,K,V) = softmax(\frac{QK^T}{\sqrt{D}})V.
-$$&lt;p&gt;与单头注意力相比，多头注意力机制的主要区别在于它使用了𝐻组结构相同，但映射参数不同的自注意力模块。输入序列首先通过不同的权重矩阵被映射为一组查询、键和值。每组查询、键和值的映射构成一个“头”，并独立地计算自注意力的输出。最后，不同头的输出被拼接在一起，并通过一个权重矩阵$W^O$∈$R^{H \times H}$ 进行映射，产生最终的输出。如下面的公式所示：
-&lt;/p&gt;
-$$
+$$$$
 head_n = Attention(XW^Q_n,XW^K_n,XW^V_n)
 $$$$
 MHA = Concat(head_1,...,head_N)W^O
 $$&lt;p&gt;由上述内容可见，自注意力机制能够直接建模序列中任意两个位置之间的关系，进而有效捕获长程依赖关系，具有更强的序列建模能力。另一个主要的优势是，自注意力的计算过程对于基于硬件的并行优化（如GPU、TPU等）非常友好，因此能够支持大规模参数的高效优化。&lt;/p&gt;
 &lt;h3 id=&#34;前馈网络层&#34;&gt;🍏前馈网络层
-&lt;/h3&gt;&lt;p&gt;为了学习复杂的函数关系和特征，Transformer 模型引入了一个前馈网络层（Feed Forward Netwok, FFN），对于每个位置的隐藏状态进行非线性变换和特征提取。具体来说，给定输入𝒙，Transformer中的前馈神经网络由两个线性变换和一个非线性激活函数组成：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 FFN(X) = σ(XW^U + b_1)W^D + b_2
 $$&lt;p&gt;
 其中$W^U$ ∈ $R^{H \times H}$ 和$W^D$ ∈ $R^{H \times H}$  分别是第一层和第二层的线性变换权重矩阵，$b_1$ ∈ $R^{𝐻^′}$ 和 $b_2$ ∈ $R^H$ 是偏置项，𝜎是激活函数（在原始的Transformer中，采用 ReLU 作为激活函数）。前馈网络层通过激活函数引入了非线性映射变换，提升了 模型的表达能力，从而更好地捕获复杂的交互关系。&lt;/p&gt;
@@ -2349,25 +2770,19 @@ $$&lt;p&gt;
 &gt;&lt;/p&gt;
 &lt;center&gt;Transformer 架构图&lt;/center&gt;
 &lt;h3 id=&#34;编码器&#34;&gt;🍐编码器
-&lt;/h3&gt;&lt;p&gt;在Transformer 模型中，编码器（Encoder）的作用是将每个输入词元都编码成一个上下文语义相关的表示向量。编码器结构由多个相同的层堆叠而成，其中每一层都包含多头自注意力模块和前馈网络模块。在注意力和前馈网络后，模型使用层归一化和残差连接来加强模型的训练稳定度。其中，残差连接（Residual Connection）将输入与该层的输出相加，实现了信息在不同层的跳跃传递，从而缓解梯度爆炸和消失的问题。而LayerNorm则对数据进行重新放缩，提升模型的训练稳定性。编码器接受经过位置编码层的词嵌入序列𝑿作为输入，通过多个堆叠的编码器层来建模上下文信息，进而对于整个输入序列进行编码表示。由于输入数据是完全可见的，编码器中的自注意力模块通常采用双向注意力，每个位置的词元表示能够有效融合上下文的语义关系。在编码器-解码器架构中，编码器的输出将作为解码器（Decoder）的输入，进行后续计算。形式化来说，第𝑙层（𝑙∈{1,&amp;hellip;,𝐿}）的编码器的数据处理过程如下所示：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 X^′_l = LayerNorm(MHA(X_{l-1})+X_{l-1})
 $$$$
 X_l = LayerNorm(FFN(X^′_l)+X^′_l)
 $$&lt;p&gt;其中，$X^′_l$ 和 $X_l$ 分别是该Transformer层的输入和输出，$X^′_l$是该层中输入经过多头注意力模块后的中间表示，LayerNorm表示层归一化。&lt;/p&gt;
 &lt;h3 id=&#34;解码器&#34;&gt;🥥解码器
-&lt;/h3&gt;&lt;p&gt;Transformer 架构中的解码器基于来自编码器编码后的最后一层的输出表示以及已经由模型生成的词元序列，执行后续的序列生成任务。与编码器不同，解码器需要引入掩码自注意力（MaskedSelf-attention）模块，用来在计算注意力分数的时候掩盖当前位置之后的词，以保证生成目标序列时不依赖于未来的信息。除了建模目标序列的内部关系，解码器还引入了与编码器相关联的多头注意力层，从而关注编码器输出的上下文信息$X_L$。同编码器类似，在每个模块之后，Transformer 解码器也采用了层归一化和残差连接。在经过解码器之后，模型会通过一个全连接层将输出映射到大小为𝑉的目标词汇表的概率分布，并基于某种解码策略生成对应的词元。在训练过程中，解码器可以通过一次前向传播，让每个词元的输出用于预测下一个词元。而在解码过程，解码器需要经过一个逐步的生成过程，将自回归地生成完整的目标序列。解码器的数据流程如下所示：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 Y^′_l = LayerNorm(MaskedMHA(Y_{l-1})+Y_{l-1})
 $$$$
 Y^&#34;_l = LayerNorm(CrossMHA(Y^′_l,X_L)+Y^′_l)
 $$$$
 Y_l = LayerNorm(FFN(Y^&#34;_l)+Y^&#34;_l)
-$$&lt;p&gt;其中，$Y_{l-1}$ 和 $Y_l$ 分别是该Transformer 层的输入和输出，$Y^′_l$ 和 $Y^&amp;quot;_l$ 是该层中输入经过掩码多头注意力MaskedMHA和交叉多头注意力CrossMHA模块后的中间表示，LayerNorm 表示层归一化。然后将最后一层的输入𝒀𝐿映射到词表的维度上：
-&lt;/p&gt;
-$$
+$$$$
 O = softmax(W^LY_L)
 $$&lt;p&gt;
 其中，𝑶 ∈$R^{H \times V}$ 是模型最终的输出，代表下一个词在词表上的概率分布；$W^L$ ∈ $R^{H \times V}$ 是将输入表示映射到词汇表维度的参数矩阵，而$W^LY_L$是概率化前的中间值，通常被称为logits。&lt;/p&gt;
@@ -2531,8 +2946,6 @@ $$&lt;p&gt;
 &lt;h3 id=&#34;wordpiece-分词&#34;&gt;🎵WordPiece 分词
 &lt;/h3&gt;&lt;p&gt;WordPiece分词和BPE分词的想法非常相似，都是通过迭代合并连续的词元，但是合并的选择标准略有不同。在合并前，WordPiece分词算法会首先训练一个语言模型，并用这个语言模型对所有可能的词元对进行评分。然后，在每次合并时，它都会选择使得训练数据的似然性增加最多的词元对。&lt;/p&gt;
 &lt;p&gt;谷歌并未发布WordPiece分词算法的官方实现&lt;/p&gt;
-&lt;p&gt;与BPE类似，WordPiece 分词算法也是从一个小的词汇表开始，其中包括模型使用的特殊词元和初始词汇表。由于它是通过添加前缀（如BERT的##）来识别子词的，因此每个词的初始拆分都是将前缀添加到词内的所有字符上。举例来说，“word”会被拆分为：“w##o ##r ##d”。与BPE方法的另一个不同点在于，WordPiece分词算法并不选择最频繁的词对，而是使用下面的公式为每个词对计算分数：
-&lt;/p&gt;
 $$
 得分 = \frac{\text{词对出现的频率}}{\text{第一个词出现的频率} \times \text{第二个词出现的频率}}
 $$&lt;h3 id=&#34;unigram-分词&#34;&gt;🐉Unigram 分词
@@ -2676,8 +3089,6 @@ $$&lt;h3 id=&#34;unigram-分词&#34;&gt;🐉Unigram 分词
 &lt;p&gt;&lt;strong&gt;将实数映射为概率分布&lt;/strong&gt;：Softmax 接受一个实数向量，输出一个与输入维度相同的向量，其中每个元素的值表示该元素作为某个类别的概率，且这些概率的和为1。这样就可以根据这些概率来进行分类预测。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;公式&lt;/strong&gt;：Softmax 函数的定义如下：
-&lt;/p&gt;
 $$
    \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
    $$&lt;p&gt;
@@ -3030,9 +3441,7 @@ $$
 &lt;/h2&gt;&lt;h3 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
 &lt;/h3&gt;&lt;p&gt;残差连接（Residual Connection）和 层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
 &lt;h4 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
-&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 \text{Output} = \text{Layer}(x) + x
 $$&lt;p&gt;
 其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。&lt;/p&gt;
@@ -3043,9 +3452,7 @@ $$&lt;p&gt;
 &lt;li&gt;&lt;strong&gt;提高模型性能&lt;/strong&gt;：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;层归一化layer-normalization&#34;&gt;层归一化（Layer Normalization）
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 \text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
 $$&lt;p&gt;
 其中：&lt;/p&gt;
@@ -3105,19 +3512,11 @@ P(w1,w2,…,wT)
 &lt;/h1&gt;&lt;h2 id=&#34;什么是语言模型&#34;&gt;什么是语言模型
 &lt;/h2&gt;&lt;p&gt;语言模型（Language Model, LM）是自然语言处理中的一个核心概念，其主要任务是对一个词序列的概率分布进行建模。简单来说，语言模型的目标是估计一段文本或句子出现的概率，或者根据前面的词来预测下一个词。&lt;/p&gt;
 &lt;h3 id=&#34;语言模型的定义&#34;&gt;语言模型的定义
-&lt;/h3&gt;&lt;p&gt;给定一个词序列
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 P( w_1, w_2, \dots, w_T )
-$$&lt;p&gt;
-，语言模型的目标是计算这个序列的联合概率：
-&lt;/p&gt;
-$$
+$$$$
 P(w_1, w_2, \dots, w_T)
-$$&lt;p&gt;
-这通常可以分解为条件概率的乘积：
-&lt;/p&gt;
-$$
+$$$$
 P(w_1, w_2, \dots, w_T) = P(w_1) \cdot P(w_2 | w_1) \cdot P(w_3 | w_1, w_2) \cdot \dots \cdot P(w_T | w_1, w_2, \dots, w_{T-1})
 $$&lt;p&gt;
 这意味着每个词的概率取决于它前面的词。一个好的语言模型能够通过学习语料库中的模式，准确地捕捉这些条件概率。&lt;/p&gt;
@@ -3138,9 +3537,7 @@ $$&lt;p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;传统语言模型&#34;&gt;传统语言模型
-&lt;/h3&gt;&lt;p&gt;在神经网络语言模型之前，最常用的语言模型是&lt;strong&gt;n元语法模型（n-gram Model）&lt;/strong&gt;。n元语法模型通过假设一个词的概率只与它前面的n-1个词有关来简化问题。举个例子，三元语法模型（trigram model）认为：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 P(w_T | w_1, w_2, \dots, w_{T-1}) \approx P(w_T | w_{T-2}, w_{T-1})
 $$&lt;p&gt;这种简化降低了计算复杂度，但也限制了模型的表达能力，因为它只能捕捉到短距离的上下文信息，无法充分考虑长距离的依赖关系。&lt;/p&gt;
 &lt;h3 id=&#34;神经网络语言模型&#34;&gt;神经网络语言模型

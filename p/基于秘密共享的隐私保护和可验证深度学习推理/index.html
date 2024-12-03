@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="基于秘密共享的隐私保护和可验证深度学习推理 摘要 深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。\n">
+<title>基于秘密共享的隐私保护和可验证深度学习推理</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="基于秘密共享的隐私保护和可验证深度学习推理">
+<meta property='og:description' content="基于秘密共享的隐私保护和可验证深度学习推理 摘要 深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。\n">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-11-18T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-11-18T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280.jpg' />
+<meta name="twitter:title" content="基于秘密共享的隐私保护和可验证深度学习推理">
+<meta name="twitter:description" content="基于秘密共享的隐私保护和可验证深度学习推理 摘要 深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#摘要">摘要</a></li>
+    <li><a href="#引言">引言</a></li>
+    <li><a href="#预备知识">预备知识</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#线性计算"><strong>线性计算</strong></a></li>
+            <li><a href="#批归一化"><strong>批归一化</strong></a></li>
+            <li><a href="#激活函数"><strong>激活函数</strong></a></li>
+            <li><a href="#池化"><strong>池化</strong></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#系统模型与设计目标">系统模型与设计目标</a>
+      <ol>
+        <li><a href="#设计目标">设计目标</a></li>
+        <li><a href="#系统模型">系统模型</a></li>
+        <li><a href="#算法-1-执行-pvdli-的步骤">算法 1: 执行 PVDLI 的步骤</a></li>
+        <li><a href="#提出的-pvdli-框架包含以下六个关键模块">提出的 PVDLI 框架包含以下六个关键模块：</a></li>
+      </ol>
+    </li>
+    <li><a href="#基于秘密共享的安全子协议">基于秘密共享的安全子协议</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#安全加法协议secadd"><strong>安全加法协议（SecAdd）：</strong></a></li>
+            <li><a href="#安全除法协议secdiv"><strong>安全除法协议（SecDiv）：</strong></a></li>
+            <li><a href="#安全矩阵乘法协议secmul"><strong>安全矩阵乘法协议（SecMul）：</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#安全矩阵乘法过程">安全矩阵乘法过程</a>
+          <ol>
+            <li><a href="#生成辅助随机矩阵份额-genaux"><strong>生成辅助随机矩阵份额 (GenAux):</strong></a></li>
+            <li><a href="#对输入矩阵份额进行掩码处理-mask"><strong>对输入矩阵份额进行掩码处理 (Mask):</strong></a></li>
+            <li><a href="#重构并分割结果-split"><strong>重构并分割结果 (Split):</strong></a></li>
+            <li><a href="#计算最终份额-cal"><strong>计算最终份额 (Cal):</strong></a></li>
+            <li><a href="#安全矩阵乘法的正确性证明"><strong>安全矩阵乘法的正确性证明：</strong></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#提出的框架">提出的框架</a>
+      <ol>
+        <li><a href="#initn--e-d">Init（N） → （E; D)</a></li>
+        <li><a href="#deploymodelðf-k-nþ--h1--hm"><strong>DeployModelðF; k; NÞ → H(1), &hellip;, H(M)</strong></a></li>
+        <li><a href="#gensplitdataðx-d-k-nþ--x1--xn-v-rv">GenSplitDataðx; D; k; NÞ → X(1), &hellip;, X(N); V; rv</a></li>
+        <li><a href="#compute-h1--hn-x1--xn--l1--ln"><strong>Compute H(1), &hellip;, H(N); X(1), &hellip;, X(N) → L(1), &hellip;, L(N)</strong></a></li>
+        <li><a href="#聚合"><strong>聚合</strong></a></li>
+        <li><a href="#验证"><strong>验证</strong></a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/">
+                <img src="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280_hu817737435758852202.jpg"
+                        srcset="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280_hu817737435758852202.jpg 800w, /p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280_hu16112376898829823806.jpg 1600w"
+                        width="800" 
+                        height="532" 
+                        loading="lazy"
+                        alt="Featured image of post 基于秘密共享的隐私保护和可验证深度学习推理" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB/" >
+                秘密共享
+            </a>
+        
+            <a href="/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/" >
+                隐私保护
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/">基于秘密共享的隐私保护和可验证深度学习推理</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-11-18</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="基于秘密共享的隐私保护和可验证深度学习推理">基于秘密共享的隐私保护和可验证深度学习推理
+</h1><h2 id="摘要">摘要
+</h2><p>深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。</p>
+<h2 id="引言">引言
+</h2><p>近年来，深度神经网络（DNN）在多个领域取得了显著进展，例如目标检测【39,26】、目标分类【18,10】、机器翻译【6,7】和人脸识别【40,33】。随着数据集规模的不断扩大，深度学习的计算强度也随之成比例增长。尽管近期在GPU硬件、网络架构和算法方面取得了重要突破，对于资源受限的客户端而言，大规模DNN的训练和推理仍需耗费无法接受的长时间和巨大的计算资源。</p>
+<p>幸运的是，许多DNN框架建议利用云服务来完成大量计算。然而，这些基于云的框架也带来了新的安全和隐私挑战。隐私泄露可能发生在训练阶段和推理阶段。针对训练阶段的隐私问题，已有许多隐私保护框架被提出【27,8,28,37,23,4,13,19】；而针对推理阶段的隐私问题，也有相关研究【46,12,16,32,42】。本文主要聚焦于与本研究最相关的推理阶段的隐私问题。</p>
+<p>在深度学习的推理阶段，隐私泄露主要来源于输入数据和深度模型本身。具体而言，输入数据通常包含大量敏感信息，这些信息应对云服务器保持隐私，因为云服务器可能无法完全信任。此外，经过充分训练的模型参数也不应暴露给未经授权的方。由于经过充分训练的模型因其高昂的训练成本而被视为重要资产，因此保护模型参数隐私与保护输入数据隐私同等重要。</p>
+<p>为了解决这些问题，Ocia等【24,25】和Chi等【5】提出将神经网络拆分为两部分：一部分在本地执行，另一部分在云端运行。Xu等【43】和Shen等【36】建议使用混淆神经网络【43】或数据变形【36】来在本地保护输入数据隐私。此外，为了提供更高的安全性，Zhang等【46】和Tian等【41】引入了同态加密（HE）【2】，以加密推理中部分计算。他们将所有DNN计算分为两类：线性计算和非线性计算。在线性计算在加密域中由云服务器完成。</p>
+<p>尽管上述框架保护了输入隐私，但并未考虑模型参数的隐私。近年来，一些旨在同时保护输入和模型参数隐私的框架得到了研究。相关工作【12,9,15】利用同态加密（HE）对整个网络进行加密，并在加密域中执行推理。Juvekar等【16】提出了一种框架，结合了混淆电路（GC）【44】和HE，用于同时保护输入和模型的隐私，与框架【32,29,31,30】类似。此外，许多工作借助安全多方计算（SMPC）来实现输入和模型参数的保护。Ma等【22】提出了在两个非共谋服务器下的完全非交互隐私保护推理框架。Liu等【21】提出了MiniONN，用于将训练好的神经网络转换为高效的无泄漏神经网络。Shamsabadi等【35】研究了一种用于分类的私有DNN训练和推理框架，其中基于秘密共享方案【34】的私有推理在两个非共谋服务器之间进行。</p>
+<p>此外，云服务器可能会出于经济利益返回无效结果。在许多基于深度学习的应用中，例如自动驾驶和金融风险评估，无效结果可能导致灾难性后果。因此，为用户提供一种机制验证云服务器返回结果的正确性显得尤为重要。同时，执行验证所引入的开销应尽可能低。</p>
+<p>为此，我们提出了一种隐私保护且可验证的深度学习推理（PVDLI）框架，能够在低通信和计算成本下同时保护输入和模型参数的隐私。此外，用户还可以以较小的开销验证推理结果的正确性。受软件设计模式中的代理模式【11】启发，我们引入了N+1个节点，称为代理层，用于协作执行推理中涉及的安全计算。为安全地执行激活函数（非线性操作），我们在微调阶段用多项式近似激活函数【3】。通过在输入中注入标记的可验证数据，我们可以以高概率有效验证推理结果的正确性。借助秘密共享，注入的验证数据与正常数据无法区分，从而防止仅针对验证数据返回正确结果的潜在攻击。</p>
+<p>理论分析表明，即使在参与者之间存在共谋的情况下，所提出的框架仍能够针对“诚实但好奇”的参与者提供输入和模型参数的可验证性和隐私性。此外，我们还提供了大量实验结果以验证所提出的PVDLI框架的优越性。</p>
+<p>本文其余部分组织如下：第2节介绍相关基础知识。第3节给出了系统模型和设计目标。第4节阐述了所提出的子协议。第5节详细描述了PVDLI框架。第6节提供了基于设计的安全实验的可验证性分析和安全性分析。第7节展示了实验结果，最后在第8节进行总结。</p>
+<h2 id="预备知识">预备知识
+</h2><p>深度学习旨在从高维数据中提取复杂特征，并利用这些特征构建一个能够将输入与输出关联起来的模型。通常，深度学习架构由多层网络构成，以便将低层次特征通过非线性函数计算为更抽象的特征。每一层的输出与前一层相连接。</p>
+<p>在<strong>图1</strong>中，我们展示了一个深度神经网络（DNN）推理的示例。通过执行一系列计算，DNN输出对数值（logit），随后通过对该对数值执行<strong>softmax</strong>函数生成输入的类别预测概率。</p>
+<p>在不失一般性的情况下，我们详细描述了VGG16模型【38】中一个典型块的组成。该块包含线性计算、批归一化、激活函数和池化操作。</p>
+<h4 id="线性计算"><strong>线性计算</strong>
+</h4>$$x \in \mathbb{R}^n$$$$
+z = W x + b \tag{1}
+$$$$W$$$$b$$<p> 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。</p>
+<h4 id="批归一化"><strong>批归一化</strong>
+</h4>$$
+u = c z + b \tag{2}
+$$$$c$$$$b$$<p> 是经过充分训练的固定参数。</p>
+<h4 id="激活函数"><strong>激活函数</strong>
+</h4>$$
+t = \text{ReLU}(u) \tag{3}
+$$<h4 id="池化"><strong>池化</strong>
+</h4>$$\text{Avg}$$$$
+y = \text{Avg}(t) \tag{4}
+$$<p>随后，池化层的输出被送入下一层进行后续计算。最终，DNN 网络输出一个对数值（logit），并通过 <strong>softmax</strong> 函数生成类别预测概率。</p>
+<h2 id="系统模型与设计目标">系统模型与设计目标
+</h2><p>在本节中，我们详细介绍所提出框架的设计目标和系统模型。</p>
+<h3 id="设计目标">设计目标
+</h3><p>我们提出了一个隐私保护且可验证的深度学习推理框架，涉及三个实体：<strong>模型所有者（O）</strong>、<strong>用户（U）</strong> 和 <strong>N+1 个节点</strong>（称为代理层），代理层位于用户与模型所有者之间。一般来说，所提出的 PVDLI 框架面临的安全威胁主要来自代理层的行为。假设框架在**“诚实但好奇”**的设置下运行，这意味着攻击者会遵循框架规范，但可能对输入数据和模型参数产生兴趣。此外，从可验证性的角度来看，代理层中的某些节点可能会偷懒，即生成随机或错误结果以节省计算资源。</p>
+<p>为了实现框架的隐私保护和可验证性，我们确定了以下四个设计目标：</p>
+<ol>
+<li>
+<p><strong>隐私</strong></p>
+<ul>
+<li>用户的输入数据必须对代理层保密。</li>
+<li>模型的参数不应被代理层泄露。</li>
+</ul>
+</li>
+<li>
+<p><strong>效率</strong></p>
+<ul>
+<li>用户的计算复杂度应显著低于直接进行完整推理计算的复杂度。</li>
+<li>各参与方之间的通信成本应尽可能降低。</li>
+</ul>
+</li>
+<li>
+<p><strong>可验证性</strong></p>
+<ul>
+<li>用户必须能够成功验证推理结果的正确性。作弊的代理层生成的错误结果不能以非可忽略的概率通过验证。</li>
+</ul>
+</li>
+<li>
+<p><strong>准确性</strong></p>
+<ul>
+<li>模型推理的准确性应接近于在单一服务器上执行深度学习推理时的准确性。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="系统模型">系统模型
+</h3>$$E = \{E_0, E_1, \dots, E_N\}$$<p> 作为代理层，其灵感来源于<strong>代理模式</strong>【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。</p>
+<p>框架的伪代码见<strong>算法1</strong>。具体而言：</p>
+<ol>
+<li>
+$$F$$$$H = \{h_1, h_2, \dots, h_M\}$$$$M$$<p> 是网络中的总参数数量。</p>
+</li>
+<li>
+$$x$$$$F$$<p> 中进行推理。</p>
+</li>
+<li>
+<p><strong>代理层（E）</strong></p>
+<ul>
+<li><strong>辅助节点（$$E_0$$）</strong><br>
+负责与各计算节点之间的通信，收集和分发推理过程中涉及的临时结果。</li>
+<li><strong>计算节点（$$\{E_1, \dots, E_N\}$$）</strong><br>
+负责执行深度神经网络（DNN）的推理计算。</li>
+</ul>
+</li>
+</ol>
+<p>在推理开始之前，模型所有者（O）会与用户（U）协商选择一个由 <strong>1 个辅助节点（$$E_0$$）</strong> 和 <strong>N 个计算节点（$$\{E_1, \dots, E_N\}$$）</strong> 组成的代理层（E）。</p>
+<h3 id="算法-1-执行-pvdli-的步骤">算法 1: 执行 PVDLI 的步骤
+</h3><p><strong>输入：</strong></p>
+<ul>
+<li>安全参数 $$k$$</li>
+<li>输入数据 $$x \in \mathbb{Z}_p^n$$</li>
+<li>深度学习模型 $$F$$</li>
+<li>计算节点数量 $$N$$</li>
+</ul>
+<p><strong>输出：</strong></p>
+<ul>
+<li>推理结果 $$y$$ 或错误标志 $$\perp$$</li>
+</ul>
+<hr>
+<ol>
+<li><strong>模型所有者</strong> $$O$$ 和 <strong>用户</strong> $$U$$ 选择一个由 $$N+1$$ 个节点组成的代理层 $$E = \{E_0, E_1, \dots, E_N\}$$。</li>
+<li>用户 $$U$$ 生成一个可验证数据集 $$D$$。</li>
+<li>模型所有者 $$O$$ 通过多项式近似获取近似模型 $$F$$，然后将模型参数 $$H$$ 分成 $$N$$ 份：<br>
+$$H^{(1)}, H^{(2)}, \dots, H^{(N)} \gets \text{Split}(H, k, N)$$。</li>
+<li>用户 $$U$$ 将可验证数据 $$\{X, V, r_v\}$$ 插入到输入数据中：<br>
+$$\{X, V, r_v\} \gets \text{Insert}(x, D)$$。</li>
+<li>用户将混合数据 $$X$$ 分成 $$N$$ 份：<br>
+$$X^{(1)}, X^{(2)}, \dots, X^{(N)} \gets \text{Split}(X, k, N)$$。</li>
+<li>代理层执行一系列深度学习推理计算，得到 logits：<br>
+$$L^{(1)}, L^{(2)}, \dots, L^{(N)} \gets \{f(X^{(1)}, H^{(1)}), \dots, f(X^{(N)}, H^{(N)})\}$$。</li>
+<li>用户 $$U$$ 聚合 logits：<br>
+$$R \gets \text{Aggregation}(L^{(1)}, L^{(2)}, \dots, L^{(N)})$$。</li>
+<li>用户 $$U$$ 提取结果：<br>
+$$y = R_{r_v}$$ （推理结果），<br>
+$$R' = \{R_i \mid i \in \{1, 2, \dots, N\} \setminus r_v\}$$ （可验证结果）。</li>
+<li><strong>如果</strong>可验证结果 $$R'$$ 满足 $$R' = V$$：
+<ul>
+<li>返回 $$y$$ 作为输入数据 $$x$$ 的推理结果。</li>
+</ul>
+</li>
+<li><strong>否则：</strong>
+<ul>
+<li>返回错误标志 $$\perp$$。</li>
+</ul>
+</li>
+<li><strong>结束。</strong></li>
+</ol>
+$$O$$$$F$$$$H$$$$N$$<p> 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。</p>
+$$U$$$$x$$$$X$$$$U$$$$X$$$$N$$<p> 份，并分发到代理层以保护输入隐私。</p>
+$$H^{(i)}$$$$X^{(i)}$$$$E_i$$$$L^{(i)}$$$$U$$$$U$$$$R$$$$U$$$$U$$$$x$$$$y$$<p>；否则，拒绝结果并输出错误。</p>
+<h3 id="提出的-pvdli-框架包含以下六个关键模块">提出的 PVDLI 框架包含以下六个关键模块：
+</h3><ol>
+<li>
+$$O$$$$U$$$$N+1$$$$E = \{E_0, E_1, \dots, E_N\}$$$$U$$$$D$$<p>，用于后续验证。</p>
+</li>
+<li>
+$$O$$$$F$$$$k$$$$N$$<p> 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。</p>
+</li>
+<li>
+$$k$$$$U$$$$D$$$$V$$$$r_v$$$$x$$$$X$$$$X$$$$N$$$$X^{(i)}$$$$E_i$$<p>。</p>
+</li>
+<li>
+$$X^{(i)}$$$$H^{(i)}$$$$E_i$$$$1 \leq i \leq N$$$$E_i$$$$L^{(i)}$$$$U$$<p>。</p>
+</li>
+<li>
+$$L^{(1)}, \dots, L^{(N)}$$$$U$$$$X$$$$F$$$$R$$<p>。</p>
+</li>
+<li>
+$$R$$$$r_v$$$$U$$$$V$$$$x$$$$y$$$$\perp$$<p>。</p>
+</li>
+</ol>
+<h2 id="基于秘密共享的安全子协议">基于秘密共享的安全子协议
+</h2><p>本质上，深度学习推理由一系列数学操作完成。在我们提出的框架中，为了避免输入数据和模型参数的泄露，所有操作必须以隐私保护的方式进行。基于秘密共享方案，我们设计并实现了三个安全计算子协议：安全加法协议、安全除法协议和安全矩阵乘法协议。</p>
+<h4 id="安全加法协议secadd"><strong>安全加法协议（SecAdd）：</strong>
+</h4>$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$<p>。在执行过程中，不会交换任何中间值。</p>
+$$E_i$$$$A$$$$B$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$C^{(i)}$$$$E_0$$<p> 不参与计算。</p>
+<h4 id="安全除法协议secdiv"><strong>安全除法协议（SecDiv）：</strong>
+</h4>$$k \in \mathbb{Z}_p$$$$A \in \mathbb{Z}_p^{u \times n}$$$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$<p>。</p>
+$$E_i$$$$A$$$$A^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$k$$$$C^{(i)}$$<p>。</p>
+<h4 id="安全矩阵乘法协议secmul"><strong>安全矩阵乘法协议（SecMul）：</strong>
+</h4>$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$<p>。</p>
+$$E_0$$<p>。辅助节点仅与计算节点通信，用于收集和分发乘法过程中的临时结果。</p>
+$$E_i$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$A$$$$B$$$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$$$O = P \cdot Q$$<p>。</p>
+$$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E_0$$<p>）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。</p>
+<h3 id="安全矩阵乘法过程">安全矩阵乘法过程
+</h3><p>如图 3 所示，该协议包含以下四个部分：</p>
+<p><img src="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050.png"
+	width="1266"
+	height="704"
+	srcset="/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu17449839447597289103.png 480w, /p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu8223726548956333695.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241117192123050"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="179"
+		data-flex-basis="431px"
+	
+></p>
+<h4 id="生成辅助随机矩阵份额-genaux"><strong>生成辅助随机矩阵份额 (GenAux):</strong>
+</h4><p><strong>$$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$</strong></p>
+<ol>
+<li>给定安全参数 $$k$$，代理层协商选择辅助随机矩阵的份额 $$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$，其中 $$P^{(i)}, Q^{(i)}, O^{(i)}$$ 表示矩阵 $$P \in \mathbb{Z}_p^{u \times n}$$、$$Q \in \mathbb{Z}_p^{n \times v}$$ 和 $$O \in \mathbb{Z}_p^{u \times v}$$ 的第 $$i$$ 个份额，且 $$O = P \cdot Q$$。代理层的计算节点 $$E_i$$ 只能拥有对应的份额 $$P^{(i)}, Q^{(i)}, O^{(i)}$$，其中 $$1 \leq i \leq N$$。</li>
+</ol>
+<hr>
+<h4 id="对输入矩阵份额进行掩码处理-mask"><strong>对输入矩阵份额进行掩码处理 (Mask):</strong>
+</h4>$$E_i$$$$1 \leq i \leq N$$$$
+E^{(i)} = A^{(i)} - P^{(i)} \quad;\quad F^{(i)} = B^{(i)} - Q^{(i)}  
+$$$$E_i$$$$E^{(i)}, F^{(i)}$$$$E_0$$$$1 \leq i \leq N$$<p>。</p>
+<hr>
+<h4 id="重构并分割结果-split"><strong>重构并分割结果 (Split):</strong>
+</h4>$$E_0$$$$N$$$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$$$E$$$$F$$$$
+E = \sum_{i=1}^{N} E^{(i)} \quad;\quad F = \sum_{i=1}^{N} F^{(i)} \quad;\quad G = E \cdot F  
+$$$$E_0$$$$G$$$$\{G^{(i)}\}_{i=1}^{N}$$$$E_0$$$$E, F, G^{(i)}$$$$E_i$$$$1 \leq i \leq N$$<p>）。</p>
+<hr>
+<h4 id="计算最终份额-cal"><strong>计算最终份额 (Cal):</strong>
+</h4>$$E_i$$$$1 \leq i \leq N$$$$E, F, G^{(i)}$$$$
+S^{(i)} = E \cdot Q^{(i)} \quad;\quad T^{(i)} = P^{(i)} \cdot F  
+$$$$E_i$$$$
+C^{(i)} = G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}  
+$$$$
+C = \sum_{i=1}^{N} C^{(i)} = A \cdot B  
+$$<hr>
+<h4 id="安全矩阵乘法的正确性证明"><strong>安全矩阵乘法的正确性证明：</strong>
+</h4>$$
+C = \sum_{i=1}^{N} C^{(i)} = \sum_{i=1}^{N} (G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}) = G + S + T + O  
+$$$$
+= (E \cdot F) + (E \cdot Q) + (P \cdot F) + (P \cdot Q)  
+$$$$
+= (A - P) \cdot (B - Q) + (A - P) \cdot Q + P \cdot (B - Q) + P \cdot Q  
+$$$$
+= A \cdot B
+$$$$P, Q, O$$<p> 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。</p>
+<h2 id="提出的框架">提出的框架
+</h2><h3 id="initn--e-d">Init（N） → （E; D)
+</h3><p>首先，模型所有者O与用户U协商，选择一个包含N + 1个节点的代理层，其中包括一个辅助节点E₀和N个计算节点E₁, &hellip;, EN进行后续的协同计算。在这里，合理的假设是N ≥ 2，这是由于所采用的秘密共享方案提出的要求。需要注意的是，节点数量不会影响推理的准确性，因为所有节点只涉及安全子协议，这些协议已经被证明与原始计算等效。然而，节点数量确实会影响隐私保护的水平。具体来说，节点数量越多，当节点发生串通时，隐私保护的级别越高。更多的安全性分析将在第6节中提供。
+接下来，为了提供可验证性，用户U生成一个可验证的数据集D = {d₁, &hellip;, dL}。这里，可验证数据集可以离线生成并且可重复使用。每个数据项dᵢ的要求是，它的推理结果（标签）可以很容易地估计或获得。由于通过秘密共享方案可以很好地保护输入数据的隐私，从代理层的角度来看，所有输入数据都是随机值。因此，代理层无法区分可验证数据dᵢ和输入x。选择可验证数据dᵢ时有很多选择；它可以是标记的测试数据，甚至是可以轻松验证的虚拟数据（噪声或无意义的数据）。</p>
+<h3 id="deploymodelðf-k-nþ--h1--hm"><strong>DeployModelðF; k; NÞ → H(1), &hellip;, H(M)</strong>
+</h3>$$f(x) = a_0 + a_1x + ... + a_d x^d$$<p><br>
+其中，所有的系数$a_0, a_1, &hellip;, a_d$在多项式中都是可训练的。替代后，模型所有者O继续通过少量迭代微调模型F，以获得新的近似模型F。令$H = {h_1, &hellip;, h_M}$表示深度学习模型F中所有权重变量的平坦化向量，其中M表示模型中的参数数量。为了保护模型参数$H$的隐私，我们提出使用一个简单而有效的N-out-of-N加法秘密共享方案[34]。具体来说，模型所有者O将模型参数$H$分割成N个份额，并将份额$H(i)$分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。通过这种方式，代理层中的每个计算节点只拥有模型参数$H$的一个份额。具体地，生成参数份额的过程包括以下两个部分：</p>
+<ol>
+<li>
+<p><strong>Setup 1k → Ko</strong>: 给定安全参数k，模型所有者O从指定的密钥空间${0, 1}^k$生成一个秘密密钥Ko。加密算法的资源需求和攻击者破解安全的概率可以通过安全参数k来表达。</p>
+</li>
+<li>
+$$Alg(H; ro; N) → H(1), ..., H(N) \in \mathbb{Z}_M^N$$<p><br>
+最后，模型所有者O将份额$H(i)$分别分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。</p>
+</li>
+</ol>
+<h3 id="gensplitdataðx-d-k-nþ--x1--xn-v-rv">GenSplitDataðx; D; k; NÞ → X(1), &hellip;, X(N); V; rv
+</h3><p>在给定安全参数k和可验证数据集D的情况下，用户U将可验证数据和输入数据混合生成混合数据X。然后，用户U将混合数据X分割成N个份额，并将它们分发到代理层。具体来说，为了提供可验证性，用户U从数据集D中随机选择J个可验证数据$I_1, &hellip;, I_J \in \mathbb{R}^{n \times J}$。这里，令$V = {V_1, &hellip;, V_J}$表示这J个可验证数据的标签。接着，用户U随机选择一个索引$rv$，其中$1 \leq rv \leq J$，并将输入数据$x$与可验证数据$I$混合，构造混合数据$X = {I_1, &hellip;, I_{rv-1}, x, I_{rv}, &hellip;, I_J} \in \mathbb{R}^{n \times (J+1)}$。<br>
+类似地，从所有长度为k的比特串中随机选择一个秘密密钥$K_u$，然后用户U使用[8]中的份额生成算法将混合数据X分割成N个份额$X(1), &hellip;, X(N)$。此外，用户U将份额$X(i)$分别分发给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。在这种情况下，代理层中的每个计算节点只访问混合数据X的一个份额，这意味着可以提供输入数据的隐私保护。由于混合数据被分割成多个份额，且可验证数据与输入数据可以完美混合，暗示着攻击者无法将它们分开。</p>
+<h3 id="compute-h1--hn-x1--xn--l1--ln"><strong>Compute H(1), &hellip;, H(N); X(1), &hellip;, X(N) → L(1), &hellip;, L(N)</strong>
+</h3><p>在本模块中，代理层使用输入和模型参数的份额安全地执行深度学习推理。基于秘密共享方案，我们提出了三种安全子协议：SecAdd、SecDiv和SecMul，其详细信息已在第4节中提供。如第2节所述，深度学习推理中的操作包括线性计算、批量归一化、激活和池化。所有这些计算都可以通过利用提出的子协议来安全执行。为了不失一般性，我们考虑VGG16中的一个典型模块[38]，该模块由线性计算、批量归一化、激活和平均池化组成，如图4所示。为了提供可验证性，我们将一批数据X（包括原始输入x和可验证数据I）输入网络进行推理。此模块的计算可以表示为：</p>
+$$ Z = W \cdot X + B $$$$ U = c \cdot Z + b $$$$ T = a_1 \cdot U + \dots + a_d \cdot U_d $$$$ Y = \text{Avg}(T) $$<p>其中，Avg表示平均操作，c和b是经过训练并固定的。随后，我们将详细介绍如何在代理层中安全地执行这些计算。</p>
+<p><strong>线性计算</strong><br>
+回顾一下，每个计算节点$E_i$拥有模型参数的份额$H(i)$和输入数据的份额$X(i)$，它们包含输入数据$x$和可验证数据$I$的份额。首先，计算节点$E_i$提取并重新格式化$H(i)$，以获得权重矩阵$W(i) \in \mathbb{Z}_u^{n \times p}$和偏置$b(i) \in \mathbb{Z}_u^p$。这里，由于输入数据$X(i) \in \mathbb{Z}_n^{(J+1) \times p}$（而不是原始输入$x \in \mathbb{Z}_n^p$）的变化，偏置$b(i) \in \mathbb{Z}_u^p$需要扩展为矩阵$B(i) \in \mathbb{Z}_u^{(J+1) \times p}$以进行批量推理，其中$B(i) = \left[ b(i) , \cdots , b(i) \right]$。然后，为了执行线性计算$Z = W \cdot X + B$，代理层仅需执行安全矩阵乘法和安全加法，表示为：</p>
+$$ \text{SecMul}(W(i), X(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), B(i)) \rightarrow Z(1), \dots, Z(N) $$<p>输出$Z(1), \dots, Z(N)$是$Z = W \cdot X + B$的份额。</p>
+<p><strong>批量归一化</strong><br>
+在进行线性计算后，批量归一化被应用于解决内部协变量偏移。由于批量归一化中的参数在推理阶段是固定的，因此批量归一化操作可以作为线性计算（如式（14）所述）进行。类似地，代理层中的每个计算节点$E_i$可以从$H(i)$中提取并重新格式化，以获得份额$c(i)$和$b(i)$，其中$1 \leq i \leq N$。然后，代理层执行安全矩阵乘法和安全加法来完成批量归一化，表示为：</p>
+$$ \text{SecMul}(c(i), Z(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), b(i)) \rightarrow U(1), \dots, U(N) $$<p><strong>激活</strong><br>
+如第5.2节所述，我们已经用近似多项式替代了激活函数[3]。通过这种方式，非线性操作被转化为线性计算。由于它与上述线性计算类似，我们只提供主要过程。具体来说，在式（16）中，系数$a_1, a_2, \dots, a_d$从$H(i)$中提取。逐元素的指数运算可以通过多个乘法来安全实现。因此，激活的计算可以通过安全地执行一系列安全的乘法和加法来通过多项式进行逼近。最终，每个计算节点$E_i$输出一个份额$T(i)$，其中$1 \leq i \leq N$。</p>
+<p><strong>平均池化</strong><br>
+平均池化的主要过程是对矩形区域中的值进行加和并计算平均值。它由加法和除法与池大小组成。因此，我们也可以利用安全加法和安全除法来完成平均池化。最终，深度学习推理中的所有计算可以逐层执行。最后，在最后一层，每个计算节点$E_i$输出一个logit值份额，表示为$L(i)$，其中$1 \leq i \leq N$。</p>
+<h3 id="聚合"><strong>聚合</strong>
+</h3><p>当用户U接收到代理层的所有logit值份额$L(1), &hellip;, L(N)$时，用户U将它们聚合以获得深度模型的logit值。</p>
+$$ L = \frac{1}{N} \sum_{i=1}^{N} L(i) $$<p>最终推理结果$R$取决于深度学习任务的类型。如果深度学习模型是预测任务，则$R = L$。如果是分类任务，则$R = \text{softmax}(L)$。</p>
+<h3 id="验证"><strong>验证</strong>
+</h3><p>在聚合所有份额以获得推理结果$R$后，用户$U$检查推理的正确性。具体来说，用户$U$在输入密钥$rv$后，提取第$rv$列向量$y = R_{rv}$。令$R$表示矩阵$R$的其余部分。然后，用户$U$将结果$R$与标签$V$进行比较。如果相同，用户$U$接受$y$作为输入$x$的推理结果。否则，用户$U$拒绝并输出错误$?$。需要注意的是，如果没有提供输入隐私，这意味着代理层可以轻松地区分可验证数据和输入数据$x$，则代理层可以输出可验证数据的正确结果和输入数据的错误结果，从而破坏可验证性。因此，验证的成功与输入隐私的保护密切相关。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/">
+        
+        
+            <div class="article-image">
+                <img src="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/wave-7726187_1280.ea8c417739457157b3db82e3820e3958_hu15839190053084080594.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 密码学部分问题"
+                        
+                        data-hash="md5-6oxBdzlFcVez24Ljgg45WA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">密码学部分问题</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function() {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+
+
+    </body>
+</html>

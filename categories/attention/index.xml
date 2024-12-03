@@ -135,9 +135,7 @@
 &lt;/h2&gt;&lt;h3 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
 &lt;/h3&gt;&lt;p&gt;残差连接（Residual Connection）和 层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
 &lt;h4 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
-&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 \text{Output} = \text{Layer}(x) + x
 $$&lt;p&gt;
 其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。&lt;/p&gt;
@@ -148,9 +146,7 @@ $$&lt;p&gt;
 &lt;li&gt;&lt;strong&gt;提高模型性能&lt;/strong&gt;：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;层归一化layer-normalization&#34;&gt;层归一化（Layer Normalization）
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
-&lt;/p&gt;
-$$
+&lt;/h3&gt;$$
 \text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
 $$&lt;p&gt;
 其中：&lt;/p&gt;

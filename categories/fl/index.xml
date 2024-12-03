@@ -31,8 +31,6 @@
 &lt;p&gt;(3) 加密联邦学习：客户端使用同态加密密钥和加密掩码选择性加密本地模型更新，以实现高效的隐私保护训练。&lt;/p&gt;
 &lt;h3 id=&#34;威胁模型&#34;&gt;威胁模型
 &lt;/h3&gt;&lt;p&gt;我们定义一个半诚实的对手A，该对手可以破坏聚合服务器或任何子集的本地客户端。A遵循协议，但试图尽可能多地获取信息。粗略地说，在这种对手模型下，安全性定义要求，当A破坏一部分客户端时，只有来自被破坏客户端的本地模型中的私人信息会被泄露；当A破坏聚合服务器时，不会泄露任何本地模型或全局模型中的私人信息。 当A同时破坏聚合服务器和多个客户端时，默认设置下私钥与所有客户端共享（包括被破坏的客户端），这将允许A解密来自正常客户端的本地模型（通过结合被破坏的服务器接收到的加密本地模型和任何被破坏客户端接收到的私钥）。这一问题可以通过采用同态加密的阈值或多密钥变体来缓解，其中解密必须由一定数量的客户端共同执行（Aloufi et al., 2021; Ma et al., 2022; Du et al., 2023）。由于多方同态加密问题不是本文的重点，本文其余部分默认使用单密钥同态加密设置，但阈值同态加密联邦学习设置和微基准的详细信息将在附录中提供。&lt;/p&gt;
-&lt;p&gt;基于同态加密的联邦聚合算法 隐私保护的联邦学习系统利用同态加密，使得聚合服务器能够在不查看加密前数据的情况下，结合本地模型参数，从而设计出同态加密的聚合函数。我们主要关注FedAvg（McMahan等，2017），该算法被证明仍然是最强大的联邦聚合策略之一，同时保持计算简洁性（Wang等，2022）。我们的基于同态加密的安全聚合算法，如算法1所示，可以总结为：给定一个聚合服务器和N个客户端，每个客户端i ∈ [N]拥有一个本地数据集Di，并初始化一个本地模型Wi，并为其分配聚合权重因子αi；密钥授权机构或分布式阈值密钥协议生成一对密钥(pk, sk)和加密上下文，然后将其分发给客户端和服务器（但服务器仅获取加密上下文，这是公共配置）。客户端和服务器随后共同计算加密掩码M，以进行选择性参数加密，同样使用同态加密。在每轮通信t ∈ [T]中，服务器执行聚合：
-&lt;/p&gt;
 $$
 [W_{\text{glob}}] = \sum_{i=1}^{N} \alpha_i \left[ M \odot W_i \right] + \sum_{i=1}^{N} \alpha_i \left( (1 - M) \odot W_i \right)
 $$&lt;p&gt;
@@ -44,84 +42,31 @@ $$&lt;p&gt;
 &lt;li&gt;p：选择性加密的参数比例；&lt;/li&gt;
 &lt;li&gt;b：（可选）差分隐私参数。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;// 密钥授权生成密钥&lt;br&gt;
-&lt;/p&gt;
-$$(pk, sk) \leftarrow HE.KeyGen(λ);$$&lt;p&gt;// 本地敏感度映射计算&lt;br&gt;
-对于每个客户端 &lt;/p&gt;
-$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
-&lt;/p&gt;
-$$
+$$(pk, sk) \leftarrow HE.KeyGen(λ);$$$$i \in [N]$$$$
 W_i \leftarrow Init(W); \\
 S_i \leftarrow Sensitivity(W, D_i); \\
 [[S_i]] \leftarrow Enc(pk, S_i); \\
-$$&lt;p&gt;
-将 &lt;/p&gt;
-$$[[S_i]]$$&lt;p&gt; 发送给服务器;&lt;br&gt;
+$$$$[[S_i]]$$&lt;p&gt; 发送给服务器;&lt;br&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;// 服务器加密掩码聚合&lt;br&gt;
-&lt;/p&gt;
 $$
 [[M]] \leftarrow Select\left(\sum_{i=1}^N \alpha_i [[S_i]], p\right);
-$$&lt;p&gt;// 训练&lt;br&gt;
-对于 &lt;/p&gt;
-$$t = 1, 2, \dots, T$$&lt;p&gt; 循环&lt;br&gt;
-对于每个客户端 &lt;/p&gt;
-$$i \in [N]$$&lt;p&gt; 并行执行&lt;br&gt;
-如果 &lt;/p&gt;
-$$t = 1$$&lt;p&gt; 则&lt;br&gt;
-接收 &lt;/p&gt;
-$$[[M]]$$&lt;p&gt; 来自服务器;&lt;br&gt;
-&lt;/p&gt;
-$$M \leftarrow HE.Dec(sk, [[M]]);$$&lt;p&gt;&lt;br&gt;
+$$$$t = 1, 2, \dots, T$$$$i \in [N]$$$$t = 1$$$$[[M]]$$$$M \leftarrow HE.Dec(sk, [[M]]);$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-&lt;p&gt;如果 &lt;/p&gt;
-$$t &gt; 1$$&lt;p&gt; 则&lt;br&gt;
-接收 &lt;/p&gt;
-$$[W_{glob}]$$&lt;p&gt; 来自服务器;&lt;br&gt;
-&lt;/p&gt;
-$$W_i \leftarrow HE.Dec(sk, M \odot [W_{glob}]) + (1 - M) \odot [W_{glob}];$$&lt;p&gt;&lt;br&gt;
+$$t &gt; 1$$$$[W_{glob}]$$$$W_i \leftarrow HE.Dec(sk, M \odot [W_{glob}]) + (1 - M) \odot [W_{glob}];$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-$$W_i \leftarrow Train(W_i, D_i);$$&lt;p&gt;// 增加差分隐私&lt;br&gt;
-如果开启差分隐私（Add DP）则&lt;br&gt;
-&lt;/p&gt;
-$$W_i \leftarrow W_i + Noise(b);$$&lt;p&gt;&lt;br&gt;
+$$W_i \leftarrow Train(W_i, D_i);$$$$W_i \leftarrow W_i + Noise(b);$$&lt;p&gt;&lt;br&gt;
 结束条件&lt;/p&gt;
-$$[W_i] \leftarrow HE.Enc(pk, M \odot W_i) + (1 - M) \odot W_i;$$&lt;p&gt;&lt;br&gt;
-将 &lt;/p&gt;
-$$[W_i]$$&lt;p&gt; 发送给服务器 &lt;/p&gt;
-$$S$$&lt;p&gt;;&lt;br&gt;
+$$[W_i] \leftarrow HE.Enc(pk, M \odot W_i) + (1 - M) \odot W_i;$$$$[W_i]$$$$S$$&lt;p&gt;;&lt;br&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;// 服务器模型聚合&lt;br&gt;
-&lt;/p&gt;
 $$
 [W_{glob}] \leftarrow \sum_{i=1}^N \alpha_i[[M \odot W_i]] + \sum_{i=1}^N \alpha_i((1 - M) \odot W_i);
 $$&lt;p&gt;
 结束循环&lt;/p&gt;
-&lt;p&gt;我们将在第 §2.4 节详细解释加密掩码 &lt;/p&gt;
 $$M$$&lt;p&gt; 的形式化过程。&lt;/p&gt;
 &lt;h3 id=&#34;通过选择性参数加密实现高效优化&#34;&gt;通过选择性参数加密实现高效优化
 &lt;/h3&gt;&lt;p&gt;完全加密模型能够确保对抗者无法访问明文的本地模型，但会带来高开销。然而，隐私泄漏分析的研究表明，“部分透明性”，例如隐藏部分模型（Hatamizadeh等, 2022; Mo等, 2020），可以限制对抗者成功执行攻击（如梯度反演攻击）的能力（Lu等, 2022）。因此，我们提出了选择性参数加密方法，选择性地加密最隐私敏感的参数，以在降低不可行的开销的同时提供可定制的隐私保护；见图4。&lt;/p&gt;
-&lt;p&gt;步骤 1：客户端隐私泄漏分析。直接执行梯度反演攻击（Wei等人，2020年）并评估攻击成功率的时间远远超过模型训练时间。我们因此采用敏感度（Novak等人，2018年；Sokolić等人，2017年；Mo等人，2020年）来衡量梯度相对于输入的总体隐私风险。给定模型&lt;/p&gt;
-$$W$$&lt;p&gt;和包含输入矩阵&lt;/p&gt;
-$$X$$&lt;p&gt;与真实标签向量&lt;/p&gt;
-$$y$$&lt;p&gt;的&lt;/p&gt;
-$$K$$&lt;p&gt;个数据样本，我们计算每个参数&lt;/p&gt;
-$$w_m$$&lt;p&gt;的敏感度为&lt;/p&gt;
-$$\frac{1}{K} \sum_{k=1}^{K} \| J_m(y_k) \|$$&lt;p&gt;，其中&lt;/p&gt;
-$$J_m(y_k) = \frac{\partial}{\partial y_k} \frac{\partial l(X, y, W)}{\partial w_m} \in \mathbb{R}$$&lt;p&gt;，&lt;/p&gt;
-$$l(\cdot)$$&lt;p&gt;为基于&lt;/p&gt;
-$$X$$&lt;p&gt;、&lt;/p&gt;
-$$y$$&lt;p&gt;和&lt;/p&gt;
-$$W$$&lt;p&gt;的损失函数，&lt;/p&gt;
-$$\|\cdot\|$$&lt;p&gt;表示绝对值。直观上，这计算了参数梯度对每个数据点&lt;/p&gt;
-$$k$$&lt;p&gt;的真实输出&lt;/p&gt;
-$$y_k$$&lt;p&gt;的变化程度。每个客户端&lt;/p&gt;
-$$i$$&lt;p&gt;然后将加密的参数敏感度矩阵&lt;/p&gt;
-$$[[S_i]]$$&lt;p&gt;发送至服务器。如图5所示，模型的不同部分通过暴露不均等的信息量对攻击做出贡献。基于此见解，我们建议仅选择和加密模型中更重要且易受攻击的部分，以减少同态加密（HE）开销，同时保持足够的隐私保护。&lt;/p&gt;
-&lt;p&gt;步骤 2：客户端间的加密掩码协议。敏感度映射取决于所处理的数据。在可能存在异构数据分布的情况下，服务器将本地敏感度映射聚合为全局隐私映射 &lt;/p&gt;
-$$P = \sum_{i=1}^N \alpha_i [[S_i]]$$&lt;p&gt;。然后，使用隐私开销比率 &lt;/p&gt;
-$$p \in [0, 1]$$&lt;p&gt; 配置全局加密掩码 &lt;/p&gt;
-$$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例。最后，将全局加密掩码作为联邦学习配置的一部分共享给客户端。&lt;/p&gt;
+$$W$$$$X$$$$y$$$$K$$$$w_m$$$$\frac{1}{K} \sum_{k=1}^{K} \| J_m(y_k) \|$$$$J_m(y_k) = \frac{\partial}{\partial y_k} \frac{\partial l(X, y, W)}{\partial w_m} \in \mathbb{R}$$$$l(\cdot)$$$$X$$$$y$$$$W$$$$\|\cdot\|$$$$k$$$$y_k$$$$i$$$$[[S_i]]$$&lt;p&gt;发送至服务器。如图5所示，模型的不同部分通过暴露不均等的信息量对攻击做出贡献。基于此见解，我们建议仅选择和加密模型中更重要且易受攻击的部分，以减少同态加密（HE）开销，同时保持足够的隐私保护。&lt;/p&gt;
+$$P = \sum_{i=1}^N \alpha_i [[S_i]]$$$$p \in [0, 1]$$$$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例。最后，将全局加密掩码作为联邦学习配置的一部分共享给客户端。&lt;/p&gt;
 &lt;h3 id=&#34;软件框架同态加密在联邦学习中的应用&#34;&gt;软件框架：同态加密在联邦学习中的应用
 &lt;/h3&gt;&lt;p&gt;在本节中，我们将从软件框架的角度说明如何设计基于同态加密（HE）的聚合机制。图 6 展示了我们框架的高层次设计，框架由三个主要层次构成：&lt;/p&gt;
 &lt;ul&gt;
@@ -161,24 +106,16 @@ $$M$$&lt;p&gt;，该比率表示为选择最敏感的参数进行加密的比例
 在理想世界中，S 从 F 接收 λ 和 $1^n$，并执行以下步骤：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;S 选择一个均匀分布的随机数带 &lt;/p&gt;
 $$r$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;S 运行密钥生成函数来生成公钥 &lt;/p&gt;
-$$pk$$&lt;p&gt;：&lt;/p&gt;
-$$(pk, sk) \leftarrow HE.\text{KeyGen}(\lambda)$$&lt;p&gt;。&lt;/p&gt;
+$$pk$$$$(pk, sk) \leftarrow HE.\text{KeyGen}(\lambda)$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;对于选定的第 &lt;/p&gt;
-$$i$$&lt;p&gt; 个学习者，S 运行加密函数来生成采样值：&lt;/p&gt;
-$$(c_i) \leftarrow HE.\text{Enc}(pk, r^{|W_i|})$$&lt;p&gt;。&lt;/p&gt;
+$$i$$$$(c_i) \leftarrow HE.\text{Enc}(pk, r^{|W_i|})$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;S 对所有其他学习者重复步骤 3 以获得 &lt;/p&gt;
-$$\vec{c}$$&lt;p&gt;，并运行联邦聚合函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 来生成采样值：&lt;/p&gt;
-$$(c_{\text{glob}}) \leftarrow HE.\text{Eval}(\vec{c}, f)$$&lt;p&gt;。&lt;/p&gt;
+$$\vec{c}$$$$f$$$$(c_{\text{glob}}) \leftarrow HE.\text{Eval}(\vec{c}, f)$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;S 的执行意味着：&lt;/p&gt;
@@ -187,112 +124,41 @@ $$
 $$&lt;p&gt;因此，我们可以得出结论，S 在理想世界中的输出在计算上与 A 在实际执行中的视图不可区分：&lt;/p&gt;
 $$
 \{S (1^n, \lambda)\} \overset{s}{\equiv} \{\text{view}^\pi (\lambda)\}
-$$&lt;p&gt;其中 &lt;/p&gt;
-$$\text{view}$$&lt;p&gt; 表示 A 在协议 &lt;/p&gt;
-$$\pi$$&lt;p&gt; 实际执行中的视图。&lt;/p&gt;
+$$$$\text{view}$$$$\pi$$&lt;p&gt; 实际执行中的视图。&lt;/p&gt;
 &lt;h3 id=&#34;通过差分隐私理论对加密学习的证明&#34;&gt;通过差分隐私理论对加密学习的证明
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义 3.4（相邻数据集）&lt;/strong&gt;&lt;br&gt;
-当两个数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt; 仅在一个个体的数据上有所不同时，称它们为相邻数据集。形式化地，若满足 &lt;/p&gt;
-$$|D_1 \triangle D_2| = 1$$&lt;p&gt;，则它们为相邻数据集。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定义 3.5（$$\varepsilon$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-若一个随机算法 &lt;/p&gt;
-$$M$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，则对于任何两个相邻的数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt;，以及任意可能的输出 &lt;/p&gt;
-$$O \subseteq \text{Range}(F)$$&lt;p&gt;，以下不等式成立：&lt;/p&gt;
+&lt;/h3&gt;$$D_1$$$$D_2$$$$|D_1 \triangle D_2| = 1$$&lt;p&gt;，则它们为相邻数据集。&lt;/p&gt;
+$$M$$$$\varepsilon$$$$D_1$$$$D_2$$$$O \subseteq \text{Range}(F)$$&lt;p&gt;，以下不等式成立：&lt;/p&gt;
 $$
 \frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
-$$&lt;p&gt;隐私参数 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt; 的较小值意味着更强的隐私保障。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定义 3.6（拉普拉斯机制）&lt;/strong&gt;&lt;br&gt;
-给定一个函数 &lt;/p&gt;
-$$f : D \to \mathbb{R}$$&lt;p&gt;，其中 &lt;/p&gt;
-$$D$$&lt;p&gt; 是数据集的定义域，&lt;/p&gt;
-$$d$$&lt;p&gt; 是输出的维度，拉普拉斯机制向 &lt;/p&gt;
-$$f$$&lt;p&gt; 的输出添加拉普拉斯噪声。&lt;br&gt;
-令 &lt;/p&gt;
-$$b$$&lt;p&gt; 为拉普拉斯分布的尺度参数，其定义如下：&lt;/p&gt;
+$$$$\varepsilon$$&lt;p&gt; 的较小值意味着更强的隐私保障。&lt;/p&gt;
+$$f : D \to \mathbb{R}$$$$D$$$$d$$$$f$$$$b$$&lt;p&gt; 为拉普拉斯分布的尺度参数，其定义如下：&lt;/p&gt;
 $$
 \text{Lap}(x | b) = \frac{1}{2b} e^{-\frac{|x|}{b}}
-$$&lt;p&gt;给定数据集 &lt;/p&gt;
-$$D$$&lt;p&gt;，拉普拉斯机制 &lt;/p&gt;
-$$F$$&lt;p&gt; 定义为：&lt;/p&gt;
+$$$$D$$$$F$$&lt;p&gt; 定义为：&lt;/p&gt;
 $$
 M(D) = f(D) + \text{Lap}(0 | b)^d
-$$&lt;p&gt;&lt;strong&gt;定义 3.7（敏感度）&lt;/strong&gt;&lt;br&gt;
-为了确保 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，我们需要确定适当的尺度参数 &lt;/p&gt;
-$$b$$&lt;p&gt;。这就涉及到函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 的敏感度。函数 &lt;/p&gt;
-$$f$$&lt;p&gt; 的敏感度 &lt;/p&gt;
-$$\Delta f$$&lt;p&gt; 是 &lt;/p&gt;
-$$f$$&lt;p&gt; 应用于任意两个相邻数据集时输出的最大差值：&lt;/p&gt;
+$$$$\varepsilon$$$$b$$$$f$$$$f$$$$\Delta f$$$$f$$&lt;p&gt; 应用于任意两个相邻数据集时输出的最大差值：&lt;/p&gt;
 $$
 \Delta f = \max_{D_1 ,D_2 :|D_1 \triangle D_2 |=1} \|f(D_1) - f(D_2)\|_1
 $$&lt;p&gt;基于定义 3.4、3.5、3.6 和 3.7，我们得出以下引理：&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;引理 3.8（通过拉普拉斯机制实现 $$\varepsilon$$-差分隐私（Dwork, 2008；Abadi 等, 2016））&lt;/strong&gt;&lt;br&gt;
-为实现 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私，我们选择尺度参数 &lt;/p&gt;
-$$b$$&lt;p&gt; 为：&lt;/p&gt;
+$$\varepsilon$$$$b$$&lt;p&gt; 为：&lt;/p&gt;
 $$
 b = \frac{\Delta f}{\varepsilon}
-$$&lt;p&gt;在该 &lt;/p&gt;
-$$b$$&lt;p&gt; 的选择下，拉普拉斯机制 &lt;/p&gt;
-$$F$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;通过在模型梯度的一个参数上添加 &lt;/p&gt;
-$$\text{Lap}(0 | b)^d$$&lt;p&gt; 噪声，其中 &lt;/p&gt;
-$$b = \frac{\Delta f}{\varepsilon}$$&lt;p&gt;，我们可以实现 &lt;/p&gt;
-$$\varepsilon$$&lt;p&gt;-差分隐私。随后我们表明同态加密提供了更强的差分隐私保障。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定理 3.9（通过同态加密实现 0-差分隐私）&lt;/strong&gt;&lt;br&gt;
-对于任意两个相邻的数据集 &lt;/p&gt;
-$$D_1$$&lt;p&gt; 和 &lt;/p&gt;
-$$D_2$$&lt;p&gt;，由于 &lt;/p&gt;
-$$M(D)$$&lt;p&gt; 在计算上不可区分，因此：&lt;/p&gt;
+$$$$b$$$$F$$$$\varepsilon$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$\text{Lap}(0 | b)^d$$$$b = \frac{\Delta f}{\varepsilon}$$$$\varepsilon$$&lt;p&gt;-差分隐私。随后我们表明同态加密提供了更强的差分隐私保障。&lt;/p&gt;
+$$D_1$$$$D_2$$$$M(D)$$&lt;p&gt; 在计算上不可区分，因此：&lt;/p&gt;
 $$
 \frac{\Pr[M(D_1) \in O]}{\Pr[M(D_2) \in O]} \leq e^{\varepsilon}
-$$&lt;p&gt;若 &lt;/p&gt;
-$$O$$&lt;p&gt; 是加密的，则 &lt;/p&gt;
-$$\varepsilon = 0$$&lt;p&gt;。&lt;/p&gt;
+$$$$O$$$$\varepsilon = 0$$&lt;p&gt;。&lt;/p&gt;
 &lt;p&gt;换句话说，攻击者无法从加密的参数中获取敏感信息。&lt;/p&gt;
 &lt;h3 id=&#34;选择性参数选择的证明&#34;&gt;&lt;strong&gt;选择性参数选择的证明&lt;/strong&gt;
-&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;引理 3.10（顺序组合（Dwork, 2008））&lt;/strong&gt;&lt;br&gt;
-如果 &lt;/p&gt;
-$$M_1(x)$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon_1$$&lt;p&gt;-差分隐私，且 &lt;/p&gt;
-$$M_2(x)$$&lt;p&gt; 满足 &lt;/p&gt;
-$$\varepsilon_2$$&lt;p&gt;-差分隐私，那么发布两个结果的机制 &lt;/p&gt;
-$$G(x) = (M_1(x), M_2(x))$$&lt;p&gt; 满足 &lt;/p&gt;
-$$(\varepsilon_1 + \varepsilon_2)$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+&lt;/h3&gt;$$M_1(x)$$$$\varepsilon_1$$$$M_2(x)$$$$\varepsilon_2$$$$G(x) = (M_1(x), M_2(x))$$$$(\varepsilon_1 + \varepsilon_2)$$&lt;p&gt;-差分隐私。&lt;/p&gt;
 &lt;p&gt;基于引理 3.8、3.10 和定理 3.9，现在我们可以分析选择性参数加密的隐私性。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;定理 3.11（通过部分加密实现 $$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果我们对部分模型参数 &lt;/p&gt;
-$$S$$&lt;p&gt; 应用同态加密，并在剩余的模型参数 &lt;/p&gt;
-$$[N]/S$$&lt;p&gt; 上使用拉普拉斯机制，且噪声尺度固定为 &lt;/p&gt;
-$$b$$&lt;p&gt;，则对于每个参数 &lt;/p&gt;
-$$i \in [N]/S$$&lt;p&gt;，有 &lt;/p&gt;
-$$\varepsilon_i = \frac{\Delta f_i}{b}$$&lt;p&gt;。这样的部分加密满足 &lt;/p&gt;
-$$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;令 &lt;/p&gt;
-$$J = \sum_{i=1}^{N} \frac{\Delta f_i}{b}$$&lt;p&gt;，并假设 &lt;/p&gt;
-$$\Delta f \sim U(0,1)$$&lt;p&gt;，其中 &lt;/p&gt;
-$$U$$&lt;p&gt; 表示均匀分布，那么我们可以证明在所有参数上添加拉普拉斯噪声、随机参数加密以及选择性参数加密的隐私代价。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.12（通过在所有模型参数上添加拉普拉斯噪声实现 $$J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果在所有参数上添加尺度为 &lt;/p&gt;
-$$b$$&lt;p&gt; 的拉普拉斯噪声，则满足 &lt;/p&gt;
-$$J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.13（通过随机选择实现 $$(1 - p)J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果以概率 &lt;/p&gt;
-$$p$$&lt;p&gt; 随机选择模型参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
-$$(1 - p)J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;注解 3.14（通过敏感参数选择实现 $$(1 - p)^2 J$$-差分隐私）&lt;/strong&gt;&lt;br&gt;
-如果按比例 &lt;/p&gt;
-$$p$$&lt;p&gt; 选择最敏感的参数，并对剩余参数进行同态加密，则满足 &lt;/p&gt;
-$$(1 - p)^2 J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;关键观察&lt;/strong&gt;：选择性参数加密比随机选择和完全差分隐私在相同的隐私保护下所需的隐私预算减少了 &lt;/p&gt;
+$$S$$$$[N]/S$$$$b$$$$i \in [N]/S$$$$\varepsilon_i = \frac{\Delta f_i}{b}$$$$\sum_{i \in [N]/S} \frac{\Delta f_i}{b}$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$J = \sum_{i=1}^{N} \frac{\Delta f_i}{b}$$$$\Delta f \sim U(0,1)$$$$U$$&lt;p&gt; 表示均匀分布，那么我们可以证明在所有参数上添加拉普拉斯噪声、随机参数加密以及选择性参数加密的隐私代价。&lt;/p&gt;
+$$b$$$$J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$p$$$$(1 - p)J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
+$$p$$$$(1 - p)^2 J$$&lt;p&gt;-差分隐私。&lt;/p&gt;
 $$(1 - p)^2$$&lt;p&gt; 倍。&lt;/p&gt;
 &lt;h2 id=&#34;评估&#34;&gt;评估
 &lt;/h2&gt;&lt;p&gt;在本节中，我们关注评估结果，以展示我们提出的通用优化方案如何在实际应用中大幅减少这些开销，同时仍能有效抵御隐私攻击。此外，有关其他联邦学习系统方面的实验结果已包含在附录中。&lt;/p&gt;

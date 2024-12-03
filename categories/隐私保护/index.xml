@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>隐私保护 on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/</link>
+        <description>Recent content in 隐私保护 on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Mon, 18 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>基于秘密共享的隐私保护和可验证深度学习推理</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280.jpg" alt="Featured image of post 基于秘密共享的隐私保护和可验证深度学习推理" /&gt;&lt;h1 id=&#34;基于秘密共享的隐私保护和可验证深度学习推理&#34;&gt;基于秘密共享的隐私保护和可验证深度学习推理
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;摘要
+&lt;/h2&gt;&lt;p&gt;深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;引言
+&lt;/h2&gt;&lt;p&gt;近年来，深度神经网络（DNN）在多个领域取得了显著进展，例如目标检测【39,26】、目标分类【18,10】、机器翻译【6,7】和人脸识别【40,33】。随着数据集规模的不断扩大，深度学习的计算强度也随之成比例增长。尽管近期在GPU硬件、网络架构和算法方面取得了重要突破，对于资源受限的客户端而言，大规模DNN的训练和推理仍需耗费无法接受的长时间和巨大的计算资源。&lt;/p&gt;
+&lt;p&gt;幸运的是，许多DNN框架建议利用云服务来完成大量计算。然而，这些基于云的框架也带来了新的安全和隐私挑战。隐私泄露可能发生在训练阶段和推理阶段。针对训练阶段的隐私问题，已有许多隐私保护框架被提出【27,8,28,37,23,4,13,19】；而针对推理阶段的隐私问题，也有相关研究【46,12,16,32,42】。本文主要聚焦于与本研究最相关的推理阶段的隐私问题。&lt;/p&gt;
+&lt;p&gt;在深度学习的推理阶段，隐私泄露主要来源于输入数据和深度模型本身。具体而言，输入数据通常包含大量敏感信息，这些信息应对云服务器保持隐私，因为云服务器可能无法完全信任。此外，经过充分训练的模型参数也不应暴露给未经授权的方。由于经过充分训练的模型因其高昂的训练成本而被视为重要资产，因此保护模型参数隐私与保护输入数据隐私同等重要。&lt;/p&gt;
+&lt;p&gt;为了解决这些问题，Ocia等【24,25】和Chi等【5】提出将神经网络拆分为两部分：一部分在本地执行，另一部分在云端运行。Xu等【43】和Shen等【36】建议使用混淆神经网络【43】或数据变形【36】来在本地保护输入数据隐私。此外，为了提供更高的安全性，Zhang等【46】和Tian等【41】引入了同态加密（HE）【2】，以加密推理中部分计算。他们将所有DNN计算分为两类：线性计算和非线性计算。在线性计算在加密域中由云服务器完成。&lt;/p&gt;
+&lt;p&gt;尽管上述框架保护了输入隐私，但并未考虑模型参数的隐私。近年来，一些旨在同时保护输入和模型参数隐私的框架得到了研究。相关工作【12,9,15】利用同态加密（HE）对整个网络进行加密，并在加密域中执行推理。Juvekar等【16】提出了一种框架，结合了混淆电路（GC）【44】和HE，用于同时保护输入和模型的隐私，与框架【32,29,31,30】类似。此外，许多工作借助安全多方计算（SMPC）来实现输入和模型参数的保护。Ma等【22】提出了在两个非共谋服务器下的完全非交互隐私保护推理框架。Liu等【21】提出了MiniONN，用于将训练好的神经网络转换为高效的无泄漏神经网络。Shamsabadi等【35】研究了一种用于分类的私有DNN训练和推理框架，其中基于秘密共享方案【34】的私有推理在两个非共谋服务器之间进行。&lt;/p&gt;
+&lt;p&gt;此外，云服务器可能会出于经济利益返回无效结果。在许多基于深度学习的应用中，例如自动驾驶和金融风险评估，无效结果可能导致灾难性后果。因此，为用户提供一种机制验证云服务器返回结果的正确性显得尤为重要。同时，执行验证所引入的开销应尽可能低。&lt;/p&gt;
+&lt;p&gt;为此，我们提出了一种隐私保护且可验证的深度学习推理（PVDLI）框架，能够在低通信和计算成本下同时保护输入和模型参数的隐私。此外，用户还可以以较小的开销验证推理结果的正确性。受软件设计模式中的代理模式【11】启发，我们引入了N+1个节点，称为代理层，用于协作执行推理中涉及的安全计算。为安全地执行激活函数（非线性操作），我们在微调阶段用多项式近似激活函数【3】。通过在输入中注入标记的可验证数据，我们可以以高概率有效验证推理结果的正确性。借助秘密共享，注入的验证数据与正常数据无法区分，从而防止仅针对验证数据返回正确结果的潜在攻击。&lt;/p&gt;
+&lt;p&gt;理论分析表明，即使在参与者之间存在共谋的情况下，所提出的框架仍能够针对“诚实但好奇”的参与者提供输入和模型参数的可验证性和隐私性。此外，我们还提供了大量实验结果以验证所提出的PVDLI框架的优越性。&lt;/p&gt;
+&lt;p&gt;本文其余部分组织如下：第2节介绍相关基础知识。第3节给出了系统模型和设计目标。第4节阐述了所提出的子协议。第5节详细描述了PVDLI框架。第6节提供了基于设计的安全实验的可验证性分析和安全性分析。第7节展示了实验结果，最后在第8节进行总结。&lt;/p&gt;
+&lt;h2 id=&#34;预备知识&#34;&gt;预备知识
+&lt;/h2&gt;&lt;p&gt;深度学习旨在从高维数据中提取复杂特征，并利用这些特征构建一个能够将输入与输出关联起来的模型。通常，深度学习架构由多层网络构成，以便将低层次特征通过非线性函数计算为更抽象的特征。每一层的输出与前一层相连接。&lt;/p&gt;
+&lt;p&gt;在&lt;strong&gt;图1&lt;/strong&gt;中，我们展示了一个深度神经网络（DNN）推理的示例。通过执行一系列计算，DNN输出对数值（logit），随后通过对该对数值执行&lt;strong&gt;softmax&lt;/strong&gt;函数生成输入的类别预测概率。&lt;/p&gt;
+&lt;p&gt;在不失一般性的情况下，我们详细描述了VGG16模型【38】中一个典型块的组成。该块包含线性计算、批归一化、激活函数和池化操作。&lt;/p&gt;
+&lt;h4 id=&#34;线性计算&#34;&gt;&lt;strong&gt;线性计算&lt;/strong&gt;
+&lt;/h4&gt;$$x \in \mathbb{R}^n$$$$
+z = W x + b \tag{1}
+$$$$W$$$$b$$&lt;p&gt; 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。&lt;/p&gt;
+&lt;h4 id=&#34;批归一化&#34;&gt;&lt;strong&gt;批归一化&lt;/strong&gt;
+&lt;/h4&gt;$$
+u = c z + b \tag{2}
+$$$$c$$$$b$$&lt;p&gt; 是经过充分训练的固定参数。&lt;/p&gt;
+&lt;h4 id=&#34;激活函数&#34;&gt;&lt;strong&gt;激活函数&lt;/strong&gt;
+&lt;/h4&gt;$$
+t = \text{ReLU}(u) \tag{3}
+$$&lt;h4 id=&#34;池化&#34;&gt;&lt;strong&gt;池化&lt;/strong&gt;
+&lt;/h4&gt;$$\text{Avg}$$$$
+y = \text{Avg}(t) \tag{4}
+$$&lt;p&gt;随后，池化层的输出被送入下一层进行后续计算。最终，DNN 网络输出一个对数值（logit），并通过 &lt;strong&gt;softmax&lt;/strong&gt; 函数生成类别预测概率。&lt;/p&gt;
+&lt;h2 id=&#34;系统模型与设计目标&#34;&gt;系统模型与设计目标
+&lt;/h2&gt;&lt;p&gt;在本节中，我们详细介绍所提出框架的设计目标和系统模型。&lt;/p&gt;
+&lt;h3 id=&#34;设计目标&#34;&gt;设计目标
+&lt;/h3&gt;&lt;p&gt;我们提出了一个隐私保护且可验证的深度学习推理框架，涉及三个实体：&lt;strong&gt;模型所有者（O）&lt;/strong&gt;、&lt;strong&gt;用户（U）&lt;/strong&gt; 和 &lt;strong&gt;N+1 个节点&lt;/strong&gt;（称为代理层），代理层位于用户与模型所有者之间。一般来说，所提出的 PVDLI 框架面临的安全威胁主要来自代理层的行为。假设框架在**“诚实但好奇”**的设置下运行，这意味着攻击者会遵循框架规范，但可能对输入数据和模型参数产生兴趣。此外，从可验证性的角度来看，代理层中的某些节点可能会偷懒，即生成随机或错误结果以节省计算资源。&lt;/p&gt;
+&lt;p&gt;为了实现框架的隐私保护和可验证性，我们确定了以下四个设计目标：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;隐私&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的输入数据必须对代理层保密。&lt;/li&gt;
+&lt;li&gt;模型的参数不应被代理层泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;效率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的计算复杂度应显著低于直接进行完整推理计算的复杂度。&lt;/li&gt;
+&lt;li&gt;各参与方之间的通信成本应尽可能降低。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;可验证性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户必须能够成功验证推理结果的正确性。作弊的代理层生成的错误结果不能以非可忽略的概率通过验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;准确性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模型推理的准确性应接近于在单一服务器上执行深度学习推理时的准确性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;系统模型&#34;&gt;系统模型
+&lt;/h3&gt;$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt; 作为代理层，其灵感来源于&lt;strong&gt;代理模式&lt;/strong&gt;【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。&lt;/p&gt;
+&lt;p&gt;框架的伪代码见&lt;strong&gt;算法1&lt;/strong&gt;。具体而言：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$F$$$$H = \{h_1, h_2, \dots, h_M\}$$$$M$$&lt;p&gt; 是网络中的总参数数量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$x$$$$F$$&lt;p&gt; 中进行推理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代理层（E）&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;辅助节点（$$E_0$$）&lt;/strong&gt;&lt;br&gt;
+负责与各计算节点之间的通信，收集和分发推理过程中涉及的临时结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt;&lt;br&gt;
+负责执行深度神经网络（DNN）的推理计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在推理开始之前，模型所有者（O）会与用户（U）协商选择一个由 &lt;strong&gt;1 个辅助节点（$$E_0$$）&lt;/strong&gt; 和 &lt;strong&gt;N 个计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt; 组成的代理层（E）。&lt;/p&gt;
+&lt;h3 id=&#34;算法-1-执行-pvdli-的步骤&#34;&gt;算法 1: 执行 PVDLI 的步骤
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全参数 $$k$$&lt;/li&gt;
+&lt;li&gt;输入数据 $$x \in \mathbb{Z}_p^n$$&lt;/li&gt;
+&lt;li&gt;深度学习模型 $$F$$&lt;/li&gt;
+&lt;li&gt;计算节点数量 $$N$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;推理结果 $$y$$ 或错误标志 $$\perp$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;模型所有者&lt;/strong&gt; $$O$$ 和 &lt;strong&gt;用户&lt;/strong&gt; $$U$$ 选择一个由 $$N+1$$ 个节点组成的代理层 $$E = \{E_0, E_1, \dots, E_N\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 生成一个可验证数据集 $$D$$。&lt;/li&gt;
+&lt;li&gt;模型所有者 $$O$$ 通过多项式近似获取近似模型 $$F$$，然后将模型参数 $$H$$ 分成 $$N$$ 份：&lt;br&gt;
+$$H^{(1)}, H^{(2)}, \dots, H^{(N)} \gets \text{Split}(H, k, N)$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 将可验证数据 $$\{X, V, r_v\}$$ 插入到输入数据中：&lt;br&gt;
+$$\{X, V, r_v\} \gets \text{Insert}(x, D)$$。&lt;/li&gt;
+&lt;li&gt;用户将混合数据 $$X$$ 分成 $$N$$ 份：&lt;br&gt;
+$$X^{(1)}, X^{(2)}, \dots, X^{(N)} \gets \text{Split}(X, k, N)$$。&lt;/li&gt;
+&lt;li&gt;代理层执行一系列深度学习推理计算，得到 logits：&lt;br&gt;
+$$L^{(1)}, L^{(2)}, \dots, L^{(N)} \gets \{f(X^{(1)}, H^{(1)}), \dots, f(X^{(N)}, H^{(N)})\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 聚合 logits：&lt;br&gt;
+$$R \gets \text{Aggregation}(L^{(1)}, L^{(2)}, \dots, L^{(N)})$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 提取结果：&lt;br&gt;
+$$y = R_{r_v}$$ （推理结果），&lt;br&gt;
+$$R&#39; = \{R_i \mid i \in \{1, 2, \dots, N\} \setminus r_v\}$$ （可验证结果）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如果&lt;/strong&gt;可验证结果 $$R&#39;$$ 满足 $$R&#39; = V$$：
+&lt;ul&gt;
+&lt;li&gt;返回 $$y$$ 作为输入数据 $$x$$ 的推理结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;否则：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;返回错误标志 $$\perp$$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结束。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+$$O$$$$F$$$$H$$$$N$$&lt;p&gt; 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。&lt;/p&gt;
+$$U$$$$x$$$$X$$$$U$$$$X$$$$N$$&lt;p&gt; 份，并分发到代理层以保护输入隐私。&lt;/p&gt;
+$$H^{(i)}$$$$X^{(i)}$$$$E_i$$$$L^{(i)}$$$$U$$$$U$$$$R$$$$U$$$$U$$$$x$$$$y$$&lt;p&gt;；否则，拒绝结果并输出错误。&lt;/p&gt;
+&lt;h3 id=&#34;提出的-pvdli-框架包含以下六个关键模块&#34;&gt;提出的 PVDLI 框架包含以下六个关键模块：
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+$$O$$$$U$$$$N+1$$$$E = \{E_0, E_1, \dots, E_N\}$$$$U$$$$D$$&lt;p&gt;，用于后续验证。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$O$$$$F$$$$k$$$$N$$&lt;p&gt; 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$k$$$$U$$$$D$$$$V$$$$r_v$$$$x$$$$X$$$$X$$$$N$$$$X^{(i)}$$$$E_i$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$X^{(i)}$$$$H^{(i)}$$$$E_i$$$$1 \leq i \leq N$$$$E_i$$$$L^{(i)}$$$$U$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$L^{(1)}, \dots, L^{(N)}$$$$U$$$$X$$$$F$$$$R$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$R$$$$r_v$$$$U$$$$V$$$$x$$$$y$$$$\perp$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;基于秘密共享的安全子协议&#34;&gt;基于秘密共享的安全子协议
+&lt;/h2&gt;&lt;p&gt;本质上，深度学习推理由一系列数学操作完成。在我们提出的框架中，为了避免输入数据和模型参数的泄露，所有操作必须以隐私保护的方式进行。基于秘密共享方案，我们设计并实现了三个安全计算子协议：安全加法协议、安全除法协议和安全矩阵乘法协议。&lt;/p&gt;
+&lt;h4 id=&#34;安全加法协议secadd&#34;&gt;&lt;strong&gt;安全加法协议（SecAdd）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$&lt;p&gt;。在执行过程中，不会交换任何中间值。&lt;/p&gt;
+$$E_i$$$$A$$$$B$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$C^{(i)}$$$$E_0$$&lt;p&gt; 不参与计算。&lt;/p&gt;
+&lt;h4 id=&#34;安全除法协议secdiv&#34;&gt;&lt;strong&gt;安全除法协议（SecDiv）：&lt;/strong&gt;
+&lt;/h4&gt;$$k \in \mathbb{Z}_p$$$$A \in \mathbb{Z}_p^{u \times n}$$$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$A$$$$A^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$k$$$$C^{(i)}$$&lt;p&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;安全矩阵乘法协议secmul&#34;&gt;&lt;strong&gt;安全矩阵乘法协议（SecMul）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$&lt;p&gt;。&lt;/p&gt;
+$$E_0$$&lt;p&gt;。辅助节点仅与计算节点通信，用于收集和分发乘法过程中的临时结果。&lt;/p&gt;
+$$E_i$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$A$$$$B$$$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$$$O = P \cdot Q$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E_0$$&lt;p&gt;）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。&lt;/p&gt;
+&lt;h3 id=&#34;安全矩阵乘法过程&#34;&gt;安全矩阵乘法过程
+&lt;/h3&gt;&lt;p&gt;如图 3 所示，该协议包含以下四个部分：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050.png&#34;
+	width=&#34;1266&#34;
+	height=&#34;704&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu17449839447597289103.png 480w, https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu8223726548956333695.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241117192123050&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;431px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;生成辅助随机矩阵份额-genaux&#34;&gt;&lt;strong&gt;生成辅助随机矩阵份额 (GenAux):&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给定安全参数 $$k$$，代理层协商选择辅助随机矩阵的份额 $$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$，其中 $$P^{(i)}, Q^{(i)}, O^{(i)}$$ 表示矩阵 $$P \in \mathbb{Z}_p^{u \times n}$$、$$Q \in \mathbb{Z}_p^{n \times v}$$ 和 $$O \in \mathbb{Z}_p^{u \times v}$$ 的第 $$i$$ 个份额，且 $$O = P \cdot Q$$。代理层的计算节点 $$E_i$$ 只能拥有对应的份额 $$P^{(i)}, Q^{(i)}, O^{(i)}$$，其中 $$1 \leq i \leq N$$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;对输入矩阵份额进行掩码处理-mask&#34;&gt;&lt;strong&gt;对输入矩阵份额进行掩码处理 (Mask):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$
+E^{(i)} = A^{(i)} - P^{(i)} \quad;\quad F^{(i)} = B^{(i)} - Q^{(i)}  
+$$$$E_i$$$$E^{(i)}, F^{(i)}$$$$E_0$$$$1 \leq i \leq N$$&lt;p&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;重构并分割结果-split&#34;&gt;&lt;strong&gt;重构并分割结果 (Split):&lt;/strong&gt;
+&lt;/h4&gt;$$E_0$$$$N$$$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$$$E$$$$F$$$$
+E = \sum_{i=1}^{N} E^{(i)} \quad;\quad F = \sum_{i=1}^{N} F^{(i)} \quad;\quad G = E \cdot F  
+$$$$E_0$$$$G$$$$\{G^{(i)}\}_{i=1}^{N}$$$$E_0$$$$E, F, G^{(i)}$$$$E_i$$$$1 \leq i \leq N$$&lt;p&gt;）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;计算最终份额-cal&#34;&gt;&lt;strong&gt;计算最终份额 (Cal):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$E, F, G^{(i)}$$$$
+S^{(i)} = E \cdot Q^{(i)} \quad;\quad T^{(i)} = P^{(i)} \cdot F  
+$$$$E_i$$$$
+C^{(i)} = G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}  
+$$$$
+C = \sum_{i=1}^{N} C^{(i)} = A \cdot B  
+$$&lt;hr&gt;
+&lt;h4 id=&#34;安全矩阵乘法的正确性证明&#34;&gt;&lt;strong&gt;安全矩阵乘法的正确性证明：&lt;/strong&gt;
+&lt;/h4&gt;$$
+C = \sum_{i=1}^{N} C^{(i)} = \sum_{i=1}^{N} (G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}) = G + S + T + O  
+$$$$
+= (E \cdot F) + (E \cdot Q) + (P \cdot F) + (P \cdot Q)  
+$$$$
+= (A - P) \cdot (B - Q) + (A - P) \cdot Q + P \cdot (B - Q) + P \cdot Q  
+$$$$
+= A \cdot B
+$$$$P, Q, O$$&lt;p&gt; 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。&lt;/p&gt;
+&lt;h2 id=&#34;提出的框架&#34;&gt;提出的框架
+&lt;/h2&gt;&lt;h3 id=&#34;initn--e-d&#34;&gt;Init（N） → （E; D)
+&lt;/h3&gt;&lt;p&gt;首先，模型所有者O与用户U协商，选择一个包含N + 1个节点的代理层，其中包括一个辅助节点E₀和N个计算节点E₁, &amp;hellip;, EN进行后续的协同计算。在这里，合理的假设是N ≥ 2，这是由于所采用的秘密共享方案提出的要求。需要注意的是，节点数量不会影响推理的准确性，因为所有节点只涉及安全子协议，这些协议已经被证明与原始计算等效。然而，节点数量确实会影响隐私保护的水平。具体来说，节点数量越多，当节点发生串通时，隐私保护的级别越高。更多的安全性分析将在第6节中提供。
+接下来，为了提供可验证性，用户U生成一个可验证的数据集D = {d₁, &amp;hellip;, dL}。这里，可验证数据集可以离线生成并且可重复使用。每个数据项dᵢ的要求是，它的推理结果（标签）可以很容易地估计或获得。由于通过秘密共享方案可以很好地保护输入数据的隐私，从代理层的角度来看，所有输入数据都是随机值。因此，代理层无法区分可验证数据dᵢ和输入x。选择可验证数据dᵢ时有很多选择；它可以是标记的测试数据，甚至是可以轻松验证的虚拟数据（噪声或无意义的数据）。&lt;/p&gt;
+&lt;h3 id=&#34;deploymodelðf-k-nþ--h1--hm&#34;&gt;&lt;strong&gt;DeployModelðF; k; NÞ → H(1), &amp;hellip;, H(M)&lt;/strong&gt;
+&lt;/h3&gt;$$f(x) = a_0 + a_1x + ... + a_d x^d$$&lt;p&gt;&lt;br&gt;
+其中，所有的系数$a_0, a_1, &amp;hellip;, a_d$在多项式中都是可训练的。替代后，模型所有者O继续通过少量迭代微调模型F，以获得新的近似模型F。令$H = {h_1, &amp;hellip;, h_M}$表示深度学习模型F中所有权重变量的平坦化向量，其中M表示模型中的参数数量。为了保护模型参数$H$的隐私，我们提出使用一个简单而有效的N-out-of-N加法秘密共享方案[34]。具体来说，模型所有者O将模型参数$H$分割成N个份额，并将份额$H(i)$分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。通过这种方式，代理层中的每个计算节点只拥有模型参数$H$的一个份额。具体地，生成参数份额的过程包括以下两个部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Setup 1k → Ko&lt;/strong&gt;: 给定安全参数k，模型所有者O从指定的密钥空间${0, 1}^k$生成一个秘密密钥Ko。加密算法的资源需求和攻击者破解安全的概率可以通过安全参数k来表达。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$Alg(H; ro; N) → H(1), ..., H(N) \in \mathbb{Z}_M^N$$&lt;p&gt;&lt;br&gt;
+最后，模型所有者O将份额$H(i)$分别分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;gensplitdataðx-d-k-nþ--x1--xn-v-rv&#34;&gt;GenSplitDataðx; D; k; NÞ → X(1), &amp;hellip;, X(N); V; rv
+&lt;/h3&gt;&lt;p&gt;在给定安全参数k和可验证数据集D的情况下，用户U将可验证数据和输入数据混合生成混合数据X。然后，用户U将混合数据X分割成N个份额，并将它们分发到代理层。具体来说，为了提供可验证性，用户U从数据集D中随机选择J个可验证数据$I_1, &amp;hellip;, I_J \in \mathbb{R}^{n \times J}$。这里，令$V = {V_1, &amp;hellip;, V_J}$表示这J个可验证数据的标签。接着，用户U随机选择一个索引$rv$，其中$1 \leq rv \leq J$，并将输入数据$x$与可验证数据$I$混合，构造混合数据$X = {I_1, &amp;hellip;, I_{rv-1}, x, I_{rv}, &amp;hellip;, I_J} \in \mathbb{R}^{n \times (J+1)}$。&lt;br&gt;
+类似地，从所有长度为k的比特串中随机选择一个秘密密钥$K_u$，然后用户U使用[8]中的份额生成算法将混合数据X分割成N个份额$X(1), &amp;hellip;, X(N)$。此外，用户U将份额$X(i)$分别分发给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。在这种情况下，代理层中的每个计算节点只访问混合数据X的一个份额，这意味着可以提供输入数据的隐私保护。由于混合数据被分割成多个份额，且可验证数据与输入数据可以完美混合，暗示着攻击者无法将它们分开。&lt;/p&gt;
+&lt;h3 id=&#34;compute-h1--hn-x1--xn--l1--ln&#34;&gt;&lt;strong&gt;Compute H(1), &amp;hellip;, H(N); X(1), &amp;hellip;, X(N) → L(1), &amp;hellip;, L(N)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在本模块中，代理层使用输入和模型参数的份额安全地执行深度学习推理。基于秘密共享方案，我们提出了三种安全子协议：SecAdd、SecDiv和SecMul，其详细信息已在第4节中提供。如第2节所述，深度学习推理中的操作包括线性计算、批量归一化、激活和池化。所有这些计算都可以通过利用提出的子协议来安全执行。为了不失一般性，我们考虑VGG16中的一个典型模块[38]，该模块由线性计算、批量归一化、激活和平均池化组成，如图4所示。为了提供可验证性，我们将一批数据X（包括原始输入x和可验证数据I）输入网络进行推理。此模块的计算可以表示为：&lt;/p&gt;
+$$ Z = W \cdot X + B $$$$ U = c \cdot Z + b $$$$ T = a_1 \cdot U + \dots + a_d \cdot U_d $$$$ Y = \text{Avg}(T) $$&lt;p&gt;其中，Avg表示平均操作，c和b是经过训练并固定的。随后，我们将详细介绍如何在代理层中安全地执行这些计算。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线性计算&lt;/strong&gt;&lt;br&gt;
+回顾一下，每个计算节点$E_i$拥有模型参数的份额$H(i)$和输入数据的份额$X(i)$，它们包含输入数据$x$和可验证数据$I$的份额。首先，计算节点$E_i$提取并重新格式化$H(i)$，以获得权重矩阵$W(i) \in \mathbb{Z}_u^{n \times p}$和偏置$b(i) \in \mathbb{Z}_u^p$。这里，由于输入数据$X(i) \in \mathbb{Z}_n^{(J+1) \times p}$（而不是原始输入$x \in \mathbb{Z}_n^p$）的变化，偏置$b(i) \in \mathbb{Z}_u^p$需要扩展为矩阵$B(i) \in \mathbb{Z}_u^{(J+1) \times p}$以进行批量推理，其中$B(i) = \left[ b(i) , \cdots , b(i) \right]$。然后，为了执行线性计算$Z = W \cdot X + B$，代理层仅需执行安全矩阵乘法和安全加法，表示为：&lt;/p&gt;
+$$ \text{SecMul}(W(i), X(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), B(i)) \rightarrow Z(1), \dots, Z(N) $$&lt;p&gt;输出$Z(1), \dots, Z(N)$是$Z = W \cdot X + B$的份额。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;批量归一化&lt;/strong&gt;&lt;br&gt;
+在进行线性计算后，批量归一化被应用于解决内部协变量偏移。由于批量归一化中的参数在推理阶段是固定的，因此批量归一化操作可以作为线性计算（如式（14）所述）进行。类似地，代理层中的每个计算节点$E_i$可以从$H(i)$中提取并重新格式化，以获得份额$c(i)$和$b(i)$，其中$1 \leq i \leq N$。然后，代理层执行安全矩阵乘法和安全加法来完成批量归一化，表示为：&lt;/p&gt;
+$$ \text{SecMul}(c(i), Z(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), b(i)) \rightarrow U(1), \dots, U(N) $$&lt;p&gt;&lt;strong&gt;激活&lt;/strong&gt;&lt;br&gt;
+如第5.2节所述，我们已经用近似多项式替代了激活函数[3]。通过这种方式，非线性操作被转化为线性计算。由于它与上述线性计算类似，我们只提供主要过程。具体来说，在式（16）中，系数$a_1, a_2, \dots, a_d$从$H(i)$中提取。逐元素的指数运算可以通过多个乘法来安全实现。因此，激活的计算可以通过安全地执行一系列安全的乘法和加法来通过多项式进行逼近。最终，每个计算节点$E_i$输出一个份额$T(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;平均池化&lt;/strong&gt;&lt;br&gt;
+平均池化的主要过程是对矩形区域中的值进行加和并计算平均值。它由加法和除法与池大小组成。因此，我们也可以利用安全加法和安全除法来完成平均池化。最终，深度学习推理中的所有计算可以逐层执行。最后，在最后一层，每个计算节点$E_i$输出一个logit值份额，表示为$L(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;h3 id=&#34;聚合&#34;&gt;&lt;strong&gt;聚合&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;当用户U接收到代理层的所有logit值份额$L(1), &amp;hellip;, L(N)$时，用户U将它们聚合以获得深度模型的logit值。&lt;/p&gt;
+$$ L = \frac{1}{N} \sum_{i=1}^{N} L(i) $$&lt;p&gt;最终推理结果$R$取决于深度学习任务的类型。如果深度学习模型是预测任务，则$R = L$。如果是分类任务，则$R = \text{softmax}(L)$。&lt;/p&gt;
+&lt;h3 id=&#34;验证&#34;&gt;&lt;strong&gt;验证&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在聚合所有份额以获得推理结果$R$后，用户$U$检查推理的正确性。具体来说，用户$U$在输入密钥$rv$后，提取第$rv$列向量$y = R_{rv}$。令$R$表示矩阵$R$的其余部分。然后，用户$U$将结果$R$与标签$V$进行比较。如果相同，用户$U$接受$y$作为输入$x$的推理结果。否则，用户$U$拒绝并输出错误$?$。需要注意的是，如果没有提供输入隐私，这意味着代理层可以轻松地区分可验证数据和输入数据$x$，则代理层可以输出可验证数据的正确结果和输入数据的错误结果，从而破坏可验证性。因此，验证的成功与输入隐私的保护密切相关。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

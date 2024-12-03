@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>密码学 on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/</link>
+        <description>Recent content in 密码学 on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Mon, 02 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>密码学部分问题</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/wave-7726187_1280.jpg" alt="Featured image of post 密码学部分问题" /&gt;&lt;h2 id=&#34;hadamard-product是什么&#34;&gt;Hadamard product是什么？
+&lt;/h2&gt;&lt;p&gt;Hadamard product（哈达玛积），也称为元素乘积，是指两个相同维度的矩阵或向量之间的逐元素相乘。与矩阵乘法不同，Hadamard积不涉及矩阵的行列运算，而是直接对对应位置的元素进行相乘。&lt;/p&gt;
+$$
+C = A \circ B =  \begin{bmatrix} a_{11} \cdot b_{11} &amp; a_{12} \cdot b_{12} &amp; \dots &amp; a_{1n} \cdot b_{1n} \\ a_{21} \cdot b_{21} &amp; a_{22} \cdot b_{22} &amp; \dots &amp; a_{2n} \cdot b_{2n} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ a_{m1} \cdot b_{m1} &amp; a_{m2} \cdot b_{m2} &amp; \dots &amp; a_{mn} \cdot b_{mn} \end{bmatrix}
+$$&lt;p&gt;
+Hadamard积常用于各种机器学习和深度学习的操作，如神经网络中的门控机制（例如LSTM和GRU），以及图像处理中的卷积操作等。&lt;/p&gt;
+&lt;p&gt;注意，Hadamard积仅适用于两个维度相同的矩阵或向量。&lt;/p&gt;
+&lt;h2 id=&#34;什么是秘密共享&#34;&gt;什么是秘密共享?
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;秘密共享&lt;/strong&gt;（Secret Sharing）是一种密码学技术，用于将一个秘密（如密钥、密码或敏感数据）分割成多个部分，并将这些部分分发给不同的参与者。只有在一定数量的参与者合作时，才能恢复原始的秘密。通过这种方式，秘密共享可以增强安全性，因为即使某些参与者的部分被泄露或丢失，其他部分仍然无法恢复完整的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;主要类型&#34;&gt;主要类型
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;阈值秘密共享（Threshold Secret Sharing）&lt;/strong&gt; 这种方法要求至少$t$ 个参与者合作才能恢复秘密。每个参与者得到一个秘密份额，只有在$t$ 个或更多参与者联合时，才能重构出原始秘密。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Shamir’s Secret Sharing&lt;/p&gt;
+&lt;p&gt;：这是最著名的阈值秘密共享方案，由Adi Shamir在1979年提出。其核心思想是通过多项式插值来实现秘密的分割和恢复。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是一个 ss，可以选择一个 $(t−1)$ 次多项式 $f(x)$，其中常数项 $f(0) = s$ 即为秘密。&lt;/li&gt;
+&lt;li&gt;然后根据多项式生成 $n$ 个不同的点分发给 $n$ 个参与者。&lt;/li&gt;
+&lt;li&gt;任何 $t$ 个参与者可以使用拉格朗日插值法恢复原始秘密。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对称秘密共享&lt;/strong&gt; 在这种方法中，每个参与者获得一个共享密钥，这些密钥通过某种方式结合来恢复原始秘密。常见的算法包括加密技术、异或操作等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加密的秘密共享&lt;/strong&gt; 这种方法利用加密技术对秘密进行分割，确保即使单个参与者泄露了他们的份额，其他人也无法访问秘密。例如，通过同态加密（homomorphic encryption）或基于门限加密的秘密共享方案。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用场景&#34;&gt;应用场景
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;：通过将密钥分散到多个地点或参与者之间，提高密钥管理的安全性。例如，如果加密系统的密钥被分为多个部分，只有通过参与者之间的协作才能解密数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;防止单点故障&lt;/strong&gt;：秘密共享技术可以防止某个单一参与者或设备故障导致秘密丢失。通过适当选择阈值，可以确保即使部分参与者不可用，剩余的参与者仍能恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分布式计算&lt;/strong&gt;：在分布式环境中，多个节点可以合作进行秘密的计算或解密，而不需要暴露各自的数据。例如，在加密计算或保密计算（Secure Multi-Party Computation, MPC）中，多个计算节点共同参与计算秘密，但每个节点仅持有部分数据，保护了每个节点的隐私。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;区块链与去中心化系统&lt;/strong&gt;：在去中心化系统中，秘密共享可用于增强安全性和隐私保护。例如，在某些区块链协议中，多个节点可以共同持有私钥的份额，用于签名交易或执行智能合约，只有满足一定数量的节点签名才能完成操作。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;优点和缺点&#34;&gt;优点和缺点
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;增强安全性&lt;/strong&gt;：通过分割秘密，即使某些份额泄露，其他人也无法恢复原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容错性&lt;/strong&gt;：可以容忍一定数量的参与者失效或泄露信息，只要满足阈值条件，秘密仍能恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灵活性&lt;/strong&gt;：可以根据需求调整参与者数量和阈值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参与者管理复杂&lt;/strong&gt;：需要管理和协调多个参与者。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算成本&lt;/strong&gt;：某些秘密共享方案，如Shamir的方案，可能需要额外的计算来分割和恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;通信开销&lt;/strong&gt;：分发和恢复秘密可能需要较大的通信开销，尤其是在参与者数量多时。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;总的来说，秘密共享技术是提升系统安全性和隐私保护的重要工具，广泛应用于多种安全和加密场景中。&lt;/p&gt;
+&lt;h2 id=&#34;任何-ttt-个参与者可以使用拉格朗日插值法恢复原始秘密这是怎么做到的&#34;&gt;任何 ttt 个参与者可以使用拉格朗日插值法恢复原始秘密,这是怎么做到的?
+&lt;/h2&gt;&lt;p&gt;要理解如何通过&lt;strong&gt;拉格朗日插值法&lt;/strong&gt;来恢复原始秘密，首先我们需要了解&lt;strong&gt;Shamir的秘密共享&lt;/strong&gt;的工作原理。简单来说，Shamir的秘密共享方案通过将秘密转换为一个多项式的常数项，并通过给定的点分发给参与者。在恢复秘密时，tt 个参与者可以使用这些点和拉格朗日插值法来重建原始多项式，从而恢复秘密。&lt;/p&gt;
+&lt;h3 id=&#34;shamir的秘密共享原理&#34;&gt;Shamir的秘密共享原理
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;构造多项式&lt;/strong&gt;：首先，选择一个秘密 ss 作为常数项，然后构造一个 $(t-1)$ 次的多项式 $f(x)$，使得：&lt;/p&gt;
+&lt;p&gt;$f(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{t-1} x^{t-1}$&lt;/p&gt;
+&lt;p&gt;其中，$f(0) = a_0 = s$ 为秘密。其余的系数 $a_1, a_2, \dots, a_{t-1}$ 是随机选择的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成份额&lt;/strong&gt;：然后，选择 $n$ 个不同的 xx 值（例如$x_1, x_2, \dots, x_n$），并计算对应的 $f(x_i)$ 值。每个参与者将收到一对$(x_i, f(x_i))$，即他们的“份额”。这些份额分别分配给 $n$ 个参与者。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重建秘密&lt;/strong&gt;：任何 $t$ 个份额就足以恢复原始秘密。通过拉格朗日插值法，可以使用这 $t$ 个点（$x_i, f(x_i)$）来求解多项式的常数项 $f(0)$，从而恢复秘密。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;拉格朗日插值法&#34;&gt;拉格朗日插值法
+&lt;/h3&gt;&lt;p&gt;拉格朗日插值法是一个用于构造多项式的数学方法，给定一组数据点$(x_1, y_1), (x_2, y_2), \dots, (x_t, y_t)$，我们可以构造一个唯一的多项式，使得它通过所有这些点。&lt;/p&gt;
+&lt;p&gt;在Shamir的秘密共享中，我们有$t $个点 ($(x_i, f(x_i)$)，要恢复秘密 $f(0)$ 即常数项，我们可以通过以下拉格朗日插值公式来计算：&lt;/p&gt;
+&lt;p&gt;$f(0) = \sum_{i=1}^{t} f(x_i) \cdot \ell_i(0)$&lt;/p&gt;
+&lt;p&gt;其中，$\ell_i(x)$ 是第 $i$ 个拉格朗日基多项式，定义如下：&lt;/p&gt;
+&lt;p&gt;ℓ$\ell_i(x) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{x - x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;为了恢复 $f(0)$，我们将 $x = 0$ 代入上式：&lt;/p&gt;
+&lt;p&gt;$\ell_i(0) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{0 - x_j}{x_i - x_j} = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{-x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;然后，通过上面得到的每个 $\ell_i(0)$ 值，乘上对应的 $f(x_i)$，并将所有结果求和，就能得到 $f(0)$，即原始的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;例子&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有三个参与者（$t = 3$），他们分别获得了以下份额：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$(x_1 = 1, f(x_1) = 5)$&lt;/li&gt;
+&lt;li&gt;$(x_2 = 2, f(x_2) = 8)$&lt;/li&gt;
+&lt;li&gt;$(x_3 = 3, f(x_3) = 11)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们要恢复秘密 $f(0)$，即常数项。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;计算每个 $\ell_i(0)$：&lt;/p&gt;
+&lt;p&gt;$\ell_1(0) = \frac{(0 - 2)(0 - 3)}{(1 - 2)(1 - 3)} = \frac{6}{2} = 3$&lt;/p&gt;
+&lt;p&gt;$\ell_2(0) = \frac{(0 - 1)(0 - 3)}{(2 - 1)(2 - 3)} = \frac{3}{-1} = -3$&lt;/p&gt;
+&lt;p&gt;$\ell_3(0) = \frac{(0 - 1)(0 - 2)}{(3 - 1)(3 - 2)} = \frac{2}{2} = 1$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;计算秘密：&lt;/p&gt;
+&lt;p&gt;$f(0) = f(x_1) \cdot \ell_1(0) + f(x_2) \cdot \ell_2(0) + f(x_3) \cdot \ell_3(0)$&lt;/p&gt;
+&lt;p&gt;$f(0) = 5 \cdot 3 + 8 \cdot (-3) + 11 \cdot 1 = 15 - 24 + 11 = 2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，原始的秘密 $f(0) = 2$。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;通过拉格朗日插值法，$t$ 个参与者的份额可以恢复原始的秘密。该过程利用了每个参与者的份额和拉格朗日基多项式的计算，以重建出秘密所对应的多项式，并提取出常数项。&lt;/p&gt;
+&lt;h2 id=&#34;2-out-of-2-加法秘密共享方案是什么&#34;&gt;2-out-of-2 加法秘密共享方案是什么？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;是一种非常基础的秘密共享方案，专门用于将一个秘密分配给两个参与者，并且要求两个参与者必须共同合作才能恢复秘密。在这种方案中，秘密通过加法分割为两个部分，每个参与者都持有一个秘密份额，只有两个参与者联合时才能恢复原始秘密。&lt;/p&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;工作原理
+&lt;/h3&gt;&lt;p&gt;在&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;方案中，假设原始秘密为 $s$，我们将这个秘密分割成两个部分，分别给两个参与者。我们使用以下方法进行分割：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是 $s$，我们随机选择一个数 rr 作为第一个份额，计算第二个份额 $s&amp;rsquo; = s - r$。&lt;/li&gt;
+&lt;li&gt;然后，将这两个份额分别分配给两个参与者：
+&lt;ul&gt;
+&lt;li&gt;参与者1收到份额 $r$&lt;/li&gt;
+&lt;li&gt;参与者2收到份额 $s&amp;rsquo; = s - r$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;恢复秘密&#34;&gt;恢复秘密
+&lt;/h3&gt;&lt;p&gt;为了恢复秘密 $s$，两个参与者需要将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = r + (s - r)$&lt;/p&gt;
+&lt;p&gt;通过这种方式，两个参与者的份额加在一起，恢复出原始的秘密 $s$。&lt;/p&gt;
+&lt;h3 id=&#34;特点&#34;&gt;特点
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;加法操作&lt;/strong&gt;：在这个方案中，秘密的分割和恢复都基于加法。每个参与者只知道一个加法部分，只有通过相加才能恢复出原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完全安全&lt;/strong&gt;：如果只有一个参与者知道自己的份额，那么他无法单独恢复秘密，因为他只有一个部分，缺少了另一个部分的信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;简单实现&lt;/strong&gt;：这是一个非常简单和高效的秘密共享方案，适用于只有两个参与者的场景。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;例子-1&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有一个秘密 $s = 100$，我们将其分配给两个参与者。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;随机选择一个份额 $r = 30$，那么第二个份额 $s&amp;rsquo; = 100 - 30 = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参与者1得到份额$r = 30$，参与者2得到份额 $s&amp;rsquo; = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为了恢复秘密，参与者1和参与者2将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = 30 + 70 = 100$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用&#34;&gt;应用
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;可以应用于很多场景，尤其是需要确保两个参与者必须合作才能访问某个秘密的情况。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;安全存储密钥&lt;/strong&gt;：将加密密钥分成两个部分，分别存储在不同的地点，只有两个存储位置都可访问时，密钥才可以恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;两方合谋&lt;/strong&gt;：在某些加密协议中，两个参与者需要共同合作解密数据，单独任何一个参与者都无法获得数据的任何信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-1&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;通过将秘密分割成两个部分，确保只有在两个参与者合作的情况下才能恢复原始秘密。这种方案简单易实现，但仅适用于参与者数量为2的场景。如果需要更高的容错能力（比如 t-out-of-n 的方案），则需要使用更复杂的算法，如Shamir的秘密共享。&lt;/p&gt;
+&lt;h2 id=&#34;oblivious-transfer是什么&#34;&gt;oblivious transfer是什么？
+&lt;/h2&gt;&lt;p&gt;**Oblivious Transfer（OT，盲传输）**是一种重要的加密协议，广泛应用于多方计算（Secure Multi-Party Computation, MPC）和隐私保护计算领域。其基本思想是在两方或多方之间进行信息传输时，保证发送方和接收方的隐私。特别地，&lt;strong&gt;Oblivious Transfer&lt;/strong&gt; 保护了发送方的信息不被泄露给接收方，而接收方也不会知道其他的消息，只有选择的信息才能被接收。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的基本概念&#34;&gt;Oblivious Transfer的基本概念
+&lt;/h3&gt;&lt;p&gt;在OT协议中，存在两个主要参与方：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方（Sender）&lt;/strong&gt;：拥有若干个消息，并希望将其中一个消息传递给接收方，但不希望接收方得知其他消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方（Receiver）&lt;/strong&gt;：接收方可以选择想要接收的消息，并且只会获得它所选择的消息，但发送方无法知道接收方选择了哪一个。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;有几种常见的&lt;strong&gt;Oblivious Transfer&lt;/strong&gt;类型，其中最常见的有以下两种：&lt;/p&gt;
+&lt;h3 id=&#34;1-1-out-of-2-oblivious-transfer-1-2-ot&#34;&gt;1. &lt;strong&gt;1-out-of-2 Oblivious Transfer (1-2 OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在1-out-of-2 OT协议中，发送方有两个消息 $m_0$ 和 $m_1$，接收方选择一个索引（例如 0 或 1），然后接收方获得选择的消息，而发送方并不知道接收方选择了哪个消息。&lt;/p&gt;
+&lt;h4 id=&#34;工作流程&#34;&gt;工作流程：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;发送方将两个消息 $m_0 $和 $m_1 $发送给接收方，但不直接告诉接收方哪个消息是哪个。&lt;/li&gt;
+&lt;li&gt;接收方选择一个索引（0 或 1），并且只获得对应索引的消息。接收方不会知道其他的消息内容。&lt;/li&gt;
+&lt;li&gt;发送方无法知道接收方选择了哪一个消息，接收方只能获得所选的消息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;安全性&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方隐私性&lt;/strong&gt;：发送方无法知道接收方选择了哪个消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方隐私性&lt;/strong&gt;：接收方无法知道未选择的消息，也无法从其它信息中推测出未选的消息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-k-out-of-n-oblivious-transfer-k-n-ot&#34;&gt;2. &lt;strong&gt;k-out-of-n Oblivious Transfer (k-n OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在k-out-of-n OT协议中，发送方有 n 个消息$m_1, m_2, &amp;hellip;, m_n$，接收方可以选择 k 个消息，并且获得这 k 个消息，但不透露选择的其他 n-k 个消息。接收方只会知道自己选择的 k 个消息，而发送方不会知道接收方选择了哪些消息。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的应用&#34;&gt;&lt;strong&gt;Oblivious Transfer的应用&lt;/strong&gt;
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安全多方计算（MPC）&lt;/strong&gt;：在多方计算中，OT协议用于保护各方的隐私，使得各方可以在不知道对方输入的情况下共同计算某个函数的结果。例如，在两个公司进行联合数据分析时，可以使用OT协议来确保各自的数据不被泄露。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;私密信息检索（Private Information Retrieval, PIR）&lt;/strong&gt;：PIR是指用户在不透露查询内容的情况下，从数据库中检索信息。OT协议可以用于构建PIR方案，确保查询者的隐私得到保护。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字货币和区块链&lt;/strong&gt;：OT协议也可以用于增强区块链系统中的隐私保护，尤其是在匿名交易中。它可以让交易双方在不暴露其具体信息的情况下，完成加密验证和交易。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加密货币钱包&lt;/strong&gt;：例如，在一些加密货币钱包中，OT协议可用于确保钱包私钥的安全转移，同时防止第三方在转移过程中获得不必要的敏感信息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;ot协议的实际构建&#34;&gt;&lt;strong&gt;OT协议的实际构建&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;OT协议可以通过不同的加密技术实现，常见的方式包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;公钥加密&lt;/strong&gt;：例如使用 RSA 加密或椭圆曲线加密来实现 OT 协议。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同态加密&lt;/strong&gt;：可以通过同态加密协议来构建OT协议，以便在加密状态下进行数据传输。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零知识证明&lt;/strong&gt;：通过零知识证明机制，保证消息传输过程中各方的信息不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-2&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;**Oblivious Transfer（盲传输）**是一种重要的加密协议，它保证了信息在传输过程中各方的隐私性。特别地，发送方和接收方都不会得知对方的敏感信息，只有接收方能够获得自己所选择的消息。这一协议被广泛应用于多方计算、私密信息检索、数字货币隐私保护等领域，是现代密码学和隐私保护技术的核心组件之一。&lt;/p&gt;
+&lt;h2 id=&#34;秘密共享中使用的-2l-模数是什么&#34;&gt;秘密共享中使用的 $2^l$ 模数是什么？
+&lt;/h2&gt;&lt;p&gt;在秘密共享（Secret Sharing）方案中，特别是在 Shamir 的秘密共享协议中，$2^l$ 模数通常指的是一个大素数或一个足够大的整数，用于确保秘密能够在模运算中适当地加密和解密。在这种情况下，$2^l$ 表示对一个长度为 $l$ 的二进制数据进行处理时所需要的模数。&lt;/p&gt;
+&lt;p&gt;具体来说，$l$ 是密钥或秘密的比特长度，因此 $2^l$ 是一个足够大的数，通常用于分割秘密的范围。例如，在 Shamir 的方案中，秘密通常被视为一个 $l$ 比特的数值，而将其分割成多个份额时，使用 $2^l$ 来确保数值保持在所需范围内。这也意味着，每个份额的大小由 $2^l$ 限定，从而保证了秘密的安全性和正确的恢复。&lt;/p&gt;
+&lt;p&gt;简而言之，$2^l$ 模数的使用帮助在加密和共享过程中处理大的整数，确保秘密在分发和恢复时不被泄露，同时也方便进行数学运算。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

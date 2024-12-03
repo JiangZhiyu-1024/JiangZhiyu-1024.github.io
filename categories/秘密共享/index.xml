@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>秘密共享 on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB/</link>
+        <description>Recent content in 秘密共享 on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Mon, 02 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>密码学部分问题</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</link>
+        <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%98/wave-7726187_1280.jpg" alt="Featured image of post 密码学部分问题" /&gt;&lt;h2 id=&#34;hadamard-product是什么&#34;&gt;Hadamard product是什么？
+&lt;/h2&gt;&lt;p&gt;Hadamard product（哈达玛积），也称为元素乘积，是指两个相同维度的矩阵或向量之间的逐元素相乘。与矩阵乘法不同，Hadamard积不涉及矩阵的行列运算，而是直接对对应位置的元素进行相乘。&lt;/p&gt;
+$$
+C = A \circ B =  \begin{bmatrix} a_{11} \cdot b_{11} &amp; a_{12} \cdot b_{12} &amp; \dots &amp; a_{1n} \cdot b_{1n} \\ a_{21} \cdot b_{21} &amp; a_{22} \cdot b_{22} &amp; \dots &amp; a_{2n} \cdot b_{2n} \\ \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\ a_{m1} \cdot b_{m1} &amp; a_{m2} \cdot b_{m2} &amp; \dots &amp; a_{mn} \cdot b_{mn} \end{bmatrix}
+$$&lt;p&gt;
+Hadamard积常用于各种机器学习和深度学习的操作，如神经网络中的门控机制（例如LSTM和GRU），以及图像处理中的卷积操作等。&lt;/p&gt;
+&lt;p&gt;注意，Hadamard积仅适用于两个维度相同的矩阵或向量。&lt;/p&gt;
+&lt;h2 id=&#34;什么是秘密共享&#34;&gt;什么是秘密共享?
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;秘密共享&lt;/strong&gt;（Secret Sharing）是一种密码学技术，用于将一个秘密（如密钥、密码或敏感数据）分割成多个部分，并将这些部分分发给不同的参与者。只有在一定数量的参与者合作时，才能恢复原始的秘密。通过这种方式，秘密共享可以增强安全性，因为即使某些参与者的部分被泄露或丢失，其他部分仍然无法恢复完整的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;主要类型&#34;&gt;主要类型
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;阈值秘密共享（Threshold Secret Sharing）&lt;/strong&gt; 这种方法要求至少$t$ 个参与者合作才能恢复秘密。每个参与者得到一个秘密份额，只有在$t$ 个或更多参与者联合时，才能重构出原始秘密。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Shamir’s Secret Sharing&lt;/p&gt;
+&lt;p&gt;：这是最著名的阈值秘密共享方案，由Adi Shamir在1979年提出。其核心思想是通过多项式插值来实现秘密的分割和恢复。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是一个 ss，可以选择一个 $(t−1)$ 次多项式 $f(x)$，其中常数项 $f(0) = s$ 即为秘密。&lt;/li&gt;
+&lt;li&gt;然后根据多项式生成 $n$ 个不同的点分发给 $n$ 个参与者。&lt;/li&gt;
+&lt;li&gt;任何 $t$ 个参与者可以使用拉格朗日插值法恢复原始秘密。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对称秘密共享&lt;/strong&gt; 在这种方法中，每个参与者获得一个共享密钥，这些密钥通过某种方式结合来恢复原始秘密。常见的算法包括加密技术、异或操作等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;加密的秘密共享&lt;/strong&gt; 这种方法利用加密技术对秘密进行分割，确保即使单个参与者泄露了他们的份额，其他人也无法访问秘密。例如，通过同态加密（homomorphic encryption）或基于门限加密的秘密共享方案。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用场景&#34;&gt;应用场景
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;密钥管理&lt;/strong&gt;：通过将密钥分散到多个地点或参与者之间，提高密钥管理的安全性。例如，如果加密系统的密钥被分为多个部分，只有通过参与者之间的协作才能解密数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;防止单点故障&lt;/strong&gt;：秘密共享技术可以防止某个单一参与者或设备故障导致秘密丢失。通过适当选择阈值，可以确保即使部分参与者不可用，剩余的参与者仍能恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分布式计算&lt;/strong&gt;：在分布式环境中，多个节点可以合作进行秘密的计算或解密，而不需要暴露各自的数据。例如，在加密计算或保密计算（Secure Multi-Party Computation, MPC）中，多个计算节点共同参与计算秘密，但每个节点仅持有部分数据，保护了每个节点的隐私。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;区块链与去中心化系统&lt;/strong&gt;：在去中心化系统中，秘密共享可用于增强安全性和隐私保护。例如，在某些区块链协议中，多个节点可以共同持有私钥的份额，用于签名交易或执行智能合约，只有满足一定数量的节点签名才能完成操作。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;优点和缺点&#34;&gt;优点和缺点
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;优点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;增强安全性&lt;/strong&gt;：通过分割秘密，即使某些份额泄露，其他人也无法恢复原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;容错性&lt;/strong&gt;：可以容忍一定数量的参与者失效或泄露信息，只要满足阈值条件，秘密仍能恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灵活性&lt;/strong&gt;：可以根据需求调整参与者数量和阈值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;缺点&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参与者管理复杂&lt;/strong&gt;：需要管理和协调多个参与者。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算成本&lt;/strong&gt;：某些秘密共享方案，如Shamir的方案，可能需要额外的计算来分割和恢复秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;通信开销&lt;/strong&gt;：分发和恢复秘密可能需要较大的通信开销，尤其是在参与者数量多时。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;总的来说，秘密共享技术是提升系统安全性和隐私保护的重要工具，广泛应用于多种安全和加密场景中。&lt;/p&gt;
+&lt;h2 id=&#34;任何-ttt-个参与者可以使用拉格朗日插值法恢复原始秘密这是怎么做到的&#34;&gt;任何 ttt 个参与者可以使用拉格朗日插值法恢复原始秘密,这是怎么做到的?
+&lt;/h2&gt;&lt;p&gt;要理解如何通过&lt;strong&gt;拉格朗日插值法&lt;/strong&gt;来恢复原始秘密，首先我们需要了解&lt;strong&gt;Shamir的秘密共享&lt;/strong&gt;的工作原理。简单来说，Shamir的秘密共享方案通过将秘密转换为一个多项式的常数项，并通过给定的点分发给参与者。在恢复秘密时，tt 个参与者可以使用这些点和拉格朗日插值法来重建原始多项式，从而恢复秘密。&lt;/p&gt;
+&lt;h3 id=&#34;shamir的秘密共享原理&#34;&gt;Shamir的秘密共享原理
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;构造多项式&lt;/strong&gt;：首先，选择一个秘密 ss 作为常数项，然后构造一个 $(t-1)$ 次的多项式 $f(x)$，使得：&lt;/p&gt;
+&lt;p&gt;$f(x) = a_0 + a_1 x + a_2 x^2 + \dots + a_{t-1} x^{t-1}$&lt;/p&gt;
+&lt;p&gt;其中，$f(0) = a_0 = s$ 为秘密。其余的系数 $a_1, a_2, \dots, a_{t-1}$ 是随机选择的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成份额&lt;/strong&gt;：然后，选择 $n$ 个不同的 xx 值（例如$x_1, x_2, \dots, x_n$），并计算对应的 $f(x_i)$ 值。每个参与者将收到一对$(x_i, f(x_i))$，即他们的“份额”。这些份额分别分配给 $n$ 个参与者。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重建秘密&lt;/strong&gt;：任何 $t$ 个份额就足以恢复原始秘密。通过拉格朗日插值法，可以使用这 $t$ 个点（$x_i, f(x_i)$）来求解多项式的常数项 $f(0)$，从而恢复秘密。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;拉格朗日插值法&#34;&gt;拉格朗日插值法
+&lt;/h3&gt;&lt;p&gt;拉格朗日插值法是一个用于构造多项式的数学方法，给定一组数据点$(x_1, y_1), (x_2, y_2), \dots, (x_t, y_t)$，我们可以构造一个唯一的多项式，使得它通过所有这些点。&lt;/p&gt;
+&lt;p&gt;在Shamir的秘密共享中，我们有$t $个点 ($(x_i, f(x_i)$)，要恢复秘密 $f(0)$ 即常数项，我们可以通过以下拉格朗日插值公式来计算：&lt;/p&gt;
+&lt;p&gt;$f(0) = \sum_{i=1}^{t} f(x_i) \cdot \ell_i(0)$&lt;/p&gt;
+&lt;p&gt;其中，$\ell_i(x)$ 是第 $i$ 个拉格朗日基多项式，定义如下：&lt;/p&gt;
+&lt;p&gt;ℓ$\ell_i(x) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{x - x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;为了恢复 $f(0)$，我们将 $x = 0$ 代入上式：&lt;/p&gt;
+&lt;p&gt;$\ell_i(0) = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{0 - x_j}{x_i - x_j} = \prod_{\substack{1 \leq j \leq t \ j \neq i}} \frac{-x_j}{x_i - x_j}$&lt;/p&gt;
+&lt;p&gt;然后，通过上面得到的每个 $\ell_i(0)$ 值，乘上对应的 $f(x_i)$，并将所有结果求和，就能得到 $f(0)$，即原始的秘密。&lt;/p&gt;
+&lt;h3 id=&#34;例子&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有三个参与者（$t = 3$），他们分别获得了以下份额：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$(x_1 = 1, f(x_1) = 5)$&lt;/li&gt;
+&lt;li&gt;$(x_2 = 2, f(x_2) = 8)$&lt;/li&gt;
+&lt;li&gt;$(x_3 = 3, f(x_3) = 11)$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们要恢复秘密 $f(0)$，即常数项。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;计算每个 $\ell_i(0)$：&lt;/p&gt;
+&lt;p&gt;$\ell_1(0) = \frac{(0 - 2)(0 - 3)}{(1 - 2)(1 - 3)} = \frac{6}{2} = 3$&lt;/p&gt;
+&lt;p&gt;$\ell_2(0) = \frac{(0 - 1)(0 - 3)}{(2 - 1)(2 - 3)} = \frac{3}{-1} = -3$&lt;/p&gt;
+&lt;p&gt;$\ell_3(0) = \frac{(0 - 1)(0 - 2)}{(3 - 1)(3 - 2)} = \frac{2}{2} = 1$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;计算秘密：&lt;/p&gt;
+&lt;p&gt;$f(0) = f(x_1) \cdot \ell_1(0) + f(x_2) \cdot \ell_2(0) + f(x_3) \cdot \ell_3(0)$&lt;/p&gt;
+&lt;p&gt;$f(0) = 5 \cdot 3 + 8 \cdot (-3) + 11 \cdot 1 = 15 - 24 + 11 = 2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;因此，原始的秘密 $f(0) = 2$。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;通过拉格朗日插值法，$t$ 个参与者的份额可以恢复原始的秘密。该过程利用了每个参与者的份额和拉格朗日基多项式的计算，以重建出秘密所对应的多项式，并提取出常数项。&lt;/p&gt;
+&lt;h2 id=&#34;2-out-of-2-加法秘密共享方案是什么&#34;&gt;2-out-of-2 加法秘密共享方案是什么？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;是一种非常基础的秘密共享方案，专门用于将一个秘密分配给两个参与者，并且要求两个参与者必须共同合作才能恢复秘密。在这种方案中，秘密通过加法分割为两个部分，每个参与者都持有一个秘密份额，只有两个参与者联合时才能恢复原始秘密。&lt;/p&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;工作原理
+&lt;/h3&gt;&lt;p&gt;在&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;方案中，假设原始秘密为 $s$，我们将这个秘密分割成两个部分，分别给两个参与者。我们使用以下方法进行分割：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设原始秘密是 $s$，我们随机选择一个数 rr 作为第一个份额，计算第二个份额 $s&amp;rsquo; = s - r$。&lt;/li&gt;
+&lt;li&gt;然后，将这两个份额分别分配给两个参与者：
+&lt;ul&gt;
+&lt;li&gt;参与者1收到份额 $r$&lt;/li&gt;
+&lt;li&gt;参与者2收到份额 $s&amp;rsquo; = s - r$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;恢复秘密&#34;&gt;恢复秘密
+&lt;/h3&gt;&lt;p&gt;为了恢复秘密 $s$，两个参与者需要将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = r + (s - r)$&lt;/p&gt;
+&lt;p&gt;通过这种方式，两个参与者的份额加在一起，恢复出原始的秘密 $s$。&lt;/p&gt;
+&lt;h3 id=&#34;特点&#34;&gt;特点
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;加法操作&lt;/strong&gt;：在这个方案中，秘密的分割和恢复都基于加法。每个参与者只知道一个加法部分，只有通过相加才能恢复出原始秘密。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;完全安全&lt;/strong&gt;：如果只有一个参与者知道自己的份额，那么他无法单独恢复秘密，因为他只有一个部分，缺少了另一个部分的信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;简单实现&lt;/strong&gt;：这是一个非常简单和高效的秘密共享方案，适用于只有两个参与者的场景。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;例子-1&#34;&gt;例子
+&lt;/h3&gt;&lt;p&gt;假设有一个秘密 $s = 100$，我们将其分配给两个参与者。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;随机选择一个份额 $r = 30$，那么第二个份额 $s&amp;rsquo; = 100 - 30 = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;参与者1得到份额$r = 30$，参与者2得到份额 $s&amp;rsquo; = 70$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为了恢复秘密，参与者1和参与者2将他们的份额相加：&lt;/p&gt;
+&lt;p&gt;$s = 30 + 70 = 100$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;应用&#34;&gt;应用
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享&lt;/strong&gt;可以应用于很多场景，尤其是需要确保两个参与者必须合作才能访问某个秘密的情况。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;安全存储密钥&lt;/strong&gt;：将加密密钥分成两个部分，分别存储在不同的地点，只有两个存储位置都可访问时，密钥才可以恢复。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;两方合谋&lt;/strong&gt;：在某些加密协议中，两个参与者需要共同合作解密数据，单独任何一个参与者都无法获得数据的任何信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-1&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;2-out-of-2加法秘密共享方案&lt;/strong&gt;通过将秘密分割成两个部分，确保只有在两个参与者合作的情况下才能恢复原始秘密。这种方案简单易实现，但仅适用于参与者数量为2的场景。如果需要更高的容错能力（比如 t-out-of-n 的方案），则需要使用更复杂的算法，如Shamir的秘密共享。&lt;/p&gt;
+&lt;h2 id=&#34;oblivious-transfer是什么&#34;&gt;oblivious transfer是什么？
+&lt;/h2&gt;&lt;p&gt;**Oblivious Transfer（OT，盲传输）**是一种重要的加密协议，广泛应用于多方计算（Secure Multi-Party Computation, MPC）和隐私保护计算领域。其基本思想是在两方或多方之间进行信息传输时，保证发送方和接收方的隐私。特别地，&lt;strong&gt;Oblivious Transfer&lt;/strong&gt; 保护了发送方的信息不被泄露给接收方，而接收方也不会知道其他的消息，只有选择的信息才能被接收。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的基本概念&#34;&gt;Oblivious Transfer的基本概念
+&lt;/h3&gt;&lt;p&gt;在OT协议中，存在两个主要参与方：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方（Sender）&lt;/strong&gt;：拥有若干个消息，并希望将其中一个消息传递给接收方，但不希望接收方得知其他消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方（Receiver）&lt;/strong&gt;：接收方可以选择想要接收的消息，并且只会获得它所选择的消息，但发送方无法知道接收方选择了哪一个。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;有几种常见的&lt;strong&gt;Oblivious Transfer&lt;/strong&gt;类型，其中最常见的有以下两种：&lt;/p&gt;
+&lt;h3 id=&#34;1-1-out-of-2-oblivious-transfer-1-2-ot&#34;&gt;1. &lt;strong&gt;1-out-of-2 Oblivious Transfer (1-2 OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在1-out-of-2 OT协议中，发送方有两个消息 $m_0$ 和 $m_1$，接收方选择一个索引（例如 0 或 1），然后接收方获得选择的消息，而发送方并不知道接收方选择了哪个消息。&lt;/p&gt;
+&lt;h4 id=&#34;工作流程&#34;&gt;工作流程：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;发送方将两个消息 $m_0 $和 $m_1 $发送给接收方，但不直接告诉接收方哪个消息是哪个。&lt;/li&gt;
+&lt;li&gt;接收方选择一个索引（0 或 1），并且只获得对应索引的消息。接收方不会知道其他的消息内容。&lt;/li&gt;
+&lt;li&gt;发送方无法知道接收方选择了哪一个消息，接收方只能获得所选的消息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;安全性&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发送方隐私性&lt;/strong&gt;：发送方无法知道接收方选择了哪个消息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方隐私性&lt;/strong&gt;：接收方无法知道未选择的消息，也无法从其它信息中推测出未选的消息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-k-out-of-n-oblivious-transfer-k-n-ot&#34;&gt;2. &lt;strong&gt;k-out-of-n Oblivious Transfer (k-n OT)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在k-out-of-n OT协议中，发送方有 n 个消息$m_1, m_2, &amp;hellip;, m_n$，接收方可以选择 k 个消息，并且获得这 k 个消息，但不透露选择的其他 n-k 个消息。接收方只会知道自己选择的 k 个消息，而发送方不会知道接收方选择了哪些消息。&lt;/p&gt;
+&lt;h3 id=&#34;oblivious-transfer的应用&#34;&gt;&lt;strong&gt;Oblivious Transfer的应用&lt;/strong&gt;
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;安全多方计算（MPC）&lt;/strong&gt;：在多方计算中，OT协议用于保护各方的隐私，使得各方可以在不知道对方输入的情况下共同计算某个函数的结果。例如，在两个公司进行联合数据分析时，可以使用OT协议来确保各自的数据不被泄露。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;私密信息检索（Private Information Retrieval, PIR）&lt;/strong&gt;：PIR是指用户在不透露查询内容的情况下，从数据库中检索信息。OT协议可以用于构建PIR方案，确保查询者的隐私得到保护。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数字货币和区块链&lt;/strong&gt;：OT协议也可以用于增强区块链系统中的隐私保护，尤其是在匿名交易中。它可以让交易双方在不暴露其具体信息的情况下，完成加密验证和交易。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;加密货币钱包&lt;/strong&gt;：例如，在一些加密货币钱包中，OT协议可用于确保钱包私钥的安全转移，同时防止第三方在转移过程中获得不必要的敏感信息。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;ot协议的实际构建&#34;&gt;&lt;strong&gt;OT协议的实际构建&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;OT协议可以通过不同的加密技术实现，常见的方式包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;公钥加密&lt;/strong&gt;：例如使用 RSA 加密或椭圆曲线加密来实现 OT 协议。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;同态加密&lt;/strong&gt;：可以通过同态加密协议来构建OT协议，以便在加密状态下进行数据传输。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;零知识证明&lt;/strong&gt;：通过零知识证明机制，保证消息传输过程中各方的信息不被泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结-2&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;**Oblivious Transfer（盲传输）**是一种重要的加密协议，它保证了信息在传输过程中各方的隐私性。特别地，发送方和接收方都不会得知对方的敏感信息，只有接收方能够获得自己所选择的消息。这一协议被广泛应用于多方计算、私密信息检索、数字货币隐私保护等领域，是现代密码学和隐私保护技术的核心组件之一。&lt;/p&gt;
+&lt;h2 id=&#34;秘密共享中使用的-2l-模数是什么&#34;&gt;秘密共享中使用的 $2^l$ 模数是什么？
+&lt;/h2&gt;&lt;p&gt;在秘密共享（Secret Sharing）方案中，特别是在 Shamir 的秘密共享协议中，$2^l$ 模数通常指的是一个大素数或一个足够大的整数，用于确保秘密能够在模运算中适当地加密和解密。在这种情况下，$2^l$ 表示对一个长度为 $l$ 的二进制数据进行处理时所需要的模数。&lt;/p&gt;
+&lt;p&gt;具体来说，$l$ 是密钥或秘密的比特长度，因此 $2^l$ 是一个足够大的数，通常用于分割秘密的范围。例如，在 Shamir 的方案中，秘密通常被视为一个 $l$ 比特的数值，而将其分割成多个份额时，使用 $2^l$ 来确保数值保持在所需范围内。这也意味着，每个份额的大小由 $2^l$ 限定，从而保证了秘密的安全性和正确的恢复。&lt;/p&gt;
+&lt;p&gt;简而言之，$2^l$ 模数的使用帮助在加密和共享过程中处理大的整数，确保秘密在分发和恢复时不被泄露，同时也方便进行数学运算。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>基于秘密共享的隐私保护和可验证深度学习推理</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/dolomites-2897602_1280.jpg" alt="Featured image of post 基于秘密共享的隐私保护和可验证深度学习推理" /&gt;&lt;h1 id=&#34;基于秘密共享的隐私保护和可验证深度学习推理&#34;&gt;基于秘密共享的隐私保护和可验证深度学习推理
+&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;摘要
+&lt;/h2&gt;&lt;p&gt;深度学习推理作为实现深度学习模型利用的关键环节，通常被部署为面向资源受限客户端的云端框架。然而，现有的云端框架存在严重的信息泄漏问题，或导致通信成本显著增加。在本研究中，我们提出了一种隐私保护的深度学习推理方法，能够在低通信和计算成本的前提下，同时保护输入数据和模型参数的隐私。此外，用户可以以较小的开销验证结果的正确性，这对关键应用尤为重要。具体而言，通过设计安全的子协议，我们引入了一个新层，用于协作执行推理过程中涉及的安全计算。在秘密共享的协作下，我们将可验证数据注入输入中，使得能够检查返回的推理结果的正确性。我们通过理论分析以及基于 MNIST 和 CIFAR10 数据集的大量实验结果，验证了所提出的隐私保护和可验证深度学习推理（PVDLI）框架的优越性。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;引言
+&lt;/h2&gt;&lt;p&gt;近年来，深度神经网络（DNN）在多个领域取得了显著进展，例如目标检测【39,26】、目标分类【18,10】、机器翻译【6,7】和人脸识别【40,33】。随着数据集规模的不断扩大，深度学习的计算强度也随之成比例增长。尽管近期在GPU硬件、网络架构和算法方面取得了重要突破，对于资源受限的客户端而言，大规模DNN的训练和推理仍需耗费无法接受的长时间和巨大的计算资源。&lt;/p&gt;
+&lt;p&gt;幸运的是，许多DNN框架建议利用云服务来完成大量计算。然而，这些基于云的框架也带来了新的安全和隐私挑战。隐私泄露可能发生在训练阶段和推理阶段。针对训练阶段的隐私问题，已有许多隐私保护框架被提出【27,8,28,37,23,4,13,19】；而针对推理阶段的隐私问题，也有相关研究【46,12,16,32,42】。本文主要聚焦于与本研究最相关的推理阶段的隐私问题。&lt;/p&gt;
+&lt;p&gt;在深度学习的推理阶段，隐私泄露主要来源于输入数据和深度模型本身。具体而言，输入数据通常包含大量敏感信息，这些信息应对云服务器保持隐私，因为云服务器可能无法完全信任。此外，经过充分训练的模型参数也不应暴露给未经授权的方。由于经过充分训练的模型因其高昂的训练成本而被视为重要资产，因此保护模型参数隐私与保护输入数据隐私同等重要。&lt;/p&gt;
+&lt;p&gt;为了解决这些问题，Ocia等【24,25】和Chi等【5】提出将神经网络拆分为两部分：一部分在本地执行，另一部分在云端运行。Xu等【43】和Shen等【36】建议使用混淆神经网络【43】或数据变形【36】来在本地保护输入数据隐私。此外，为了提供更高的安全性，Zhang等【46】和Tian等【41】引入了同态加密（HE）【2】，以加密推理中部分计算。他们将所有DNN计算分为两类：线性计算和非线性计算。在线性计算在加密域中由云服务器完成。&lt;/p&gt;
+&lt;p&gt;尽管上述框架保护了输入隐私，但并未考虑模型参数的隐私。近年来，一些旨在同时保护输入和模型参数隐私的框架得到了研究。相关工作【12,9,15】利用同态加密（HE）对整个网络进行加密，并在加密域中执行推理。Juvekar等【16】提出了一种框架，结合了混淆电路（GC）【44】和HE，用于同时保护输入和模型的隐私，与框架【32,29,31,30】类似。此外，许多工作借助安全多方计算（SMPC）来实现输入和模型参数的保护。Ma等【22】提出了在两个非共谋服务器下的完全非交互隐私保护推理框架。Liu等【21】提出了MiniONN，用于将训练好的神经网络转换为高效的无泄漏神经网络。Shamsabadi等【35】研究了一种用于分类的私有DNN训练和推理框架，其中基于秘密共享方案【34】的私有推理在两个非共谋服务器之间进行。&lt;/p&gt;
+&lt;p&gt;此外，云服务器可能会出于经济利益返回无效结果。在许多基于深度学习的应用中，例如自动驾驶和金融风险评估，无效结果可能导致灾难性后果。因此，为用户提供一种机制验证云服务器返回结果的正确性显得尤为重要。同时，执行验证所引入的开销应尽可能低。&lt;/p&gt;
+&lt;p&gt;为此，我们提出了一种隐私保护且可验证的深度学习推理（PVDLI）框架，能够在低通信和计算成本下同时保护输入和模型参数的隐私。此外，用户还可以以较小的开销验证推理结果的正确性。受软件设计模式中的代理模式【11】启发，我们引入了N+1个节点，称为代理层，用于协作执行推理中涉及的安全计算。为安全地执行激活函数（非线性操作），我们在微调阶段用多项式近似激活函数【3】。通过在输入中注入标记的可验证数据，我们可以以高概率有效验证推理结果的正确性。借助秘密共享，注入的验证数据与正常数据无法区分，从而防止仅针对验证数据返回正确结果的潜在攻击。&lt;/p&gt;
+&lt;p&gt;理论分析表明，即使在参与者之间存在共谋的情况下，所提出的框架仍能够针对“诚实但好奇”的参与者提供输入和模型参数的可验证性和隐私性。此外，我们还提供了大量实验结果以验证所提出的PVDLI框架的优越性。&lt;/p&gt;
+&lt;p&gt;本文其余部分组织如下：第2节介绍相关基础知识。第3节给出了系统模型和设计目标。第4节阐述了所提出的子协议。第5节详细描述了PVDLI框架。第6节提供了基于设计的安全实验的可验证性分析和安全性分析。第7节展示了实验结果，最后在第8节进行总结。&lt;/p&gt;
+&lt;h2 id=&#34;预备知识&#34;&gt;预备知识
+&lt;/h2&gt;&lt;p&gt;深度学习旨在从高维数据中提取复杂特征，并利用这些特征构建一个能够将输入与输出关联起来的模型。通常，深度学习架构由多层网络构成，以便将低层次特征通过非线性函数计算为更抽象的特征。每一层的输出与前一层相连接。&lt;/p&gt;
+&lt;p&gt;在&lt;strong&gt;图1&lt;/strong&gt;中，我们展示了一个深度神经网络（DNN）推理的示例。通过执行一系列计算，DNN输出对数值（logit），随后通过对该对数值执行&lt;strong&gt;softmax&lt;/strong&gt;函数生成输入的类别预测概率。&lt;/p&gt;
+&lt;p&gt;在不失一般性的情况下，我们详细描述了VGG16模型【38】中一个典型块的组成。该块包含线性计算、批归一化、激活函数和池化操作。&lt;/p&gt;
+&lt;h4 id=&#34;线性计算&#34;&gt;&lt;strong&gt;线性计算&lt;/strong&gt;
+&lt;/h4&gt;$$x \in \mathbb{R}^n$$$$
+z = W x + b \tag{1}
+$$$$W$$$$b$$&lt;p&gt; 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。&lt;/p&gt;
+&lt;h4 id=&#34;批归一化&#34;&gt;&lt;strong&gt;批归一化&lt;/strong&gt;
+&lt;/h4&gt;$$
+u = c z + b \tag{2}
+$$$$c$$$$b$$&lt;p&gt; 是经过充分训练的固定参数。&lt;/p&gt;
+&lt;h4 id=&#34;激活函数&#34;&gt;&lt;strong&gt;激活函数&lt;/strong&gt;
+&lt;/h4&gt;$$
+t = \text{ReLU}(u) \tag{3}
+$$&lt;h4 id=&#34;池化&#34;&gt;&lt;strong&gt;池化&lt;/strong&gt;
+&lt;/h4&gt;$$\text{Avg}$$$$
+y = \text{Avg}(t) \tag{4}
+$$&lt;p&gt;随后，池化层的输出被送入下一层进行后续计算。最终，DNN 网络输出一个对数值（logit），并通过 &lt;strong&gt;softmax&lt;/strong&gt; 函数生成类别预测概率。&lt;/p&gt;
+&lt;h2 id=&#34;系统模型与设计目标&#34;&gt;系统模型与设计目标
+&lt;/h2&gt;&lt;p&gt;在本节中，我们详细介绍所提出框架的设计目标和系统模型。&lt;/p&gt;
+&lt;h3 id=&#34;设计目标&#34;&gt;设计目标
+&lt;/h3&gt;&lt;p&gt;我们提出了一个隐私保护且可验证的深度学习推理框架，涉及三个实体：&lt;strong&gt;模型所有者（O）&lt;/strong&gt;、&lt;strong&gt;用户（U）&lt;/strong&gt; 和 &lt;strong&gt;N+1 个节点&lt;/strong&gt;（称为代理层），代理层位于用户与模型所有者之间。一般来说，所提出的 PVDLI 框架面临的安全威胁主要来自代理层的行为。假设框架在**“诚实但好奇”**的设置下运行，这意味着攻击者会遵循框架规范，但可能对输入数据和模型参数产生兴趣。此外，从可验证性的角度来看，代理层中的某些节点可能会偷懒，即生成随机或错误结果以节省计算资源。&lt;/p&gt;
+&lt;p&gt;为了实现框架的隐私保护和可验证性，我们确定了以下四个设计目标：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;隐私&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的输入数据必须对代理层保密。&lt;/li&gt;
+&lt;li&gt;模型的参数不应被代理层泄露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;效率&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户的计算复杂度应显著低于直接进行完整推理计算的复杂度。&lt;/li&gt;
+&lt;li&gt;各参与方之间的通信成本应尽可能降低。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;可验证性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户必须能够成功验证推理结果的正确性。作弊的代理层生成的错误结果不能以非可忽略的概率通过验证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;准确性&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模型推理的准确性应接近于在单一服务器上执行深度学习推理时的准确性。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;系统模型&#34;&gt;系统模型
+&lt;/h3&gt;$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt; 作为代理层，其灵感来源于&lt;strong&gt;代理模式&lt;/strong&gt;【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。&lt;/p&gt;
+&lt;p&gt;框架的伪代码见&lt;strong&gt;算法1&lt;/strong&gt;。具体而言：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+$$F$$$$H = \{h_1, h_2, \dots, h_M\}$$$$M$$&lt;p&gt; 是网络中的总参数数量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$x$$$$F$$&lt;p&gt; 中进行推理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代理层（E）&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;辅助节点（$$E_0$$）&lt;/strong&gt;&lt;br&gt;
+负责与各计算节点之间的通信，收集和分发推理过程中涉及的临时结果。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt;&lt;br&gt;
+负责执行深度神经网络（DNN）的推理计算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在推理开始之前，模型所有者（O）会与用户（U）协商选择一个由 &lt;strong&gt;1 个辅助节点（$$E_0$$）&lt;/strong&gt; 和 &lt;strong&gt;N 个计算节点（$$\{E_1, \dots, E_N\}$$）&lt;/strong&gt; 组成的代理层（E）。&lt;/p&gt;
+&lt;h3 id=&#34;算法-1-执行-pvdli-的步骤&#34;&gt;算法 1: 执行 PVDLI 的步骤
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;安全参数 $$k$$&lt;/li&gt;
+&lt;li&gt;输入数据 $$x \in \mathbb{Z}_p^n$$&lt;/li&gt;
+&lt;li&gt;深度学习模型 $$F$$&lt;/li&gt;
+&lt;li&gt;计算节点数量 $$N$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;推理结果 $$y$$ 或错误标志 $$\perp$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;模型所有者&lt;/strong&gt; $$O$$ 和 &lt;strong&gt;用户&lt;/strong&gt; $$U$$ 选择一个由 $$N+1$$ 个节点组成的代理层 $$E = \{E_0, E_1, \dots, E_N\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 生成一个可验证数据集 $$D$$。&lt;/li&gt;
+&lt;li&gt;模型所有者 $$O$$ 通过多项式近似获取近似模型 $$F$$，然后将模型参数 $$H$$ 分成 $$N$$ 份：&lt;br&gt;
+$$H^{(1)}, H^{(2)}, \dots, H^{(N)} \gets \text{Split}(H, k, N)$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 将可验证数据 $$\{X, V, r_v\}$$ 插入到输入数据中：&lt;br&gt;
+$$\{X, V, r_v\} \gets \text{Insert}(x, D)$$。&lt;/li&gt;
+&lt;li&gt;用户将混合数据 $$X$$ 分成 $$N$$ 份：&lt;br&gt;
+$$X^{(1)}, X^{(2)}, \dots, X^{(N)} \gets \text{Split}(X, k, N)$$。&lt;/li&gt;
+&lt;li&gt;代理层执行一系列深度学习推理计算，得到 logits：&lt;br&gt;
+$$L^{(1)}, L^{(2)}, \dots, L^{(N)} \gets \{f(X^{(1)}, H^{(1)}), \dots, f(X^{(N)}, H^{(N)})\}$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 聚合 logits：&lt;br&gt;
+$$R \gets \text{Aggregation}(L^{(1)}, L^{(2)}, \dots, L^{(N)})$$。&lt;/li&gt;
+&lt;li&gt;用户 $$U$$ 提取结果：&lt;br&gt;
+$$y = R_{r_v}$$ （推理结果），&lt;br&gt;
+$$R&#39; = \{R_i \mid i \in \{1, 2, \dots, N\} \setminus r_v\}$$ （可验证结果）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;如果&lt;/strong&gt;可验证结果 $$R&#39;$$ 满足 $$R&#39; = V$$：
+&lt;ul&gt;
+&lt;li&gt;返回 $$y$$ 作为输入数据 $$x$$ 的推理结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;否则：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;返回错误标志 $$\perp$$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结束。&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+$$O$$$$F$$$$H$$$$N$$&lt;p&gt; 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。&lt;/p&gt;
+$$U$$$$x$$$$X$$$$U$$$$X$$$$N$$&lt;p&gt; 份，并分发到代理层以保护输入隐私。&lt;/p&gt;
+$$H^{(i)}$$$$X^{(i)}$$$$E_i$$$$L^{(i)}$$$$U$$$$U$$$$R$$$$U$$$$U$$$$x$$$$y$$&lt;p&gt;；否则，拒绝结果并输出错误。&lt;/p&gt;
+&lt;h3 id=&#34;提出的-pvdli-框架包含以下六个关键模块&#34;&gt;提出的 PVDLI 框架包含以下六个关键模块：
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+$$O$$$$U$$$$N+1$$$$E = \{E_0, E_1, \dots, E_N\}$$$$U$$$$D$$&lt;p&gt;，用于后续验证。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$O$$$$F$$$$k$$$$N$$&lt;p&gt; 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$k$$$$U$$$$D$$$$V$$$$r_v$$$$x$$$$X$$$$X$$$$N$$$$X^{(i)}$$$$E_i$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$X^{(i)}$$$$H^{(i)}$$$$E_i$$$$1 \leq i \leq N$$$$E_i$$$$L^{(i)}$$$$U$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$L^{(1)}, \dots, L^{(N)}$$$$U$$$$X$$$$F$$$$R$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$R$$$$r_v$$$$U$$$$V$$$$x$$$$y$$$$\perp$$&lt;p&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;基于秘密共享的安全子协议&#34;&gt;基于秘密共享的安全子协议
+&lt;/h2&gt;&lt;p&gt;本质上，深度学习推理由一系列数学操作完成。在我们提出的框架中，为了避免输入数据和模型参数的泄露，所有操作必须以隐私保护的方式进行。基于秘密共享方案，我们设计并实现了三个安全计算子协议：安全加法协议、安全除法协议和安全矩阵乘法协议。&lt;/p&gt;
+&lt;h4 id=&#34;安全加法协议secadd&#34;&gt;&lt;strong&gt;安全加法协议（SecAdd）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$&lt;p&gt;。在执行过程中，不会交换任何中间值。&lt;/p&gt;
+$$E_i$$$$A$$$$B$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$C^{(i)}$$$$E_0$$&lt;p&gt; 不参与计算。&lt;/p&gt;
+&lt;h4 id=&#34;安全除法协议secdiv&#34;&gt;&lt;strong&gt;安全除法协议（SecDiv）：&lt;/strong&gt;
+&lt;/h4&gt;$$k \in \mathbb{Z}_p$$$$A \in \mathbb{Z}_p^{u \times n}$$$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$A$$$$A^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$k$$$$C^{(i)}$$&lt;p&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;安全矩阵乘法协议secmul&#34;&gt;&lt;strong&gt;安全矩阵乘法协议（SecMul）：&lt;/strong&gt;
+&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$&lt;p&gt;。&lt;/p&gt;
+$$E_0$$&lt;p&gt;。辅助节点仅与计算节点通信，用于收集和分发乘法过程中的临时结果。&lt;/p&gt;
+$$E_i$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$A$$$$B$$$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$$$O = P \cdot Q$$&lt;p&gt;。&lt;/p&gt;
+$$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E_0$$&lt;p&gt;）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。&lt;/p&gt;
+&lt;h3 id=&#34;安全矩阵乘法过程&#34;&gt;安全矩阵乘法过程
+&lt;/h3&gt;&lt;p&gt;如图 3 所示，该协议包含以下四个部分：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050.png&#34;
+	width=&#34;1266&#34;
+	height=&#34;704&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu17449839447597289103.png 480w, https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050_hu8223726548956333695.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241117192123050&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;431px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;生成辅助随机矩阵份额-genaux&#34;&gt;&lt;strong&gt;生成辅助随机矩阵份额 (GenAux):&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给定安全参数 $$k$$，代理层协商选择辅助随机矩阵的份额 $$\{P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N}$$，其中 $$P^{(i)}, Q^{(i)}, O^{(i)}$$ 表示矩阵 $$P \in \mathbb{Z}_p^{u \times n}$$、$$Q \in \mathbb{Z}_p^{n \times v}$$ 和 $$O \in \mathbb{Z}_p^{u \times v}$$ 的第 $$i$$ 个份额，且 $$O = P \cdot Q$$。代理层的计算节点 $$E_i$$ 只能拥有对应的份额 $$P^{(i)}, Q^{(i)}, O^{(i)}$$，其中 $$1 \leq i \leq N$$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;对输入矩阵份额进行掩码处理-mask&#34;&gt;&lt;strong&gt;对输入矩阵份额进行掩码处理 (Mask):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$
+E^{(i)} = A^{(i)} - P^{(i)} \quad;\quad F^{(i)} = B^{(i)} - Q^{(i)}  
+$$$$E_i$$$$E^{(i)}, F^{(i)}$$$$E_0$$$$1 \leq i \leq N$$&lt;p&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;重构并分割结果-split&#34;&gt;&lt;strong&gt;重构并分割结果 (Split):&lt;/strong&gt;
+&lt;/h4&gt;$$E_0$$$$N$$$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$$$E$$$$F$$$$
+E = \sum_{i=1}^{N} E^{(i)} \quad;\quad F = \sum_{i=1}^{N} F^{(i)} \quad;\quad G = E \cdot F  
+$$$$E_0$$$$G$$$$\{G^{(i)}\}_{i=1}^{N}$$$$E_0$$$$E, F, G^{(i)}$$$$E_i$$$$1 \leq i \leq N$$&lt;p&gt;）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;计算最终份额-cal&#34;&gt;&lt;strong&gt;计算最终份额 (Cal):&lt;/strong&gt;
+&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$E, F, G^{(i)}$$$$
+S^{(i)} = E \cdot Q^{(i)} \quad;\quad T^{(i)} = P^{(i)} \cdot F  
+$$$$E_i$$$$
+C^{(i)} = G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}  
+$$$$
+C = \sum_{i=1}^{N} C^{(i)} = A \cdot B  
+$$&lt;hr&gt;
+&lt;h4 id=&#34;安全矩阵乘法的正确性证明&#34;&gt;&lt;strong&gt;安全矩阵乘法的正确性证明：&lt;/strong&gt;
+&lt;/h4&gt;$$
+C = \sum_{i=1}^{N} C^{(i)} = \sum_{i=1}^{N} (G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}) = G + S + T + O  
+$$$$
+= (E \cdot F) + (E \cdot Q) + (P \cdot F) + (P \cdot Q)  
+$$$$
+= (A - P) \cdot (B - Q) + (A - P) \cdot Q + P \cdot (B - Q) + P \cdot Q  
+$$$$
+= A \cdot B
+$$$$P, Q, O$$&lt;p&gt; 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。&lt;/p&gt;
+&lt;h2 id=&#34;提出的框架&#34;&gt;提出的框架
+&lt;/h2&gt;&lt;h3 id=&#34;initn--e-d&#34;&gt;Init（N） → （E; D)
+&lt;/h3&gt;&lt;p&gt;首先，模型所有者O与用户U协商，选择一个包含N + 1个节点的代理层，其中包括一个辅助节点E₀和N个计算节点E₁, &amp;hellip;, EN进行后续的协同计算。在这里，合理的假设是N ≥ 2，这是由于所采用的秘密共享方案提出的要求。需要注意的是，节点数量不会影响推理的准确性，因为所有节点只涉及安全子协议，这些协议已经被证明与原始计算等效。然而，节点数量确实会影响隐私保护的水平。具体来说，节点数量越多，当节点发生串通时，隐私保护的级别越高。更多的安全性分析将在第6节中提供。
+接下来，为了提供可验证性，用户U生成一个可验证的数据集D = {d₁, &amp;hellip;, dL}。这里，可验证数据集可以离线生成并且可重复使用。每个数据项dᵢ的要求是，它的推理结果（标签）可以很容易地估计或获得。由于通过秘密共享方案可以很好地保护输入数据的隐私，从代理层的角度来看，所有输入数据都是随机值。因此，代理层无法区分可验证数据dᵢ和输入x。选择可验证数据dᵢ时有很多选择；它可以是标记的测试数据，甚至是可以轻松验证的虚拟数据（噪声或无意义的数据）。&lt;/p&gt;
+&lt;h3 id=&#34;deploymodelðf-k-nþ--h1--hm&#34;&gt;&lt;strong&gt;DeployModelðF; k; NÞ → H(1), &amp;hellip;, H(M)&lt;/strong&gt;
+&lt;/h3&gt;$$f(x) = a_0 + a_1x + ... + a_d x^d$$&lt;p&gt;&lt;br&gt;
+其中，所有的系数$a_0, a_1, &amp;hellip;, a_d$在多项式中都是可训练的。替代后，模型所有者O继续通过少量迭代微调模型F，以获得新的近似模型F。令$H = {h_1, &amp;hellip;, h_M}$表示深度学习模型F中所有权重变量的平坦化向量，其中M表示模型中的参数数量。为了保护模型参数$H$的隐私，我们提出使用一个简单而有效的N-out-of-N加法秘密共享方案[34]。具体来说，模型所有者O将模型参数$H$分割成N个份额，并将份额$H(i)$分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。通过这种方式，代理层中的每个计算节点只拥有模型参数$H$的一个份额。具体地，生成参数份额的过程包括以下两个部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Setup 1k → Ko&lt;/strong&gt;: 给定安全参数k，模型所有者O从指定的密钥空间${0, 1}^k$生成一个秘密密钥Ko。加密算法的资源需求和攻击者破解安全的概率可以通过安全参数k来表达。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+$$Alg(H; ro; N) → H(1), ..., H(N) \in \mathbb{Z}_M^N$$&lt;p&gt;&lt;br&gt;
+最后，模型所有者O将份额$H(i)$分别分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;gensplitdataðx-d-k-nþ--x1--xn-v-rv&#34;&gt;GenSplitDataðx; D; k; NÞ → X(1), &amp;hellip;, X(N); V; rv
+&lt;/h3&gt;&lt;p&gt;在给定安全参数k和可验证数据集D的情况下，用户U将可验证数据和输入数据混合生成混合数据X。然后，用户U将混合数据X分割成N个份额，并将它们分发到代理层。具体来说，为了提供可验证性，用户U从数据集D中随机选择J个可验证数据$I_1, &amp;hellip;, I_J \in \mathbb{R}^{n \times J}$。这里，令$V = {V_1, &amp;hellip;, V_J}$表示这J个可验证数据的标签。接着，用户U随机选择一个索引$rv$，其中$1 \leq rv \leq J$，并将输入数据$x$与可验证数据$I$混合，构造混合数据$X = {I_1, &amp;hellip;, I_{rv-1}, x, I_{rv}, &amp;hellip;, I_J} \in \mathbb{R}^{n \times (J+1)}$。&lt;br&gt;
+类似地，从所有长度为k的比特串中随机选择一个秘密密钥$K_u$，然后用户U使用[8]中的份额生成算法将混合数据X分割成N个份额$X(1), &amp;hellip;, X(N)$。此外，用户U将份额$X(i)$分别分发给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。在这种情况下，代理层中的每个计算节点只访问混合数据X的一个份额，这意味着可以提供输入数据的隐私保护。由于混合数据被分割成多个份额，且可验证数据与输入数据可以完美混合，暗示着攻击者无法将它们分开。&lt;/p&gt;
+&lt;h3 id=&#34;compute-h1--hn-x1--xn--l1--ln&#34;&gt;&lt;strong&gt;Compute H(1), &amp;hellip;, H(N); X(1), &amp;hellip;, X(N) → L(1), &amp;hellip;, L(N)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在本模块中，代理层使用输入和模型参数的份额安全地执行深度学习推理。基于秘密共享方案，我们提出了三种安全子协议：SecAdd、SecDiv和SecMul，其详细信息已在第4节中提供。如第2节所述，深度学习推理中的操作包括线性计算、批量归一化、激活和池化。所有这些计算都可以通过利用提出的子协议来安全执行。为了不失一般性，我们考虑VGG16中的一个典型模块[38]，该模块由线性计算、批量归一化、激活和平均池化组成，如图4所示。为了提供可验证性，我们将一批数据X（包括原始输入x和可验证数据I）输入网络进行推理。此模块的计算可以表示为：&lt;/p&gt;
+$$ Z = W \cdot X + B $$$$ U = c \cdot Z + b $$$$ T = a_1 \cdot U + \dots + a_d \cdot U_d $$$$ Y = \text{Avg}(T) $$&lt;p&gt;其中，Avg表示平均操作，c和b是经过训练并固定的。随后，我们将详细介绍如何在代理层中安全地执行这些计算。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线性计算&lt;/strong&gt;&lt;br&gt;
+回顾一下，每个计算节点$E_i$拥有模型参数的份额$H(i)$和输入数据的份额$X(i)$，它们包含输入数据$x$和可验证数据$I$的份额。首先，计算节点$E_i$提取并重新格式化$H(i)$，以获得权重矩阵$W(i) \in \mathbb{Z}_u^{n \times p}$和偏置$b(i) \in \mathbb{Z}_u^p$。这里，由于输入数据$X(i) \in \mathbb{Z}_n^{(J+1) \times p}$（而不是原始输入$x \in \mathbb{Z}_n^p$）的变化，偏置$b(i) \in \mathbb{Z}_u^p$需要扩展为矩阵$B(i) \in \mathbb{Z}_u^{(J+1) \times p}$以进行批量推理，其中$B(i) = \left[ b(i) , \cdots , b(i) \right]$。然后，为了执行线性计算$Z = W \cdot X + B$，代理层仅需执行安全矩阵乘法和安全加法，表示为：&lt;/p&gt;
+$$ \text{SecMul}(W(i), X(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), B(i)) \rightarrow Z(1), \dots, Z(N) $$&lt;p&gt;输出$Z(1), \dots, Z(N)$是$Z = W \cdot X + B$的份额。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;批量归一化&lt;/strong&gt;&lt;br&gt;
+在进行线性计算后，批量归一化被应用于解决内部协变量偏移。由于批量归一化中的参数在推理阶段是固定的，因此批量归一化操作可以作为线性计算（如式（14）所述）进行。类似地，代理层中的每个计算节点$E_i$可以从$H(i)$中提取并重新格式化，以获得份额$c(i)$和$b(i)$，其中$1 \leq i \leq N$。然后，代理层执行安全矩阵乘法和安全加法来完成批量归一化，表示为：&lt;/p&gt;
+$$ \text{SecMul}(c(i), Z(i)) \rightarrow C(1), \dots, C(N) $$$$ \text{SecAdd}(C(i), b(i)) \rightarrow U(1), \dots, U(N) $$&lt;p&gt;&lt;strong&gt;激活&lt;/strong&gt;&lt;br&gt;
+如第5.2节所述，我们已经用近似多项式替代了激活函数[3]。通过这种方式，非线性操作被转化为线性计算。由于它与上述线性计算类似，我们只提供主要过程。具体来说，在式（16）中，系数$a_1, a_2, \dots, a_d$从$H(i)$中提取。逐元素的指数运算可以通过多个乘法来安全实现。因此，激活的计算可以通过安全地执行一系列安全的乘法和加法来通过多项式进行逼近。最终，每个计算节点$E_i$输出一个份额$T(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;平均池化&lt;/strong&gt;&lt;br&gt;
+平均池化的主要过程是对矩形区域中的值进行加和并计算平均值。它由加法和除法与池大小组成。因此，我们也可以利用安全加法和安全除法来完成平均池化。最终，深度学习推理中的所有计算可以逐层执行。最后，在最后一层，每个计算节点$E_i$输出一个logit值份额，表示为$L(i)$，其中$1 \leq i \leq N$。&lt;/p&gt;
+&lt;h3 id=&#34;聚合&#34;&gt;&lt;strong&gt;聚合&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;当用户U接收到代理层的所有logit值份额$L(1), &amp;hellip;, L(N)$时，用户U将它们聚合以获得深度模型的logit值。&lt;/p&gt;
+$$ L = \frac{1}{N} \sum_{i=1}^{N} L(i) $$&lt;p&gt;最终推理结果$R$取决于深度学习任务的类型。如果深度学习模型是预测任务，则$R = L$。如果是分类任务，则$R = \text{softmax}(L)$。&lt;/p&gt;
+&lt;h3 id=&#34;验证&#34;&gt;&lt;strong&gt;验证&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在聚合所有份额以获得推理结果$R$后，用户$U$检查推理的正确性。具体来说，用户$U$在输入密钥$rv$后，提取第$rv$列向量$y = R_{rv}$。令$R$表示矩阵$R$的其余部分。然后，用户$U$将结果$R$与标签$V$进行比较。如果相同，用户$U$接受$y$作为输入$x$的推理结果。否则，用户$U$拒绝并输出错误$?$。需要注意的是，如果没有提供输入隐私，这意味着代理层可以轻松地区分可验证数据和输入数据$x$，则代理层可以输出可验证数据的正确结果和输入数据的错误结果，从而破坏可验证性。因此，验证的成功与输入隐私的保护密切相关。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
