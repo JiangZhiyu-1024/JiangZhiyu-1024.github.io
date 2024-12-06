@@ -14,8 +14,8 @@
         
         <guid>https://JiangZhiyu-1024.github.io/p/inferdpt%E9%9D%A2%E5%90%91%E9%BB%91%E7%9B%92%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/inferdpt%E9%9D%A2%E5%90%91%E9%BB%91%E7%9B%92%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/liverworts-8616125_1280.jpg" alt="Featured image of post InferDPT：面向黑盒大语言模型的隐私保护推理" /&gt;&lt;h1 id=&#34;inferdpt面向黑盒大语言模型的隐私保护推理&#34;&gt;InferDPT：面向黑盒大语言模型的隐私保护推理
-&lt;/h1&gt;&lt;h2 id=&#34;摘要&#34;&gt;&lt;strong&gt;摘要&lt;/strong&gt;
-&lt;/h2&gt;&lt;p&gt;以ChatGPT为代表的大型语言模型（LLMs）极大简化了文本生成任务。然而，它们也引发了关于隐私风险的担忧，如数据泄露和未经授权的信息收集。现有的隐私保护推理解决方案面临着与计算时间和通信成本相关的实际挑战。本文提出了InferDPT，这是第一个针对黑盒LLM的隐私保护推理的实用框架，旨在实现文本生成中的差分隐私。InferDPT包括两个关键模块：“扰动模块”利用差分隐私机制生成扰动的提示，从而实现与黑盒LLM的隐私保护推理；“提取模块”则受到知识蒸馏和我们观察到的现象的启发，从扰动生成结果中提取一致且连贯的文本，确保成功完成文本生成。为了解决与先前差分隐私机制易受嵌入逆转攻击的隐私问题，我们引入了RANTEXT，这是一种新型的差分隐私机制，集成在InferDPT的扰动模块中，提出了“随机邻接列表”（RANdom adjacency list）概念，用于对提示中的文本进行扰动。实验结果表明，InferDPT的文本生成质量与非隐私的GPT-4相当，而RANTEXT在隐私与效用之间的权衡上超越了现有的最先进机制，即SANTEXT+和CUSTEXT+。即使在隐私参数ε值为6.0的情况下，RANTEXT也能实现超过90%的平均隐私保护率，抵御嵌入逆转攻击，比SANTEXT+高出0.58倍，比CUSTEXT+高出3.35倍。&lt;/p&gt;
+&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;摘要&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;以ChatGPT为代表的大型语言模型（LLMs）极大简化了文本生成任务。然而，它们也引发了关于隐私风险的担忧，如数据泄露和未经授权的信息收集。现有的隐私保护推理解决方案面临着与计算时间和通信成本相关的实际挑战。本文提出了InferDPT，这是第一个针对黑盒LLM的隐私保护推理的实用框架，旨在实现文本生成中的差分隐私。InferDPT包括两个关键模块：“扰动模块”利用差分隐私机制生成扰动的提示，从而实现与黑盒LLM的隐私保护推理；“提取模块”则受到知识蒸馏和我们观察到的现象的启发，从扰动生成结果中提取一致且连贯的文本，确保成功完成文本生成。为了解决与先前差分隐私机制易受嵌入逆转攻击的隐私问题，我们引入了RANTEXT，这是一种新型的差分隐私机制，集成在InferDPT的扰动模块中，提出了“随机邻接列表”（RANdom adjacency list）概念，用于对提示中的文本进行扰动。实验结果表明，InferDPT的文本生成质量与非隐私的GPT-4相当，而RANTEXT在隐私与效用之间的权衡上超越了现有的最先进机制，即SANTEXT+和CUSTEXT+。即使在隐私参数ε值为6.0的情况下，RANTEXT也能实现超过90%的平均隐私保护率，抵御嵌入逆转攻击，比SANTEXT+高出0.58倍，比CUSTEXT+高出3.35倍。&lt;/p&gt;
 &lt;h2 id=&#34;i-introduction&#34;&gt;I. INTRODUCTION
 &lt;/h2&gt;&lt;p&gt;近年来，大语言模型（LLMs）的快速发展引起了全球学术界和工业界的广泛关注 [1]。ChatGPT [2] 作为一个显著的例子，在2023年11月6日，由OpenAI首席执行官Sam Altman在公司首次开发者大会上宣布，已达到每周1亿活跃用户的里程碑 [3]。ChatGPT的广泛流行极大地方便了人们的日常工作和生活。用户通过API或网页界面与ChatGPT互动，用于生成文本，应用场景包括但不限于撰写文章、记录日常工作活动、以及为新产品撰写广告文案 [4]。然而，技术是把双刃剑。虽然LLMs提供了无与伦比的便利和实用性，但它们也带来了关于隐私泄露的重大担忧。有些情况下，LLMs的滥用导致了严重的隐私侵犯。例如，三星员工泄露了公司机密的会议记录和关于未发布产品的敏感数据 [5]。此外，最近发生的一起事件中，GPT-3.5意外泄露了个人的自拍照 [6]。这些事件重新激发了公众对上传个人数据到LLMs可能带来的隐私风险的担忧 [7]。因此，解决上传查询内容（在LLMs文本生成背景下称为“prompt”）的隐私问题变得至关重要。通常，文本生成任务中的prompt包括一个基本的写作指令和上传的私人文档1（根据微软AI Builder文档的定义 [8]）。&lt;/p&gt;
 &lt;h3 id=&#34;existing-solutions&#34;&gt;Existing Solutions
@@ -240,13 +240,13 @@ $$\frac{ \text{Pr}[M(x) = y] }{ \text{Pr}[M(x&#39;) = y] } \leq e^\epsilon$$&lt;
 &lt;p&gt;输出扰动后的文档 $Doc_p$；&lt;/p&gt;
 &lt;p&gt;为了实现这一点，RANTEXT 中随机机制 $M(\cdot)$ 的评分函数 $u(\cdot)$ 如下所述：&lt;/p&gt;
 &lt;p&gt;给定一个 token $t$，RANTEXT 认为在扰动 token $t$ 时，$C_r(t)$ 中的任何两个 token 都共享相同的输入集和输出集。对于任意两个 token $x, y \in C_r(t)$，评分函数为：&lt;/p&gt;
-&lt;p&gt;$u(x, y) = 1 - \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} \tag{16}$&lt;/p&gt;
+&lt;p&gt;u(x, y) = 1 - \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} \tag{16}&lt;/p&gt;
 &lt;p&gt;根据方程 (11) 和方程 (14)，可以得出：&lt;/p&gt;
-&lt;p&gt;$|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))| &amp;lt; d_e(\varphi(t), \hat{\varphi}(t)) \tag{17}$&lt;/p&gt;
-&lt;p&gt;$0 \leq \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} &amp;lt; 1 \tag{18}$&lt;/p&gt;
+&lt;p&gt;|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))| &amp;lt; d_e(\varphi(t), \hat{\varphi}(t)) \tag{17}&lt;/p&gt;
+&lt;p&gt;0 \leq \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} &amp;lt; 1 \tag{18}&lt;/p&gt;
 &lt;p&gt;结合方程 (16) 和方程 (17)，可以推导出：&lt;/p&gt;
-&lt;p&gt;$0 &amp;lt; u(x, y) \leq 1 \tag{19}$&lt;/p&gt;
-&lt;p&gt;$\Delta u = 1 \tag{20}$&lt;/p&gt;
+&lt;p&gt;0 &amp;lt; u(x, y) \leq 1 \tag{19}&lt;/p&gt;
+&lt;p&gt;\Delta u = 1 \tag{20}&lt;/p&gt;
 $$
 P_r[y|x] = \frac{\exp \left( \frac{\epsilon}{2} \cdot u(x, y) \right)}{\sum_{y&#39; \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot u(x, y&#39;) \right)} \tag{21}
 $$$$
@@ -260,8 +260,8 @@ $$&lt;p&gt;RANTEXT 的详细过程如算法 2 所示。此外，RANTEXT 满足 �
 &lt;p&gt;$\frac{P_r[M(x) = y]}{P_r[M(x&amp;rsquo;) = y]} \leq e^{\epsilon} \tag{25}$&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;定理 2&lt;/strong&gt; 证明了，给定 token $t$ 的随机邻接列表 $C_r(t)$，RANTEXT 机制满足 ε-LDP。定理 2 的证明见附录 B。&lt;/p&gt;
 &lt;h2 id=&#34;vi-实验&#34;&gt;VI. 实验
-&lt;/h2&gt;&lt;h4 id=&#34;a-实验设置&#34;&gt;A. 实验设置
-&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;数据集&lt;/strong&gt;：
+&lt;/h2&gt;&lt;h3 id=&#34;a-实验设置&#34;&gt;A. 实验设置
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;数据集&lt;/strong&gt;：
 对于开放式文本生成任务，我们使用了两个经典的NLP数据集：CNN/Daily Mail [29] 用于新闻文章，Wikitext-103-v1 [31] 用于维基百科文章。对于实际应用，我们使用了ArXiv数据集 [32] 来撰写科学论文。这些数据集涵盖了大量的事件和个人。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;基准&lt;/strong&gt;：
 InferDPT 是首个实际应用于文本生成任务中实现差分隐私的隐私保护推理框架 [33]。由于目前没有其他同类型的框架，因此我们没有将 InferDPT 与其他框架进行比较。对于扰动模块中的差分隐私机制，我们将 RANTEXT 与现有的最先进机制，SANTEXT+ [12] 和 CUSTEXT+ [13] 在其默认设置下进行比较。&lt;/p&gt;
