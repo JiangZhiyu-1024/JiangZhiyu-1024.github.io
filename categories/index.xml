@@ -7,7 +7,39 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Tue, 03 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 06 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Bert</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/bert/</link>
+        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/bert/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>ChatGPT</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/chatgpt/</link>
+        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/chatgpt/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>黑盒LLM</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E9%BB%91%E7%9B%92llm/</link>
+        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%BB%91%E7%9B%92llm/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>隐私保护推理</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Transformer</title>
         <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
         <pubDate>Tue, 03 Dec 2024 00:00:00 +0000</pubDate>
