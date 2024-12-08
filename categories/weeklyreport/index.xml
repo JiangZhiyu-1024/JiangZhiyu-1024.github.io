@@ -7,7 +7,24 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Sun, 17 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/weeklyreport/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 08 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/weeklyreport/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>第7周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/leaves-5598709_1280.png" alt="Featured image of post 第7周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+&lt;/h1&gt;&lt;p&gt;最近运气不太好啊，生病连着生病，两周感冒刚好，准备重新出发了，又不知道为何整出来荨麻疹了，一晚一晚的睡不着觉，很是头大啊。&lt;/p&gt;
+&lt;p&gt;上次和学长讨论完，要找一个细致的方向，但最近看了看论文，发现越来越难了，很多细节都不懂，比如密码学的一些东西，感觉需要恶补很多东西啊，不然基础的不懂，他们整体构筑起来的论文我就有点看不懂。&lt;/p&gt;
+&lt;p&gt;这周看了一个BumbleBee: 大型变换器模型的安全双方推理框架，感觉有一点点感悟，但不多，由于生病折磨，这周就没怎么看，感觉缺的背景知识有点多，需要拿出时间来补一补。&lt;/p&gt;
+&lt;p&gt;还看了一个论文：InferDPT：面向黑盒大语言模型的隐私保护推理，这个比较好理解，但我却想不到，想来也是因为缺少背景知识的缘故，他把要发送的文档进行差分隐私发过去，把gpt的结果拿过来给自己的模型，再生成一次结果，这样就保证了大模型一方拿不到完整数据，而且有不错的效率保证。&lt;/p&gt;
+&lt;p&gt;CipherGPT：安全的两方 GPT 推理还没看完&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;计划&#34;&gt;计划
+&lt;/h2&gt;&lt;p&gt;继续看看论文，补一补背景知识。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>第6周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC6%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 17 Nov 2024 00:00:00 +0000</pubDate>

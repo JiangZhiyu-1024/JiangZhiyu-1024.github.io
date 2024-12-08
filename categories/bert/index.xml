@@ -257,7 +257,7 @@ $$$$
 P_r[y|t] = \frac{\exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)}{\sum_{y&#39; \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y&#39;))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)} \tag{24}
 $$&lt;p&gt;RANTEXT 的详细过程如算法 2 所示。此外，RANTEXT 满足 ε-LDP 的定义，符合第 IV-B 节的观察条件：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;定理 2&lt;/strong&gt;：给定隐私参数 $\epsilon \geq 0$ 和 token $t$ 的随机邻接列表 $C_r(t)$，对于任意输入 $x, x&amp;rsquo; \in C_r(t)$ 和输出 $y \in C_r(t)$，RANTEXT 的随机机制 $M$ 满足：&lt;/p&gt;
-&lt;p&gt;$\frac{P_r[M(x) = y]}{P_r[M(x&amp;rsquo;) = y]} \leq e^{\epsilon} \tag{25}$&lt;/p&gt;
+&lt;p&gt;\frac{P_r[M(x) = y]}{P_r[M(x&amp;rsquo;) = y]} \leq e^{\epsilon} \tag{25}&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;定理 2&lt;/strong&gt; 证明了，给定 token $t$ 的随机邻接列表 $C_r(t)$，RANTEXT 机制满足 ε-LDP。定理 2 的证明见附录 B。&lt;/p&gt;
 &lt;h2 id=&#34;vi-实验&#34;&gt;VI. 实验
 &lt;/h2&gt;&lt;h3 id=&#34;a-实验设置&#34;&gt;A. 实验设置

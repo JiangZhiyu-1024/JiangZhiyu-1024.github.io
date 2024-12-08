@@ -7,7 +7,24 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Fri, 06 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 08 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>第7周工作总结</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
+        <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/leaves-5598709_1280.png" alt="Featured image of post 第7周工作总结" /&gt;&lt;h1 id=&#34;总结&#34;&gt;总结
+&lt;/h1&gt;&lt;p&gt;最近运气不太好啊，生病连着生病，两周感冒刚好，准备重新出发了，又不知道为何整出来荨麻疹了，一晚一晚的睡不着觉，很是头大啊。&lt;/p&gt;
+&lt;p&gt;上次和学长讨论完，要找一个细致的方向，但最近看了看论文，发现越来越难了，很多细节都不懂，比如密码学的一些东西，感觉需要恶补很多东西啊，不然基础的不懂，他们整体构筑起来的论文我就有点看不懂。&lt;/p&gt;
+&lt;p&gt;这周看了一个BumbleBee: 大型变换器模型的安全双方推理框架，感觉有一点点感悟，但不多，由于生病折磨，这周就没怎么看，感觉缺的背景知识有点多，需要拿出时间来补一补。&lt;/p&gt;
+&lt;p&gt;还看了一个论文：InferDPT：面向黑盒大语言模型的隐私保护推理，这个比较好理解，但我却想不到，想来也是因为缺少背景知识的缘故，他把要发送的文档进行差分隐私发过去，把gpt的结果拿过来给自己的模型，再生成一次结果，这样就保证了大模型一方拿不到完整数据，而且有不错的效率保证。&lt;/p&gt;
+&lt;p&gt;CipherGPT：安全的两方 GPT 推理还没看完&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;计划&#34;&gt;计划
+&lt;/h2&gt;&lt;p&gt;继续看看论文，补一补背景知识。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>InferDPT：面向黑盒大语言模型的隐私保护推理</title>
         <link>https://JiangZhiyu-1024.github.io/p/inferdpt%E9%9D%A2%E5%90%91%E9%BB%91%E7%9B%92%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</link>
         <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
@@ -257,7 +274,7 @@ $$$$
 P_r[y|t] = \frac{\exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)}{\sum_{y&#39; \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y&#39;))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)} \tag{24}
 $$&lt;p&gt;RANTEXT 的详细过程如算法 2 所示。此外，RANTEXT 满足 ε-LDP 的定义，符合第 IV-B 节的观察条件：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;定理 2&lt;/strong&gt;：给定隐私参数 $\epsilon \geq 0$ 和 token $t$ 的随机邻接列表 $C_r(t)$，对于任意输入 $x, x&amp;rsquo; \in C_r(t)$ 和输出 $y \in C_r(t)$，RANTEXT 的随机机制 $M$ 满足：&lt;/p&gt;
-&lt;p&gt;$\frac{P_r[M(x) = y]}{P_r[M(x&amp;rsquo;) = y]} \leq e^{\epsilon} \tag{25}$&lt;/p&gt;
+&lt;p&gt;\frac{P_r[M(x) = y]}{P_r[M(x&amp;rsquo;) = y]} \leq e^{\epsilon} \tag{25}&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;定理 2&lt;/strong&gt; 证明了，给定 token $t$ 的随机邻接列表 $C_r(t)$，RANTEXT 机制满足 ε-LDP。定理 2 的证明见附录 B。&lt;/p&gt;
 &lt;h2 id=&#34;vi-实验&#34;&gt;VI. 实验
 &lt;/h2&gt;&lt;h3 id=&#34;a-实验设置&#34;&gt;A. 实验设置
