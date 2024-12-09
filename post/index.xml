@@ -7,7 +7,472 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Sun, 08 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 09 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>密码学部分问题2</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/</link>
+        <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280.jpg" alt="Featured image of post 密码学部分问题2" /&gt;&lt;h2 id=&#34;矢量隐私线性评估-vole&#34;&gt;矢量隐私线性评估 VOLE
+&lt;/h2&gt;&lt;p&gt;矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;核心概念&#34;&gt;&lt;strong&gt;核心概念&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;VOLE 通常涉及两方，分别称为发送方和接收方：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;发送方&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;输入一个矢量 aa 和一个矢量 bb。&lt;/li&gt;
+&lt;li&gt;发送方知道这些值，并且希望接收方在不直接得知 aa 和 bb 的情况下，能够执行特定的线性操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;输入一个矢量 xx。&lt;/li&gt;
+&lt;li&gt;通过与发送方交互，接收方得到一个结果 y=ax+by = ax + b，而不会暴露自己的输入 xx。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;发送方不会知道接收方的输入 xx。&lt;/li&gt;
+&lt;li&gt;接收方不会知道发送方的输入 aa 和 bb，只获得 ax+bax + b 的结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高效性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;VOLE 协议的设计特别注重计算和通信效率，可以用于处理大规模矢量或矩阵运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;&lt;strong&gt;工作原理&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;VOLE 协议通常依赖于预分布的密钥材料或使用更高级的密码技术（如差分隐私、同态加密或秘密共享）来实现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;初始化阶段&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;协议开始前，参与方可能会预共享一些随机密钥或生成关联的共享值，用于后续运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评估阶段&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;发送方和接收方通过加密通信执行一个安全协议。&lt;/li&gt;
+&lt;li&gt;接收方从协议中获得目标值 ax+bax + b。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;实际例子&#34;&gt;&lt;strong&gt;实际例子&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;假设我们有一个广告推荐系统，其中广告平台想根据用户的兴趣分数 xx 计算推荐的广告得分 y=ax+by = ax + b，但双方不希望透露自己的隐私信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;发送方（广告平台）&lt;/p&gt;
+&lt;p&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入参数 a=[2,3]a = [2, 3] 和偏置 b=[5,−1]b = [5, -1]。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;接收方（用户）&lt;/p&gt;
+&lt;p&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入兴趣向量 x=[4,7]x = [4, 7]。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;通过 VOLE 协议：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;广告平台和用户执行交互，平台不知道用户的兴趣 xx，用户也不知道平台的权重 aa 和偏置 bb。&lt;/li&gt;
+&lt;li&gt;协议输出：
+&lt;ul&gt;
+&lt;li&gt;用户收到结果 y=ax+b=[2⋅4+5,3⋅7−1]=[13,20]y = ax + b = [2 \cdot 4 + 5, 3 \cdot 7 - 1] = [13, 20]。&lt;/li&gt;
+&lt;li&gt;广告平台无法得知用户的兴趣向量，用户也无法获知广告平台的参数 aa 和 bb。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;应用场景&#34;&gt;&lt;strong&gt;应用场景&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;私有机器学习推理&lt;/strong&gt;：比如允许用户在不泄露其私有数据的前提下，利用云端模型进行推理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全多方计算&lt;/strong&gt;：如在金融或医疗场景中，多个机构合作完成隐私保护的统计分析。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私保护的广告投放&lt;/strong&gt;：用于确保用户的兴趣和广告平台的策略均不暴露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种工具能够平衡效率与隐私，在当前注重隐私的计算任务中具有重要的应用价值。&lt;/p&gt;
+&lt;h2 id=&#34;基于样条spline的-gelu-近似方法&#34;&gt;基于样条（spline）的 GELU 近似方法
+&lt;/h2&gt;&lt;p&gt;基于样条（spline）的 GELU 近似方法是一种高效且安全的计算方法，用于近似 GELU 激活函数。样条方法通过将复杂的非线性函数分解为多个线性或低阶多项式函数片段来实现快速计算，同时保持较高的精度。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;gelu-函数的定义&#34;&gt;&lt;strong&gt;GELU 函数的定义&lt;/strong&gt;:
+&lt;/h3&gt;&lt;p&gt;GELU（Gaussian Error Linear Unit）的数学定义是：&lt;/p&gt;
+&lt;p&gt;$\text{GELU}(x) = x \cdot \Phi(x)$&lt;/p&gt;
+&lt;p&gt;其中 $\Phi(x)$ 是标准正态分布的累积分布函数：&lt;/p&gt;
+&lt;p&gt;$\Phi(x) = \frac{1}{2}\left[1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right]$&lt;/p&gt;
+&lt;p&gt;由于 $\text{erf}$（误差函数）和 $\Phi(x)$ 的计算涉及指数函数和积分运算，其直接计算开销较大。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;基于查找表的传统方法&#34;&gt;&lt;strong&gt;基于查找表的传统方法&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;传统方法通过以下步骤实现 GELU 的安全计算：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用查找表（LUT）近似 $e^{-x}$。&lt;/li&gt;
+&lt;li&gt;用另一张查找表近似指数函数的倒数。&lt;/li&gt;
+&lt;li&gt;每一步都需要扩展或截断位宽，以在精度和效率之间找到平衡。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种方法尽管有效，但需要多个查找表和逐步逼近，计算流程较复杂。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;基于样条的-gelu-近似&#34;&gt;&lt;strong&gt;基于样条的 GELU 近似&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;基于样条的方法通过分段线性或分段多项式逼近的方式，用更简单的运算替代传统的复杂计算。以下是关键步骤：&lt;/p&gt;
+&lt;h4 id=&#34;1-样条分段&#34;&gt;&lt;strong&gt;1. 样条分段&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;将输入x 的值域划分为多个区间，例如 [−3,−2][-3, -2], [−2,−1][-2, -1], [1,2][1, 2] 等。&lt;/li&gt;
+&lt;li&gt;在每个区间内，用一个简单的函数（通常是一阶或二阶多项式）来近似 GELU 的值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-低阶多项式近似&#34;&gt;&lt;strong&gt;2. 低阶多项式近似&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;在每个区间 [xi,xi+1][x_i, x_{i+1}] 中，使用线性或二次样条拟合 GELU 函数： $\text{GELU}(x) \approx a_i x^2 + b_i x + c_i, \quad x \in [x_i, x_{i+1}]$&lt;/li&gt;
+&lt;li&gt;这些系数 $a_i, b_i, c_i$ 是通过离线拟合和训练得到的，确保逼近误差最小。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-高效计算&#34;&gt;&lt;strong&gt;3. 高效计算&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;在线计算时，根据输入值 xx 找到对应的分段区间，并应用对应的多项式计算 $\text{GELU}(x)$。&lt;/li&gt;
+&lt;li&gt;样条方法仅需简单的加减乘除操作，大大减少了计算复杂度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;相较传统方法的优点&#34;&gt;&lt;strong&gt;相较传统方法的优点&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;效率高&lt;/strong&gt;：样条方法不需要查找多个查找表，也不涉及指数和倒数计算，适合硬件实现。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精度可控&lt;/strong&gt;：通过增加分段数或使用更高阶的样条，可以灵活调整逼近误差。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更安全&lt;/strong&gt;：在安全计算环境中，样条方法减少了中间复杂运算的泄露风险。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一个具体例子&#34;&gt;&lt;strong&gt;一个具体例子&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;假设我们采用三段分段样条，分段区间为 [−2,−1][-2, -1], [−1,0][-1, 0], 和 [0,2][0, 2]，并拟合出以下二次多项式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [−2,−1][-2, -1]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈0.1x2+0.5x+0.2\text{GELU}(x) \approx 0.1x^2 + 0.5x + 0.2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [−1,0][-1, 0]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈−0.2x2+0.7x+0.1\text{GELU}(x) \approx -0.2x^2 + 0.7x + 0.1$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [0,2][0, 2]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈0.3x2+0.4x+0.3\text{GELU}(x) \approx 0.3x^2 + 0.4x + 0.3$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在线计算时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果 x = -1.5，它属于区间 [−2,−1][-2, -1]，代入第一个多项式： $GELU(−1.5)=0.1(−1.5)2+0.5(−1.5)+0.2=0.025\text{GELU}(-1.5) = 0.1(-1.5)^2 + 0.5(-1.5) + 0.2 = 0.025$&lt;/li&gt;
+&lt;li&gt;如果x = 0.5，它属于区间 [0,2][0, 2]，代入第三个多项式： $GELU(0.5)=0.3(0.5)2+0.4(0.5)+0.3=0.725\text{GELU}(0.5) = 0.3(0.5)^2 + 0.4(0.5) + 0.3 = 0.725$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;应用场景-1&#34;&gt;&lt;strong&gt;应用场景&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件实现&lt;/strong&gt;：适合加速器或 FPGA 等场景，实现高效的激活函数计算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私计算&lt;/strong&gt;：在多方计算（MPC）或同态加密中，样条方法可减少计算复杂性和通信量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大模型推理&lt;/strong&gt;：在内存和计算受限的设备上提高推理效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种方法已经被证明能够有效平衡精度和效率，是安全计算中 GELU 近似的一种重要手段。&lt;/p&gt;
+&lt;h2 id=&#34;simdsingle-instruction-multiple-data技术&#34;&gt;SIMD（Single Instruction, Multiple Data）技术
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;SIMD（Single Instruction, Multiple Data）技术&lt;/strong&gt;，是指一种通过在同一时刻对多个数据元素执行相同操作的计算技术。SIMD 允许处理器在单条指令下并行地处理多个数据，从而提高计算效率和吞吐量，尤其在执行向量化操作时能够显著加速计算过程。&lt;/p&gt;
+&lt;h3 id=&#34;simd-技术的基本概念&#34;&gt;&lt;strong&gt;SIMD 技术的基本概念&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;SIMD 是一种并行计算模型，它允许在同一条指令下对多个数据元素进行批量操作。常见的 SIMD 指令集包括 Intel 的 &lt;strong&gt;SSE&lt;/strong&gt;、&lt;strong&gt;AVX&lt;/strong&gt;，以及 ARM 的 &lt;strong&gt;NEON&lt;/strong&gt;，它们都能够将多个数据点（例如 4 个、8 个、16 个数字）装入一个寄存器，并通过单条指令同时对这些数据执行相同的操作（例如加法、乘法等）。&lt;/p&gt;
+&lt;h3 id=&#34;simd-在同态加密中的应用&#34;&gt;&lt;strong&gt;SIMD 在同态加密中的应用&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;在同态加密（Homomorphic Encryption, HE）中，SIMD 技术用于优化对加密数据的批量处理。比如，假设有一个密文表示的加密数据集，SIMD 可以将这些密文批量处理到单个密文中，从而摊销计算成本，提高处理速度。&lt;/p&gt;
+&lt;p&gt;在这类加密方案中，例如 &lt;strong&gt;RLWE（Ring Learning With Errors）&lt;/strong&gt; 加密方案，SIMD 可以并行地对多个加密的消息执行相同的操作，如加法、乘法等，从而加速加密数据的计算过程。例如，多个密文的处理可以通过一次向量化操作一次性完成，而不是逐个处理，从而提高效率。&lt;/p&gt;
+&lt;h3 id=&#34;问题中的同态旋转&#34;&gt;&lt;strong&gt;问题中的“同态旋转”&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;“同态旋转”指的是在同态加密中，对密文进行的某些操作（如加密数据的旋转或重新排列），在 RLWE 等加密方案中常常是通过复杂的同态操作来实现的。这种旋转操作通常涉及对加密数据结构（如向量或多项式）的某些变换。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同态旋转的成本高&lt;/strong&gt;：同态加密中的旋转操作非常昂贵，因为它需要对加密数据进行复杂的同态运算，同时保持加密数据的隐私性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;摊销成本&lt;/strong&gt;：SIMD 技术通过并行处理大量数据，可以在某种程度上摊销这些昂贵的计算成本。也就是说，SIMD 让我们能够在执行加密运算时，将多个计算合并为一个操作，减少每次计算的总消耗。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然而，由于 &lt;strong&gt;同态旋转&lt;/strong&gt; 操作的复杂性，这部分操作的计算仍然是同态加密中性能瓶颈之一，尤其是在需要执行多个旋转和聚合操作时，仍然需要付出较高的计算开销。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;&lt;strong&gt;总结&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;在加密算法中，&lt;strong&gt;SIMD 技术&lt;/strong&gt;通过批量并行处理多个数据元素，能够提高对加密数据（例如 RLWE 密文）的处理效率。而&lt;strong&gt;同态旋转&lt;/strong&gt;操作在同态加密中是一个复杂的操作，通常需要昂贵的计算资源。尽管 SIMD 技术可以在一定程度上摊销这一成本，但旋转操作仍然是一个计算瓶颈，导致性能受到一定限制。&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>CipherGPT：安全的两方 GPT 推理</title>
+        <link>https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/lake-192990_1280.jpg" alt="Featured image of post CipherGPT：安全的两方 GPT 推理" /&gt;&lt;h1 id=&#34;ciphergpt安全的两方-gpt-推理&#34;&gt;CipherGPT：安全的两方 GPT 推理
+&lt;/h1&gt;&lt;p&gt;摘要——ChatGPT 被认为是人工智能领域的一次重要革命，但它引发了用户隐私的严重担忧，因为用户提交的数据可能包含敏感信息。现有的安全推理解决方案在支持类似 GPT 的模型时面临显著挑战，这主要由于模型参数数量巨大以及激活函数的复杂性。在本文中，我们开发了 CipherGPT，这是首个针对 GPT 的安全两方推理框架，基于一系列创新协议构建。首先，我们提出了一种专为 GPT 推理定制的安全矩阵乘法协议，其性能相比当前最先进技术（SOTA），在速度上实现了高达 2.5 倍的提升，带宽消耗减少了 11.2 倍。同时，我们提出了一种新颖的 GELU 激活函数安全计算协议，在运行时间、通信开销和精度方面分别超越 SOTA 4.2 倍、3.4 倍和 10.9 倍。此外，我们设计了首个支持 top-k 采样的协议。我们为 CipherGPT 提供了全面的实现和基准测试，特别是对每个操作的运行时间和通信量以及其相应的比例进行了测量。我们相信，这将为该领域的未来研究提供重要参考。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;引言
+&lt;/h2&gt;&lt;p&gt;ChatGPT 是基于开创性的生成式预训练变换器（GPT）架构 [34] 构建的大型语言模型（LLM），被认为是人工智能领域的一次重大革命。凭借庞大的知识库和卓越的语言能力，ChatGPT 擅长执行各种任务，包括问答、文章润色、建议提供以及会话交流。它还可以作为虚拟助手，高效支持客户服务、信息检索和语言翻译等应用。OpenAI 已将 ChatGPT 开发为在线推理服务，并为开发者提供了远程 API，用户只需提交提示或消息即可方便地享受 GPT 推理服务。&lt;/p&gt;
+&lt;p&gt;然而，这种服务模式不可避免地将用户隐私置于风险之中，因为用户提交的数据可能包含敏感信息。这类隐私问题可能会限制 GPT 在数据保密性至关重要的某些场景中的部署。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安全推理&lt;/strong&gt;（Secure inference）[20], [30], [28], [31], [37], [36], [27], [25] 是一种两方密码协议，用于在推理阶段保证以下安全性：服务器（S）无法得知客户端（C）的输入内容，而客户端仅能获取推理结果，对模型的其他部分一无所知。大致来说，这一过程通过服务器和客户端利用加密技术（如同态加密和秘密共享）在加密模型和加密输入上进行计算来实现。通常会引入预处理阶段，以准备一些昂贵且与输入无关的计算，从而提高在线阶段的效率。&lt;/p&gt;
+&lt;p&gt;不幸的是，现有的安全推理协议在支持 GPT 方面能力有限。例如，Cheetah [27] 专为卷积神经网络（如 ResNet50）设计，而 Iron [25] 则仅支持单个变换器。然而，像 GPT-2 这样的 LLM 包含 12 个变换器，涉及大量高维矩阵乘法和复杂的数学函数（如 GELU）。因此，GPT 的出现确实为安全推理领域带来了新的挑战。&lt;/p&gt;
+&lt;h3 id=&#34;我们的贡献&#34;&gt;我们的贡献
+&lt;/h3&gt;&lt;p&gt;在本文中，我们提出了 &lt;strong&gt;CipherGPT&lt;/strong&gt;，这是首个用于安全 GPT 推理的框架，基于一系列新颖的协议构建而成。&lt;/p&gt;
+&lt;h4 id=&#34;基于-vole-的矩阵乘法&#34;&gt;基于 VOLE 的矩阵乘法
+&lt;/h4&gt;&lt;p&gt;GPT 接受较长的句子作为输入，并以自回归的方式生成响应单词。具体来说，在生成一个响应单词后，该单词会被添加到输入句子中，新的句子则作为模型输入用于生成下一个响应单词。每生成一个响应单词都需要进行一次模型推理，而这包含在每一层中执行一次矩阵乘法（简称 MatrixMul）。&lt;/p&gt;
+&lt;p&gt;在预处理阶段，对于每一层，我们将针对各个响应单词的 MatrixMul 合并为一个不平衡的 MatrixMul，并通过 sVOLE 进行处理。&lt;/p&gt;
+&lt;h4 id=&#34;矢量隐私线性评估-vole&#34;&gt;矢量隐私线性评估 (VOLE)
+&lt;/h4&gt;&lt;p&gt;矢量隐私线性评估（VOLE）[8], [10], [48], [9] 用于生成诸如 w = ux + v 这样的关联，其中发送方输入为 x，获得长度为 n 的向量 w，接收方获得长度为 n 的向量 (u, v)。子域 VOLE (sVOLE) [10] 是 VOLE 的一种推广形式；理想情况下，sVOLE 能完成 k 次普通 VOLE 实例的任务，同时成本与运行单次 VOLE 实例相当。当n ≫ k 时，sVOLE 更具成本效益，这使其在计算不平衡的矩阵乘法（MatrixMul）时尤为实用。&lt;/p&gt;
+&lt;h4 id=&#34;基于样条的-gelu&#34;&gt;基于样条的 GELU
+&lt;/h4&gt;&lt;p&gt;GPT 使用 GELU 作为其激活函数，其表达式为：&lt;/p&gt;
+&lt;p&gt;$\text{GELU}(x) = 0.5x\left(1 + \tanh\left(\sqrt{2/\pi}(x + 0.044715x^3)\right)\right)$,&lt;/p&gt;
+&lt;p&gt;其中：
+$\tanh(x) = 2\text{Sigmoid}(2x) - 1, \quad \text{Sigmoid}(x) = \frac{1}{1+e^{-x}}$.&lt;/p&gt;
+&lt;p&gt;为安全计算 GELU，当前最先进的方法（SOTA）[36], [25] 采用查找表（LUT）近似$e^{-x}$，并用另一个查找表近似倒数。这一多步过程还需要在每一步扩展或截断位宽以平衡精度和效率。&lt;/p&gt;
+&lt;p&gt;相比之下，我们的目标是在单步中整体计算 GELU。为此，我们将 GELU 分为多个区间，并使用线性函数 y = ax + d 对每个区间内的曲线进行近似。这种基于样条的近似最初由 Liu 等人 [30] 提出，其中使用混淆电路确定 x 所属的区间并计算相应的线性函数。我们通过利用查找表（LUT）确定区间，并以秘密共享的方式计算相应的线性函数，显著提高了其性能。&lt;/p&gt;
+&lt;p&gt;与现有的 SOTA GELU 计算方法 [25] 相比，我们节省了一个查找表、两次截断和三次秘密共享乘法操作，同时需要更小的查找表。此外，我们的单步方法精度更高，因为它避免了多步方法中固有的误差累积问题。&lt;/p&gt;
+&lt;h3 id=&#34;基于洗牌的-top-k-选择&#34;&gt;基于洗牌的 Top-K 选择
+&lt;/h3&gt;&lt;p&gt;从长度为 n 的秘密共享向量中选择 Top-K 元素的一种直接方法是对向量进行安全排序，这通常通过数据无关的排序算法（如 Bitonic 排序网络 [26]）来实现。我们的第一个见解来自 [4]，即通过以下步骤实现安全排序：首先对输入元素进行安全洗牌，然后应用基于比较的排序协议（例如快速排序）将洗牌后的元素排列为有序状态。在排序过程中获得的比较结果不会泄露原始元素的信息，因为这些元素已经被洗牌。&lt;/p&gt;
+&lt;p&gt;我们的第二个见解是，若采用快速排序，则无需对整个向量排序。相反，我们可以利用改进版的快速排序算法。通常，快速排序从向量中随机选择一个元素作为基准值（pivot），并将其与其他元素进行比较。根据比较结果，将向量划分为两部分：小于基准值的元素和大于基准值的元素。快速排序随后递归地处理这两个部分。在我们的场景中，只需递归处理包含 Top-K 最大元素的部分，从而将安全比较的数量从 $O(n \log n) $降至 O(n)。&lt;/p&gt;
+&lt;h3 id=&#34;安全采样&#34;&gt;安全采样
+&lt;/h3&gt;&lt;p&gt;我们还解决了基于秘密共享概率从向量中安全选择一个元素的问题。具体而言，给定一个包含 K 个元素的向量，其中每个元素都与一个秘密共享概率 $p_i$ 相关联，第 j 个元素被选择的概率为 $p_j$。我们的协议仅需 (K - 1) 次安全比较和 K 个多路复用器。据我们所知，这是首次对安全采样的探索。&lt;/p&gt;
+&lt;h3 id=&#34;我们的贡献总结&#34;&gt;我们的贡献总结
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;定制化的安全矩阵乘法&lt;/strong&gt;：针对 GPT 优化的安全矩阵乘法协议，与现有最优方法相比，运行速度提高了最多 2.5 倍，带宽需求降低了 11.2 倍（详见第 3 节）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;新颖的 GELU 安全计算协议&lt;/strong&gt;：在运行时间、通信开销和精度方面分别比现有方法快 4.2 倍、少 3.4 倍和高 10.9 倍（详见第 4 节）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;创新的 Top-K 采样解决方案&lt;/strong&gt;：实现了 Top-K 概率选择，并基于选定概率进行采样（详见第 5 和第 6 节）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;首个用于安全 GPT 推理的框架&lt;/strong&gt;：构建了全面的基准测试，可为该研究方向的探索提供参考（详见第 7 和第 8 节）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;预备知识&#34;&gt;&lt;strong&gt;预备知识&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;在本节中，我们介绍理解本文所需的基本概念。表1总结了本文中常用的符号。&lt;/p&gt;
+&lt;h3 id=&#34;安全推理与威胁模型&#34;&gt;&lt;strong&gt;安全推理与威胁模型&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;安全推理是一种双方加密协议，用于在客户端 C 和服务器 S 之间进行模型推理。该协议确保 C 仅获得关于模型架构和推理结果的知识，而将 S 的模型的其他细节保持隐藏。同样，S 也无法获知 C 的输入以及推理结果。在 GPT 推理的背景下，C 的输入是提示（prompt），而 S 的模型包括多个 Transformer 解码器迭代和一个 vec2word 层。有关 GPT 的更多信息请参见第7节。我们假设 C 或 S 之一可能是半诚实的对手，即遵循协议规范但试图在协议执行过程中尽可能多地收集信息。我们假设对手在计算上是有界的，并使用 λ 表示计算安全参数。&lt;/p&gt;
+&lt;h3 id=&#34;加密原语&#34;&gt;&lt;strong&gt;加密原语&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;秘密共享&lt;/strong&gt;
+我们使用基于不同2的幂环的2-out-of-2加法秘密共享方案。对于 $x \in \mathbb{Z}_{2^l}$，我们用 $\langle x \rangle_l = (\langle x \rangle_l^S, \langle x \rangle_l^C)$ 来表示它的共享，其中 $x = \langle x \rangle_l^S + \langle x \rangle_l^C \mod 2^l$。为了简化表达，当上下文不影响时，我们省略 $\langle x \rangle_l$ 中的 $l$ 标记。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;非统一比特宽度的乘法&lt;/strong&gt;
+理想功能 $F_{\text{Mult}}$ 接受 $\langle x \rangle_g$ 和 $\langle y \rangle_h$ 作为输入，并返回 $\langle z \rangle_l$，其中 $z = x \cdot y$ 且 $l = g + h$。实现该功能的一种简单方法是首先将两个输入扩展为 $l$ 比特，然后使用标准的秘密共享乘法协议，假设比特宽度统一。SIRNN [36] 提供了一种协议，性能比这个简单方案提高了 1.5 倍。该协议的通信复杂度为 $\mu(\lambda + \frac{\mu}{2} + \frac{1}{2}) + mn$，其中 $\mu = \min(m, n)$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安全比较&lt;/strong&gt;
+理想功能 $F_{\text{CMP}}$ 接受 $\langle x \rangle_l$ 和 $\langle y \rangle_l$ 作为输入，并返回 $\langle b \rangle_1$，其中如果 $x \geq y$，则 $b = 1$，否则 $b = 0$。CrypTFlow2 [37] 提供了一种高效的 $F_{\text{CMP}}$ 协议，通信成本小于 $\lambda l + 14l$ 比特，并且具有 $\log l$ 轮次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安全多路复用器&lt;/strong&gt;
+理想功能 $F_{\text{MUX}}$ 接受 $\langle x \rangle_l$ 和 $\langle b \rangle_1$ 作为输入，并返回 $\langle y \rangle_l$，其中当 $b = 1$ 时 $y = x$，当 $b = 0$ 时 $y = 0$。本文采用的安全多路复用器由 SIRNN [36] 提供，通信需求为 $2(\lambda + l)$ 比特。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;安全截断&lt;/strong&gt;
+理想功能 $F_{\text{Trunc}}$ 接受 $\langle x \rangle_l$ 和 $s$ 作为输入，并返回 $\langle y \rangle_l$，其中 $y = x \gg s$。SIRNN [36] 提供了一种安全截断协议，通信成本小于 $\lambda(l + 3) + 15l + s + 20$ 比特，并且具有 $\log l + 3$ 轮次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;截断后缩减&lt;/strong&gt;
+理想功能 $F_{\text{TR}}$ 接受 $\langle x \rangle_l$ 和 $s$ 作为输入，并返回 $\langle y \rangle_{l - s}$，其中 $y = x \gg s$。注意，$F_{\text{TR}}$ 与 $F_{\text{Trunc}}$ 的区别在于，$F_{\text{TR}}$ 将输出通过右移操作缩减到更小的环中，而 $F_{\text{Trunc}}$ 将输出保留在原始环中。SIRNN [36] 提供了一种协议来实现 $F_{\text{TR}}$，其通信成本小于 $\lambda(s + 1) + l + 13s$ 比特。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;查找表&lt;/strong&gt;
+理想功能 $F_{\text{LUT}}$ 接受 $\langle i \rangle$ 作为输入，并返回 $\langle T[i] \rangle$，其中 $T$ 是一个具有 $M$ 项的表。该功能可以通过对 $M$-1OT [17] 的一次调用来实现。更高效的解决方案是首先将 LUT 描述转换为布尔表达式，然后使用多输入内积 [13] 评估它。该协议在预处理阶段的通信成本为 $(mt + 4) \cdot (2^M - M - 1)$ 比特（其中 $mt$ 表示生成布尔乘法三元组的成本），在线阶段的通信成本为 $2\sigma$ 比特。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;秘密共享洗牌&lt;/strong&gt;
+理想功能 $F_{\text{Shuffle}}$ 接受 $\langle x \rangle$ 和 $\langle \pi \rangle$ 作为输入，并返回 $\langle \pi(x) \rangle$，其中 $\pi$ 是一个置换函数。Chase 等人 [14] 提出了使用轻量级原语（如 OT 和 P RG）构建此功能的高效方案。他们的方法通过使用可打孔的伪随机函数（PRF）来构建一个置换和共享协议，使得两方能够使用由一方选择的置换来置换输入向量。这个置换和共享协议需要运行两次，每一方选择一次置换。为了对 $n$ 个 $l$ 比特元素进行洗牌，该协议的通信成本与 $\lambda n \log n + n l \log n / \log T$ 成正比，计算成本为 $(n T \log n / \log T) \cdot (l / \lambda)$ 次对称密钥操作，其中 $T$ 的值介于 16 和 256 之间。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;子域向量无关线性评估&lt;/strong&gt;
+VOLE 是一种双方功能，它接受来自发送方的标量 $x \in F_p$ 并生成 VOLE 关联：w = ux + v,
+其中接收方学习到 $(u, v) \in_R F_{pn} \times F_{pn}$，发送方学习到 $w \in_R F_{pn}$。VOLE 通常基于带噪声的学习奇偶性（LPN）和可打孔的伪随机函数（PRF）构造，因此其复杂度几乎与 $n$ 无关。子域 VOLE（sVOLE）是 VOLE 的一种推广，其中 $u \in_R F_{pn}$，$x \in F_q$，$w, v \in_R F_{qn}$，且 $q = p^m$。注意，sVOLE 完成的任务与运行 $m$ 个普通 VOLE 实例相同，但成本更低。VOLE 和 sVOLE 最初是设计用于有限域上工作的。Baum 等人 [6] 提出了在有限环（如 $\mathbb{Z}_{2^l}$）上工作的方案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;同态加密&lt;/strong&gt;
+全同态加密（FHE）是一种加密方案，允许对加密数据执行任意操作 [19]。在实际应用中，它通常以分级方式使用：操作只能执行有限次数，否则密文无法解密。在大多数 FHE 加密系统中 [12], [11], [18], [15]，明文被编码为来自商环 $\mathbb{Z}_p[x]/(x^N + 1)$ 的多项式，其中 $N$ 是 2 的幂，$p$ 是明文模数。明文多项式随后被加密成密文多项式 $\mathbb{Z}_q[x]/(x^N + 1)$，其中 $q$ 是密文模数，它决定了安全级别以及可以执行操作的次数。&lt;/p&gt;
+&lt;h2 id=&#34;安全矩阵乘法&#34;&gt;&lt;strong&gt;安全矩阵乘法&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;MatrixMul 操作接受来自 C 和 S 的两个输入矩阵 $X \in \mathbb{Z}^{n \times m}&lt;em&gt;{2^l}$ 和 $Y \in \mathbb{Z}^{m \times k}&lt;/em&gt;{2^l}$，并输出 $\langle Z \rangle$，其中 $Z = XY \in \mathbb{Z}^{n \times k}_{2^l}$。现有的大多数解决方案使用同态乘法和加法以隐私保护的方式计算上述公式。SIMD 技术通常用于通过将 $N$ 个元素批量处理到单个 RLWE 密文中来摊销成本，但它需要昂贵的同态旋转来求和 [28]。Cheetah [27] 用系数打包替代了 SIMD，以消除昂贵的旋转。然而，它仍然需要传输至少 $2n \sqrt{mk} \sqrt{N}$ 个 RLWE 密文，并执行至少 $nmk N$ 次密文-明文同态乘法。&lt;/p&gt;
+&lt;p&gt;回顾一下，GPT 需要自回归地生成响应词。因此，单次 GPT 推理需要对不同的 $X$ 和相同的 $Y$ 运行 MatrixMul。我们旨在通过利用 GPT 的这一特性来减少 MatrixMul 的摊销成本。设 $X = [x_1, x_2, \cdots, x_m]$（其中 $x_i \in \mathbb{Z}*2^{l}$ 是 $X$ 的每一列），$Y^T = [y&#39;1, y&#39;2, \cdots, y&amp;rsquo;m]$（其中 $y&amp;rsquo;i \in \mathbb{Z}2^{k}$ 是 $Y$ 的每一行），则有
+$Z = \sum_{i=1}^{m} (x_i \otimes y&amp;rsquo;&lt;em&gt;i)$
+假设 S 和 C 需要生成 $t$ 个响应词，则有 $t$ 个输入矩阵：
+$X_1 = [x{1,1}, x{1,2}, \cdots, x{1,m}]$，
+$X_2 = [x{2,1}, x{2,2}, \cdots, x{2,m}]$，
+$\cdots$，
+$X_t = [x&lt;/em&gt;{t,1}, x_{t,2}, \cdots, x_{t,m}]$。&lt;/p&gt;
+&lt;p&gt;设 $x&amp;rsquo;&lt;em&gt;i = x&lt;/em&gt;{1,i} || x_{2,i} || \cdots || x_{t,i}$ 对于所有 $i \in [1, m]$，则有
+$x&amp;rsquo;_i \otimes y&amp;rsquo;&lt;em&gt;i = (x&lt;/em&gt;{1,i} \otimes y&amp;rsquo;&lt;em&gt;i) || (x&lt;/em&gt;{2,i} \otimes y&amp;rsquo;&lt;em&gt;i) || \cdots || (x&lt;/em&gt;{t,i} \otimes y&amp;rsquo;&lt;em&gt;i)$
+因此，
+$\sum&lt;/em&gt;{i=1}^{m} (x&amp;rsquo;_i \otimes y&amp;rsquo;_i) = Z_1 || Z_2 || \cdots || Z_t$
+因此，我们可以通过 $m$ 次外积同时计算 $t$ 次 MatrixMul。&lt;/p&gt;
+&lt;p&gt;考虑到 $Y$ 是预先已知的，我们可以引入一个预处理阶段，让 S 和 C 生成 $m$ 个 sVOLE 关联：
+$W_i = u_i \otimes y&amp;rsquo;&lt;em&gt;i + V_i, \quad \forall i \in [1, m],$
+其中 C 持有 $u_i \in \mathbb{Z}&lt;em&gt;{2^l}^{(t \cdot n)}$（这是一个长度为 $t \cdot n$ 的向量）和 $V_i \in \mathbb{Z}&lt;/em&gt;{2^l}^{(t \cdot n) \times k}$，S 持有 $y&amp;rsquo;&lt;em&gt;i \in \mathbb{Z}&lt;/em&gt;{2^l}^k$ 和 $W_i \in \mathbb{Z}&lt;/em&gt;{2^l}^{(t \cdot n) \times k}$。&lt;/p&gt;
+&lt;p&gt;在在线阶段，对于输入矩阵 $X_j = [x_{j,1}, x_{j,2}, \cdots, x_{j,m}]$，C 将发送
+$\langle x_{j,i} \rangle_S := x_{j,i} - u_i [(j-1)n + 1, \cdots, j \cdot n], \quad \forall i \in [1, m],$
+给 S，然后 S 计算：
+$\langle x_{j,i} \rangle_S \otimes y&amp;rsquo;&lt;em&gt;i = (x&lt;/em&gt;{j,i} - u_i [(j-1)n + 1, \cdots, j \cdot n]) \otimes y&amp;rsquo;&lt;em&gt;i = x&lt;/em&gt;{j,i} \otimes y&amp;rsquo;_i - u_i [(j-1)n + 1, \cdots, j \cdot n] \otimes y&amp;rsquo;_i.$&lt;/p&gt;
+&lt;p&gt;然后，我们得到：
+$x_{j,i} \otimes y&amp;rsquo;&lt;em&gt;i = \langle x&lt;/em&gt;{j,i} \rangle_S \otimes y&amp;rsquo;_i + u_i [(j-1)n + 1, \cdots, j \cdot n] \otimes y&amp;rsquo;&lt;em&gt;i = \langle x&lt;/em&gt;{j,i} \rangle_S \otimes y&amp;rsquo;_i + W_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n] - V_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n].$&lt;/p&gt;
+&lt;p&gt;注意，S 持有：
+⟨xj,i⟩S⊗yi′+Wi[(j−1)kn+1,⋯ ,j⋅k⋅n],\langle x_{j,i} \rangle_S \otimes y&amp;rsquo;&lt;em&gt;i + W_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n],
+而 C 持有：
+$V_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n];$
+这意味着 S 和 C 秘密共享 $x&lt;/em&gt;{j,i} \otimes y&amp;rsquo;&lt;em&gt;i$，因此他们可以局部计算 $Z_j = \sum&lt;/em&gt;{i=1}^{m} (x_{j,i} \otimes y&amp;rsquo;_i)$ 的秘密共享。他们可以以这种方式计算所有的 $Z$。&lt;/p&gt;
+&lt;p&gt;表 2 比较了 Cheetah [27]、Iron [25] 和 CipherGPT 在 MatrixMul 操作中的开销。回顾一下，sVOLE 的复杂度几乎与 $n$ 无关。因此，我们的 MatrixMul 中的公钥操作数量也与 $n$ 无关。具体来说，我们需要传输 $2 \cdot e \cdot m \cdot k / N$ 个 RLWE 密文，并执行 $e \cdot m \cdot k / N$ 次密文-明文乘法来执行反向 VOLE，这两者都与 $n$ 无关。当我们将大量矩阵合并在一起时，即当 $n$ 很大时，我们的节省变得显著。此外，这些开销需要除以 $t$ 来计算摊销成本。&lt;/p&gt;
+&lt;p&gt;在计算方面，我们节省了 $t \cdot n \cdot e$ 次密文-明文乘法。假设 $n = 256, m = 768, k = 64, t = 256$ 且 $e = 144$（这是 GPT-2 的真实参数），我们节省了 3,065 次密文-明文乘法，这大约需要超过 4 秒。尽管我们需要做额外的 $(c \cdot m \cdot n \cdot k)$ 次 AES 操作来扩展种子，但在 AES-NI 的帮助下，这可以在大约 100 毫秒内完成。&lt;/p&gt;
+&lt;p&gt;在通信方面，我们至少节省了 94 个 RLWE 密文，相当于约 10MB，而 CipherGPT 中 OTs 和明文带来的通信开销仅约为 1.5MB。&lt;/p&gt;
+&lt;h2 id=&#34;secure-gelu&#34;&gt;&lt;strong&gt;Secure GELU&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;在本节中，我们首先提供 GELU 协议的高级概述，然后深入探讨其技术细节。&lt;/p&gt;
+&lt;h3 id=&#34;直觉&#34;&gt;&lt;strong&gt;直觉&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;图 1（左侧）展示了 $y = GELU(x)$ 的原始曲线。对于小的 $x$ 值，曲线从零开始，当 $x$ 接近 $-\alpha$ 时开始偏离零。随着 $x$ 进一步增加，$GELU(x)$ 逐渐近似于线性函数 $y = x$。基于这一观察，我们将曲线分为三个大区间：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当 $x &amp;lt; -\alpha$ 时，$y = 0$；&lt;/li&gt;
+&lt;li&gt;当 $-\alpha \leq x \leq \alpha$ 时，$y = GELU(x)$；&lt;/li&gt;
+&lt;li&gt;当 $x &amp;gt; \alpha$ 时，$y = x$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;第一个和第三个区间的计算是直接的。对于第二个区间，我们使用多项式样条来近似曲线。如图 1（中间）所示，我们将第二个区间划分为多个小区间，并使用线性函数（$y = ax + d$）在每个小区间内近似曲线。详细的线性函数求解过程可以参考 [30] 中的第 5.3.2 节。值得注意的是，这种近似不需要对模型的训练阶段做任何修改。&lt;/p&gt;
+&lt;p&gt;我们可以使用查找表（LUT）来找到 $x$ 所在的小区间，并以秘密共享的方式计算对应的线性函数。然而，对于区间 $[-\alpha, \alpha]$，我们首先需要确定 $x$ 的符号，然后分别在区间 $[-\alpha, 0]$ 和 $[0, \alpha]$ 中查找。为了避免这种情况，我们将整个曲线右移 $\alpha$，如图 1（右侧）所示，这样第二个区间变为 $[0, 2\alpha]$，使得我们可以执行一次查找。&lt;/p&gt;
+&lt;h3 id=&#34;详细说明&#34;&gt;&lt;strong&gt;详细说明&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;算法 1 详细描述了如何安全地计算 $y := GELU(x)$。注意，模型的初始输入已经经过了 $L$ 位的左移，这会影响 $x$ 的值，从而导致 $x$ 本身也发生 $L$ 位的左移。为了保持所需的对齐方式，我们将 $\alpha$ 放大 $2^L$ 倍（第 1 行）。然后，分割值变为 $\alpha&amp;rsquo; := 2^L \alpha$。曲线的右移也需要考虑缩放因子。也就是说，我们不直接将曲线右移 $\alpha$，而是应该将其右移 $\alpha&amp;rsquo;$。类似地，为了确保正确对齐，输入 GELU 的值应该调整为 $x&amp;rsquo; := x + \alpha&amp;rsquo;$，这可以通过将 $\alpha&amp;rsquo;$ 添加到 $x$ 的任何一个分享值来实现（第 2 行）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;处理小区间&lt;/strong&gt;
+令 $\beta := 2\alpha&amp;rsquo;$，现在第二个大区间变为 $[0, \beta]$。我们假设 $x&amp;rsquo;$ 落在这个大区间内；稍后我们会处理这一假设不成立的情况。由于 $x&amp;rsquo; \in [0, \beta]$，我们只需要考虑 $x&amp;rsquo;$ 的低 $h := \log \beta$ 位。为此，我们让 $S$ 和 $C$ 提取出 $\langle x&amp;rsquo; \rangle_l$ 的低 $h$ 位，并得到 $\langle x&amp;rsquo; \rangle_h$（第 5 行），这可以在本地完成，不需要通信。假设 $[0, \beta]$ 已经被划分为 $2^s$ 个小区间。那么，我们可以通过检查 $\langle x&amp;rsquo; \rangle_h$ 的高 $s$ 位来找到 $\langle x&amp;rsquo; \rangle_h$ 所在的区间。为此，我们让 $S$ 和 $C$ 在 $\langle x&amp;rsquo; \rangle_h$ 上运行截断再缩减协议（第 6 行），得到 $\langle i \rangle_s$，其中 $i \in Z_{2^s}$ 表示 $x&amp;rsquo;$ 所在的小区间的索引。$S$ 持有一个表 $T$，其中每个条目存储了对应小区间的线性函数系数。在获得 $i \in Z_{2^s}$ 后，$S$ 和 $C$ 执行 LUT 协议，以秘密共享的形式获得 $T$ 的第 $i$ 项（$\langle a_i \rangle_g, \langle d_i \rangle_l$）（第 7 行）。然后，他们在 $\langle a_i \rangle_g$ 和 $\langle x&amp;rsquo; \rangle_h$ 上运行“不同位宽的乘法”（第 8 行），得到 $\langle a x \rangle_l$，其中 $l = g + h$。最后，将 $\langle d_i \rangle_l$ 添加到 $\langle a x \rangle_l$，得到 $\langle z \rangle_l$，这可能就是 $GELU(x)$ 的结果。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;处理大区间&lt;/strong&gt;
+注意，上述处理小区间的过程仅在 $x&amp;rsquo; \in [0, \beta]$ 时有效。实际上，第 5 行的截断操作会导致当 $x&amp;rsquo; \notin [0, \beta]$ 时丢失 $x&amp;rsquo;$ 的信息。为此，我们使用多路复用器确保当 $x&amp;rsquo; \notin [0, \beta]$ 时，$\langle z \rangle_l$ 不会被返回。$S$ 和 $C$ 首先安全地比较 $x&amp;rsquo;$ 与 $\beta$，并得到 $b$（第 10 行），如果 $x&amp;rsquo; \geq \beta$，则 $b = 1$，否则 $b = 0$。然后，他们安全地比较 $x&amp;rsquo;$ 与 0，并得到 $b&amp;rsquo;$（第 11 行），如果 $x&amp;rsquo; \geq 0$，则 $b&amp;rsquo; = 1$，否则 $b&amp;rsquo; = 0$。注意，$b$ 和 $b&amp;rsquo;$ 的组合只有以下三种可能性（而不是四种）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$b = 1$ 且 $b&amp;rsquo; = 1$&lt;/li&gt;
+&lt;li&gt;$b = 0$ 且 $b&amp;rsquo; = 1$&lt;/li&gt;
+&lt;li&gt;$b = 0$ 且 $b&amp;rsquo; = 0$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中第二种情况 $b \oplus b&amp;rsquo; = 1$ 表示 $x&amp;rsquo; \in [0, \beta]$，而其他两种情况 $b \oplus b&amp;rsquo; = 0$ 表示 $x&amp;rsquo; \notin [0, \beta]$。因此，我们可以使用 $b \oplus b&amp;rsquo;$ 作为控制信号来实现多路复用器对 $z$ 的处理。具体而言，$S$ 和 $C$ 运行多路复用器，输入为 $\langle z \rangle_l$ 和 $\langle b \rangle_1 \oplus \langle b&amp;rsquo; \rangle_1$，结果为 $\langle u \rangle_l$（第 12 行），其中当 $b \oplus b&amp;rsquo; = 1$ 时，$u = z$，否则 $u = 0$。&lt;/p&gt;
+&lt;p&gt;接下来，$S$ 和 $C$ 运行另一个多路复用器，输入为 $\langle x \rangle_l$ 和 $\langle b \rangle_1$，结果为 $\langle v \rangle_l$（第 13 行），其中当 $b = 1$ 时，$v = x$，否则 $v = 0$。该多路复用器决定是否 $x&amp;rsquo; &amp;gt; \beta$；如果是，返回 $v = x&amp;rsquo;$。GELU(x) 的最终结果为 $\langle y \rangle_l := \langle u \rangle_l + \langle v \rangle_l$。注意，无需额外的多路复用器来处理 $x&amp;rsquo; &amp;lt; 0$ 的情况，因为当 $x&amp;rsquo; &amp;lt; 0$ 时，$y = 0$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;表 3&lt;/strong&gt; 比较了 SIRNN [36]、Iron [25] 和我们针对安全 GELU 的解决方案之间的加密操作数量。显然，我们的解决方案更加轻量。此外，我们的解决方案在精度上也更优：SIRNN 和 Iron 中的多步过程涉及分别逼近指数运算和倒数运算，在每一步引入了精度误差；这些误差在整个过程中积累，导致最终的大误差，而我们的方法通过单步处理避免了这个问题。我们的实验结果（参见表 4）验证了这一猜想。&lt;/p&gt;
+&lt;h2 id=&#34;安全的-top-k-选择&#34;&gt;安全的 Top-K 选择
+&lt;/h2&gt;&lt;p&gt;在 vec2word 层，GPT 模型生成一个包含所有可能单词概率的向量。从这个向量中，需要选择出前 K 个最大的概率，并根据这些选择的概率来采样最终的响应单词。本节将重点讨论如何从长度为 $n$ 的向量中选择前 K 个最大值。在后续部分，我们将讨论如何从这 K 个选定的概率中采样一个值。&lt;strong&gt;算法 2&lt;/strong&gt; 提供了我们 Top-K 协议的详细描述。总体来说，输入元素首先进行安全洗牌（第 1 行）；然后使用基于比较的选择方法，从洗牌后的列表中识别出前 K 个元素（第 2 行）。&lt;strong&gt;算法 2&lt;/strong&gt; 中的选择函数是递归执行的。在每次递归中，向量的最后一个元素作为基准元素进行选择（第 5 行）；然后将向量分为两部分：小于基准元素的部分，记为 SL，大于或等于基准元素的部分，记为 SR（第 6 行到第 15 行）。为了划分向量，所有元素都与基准元素进行比较（第 8 行）。比较结果可以被揭示（第 9 行），而不会泄露原始元素的隐私。这是因为原始元素已经被洗牌，从而比较结果与实际值无关。如果 SR 的大小（记为 $K&amp;rsquo;$）恰好等于 K，意味着 SR 中的所有元素都是我们需要选择的前 K 个最大元素（第 19 行）。如果 $K&amp;rsquo; &amp;gt; K$，则在 SR 上执行下一次递归，进一步缩小选择范围（第 21 行）。另一方面，如果 $K&amp;rsquo; &amp;lt; K$，则在 SL 上执行下一次递归，选择前 $(K - K&amp;rsquo;)$ 个元素，然后将它们与 SR 合并，得到最终的前 K 个元素（第 21 行）。值得注意的是，只有 CMP（第 8 行）需要 $S$ 和 $C$ 之间的交互；算法的其余步骤可以由每一方在本地执行，无需任何交互。选择函数需要 $O(n)$ 次 CMP。&lt;/p&gt;
+&lt;h2 id=&#34;安全的采样&#34;&gt;&lt;strong&gt;安全的采样&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;本节详细解释我们的安全采样协议。该协议的输入为 K 个秘密共享的概率 $(p_1, \dots, p_K)$，其中每个概率通过将其乘以 $2^L$ 并去掉小数部分，转换为整数 $x_i$。协议的输出是一个秘密共享的索引 $j$，使得：
+$\Pr(j = i) = \frac{x_i}{\sum_{k=1}^K x_k}.$
+我们将在第 7.5 节解释如何将该索引映射到响应单词上。&lt;strong&gt;算法 3&lt;/strong&gt; 提供了安全采样协议的详细描述。协议基于以下观察：对于随机变量 $p&amp;rsquo; \in [0, 1]$，所选择的索引 $j$ 满足：
+$\sum_{k=1}^{j-1} p_k \le p&amp;rsquo; &amp;lt; \sum_{k=1}^{j} p_k.$
+由于 $(p_1, \dots, p_K)$ 已经被放大了 $2^L$ 倍，$p&amp;rsquo;$ 也需要相应地进行缩放。为此，C 先从 $[0, 2^L - 1]$ 范围中采样一个整数 $v$（第 1 行）。然后，$S$ 和 $C$ 安全地比较 $v$ 与每个 $\sum_{k=1}^{i} x_k$，对于所有 $i \in [1, K]$（第 2-6 行），从而得到一个秘密共享的比特向量 $\langle b \rangle$，使得：
+$\quad \text{for} \quad 1 \le i &amp;lt; j, \quad b_i = 0 \quad \text{for} \quad j \le i \le K.$
+接下来的步骤是构造另一个秘密共享的比特向量 $\langle b&amp;rsquo; \rangle$，使得：
+$b&amp;rsquo;_i = 0 \quad \text{for} \quad i \neq j, \quad b&amp;rsquo;&lt;em&gt;j = 1.$
+这可以通过对 $\langle b \rangle$ 中相邻比特进行异或操作来实现（第 7-10 行）。然后，所需的索引为：
+$\langle j \rangle := \sum&lt;/em&gt;{i=1}^K \text{FMUX}(i, \langle b&amp;rsquo;_i \rangle_1) \quad \text{(第 11 行)}.$
+我们指出，$v$ 由 $C$ 单独采样是可以接受的，因为最终输出的 $j$ 对 $C$ 保持未知。&lt;/p&gt;
+&lt;h2 id=&#34;ciphergpt-框架&#34;&gt;&lt;strong&gt;CipherGPT 框架&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241209192050004.png&#34;
+	width=&#34;539&#34;
+	height=&#34;759&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241209192050004_hu9764489677226742952.png 480w, https://JiangZhiyu-1024.github.io/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241209192050004_hu1828554940819418041.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241209192050004&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;71&#34;
+		data-flex-basis=&#34;170px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;图 2 展示了 GPT 的架构和工作流程。大致来说，它接收一系列单词，将它们编码成词嵌入，并通过多次迭代的 Transformer 解码器进行处理。每次迭代包括一个自注意力层和一个前馈神经网络。Transformer 解码器的输出被传入一个 &lt;code&gt;vec2word&lt;/code&gt; 层，生成预测的响应单词。接下来，我们将详细解释如何安全地计算这个过程。&lt;/p&gt;
+&lt;h3 id=&#34;嵌入&#34;&gt;&lt;strong&gt;嵌入&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;首先，它将每个输入单词映射为一个长度为 $m$ 的数值向量，称为词嵌入，这通过在嵌入矩阵中找到对应的行来实现。接下来，每个词嵌入都通过位置嵌入进行增强，位置嵌入由单词在输入序列中的位置决定。位置嵌入是预定义的，并且逐元素地与词嵌入相加。我们使用加法同态加密（AHE）来完成词嵌入和位置嵌入的处理：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;S&lt;/strong&gt; 使用 AHE 对嵌入矩阵的每一行进行加密，并将所有生成的密文传输给 &lt;strong&gt;C&lt;/strong&gt;。在实践中，我们通过将每一行表示为 RLWE 密文的多项式系数来加密整行。注意，词嵌入是浮动的；&lt;strong&gt;S&lt;/strong&gt; 将它们通过左移 $L$ 位并去掉小数部分转换为整数。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C&lt;/strong&gt; 根据输入单词定位相应的密文，并为每个密文添加一个随机数 $r_i$：$E(w_1 + r_1), \dots, E(w_n + r_n)$，然后将其返回给 &lt;strong&gt;S&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;S&lt;/strong&gt; 解密密文，得到 $w_1 + r_1, \dots, w_n + r_n$，然后加上位置嵌入：$w_1 + r_1 + p_1, \dots, w_n + r_n + p_n$。&lt;/li&gt;
+&lt;li&gt;现在，每个嵌入都被秘密共享，其中 $\langle x_i \rangle_C = -r_i$ 和 $\langle x_i \rangle_S = w_i + r_i + p_i$。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我们指出，步骤 1 只需要执行一次，除非嵌入矩阵发生变化，否则可以无限次使用。&lt;/p&gt;
+&lt;h3 id=&#34;层归一化-layer-normalization&#34;&gt;&lt;strong&gt;层归一化 (Layer Normalization)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;在输入编码后，$n$ 个输入单词变成了一个秘密共享矩阵 $\langle X \rangle$，其中 $X \in \mathbb{Z}^{n \times m}_{2^l}$。接下来，需要对每一行 $x \in \mathbb{Z}_2^l$ 执行层归一化 (LayerNorm)。具体来说，$x$ 中的每个元素 $x_i$ 进行如下归一化处理：&lt;/p&gt;
+&lt;p&gt;$x_i := \frac{x_i - E[x]}{\sqrt{Var[x] + \epsilon}} \cdot \gamma + \beta,$&lt;/p&gt;
+&lt;p&gt;其中 $E[x] = \frac{1}{n} \sum x_i$，$Var[x] = \frac{1}{n-1} \sum (x_i - E[x])^2$，$\gamma$ 和 $\beta$ 是可学习的参数，$\epsilon$ 是一个小值，用于避免除以零。&lt;/p&gt;
+&lt;p&gt;为了安全地计算 LayerNorm，我们让 &lt;strong&gt;S&lt;/strong&gt; 和 &lt;strong&gt;C&lt;/strong&gt; 执行以下操作：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;运行 FMult 计算每个 $vari := (x_i - E[x])^2$；&lt;/li&gt;
+&lt;li&gt;运行 FLUT 计算 $\frac{1}{\sqrt{Var[x] + \epsilon}}$；&lt;/li&gt;
+&lt;li&gt;运行 FMult 计算 $\frac{x_i - E[x]}{\sqrt{Var[x] + \epsilon}}$；&lt;/li&gt;
+&lt;li&gt;运行 FMult 计算 $\frac{x_i - E[x]}{\sqrt{Var[x] + \epsilon}} \cdot \gamma$；&lt;/li&gt;
+&lt;li&gt;运行 FTR 将结果缩减为 $L$ 位，并将宽度截断为 $l$ 位。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;原则上，&lt;strong&gt;S&lt;/strong&gt; 和 &lt;strong&gt;C&lt;/strong&gt; 需要使用“统一比特宽度的乘法”来乘以两个秘密共享的值，然后对每次乘法运行安全的截断（保持缩放为 $L$ 位）。然而，为了减少精度损失，我们让 &lt;strong&gt;S&lt;/strong&gt; 和 &lt;strong&gt;C&lt;/strong&gt; 使用“非统一比特宽度的乘法”（FMult）进行乘法计算，并在 LayerNorm 计算完成后，仅执行一次“截断再缩减”（FTR）。&lt;/p&gt;
+&lt;h3 id=&#34;掩码自注意力-masked-self-attention&#34;&gt;&lt;strong&gt;掩码自注意力 (Masked Self-Attention)&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;自注意力是一种机制，通过将序列中的不同位置联系起来，能够计算出序列的表示 [43]。计算自注意力的第一步是创建三个矩阵：查询矩阵 $Q$、键矩阵 $K$ 和值矩阵 $V$。这是通过将归一化的嵌入矩阵 $X \in \mathbb{Z}^{n \times m}&lt;em&gt;{2^l}$ 与三个训练过程中获得的矩阵（$W_Q \in \mathbb{Z}^{m \times m}&lt;/em&gt;{2^l}$，$W_K \in \mathbb{Z}^{m \times m}&lt;em&gt;{2^l}$ 和 $W_V \in \mathbb{Z}^{m \times m}&lt;/em&gt;{2^l}$）相乘来实现的：&lt;/p&gt;
+&lt;p&gt;$\langle Q \rangle := \langle X \rangle \langle W_Q \rangle; \quad \langle K \rangle := \langle X \rangle \langle W_K \rangle; \quad \langle V \rangle := \langle X \rangle \langle W_V \rangle.$&lt;/p&gt;
+&lt;p&gt;由于 $W_Q$、$W_K$ 和 $W_V$ 是预先知道的，这样的矩阵乘法可以通过我们在第 3 节中描述的基于 sVOLE 的方案来计算。矩阵乘法后，&lt;strong&gt;S&lt;/strong&gt; 和 &lt;strong&gt;C&lt;/strong&gt; 需要运行 FTrunc 以确保缩放保持在 $L$ 位。为了简化起见，以下部分我们省略了关于截断的描述。&lt;/p&gt;
+&lt;h3 id=&#34;多头注意力-multi-headed-attention&#34;&gt;多头注意力 (Multi-headed Attention)
+&lt;/h3&gt;&lt;p&gt;接下来，$\langle Q \rangle$、$\langle K \rangle$ 和 $\langle V \rangle$ 将被划分为 $M$ 个部分，称为多头注意力，其中 $M$ 代表注意力头的数量。令 $m&amp;rsquo; = \frac{m}{M}$，我们有：&lt;/p&gt;
+&lt;p&gt;$ \langle q_1 \rangle \parallel \cdots \parallel \langle q_M \rangle = \langle Q \rangle, \quad \text{每个} , q_i \in \mathbb{Z}^{n \times m&amp;rsquo;}_{2^l};$&lt;/p&gt;
+&lt;p&gt;$\langle k_1 \rangle \parallel \cdots \parallel \langle k_M \rangle = \langle K \rangle, \quad \text{每个} , k_i \in \mathbb{Z}^{n \times m&amp;rsquo;}_{2^l};$&lt;/p&gt;
+&lt;p&gt;$\langle v_1 \rangle \parallel \cdots \parallel \langle v_M \rangle = \langle V \rangle, \quad \text{每个} , v_i \in \mathbb{Z}^{n \times m&amp;rsquo;}_{2^l}.$&lt;/p&gt;
+&lt;p&gt;接着，通过查询矩阵和键矩阵的乘积计算得分矩阵：&lt;/p&gt;
+&lt;p&gt;$\langle s_i \rangle := \langle q_i \rangle \cdot \langle k_i \rangle^T \quad \forall i \in [M].$&lt;/p&gt;
+&lt;p&gt;每个 $s_i \in \mathbb{Z}^{n \times n}_{2^l}$ 中的得分决定了在编码当前单词时，应该关注其他单词的程度。在这种情况下，由于查询矩阵 $q_i$ 和键矩阵 $k_i$ 事先都不可知，我们的基于 sVOLE 的矩阵乘法无法应用。相反，我们采用了 [25] 中提出的基于 AHE 的矩阵乘法。&lt;/p&gt;
+&lt;h3 id=&#34;自注意力掩码-self-attention-masking&#34;&gt;自注意力掩码 (Self-attention Masking)
+&lt;/h3&gt;&lt;p&gt;在多头注意力之后，应用自注意力掩码将每个 $s_i$ 的上三角部分置为零。这样，左侧的每个单词会比右侧的单词获得更高的注意力分数，因此模型在实际应用中只关注前面的单词。这个步骤可以由 &lt;strong&gt;S&lt;/strong&gt; 和 &lt;strong&gt;C&lt;/strong&gt; 本地执行，无需任何交互。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Softmax.&lt;/strong&gt;
+对每个 $\langle s_i \rangle$ 的每一行应用 softmax 操作，确保该行的得分被归一化，所有值都为正，并且总和为 1。为了安全地计算 softmax，我们在 [25] 中的方法进行了优化，步骤如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给定一行 $x \in \mathbb{Z}^n_{2^l}$ 作为输入，我们首先对每个 $x_i$ 进行归一化：$x&amp;rsquo;_i := x_i - \max(x)$，并得到一个负值向量。&lt;/li&gt;
+&lt;li&gt;我们通过仅考虑区间 $[-16, 0]$ 来优化负值的指数协议。具体而言，我们使用 FCMP 比较 $x&amp;rsquo;_i$ 与 $-16 \times 2^l$，并使用 FMUX 在 $x&amp;rsquo;_i &amp;lt; -16 \times 2^l$ 时将指数结果设为 0。原始的指数协议运行一个具有 $2^l$ 条目的 FLUT，而我们仅需要一个具有 $2^{L+4}$ 条目的 FLUT。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Output.&lt;/strong&gt;
+在自注意力的最后一步，softmax 后的得分用于加权值矩阵中的值：&lt;/p&gt;
+&lt;p&gt;$\langle z_i \rangle := \langle s_i \rangle \langle v_i \rangle \quad \forall i \in [M],$&lt;/p&gt;
+&lt;p&gt;这同样是通过基于 AHE 的矩阵乘法 [25] 实现的。然后，所有的 $\langle z_i \rangle$ 被重新组合在一起：&lt;/p&gt;
+&lt;p&gt;$\langle Z \rangle := \langle z_1 \rangle \parallel \cdots \parallel \langle z_n \rangle.$&lt;/p&gt;
+&lt;p&gt;自注意力的输出是：&lt;/p&gt;
+&lt;p&gt;$\langle X \rangle := \langle X \rangle + \langle Z \rangle.$&lt;/p&gt;
+&lt;h3 id=&#34;前馈网络&#34;&gt;&lt;strong&gt;前馈网络&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;自注意力的输出将经过一个 LayerNorm 操作。得到的归一化值随后被送入一个前馈神经网络，该网络由两个全连接（FC）层和一个激活层组成。第一个 FC 层的计算为：&lt;/p&gt;
+&lt;p&gt;$\langle X_1 \rangle := \langle X \rangle \langle W_1 \rangle + B_1,$&lt;/p&gt;
+&lt;p&gt;其中 $X \in \mathbb{Z}^{n \times m}&lt;em&gt;{2^l}$，$W_1 \in \mathbb{Z}^{m \times k}&lt;/em&gt;{2^l}$，$B_1 \in \mathbb{Z}^{n \times k}&lt;em&gt;{2^l}$，$X_1 \in \mathbb{Z}^{n \times k}&lt;/em&gt;{2^l}$。接着，对 $X_1$ 的每个元素应用 ΠGELU（参见第 4 节），得到 $X&amp;rsquo;_1$。第二个 FC 层的计算为：&lt;/p&gt;
+&lt;p&gt;$\langle X_2 \rangle := \langle X&amp;rsquo;_1 \rangle \langle W_2 \rangle + B_2,$&lt;/p&gt;
+&lt;p&gt;其中 $X&amp;rsquo;&lt;em&gt;1 \in \mathbb{Z}^{n \times k}&lt;/em&gt;{2^l}$，$W_2 \in \mathbb{Z}^{k \times m}&lt;em&gt;{2^l}$，$B_2 \in \mathbb{Z}^{n \times m}&lt;/em&gt;{2^l}$，$X_2 \in \mathbb{Z}^{n \times m}_{2^l}$。注意，$W_1$ 和 $W_2$ 是预先已知的，因此我们可以应用基于 sVOLE 的矩阵乘法（参见第 3 节）来计算这两个 FC 层的输出。输出将再次经过多个自注意力和前馈的迭代，每次迭代使用不同的权重，同时保持相同的结构。&lt;/p&gt;
+&lt;h3 id=&#34;vec2word&#34;&gt;&lt;strong&gt;Vec2word&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;经过多次自注意力和前馈迭代后，最终的输出将通过一个 vec2word 层生成预测的响应词。vec2word 的初始操作涉及一个矩阵乘法（MatrixMul），用于生成所有可能词的 one-hot 编码：&lt;/p&gt;
+&lt;p&gt;$\langle y_0 \rangle := \langle x \rangle \langle W \rangle,$&lt;/p&gt;
+&lt;p&gt;其中 $W \in \mathbb{Z}^{m \times k}&lt;em&gt;{2^l}$，$y_0 \in \mathbb{Z}^{k}&lt;/em&gt;{2^l}$，$x \in \mathbb{Z}^{m}&lt;em&gt;{2^l}$ 是 $X \in \mathbb{Z}^{n \times m}&lt;/em&gt;{2^l}$ 的最后一行（由于 GPT 在推理时采用的优化）。此时，$k$ 代表所有可能词的数量，这个数量是非常大的。因此，我们的 sVOLE 基于的矩阵乘法不适用于此处，因此我们采用了基于 AHE 的矩阵乘法 [25]。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Top-K&lt;/strong&gt;
+为了在多样性和准确性之间保持平衡，从 $y_0$ 中选择最大的 $K$ 个值：&lt;/p&gt;
+&lt;p&gt;$\langle y_1 \rangle \leftarrow \Pi_{TopK}(\langle y_0 \rangle), \quad \text{其中} \quad y_1 \in \mathbb{Z}^{K}_{2^l}.$&lt;/p&gt;
+&lt;p&gt;这是通过我们在第 5 节中描述的协议实现的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Temperature&lt;/strong&gt;
+温度 $T$ 决定了 GPT 生成文本的创造性和多样性：较高的温度（例如，$T = 1.5$）生成更多样化和富有创造力的文本，而较低的温度（例如，$T = 0.5$）则生成更加集中的和确定性的文本。它是由 $S$ 持有的超参数，并与 $y_1$ 中的每个值相乘。这个过程可以通过 AHE 容易实现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;C 向 S 发送其 AHE 加密的共享值 $E(\langle y_{1,1} \rangle_C), \dots, E(\langle y_{1,K} \rangle_C)$。实际上，我们通过将其表示为 RLWE 密文的多项式系数来一起加密它们。&lt;/li&gt;
+&lt;li&gt;S 将其共享值加到密文中：$E(\langle y_{1,1} \rangle_C + \langle y_{1,1} \rangle_S), \dots, E(\langle y_{1,K} \rangle_C + \langle y_{1,K} \rangle_S)$。&lt;/li&gt;
+&lt;li&gt;S 将所有密文乘以 $T$：$E(T \cdot y_{1,1}), \dots, E(T \cdot y_{1,K})$。&lt;/li&gt;
+&lt;li&gt;S 向每个密文添加一个随机数 $r_i$：$E(T \cdot y_{1,1} + r_1), \dots, E(T \cdot y_{1,K} + r_K)$。&lt;/li&gt;
+&lt;li&gt;S 将得到的密文返回给 C。&lt;/li&gt;
+&lt;li&gt;S 解密密文，现在温度化后的值（用 $y_2$ 表示）被秘密共享：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;$\langle y_{2,i} \rangle_C := T \cdot y_{1,i} + r_i \quad \text{和} \quad \langle y_{2,i} \rangle_S := -r_i, \quad \forall i \in [K].$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Random sampling.&lt;/strong&gt;
+对 $y_2$ 进行 softmax 操作，得到一个概率向量 $y_3$，然后基于这个概率向量随机采样响应词。这样的随机采样确保生成的输出既多样化又与上下文相关。我们使用第 6 节中描述的安全采样协议来获取一个索引：&lt;/p&gt;
+&lt;p&gt;$\langle j \rangle \leftarrow \Pi_{Sample}(y_3).$&lt;/p&gt;
+&lt;p&gt;由于词向量是公开已知的，如果 C 获得了索引，它可以从词向量中检索最终的响应词。然而，直接将 $j$ 公开给 C 存在两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在算法 3（第 1 行）中，值 $v$ 是由 C 采样的。因此，如果 C 获得了 $j$，它可能会获取一些关于输入 $x$ 的信息。&lt;/li&gt;
+&lt;li&gt;索引 $j$ 不是正确的索引，因为在算法 2（第 1 行）中，概率向量已经被打乱。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;回想一下，算法 2 中的打乱过程大致如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;C 生成一个随机排列 $\pi_C$；S 和 C 共同应用 $\pi_C$ 到输入向量，得到相应的秘密共享值。&lt;/li&gt;
+&lt;li&gt;S 生成一个随机排列 $\pi_S$；S 和 C 共同应用 $\pi_S$ 到 $\pi_C$ 的输出，得到相应的秘密共享值。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;一个关键观察是，算法 3 第 11 行中的 “i” 是公开的。为此，我们让 S 计算 $i&amp;rsquo; := \pi^{-1}_S(i)$ 并对 $i&amp;rsquo;$ 进行秘密共享。然后，我们将算法 3 第 11 行替换为：&lt;/p&gt;
+&lt;p&gt;$\langle j \rangle := \sum_{i=1}^{K} FMUX(\langle i&amp;rsquo; \rangle, \langle b&amp;rsquo;_i \rangle_1).$&lt;/p&gt;
+&lt;p&gt;现在，将 $j$ 公开给 C 不会泄露任何关于输入的信息，因为 $\pi^{-1}_S(i)$ 对 C 是未知的。在获得 $j$ 后，C 计算 $j&amp;rsquo; := \pi^{-1}_C(j)$，这是词向量中的正确索引。&lt;/p&gt;
+&lt;h2 id=&#34;evaluation&#34;&gt;&lt;strong&gt;Evaluation&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;在本节中，我们提供了 CipherGPT 的完整实现，并系统地评估其性能。&lt;/p&gt;
+&lt;h3 id=&#34;实现&#34;&gt;&lt;strong&gt;实现&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;我们在 C++ 中完全实现了 CipherGPT，并设置了安全参数为 128。我们使用了 Microsoft SEAL 同态加密库（版本 4.0）进行 AHE，并使用 hexl5 加速 AXV-512 指令的 HE 操作。具体而言，我们使用 Brakerski-Fan-Vercauteren (BFV) [11], [18] 方案，设定 N = 4096，并使用 SEAL 中的默认参数以实现 128 位安全性。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对于安全 GELU，我们通过利用 SIRNN6 中的开源代码实现了 LUT、Mult、Trunc、CMP 和 MUX。&lt;/li&gt;
+&lt;li&gt;对于基于 sVOLE 的 MatrixMul，我们实现了反向 VOLE 与 AHE，并将 Halftree [24], [23] 优化应用于 PPRF。我们还结合了 [47], [6] 中的优化，但遵循了 [29] 中的建议以防止已知攻击。&lt;/li&gt;
+&lt;li&gt;对于 TopK，由于 [14] 中的秘密共享打乱算法未公开开源，我们自行实现了该算法。&lt;/li&gt;
+&lt;li&gt;对于 Softmax 和基于 AHE 的 MatrixMul，由于 Iron [36] 未公开开源，我们分别通过利用 SIRNN 和 Cheetah7 中的开源代码重新实现了这些操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;实验设置&#34;&gt;实验设置
+&lt;/h3&gt;&lt;p&gt;按照 SIRNN [36] 和 Iron [25] 的设置，我们使用了 LAN 网络环境，其中带宽为 377 MBps，RTT 为 0.8ms。所有实验均在 AWS c5.9xlarge 实例上执行，使用 3.6GHz 的 Intel Xeon 8000 系列 CPU，并采用单线程运行。所有结果均为 5 次实验的平均值，方差非常小。我们基准测试了 Radford [35] 提出的 GPT-2 模型，该模型包含 1.17 亿个参数，12 个 Transformer 解码器，嵌入大小为 768。按照 Cheetah [27] 和 CrypTFlow2 [37] 的做法，我们将浮点数左移 L = 12 位并丢弃小数部分。在推理过程中，我们使用 FTrunc 确保最大值小于 $2^l - 1$，其中 $l = 37$。&lt;/p&gt;
+&lt;h3 id=&#34;评估结果&#34;&gt;&lt;strong&gt;评估结果&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;GELU 评估&lt;/strong&gt;
+在评估我们的 GELU 协议（即算法 1）时，我们设置了 α = 4 和 s = 8。考虑到 L = 12，实际需要逼近的区间为 $-4 \times 2^{12}$ 到 $4 \times 2^{12}$。具体来说，我们将区间 $-4 \times 2^{12}$ 到 $4 \times 2^{12}$ 划分为 28 个小区间，并使用 256 节样条（spline）逼近该区间内的曲线。
+表 4 显示了 Iron 和我们方案在 GELU 上的对比。为了计算一个 3072 长度向量中每个 37 位元素的 GELU，我们的协议需要 694 毫秒和 13.1MB 的带宽。与 Iron [25] 相比，我们的方案在运行时速度上提高了 4.1 倍，并且通信量减少了 3.3 倍。我们通过测试其 ULP（单位最后一位）误差来评估我们逼近的精度，ULP 误差定义为准确的真实结果 y 与逼近结果 $\tilde{y}$ 之间可表示数字的数量 [21]。由于我们已经将浮点数缩放为整数，因此 ULP 误差正是 $|y - \tilde{y}|$。按照 SIRNN [36] 的方法，我们使用穷举测试来评估 ULP 误差：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在 $-16 \times 2^{12}$ 到 $16 \times 2^{12}$ 范围内对所有可能的整数运行安全 GELU 协议，&lt;/li&gt;
+&lt;li&gt;比较每个输出与相应的无限精度真实结果之间的 ULP 误差，&lt;/li&gt;
+&lt;li&gt;报告最大 ULP 误差和平均 ULP 误差。
+结果（见表 4）表明，我们的方案引入的 ULP 误差比 Iron 小得多。Iron 中的多步骤过程（流式 SIRNN）涉及分别近似指数运算和倒数运算，在每个步骤中引入 ULP 误差。这些误差在过程中积累，导致与我们单步方法相比，整体误差更大。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;MatrixMul 评估&lt;/strong&gt;
+回顾一下，我们的基于 sVOLE 的 MatrixMul 适用于两个矩阵尺寸不平衡的情况。因此，我们衡量了执行 $Z_{256 \times 768}^{237} \times Z_{768 \times 768}^{237}$ 的摊销成本，其中 Z 的 $768 \times 768$ 矩阵在所有迭代中保持不变。虽然 t 的大小对其他协议可能没有影响，但对于我们的方法来说，t 的大小很重要，因为我们可以一起预处理所有 t 次迭代。我们承认这种比较可能被认为不公平，但它准确地反映了 GPT 推理的设置。图 3 显示了 Iron 和我们协议的对比（在该图中我们未区分预处理时间和在线时间）。考虑到 ChatGPT 在一次回应中通常生成几百个字，t = 256 是一个合理的迭代次数。当响应单词的数量增加到 1024 时，我们的协议展现出更大的性能优势。具体来说，在运行时，我们的协议比 Iron 快 2.5 倍，在通信量上减少了 11.2 倍。
+我们协议的摊销运行时为 1,606 毫秒，比 Iron 提高了 2.1 倍；我们的协议的摊销通信量为 8.2MB，比 Iron 减少了 3.8 倍。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TopK 评估&lt;/strong&gt;
+我们基准测试了我们的 TopK 协议（见算法 2），用于从 $Z_{50257}^{237}$ 向量中选择 100 个元素。该操作需要 3,281 毫秒和 136.1MB 的带宽。与常用的 Bitonic 排序网络 [26] 相比，我们的方案在运行时提高了 8.8 倍，并且通信量减少了 14.8 倍。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CipherGPT 评估&lt;/strong&gt;
+我们运行 CipherGPT 生成一个由 256 个响应单词组成的句子。表 5 列出了每个操作的摊销运行时间和通信量，并给出了它们各自的比例。在计算方面，GELU、LayerNorm、MatrixMul、Softmax 和 Trunc 分别占据了 26.68%、21.81%、19.4%、16.49% 和 15.25% 的运行时间。在通信方面，GELU、LayerNorm、Trunc、Softmax 和 MatrixMul 分别占据了 39.98%、26.54%、15.88%、14.83% 和 2.55% 的带宽。&lt;/p&gt;
+&lt;p&gt;我们还测量了 CipherGPT 引入的准确性损失。我们从 WikiText-103 数据集 [2] 中随机选择了 1,000 个句子，并使用表 5 所示的配置运行了 CipherGPT。然后，我们将 CipherGPT 的输出与 GPT-original（即原始 GPT 模型，使用浮点数且没有任何截断或近似）生成的输出进行了比较。为了消除 Top-K 采样的干扰，我们为 CipherGPT 和 GPT-original 都设置了 K = 1。评估结果显示，CipherGPT 生成的 99.0% 输出与 GPT-original 生成的输出完全相同。即使是不同的输出，每个“错误”的输出仍然位于运行 GPT-original 生成的相应句子的前五个输出中。&lt;/p&gt;
+&lt;h2 id=&#34;讨论&#34;&gt;&lt;strong&gt;讨论&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;我们的基准测试（表 5）显示，CipherGPT 生成一个 token 需要 24 分钟的延迟和 93GB 的带宽。当前这种成本水平是不可行的，可以预见，利用现有的加密工具实现实际应用将面临挑战。然而，随着计算和网络技术的不断进步，以及新应用场景的出现，未来实现安全 GPT 推理的实际应用仍然充满潜力。我们当前实现中使用单线程，意味着通过利用并行计算技术（如 GPU 或 FPGA 加速）仍有显著的加速空间。我们甚至可以探索新型计算架构，如内存计算 [42] 和存储计算 [41]。&lt;/p&gt;
+&lt;p&gt;IEEE 标准下的 100 Gigabit Ethernet [1] 的出现为带宽容量提供了大幅提升。一旦部署，这种更高的带宽将有效解决与安全 GPT 推理相关的带宽问题。&lt;/p&gt;
+&lt;p&gt;ChatGPT 被设计为实时生成响应，提供快速和互动的对话体验。然而，安全 GPT 推理显著增加了延迟，这在需要实时响应的场景中部署时会带来挑战。另一方面，仍然存在一些实时响应不那么关键的场景，在这些场景中，安全 GPT 推理可以找到有价值的应用。例如，考虑一个机构拥有一套能够有效评估 LLM（大语言模型）性能的提示词集，而模型拥有者希望评估其模型的能力并从该机构获得评分。在这种情况下，保护机构提示词的机密性至关重要，以防止模型拥有者通过在这些提示词上微调他们的模型而获得不公平的优势。同时，保护模型本身的机密性也是一个关键问题，因为该模型被视为其所有者的宝贵专有资产。为此，我们可以使用安全 GPT 推理来保护模型和提示词的机密性；在这种情况下，其较长的延迟是可以接受的。&lt;/p&gt;
+&lt;h2 id=&#34;相关工作&#34;&gt;&lt;strong&gt;相关工作&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;安全推理可以通过通用的安全双方计算（2PC）[49]，[22] 或全同态加密（FHE）[19] 实现。然而，这些解决方案通常会表现出较高的通信和计算成本。因此，有必要为安全推理开发定制化协议。该领域的工作可以追溯到2010年代初期 [33]，[7]，[46]，许多早期的研究主要关注于简单的机器学习算法，如支持向量机（SVM）和线性回归。CryptoNets [20] 被认为是安全神经网络推理的初步尝试。它仅依赖于FHE，这限制了其在层数较少的神经网络中的应用。此外，它仅支持线性操作和低阶多项式。MiniONN [30] 是首个为安全神经网络推理定制2PC协议的工作。它提出了基于样条的非线性操作近似，这启发了我们对安全GELU的解决方案。GAZELLE [28] 通过将线性层映射到基于SIMD的矩阵-向量乘法和卷积例程，减少了线性层的成本。Cheetah [27] 用系数打包替代SIMD，从而消除了昂贵的旋转操作。Iron [25] 进一步减少了Cheetah的通信复杂度。在激活函数方面，CrypTFlow2 [37] 提出了高效的安全比较和除法协议。SIRNN [36] 提供了针对数学函数（如指数、sigmoid、tanh 和倒数平方根）的加密友好近似，以及相应的2PC实现。&lt;/p&gt;
+&lt;p&gt;提高安全推理性能的另一个研究方向是改变模型结构，采用更符合加密要求的结构。例如，DeepSecure [40]、XONN [38] 和 Quotient [3] 专门为二值化神经网络 [16] 设计。DeepSecure 还通过剪枝减少了激活数量。Delphi [31] 提供了一种规划器，通过神经架构搜索自动生成神经网络架构配置，以在性能与精度之间进行权衡。然而，所有这些解决方案都需要重新训练模型，这对于机器学习实践者来说并不理想。一些解决方案 [32]，[45] 利用GPU并行性加速在线阶段，但它们无法对预处理阶段做出任何改进，因为加密操作主导了这些协议中的预处理阶段。最有效的基于GPU的解决方案，即 GForce [32]，对于VGG-16（在CIFAR-10和CIFAR-100上训练）进行一次推理总共需要 14-15 分钟。&lt;/p&gt;
+&lt;p&gt;到目前为止的讨论主要集中在双方协议上，因为我们认为安全推理自然适合这种设置。然而，还有一些其他工作 [39]，[44]，[5] 目标是三方设置，其中模型在两个不合作的服务器之间进行秘密共享，客户端与这些服务器交互以获取预测结果。三方协议通常比双方协议更高效，但非合作服务器的假设在实践中常常被认为不现实。&lt;/p&gt;
+&lt;h2 id=&#34;结论&#34;&gt;&lt;strong&gt;结论&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;针对ChatGPT引发的隐私问题，我们开发了CipherGPT，这是第一个用于安全GPT推理的框架。它包括一系列创新协议，包括为GPT推理定制的安全矩阵乘法协议、一种用于安全计算GELU的新协议，以及第一个用于Top-K采样的协议。我们为CipherGPT提供了一个全面的基准，这可以作为未来该领域研究的参考。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>第7周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC7%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>

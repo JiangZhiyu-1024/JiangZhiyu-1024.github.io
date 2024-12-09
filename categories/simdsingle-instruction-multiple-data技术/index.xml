@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>SIMD（Single Instruction, Multiple Data）技术 on Zion Blaze</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/simdsingle-instruction-multiple-data%E6%8A%80%E6%9C%AF/</link>
+        <description>Recent content in SIMD（Single Instruction, Multiple Data）技术 on Zion Blaze</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>Zion Blaze</copyright>
+        <lastBuildDate>Mon, 09 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/simdsingle-instruction-multiple-data%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>密码学部分问题2</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/</link>
+        <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280.jpg" alt="Featured image of post 密码学部分问题2" /&gt;&lt;h2 id=&#34;矢量隐私线性评估-vole&#34;&gt;矢量隐私线性评估 VOLE
+&lt;/h2&gt;&lt;p&gt;矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;核心概念&#34;&gt;&lt;strong&gt;核心概念&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;VOLE 通常涉及两方，分别称为发送方和接收方：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;发送方&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;输入一个矢量 aa 和一个矢量 bb。&lt;/li&gt;
+&lt;li&gt;发送方知道这些值，并且希望接收方在不直接得知 aa 和 bb 的情况下，能够执行特定的线性操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接收方&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;输入一个矢量 xx。&lt;/li&gt;
+&lt;li&gt;通过与发送方交互，接收方得到一个结果 y=ax+by = ax + b，而不会暴露自己的输入 xx。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;发送方不会知道接收方的输入 xx。&lt;/li&gt;
+&lt;li&gt;接收方不会知道发送方的输入 aa 和 bb，只获得 ax+bax + b 的结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;高效性&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;VOLE 协议的设计特别注重计算和通信效率，可以用于处理大规模矢量或矩阵运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;工作原理&#34;&gt;&lt;strong&gt;工作原理&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;VOLE 协议通常依赖于预分布的密钥材料或使用更高级的密码技术（如差分隐私、同态加密或秘密共享）来实现：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;初始化阶段&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;协议开始前，参与方可能会预共享一些随机密钥或生成关联的共享值，用于后续运算。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;评估阶段&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;发送方和接收方通过加密通信执行一个安全协议。&lt;/li&gt;
+&lt;li&gt;接收方从协议中获得目标值 ax+bax + b。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;实际例子&#34;&gt;&lt;strong&gt;实际例子&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;假设我们有一个广告推荐系统，其中广告平台想根据用户的兴趣分数 xx 计算推荐的广告得分 y=ax+by = ax + b，但双方不希望透露自己的隐私信息。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;发送方（广告平台）&lt;/p&gt;
+&lt;p&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入参数 a=[2,3]a = [2, 3] 和偏置 b=[5,−1]b = [5, -1]。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;接收方（用户）&lt;/p&gt;
+&lt;p&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输入兴趣向量 x=[4,7]x = [4, 7]。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;通过 VOLE 协议：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;广告平台和用户执行交互，平台不知道用户的兴趣 xx，用户也不知道平台的权重 aa 和偏置 bb。&lt;/li&gt;
+&lt;li&gt;协议输出：
+&lt;ul&gt;
+&lt;li&gt;用户收到结果 y=ax+b=[2⋅4+5,3⋅7−1]=[13,20]y = ax + b = [2 \cdot 4 + 5, 3 \cdot 7 - 1] = [13, 20]。&lt;/li&gt;
+&lt;li&gt;广告平台无法得知用户的兴趣向量，用户也无法获知广告平台的参数 aa 和 bb。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;应用场景&#34;&gt;&lt;strong&gt;应用场景&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;私有机器学习推理&lt;/strong&gt;：比如允许用户在不泄露其私有数据的前提下，利用云端模型进行推理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;安全多方计算&lt;/strong&gt;：如在金融或医疗场景中，多个机构合作完成隐私保护的统计分析。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私保护的广告投放&lt;/strong&gt;：用于确保用户的兴趣和广告平台的策略均不暴露。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种工具能够平衡效率与隐私，在当前注重隐私的计算任务中具有重要的应用价值。&lt;/p&gt;
+&lt;h2 id=&#34;基于样条spline的-gelu-近似方法&#34;&gt;基于样条（spline）的 GELU 近似方法
+&lt;/h2&gt;&lt;p&gt;基于样条（spline）的 GELU 近似方法是一种高效且安全的计算方法，用于近似 GELU 激活函数。样条方法通过将复杂的非线性函数分解为多个线性或低阶多项式函数片段来实现快速计算，同时保持较高的精度。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;gelu-函数的定义&#34;&gt;&lt;strong&gt;GELU 函数的定义&lt;/strong&gt;:
+&lt;/h3&gt;&lt;p&gt;GELU（Gaussian Error Linear Unit）的数学定义是：&lt;/p&gt;
+&lt;p&gt;$\text{GELU}(x) = x \cdot \Phi(x)$&lt;/p&gt;
+&lt;p&gt;其中 $\Phi(x)$ 是标准正态分布的累积分布函数：&lt;/p&gt;
+&lt;p&gt;$\Phi(x) = \frac{1}{2}\left[1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right]$&lt;/p&gt;
+&lt;p&gt;由于 $\text{erf}$（误差函数）和 $\Phi(x)$ 的计算涉及指数函数和积分运算，其直接计算开销较大。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;基于查找表的传统方法&#34;&gt;&lt;strong&gt;基于查找表的传统方法&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;传统方法通过以下步骤实现 GELU 的安全计算：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用查找表（LUT）近似 $e^{-x}$。&lt;/li&gt;
+&lt;li&gt;用另一张查找表近似指数函数的倒数。&lt;/li&gt;
+&lt;li&gt;每一步都需要扩展或截断位宽，以在精度和效率之间找到平衡。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这种方法尽管有效，但需要多个查找表和逐步逼近，计算流程较复杂。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;基于样条的-gelu-近似&#34;&gt;&lt;strong&gt;基于样条的 GELU 近似&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;基于样条的方法通过分段线性或分段多项式逼近的方式，用更简单的运算替代传统的复杂计算。以下是关键步骤：&lt;/p&gt;
+&lt;h4 id=&#34;1-样条分段&#34;&gt;&lt;strong&gt;1. 样条分段&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;将输入x 的值域划分为多个区间，例如 [−3,−2][-3, -2], [−2,−1][-2, -1], [1,2][1, 2] 等。&lt;/li&gt;
+&lt;li&gt;在每个区间内，用一个简单的函数（通常是一阶或二阶多项式）来近似 GELU 的值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-低阶多项式近似&#34;&gt;&lt;strong&gt;2. 低阶多项式近似&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;在每个区间 [xi,xi+1][x_i, x_{i+1}] 中，使用线性或二次样条拟合 GELU 函数： $\text{GELU}(x) \approx a_i x^2 + b_i x + c_i, \quad x \in [x_i, x_{i+1}]$&lt;/li&gt;
+&lt;li&gt;这些系数 $a_i, b_i, c_i$ 是通过离线拟合和训练得到的，确保逼近误差最小。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-高效计算&#34;&gt;&lt;strong&gt;3. 高效计算&lt;/strong&gt;：
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;在线计算时，根据输入值 xx 找到对应的分段区间，并应用对应的多项式计算 $\text{GELU}(x)$。&lt;/li&gt;
+&lt;li&gt;样条方法仅需简单的加减乘除操作，大大减少了计算复杂度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;相较传统方法的优点&#34;&gt;&lt;strong&gt;相较传统方法的优点&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;效率高&lt;/strong&gt;：样条方法不需要查找多个查找表，也不涉及指数和倒数计算，适合硬件实现。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;精度可控&lt;/strong&gt;：通过增加分段数或使用更高阶的样条，可以灵活调整逼近误差。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;更安全&lt;/strong&gt;：在安全计算环境中，样条方法减少了中间复杂运算的泄露风险。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一个具体例子&#34;&gt;&lt;strong&gt;一个具体例子&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;假设我们采用三段分段样条，分段区间为 [−2,−1][-2, -1], [−1,0][-1, 0], 和 [0,2][0, 2]，并拟合出以下二次多项式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [−2,−1][-2, -1]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈0.1x2+0.5x+0.2\text{GELU}(x) \approx 0.1x^2 + 0.5x + 0.2$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [−1,0][-1, 0]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈−0.2x2+0.7x+0.1\text{GELU}(x) \approx -0.2x^2 + 0.7x + 0.1$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于 [0,2][0, 2]:&lt;/p&gt;
+&lt;p&gt;$GELU(x)≈0.3x2+0.4x+0.3\text{GELU}(x) \approx 0.3x^2 + 0.4x + 0.3$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在线计算时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果 x = -1.5，它属于区间 [−2,−1][-2, -1]，代入第一个多项式： $GELU(−1.5)=0.1(−1.5)2+0.5(−1.5)+0.2=0.025\text{GELU}(-1.5) = 0.1(-1.5)^2 + 0.5(-1.5) + 0.2 = 0.025$&lt;/li&gt;
+&lt;li&gt;如果x = 0.5，它属于区间 [0,2][0, 2]，代入第三个多项式： $GELU(0.5)=0.3(0.5)2+0.4(0.5)+0.3=0.725\text{GELU}(0.5) = 0.3(0.5)^2 + 0.4(0.5) + 0.3 = 0.725$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;应用场景-1&#34;&gt;&lt;strong&gt;应用场景&lt;/strong&gt;：
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;硬件实现&lt;/strong&gt;：适合加速器或 FPGA 等场景，实现高效的激活函数计算。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隐私计算&lt;/strong&gt;：在多方计算（MPC）或同态加密中，样条方法可减少计算复杂性和通信量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;大模型推理&lt;/strong&gt;：在内存和计算受限的设备上提高推理效率。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种方法已经被证明能够有效平衡精度和效率，是安全计算中 GELU 近似的一种重要手段。&lt;/p&gt;
+&lt;h2 id=&#34;simdsingle-instruction-multiple-data技术&#34;&gt;SIMD（Single Instruction, Multiple Data）技术
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;SIMD（Single Instruction, Multiple Data）技术&lt;/strong&gt;，是指一种通过在同一时刻对多个数据元素执行相同操作的计算技术。SIMD 允许处理器在单条指令下并行地处理多个数据，从而提高计算效率和吞吐量，尤其在执行向量化操作时能够显著加速计算过程。&lt;/p&gt;
+&lt;h3 id=&#34;simd-技术的基本概念&#34;&gt;&lt;strong&gt;SIMD 技术的基本概念&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;SIMD 是一种并行计算模型，它允许在同一条指令下对多个数据元素进行批量操作。常见的 SIMD 指令集包括 Intel 的 &lt;strong&gt;SSE&lt;/strong&gt;、&lt;strong&gt;AVX&lt;/strong&gt;，以及 ARM 的 &lt;strong&gt;NEON&lt;/strong&gt;，它们都能够将多个数据点（例如 4 个、8 个、16 个数字）装入一个寄存器，并通过单条指令同时对这些数据执行相同的操作（例如加法、乘法等）。&lt;/p&gt;
+&lt;h3 id=&#34;simd-在同态加密中的应用&#34;&gt;&lt;strong&gt;SIMD 在同态加密中的应用&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;在同态加密（Homomorphic Encryption, HE）中，SIMD 技术用于优化对加密数据的批量处理。比如，假设有一个密文表示的加密数据集，SIMD 可以将这些密文批量处理到单个密文中，从而摊销计算成本，提高处理速度。&lt;/p&gt;
+&lt;p&gt;在这类加密方案中，例如 &lt;strong&gt;RLWE（Ring Learning With Errors）&lt;/strong&gt; 加密方案，SIMD 可以并行地对多个加密的消息执行相同的操作，如加法、乘法等，从而加速加密数据的计算过程。例如，多个密文的处理可以通过一次向量化操作一次性完成，而不是逐个处理，从而提高效率。&lt;/p&gt;
+&lt;h3 id=&#34;问题中的同态旋转&#34;&gt;&lt;strong&gt;问题中的“同态旋转”&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;“同态旋转”指的是在同态加密中，对密文进行的某些操作（如加密数据的旋转或重新排列），在 RLWE 等加密方案中常常是通过复杂的同态操作来实现的。这种旋转操作通常涉及对加密数据结构（如向量或多项式）的某些变换。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;同态旋转的成本高&lt;/strong&gt;：同态加密中的旋转操作非常昂贵，因为它需要对加密数据进行复杂的同态运算，同时保持加密数据的隐私性。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;摊销成本&lt;/strong&gt;：SIMD 技术通过并行处理大量数据，可以在某种程度上摊销这些昂贵的计算成本。也就是说，SIMD 让我们能够在执行加密运算时，将多个计算合并为一个操作，减少每次计算的总消耗。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;然而，由于 &lt;strong&gt;同态旋转&lt;/strong&gt; 操作的复杂性，这部分操作的计算仍然是同态加密中性能瓶颈之一，尤其是在需要执行多个旋转和聚合操作时，仍然需要付出较高的计算开销。&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;&lt;strong&gt;总结&lt;/strong&gt;：
+&lt;/h3&gt;&lt;p&gt;在加密算法中，&lt;strong&gt;SIMD 技术&lt;/strong&gt;通过批量并行处理多个数据元素，能够提高对加密数据（例如 RLWE 密文）的处理效率。而&lt;strong&gt;同态旋转&lt;/strong&gt;操作在同态加密中是一个复杂的操作，通常需要昂贵的计算资源。尽管 SIMD 技术可以在一定程度上摊销这一成本，但旋转操作仍然是一个计算瓶颈，导致性能受到一定限制。&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="矢量隐私线性评估 VOLE 矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。\n">
+<title>密码学部分问题2</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="密码学部分问题2">
+<meta property='og:description' content="矢量隐私线性评估 VOLE 矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。\n">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-12-09T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-12-09T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280.jpg' />
+<meta name="twitter:title" content="密码学部分问题2">
+<meta name="twitter:description" content="矢量隐私线性评估 VOLE 矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。\n"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#矢量隐私线性评估-vole">矢量隐私线性评估 VOLE</a>
+      <ol>
+        <li><a href="#核心概念"><strong>核心概念</strong>：</a></li>
+        <li><a href="#工作原理"><strong>工作原理</strong>：</a></li>
+        <li><a href="#实际例子"><strong>实际例子</strong>：</a></li>
+        <li><a href="#应用场景"><strong>应用场景</strong>：</a></li>
+      </ol>
+    </li>
+    <li><a href="#基于样条spline的-gelu-近似方法">基于样条（spline）的 GELU 近似方法</a>
+      <ol>
+        <li><a href="#gelu-函数的定义"><strong>GELU 函数的定义</strong>:</a></li>
+        <li><a href="#基于查找表的传统方法"><strong>基于查找表的传统方法</strong>：</a></li>
+        <li><a href="#基于样条的-gelu-近似"><strong>基于样条的 GELU 近似</strong>：</a>
+          <ol>
+            <li><a href="#1-样条分段"><strong>1. 样条分段</strong>：</a></li>
+            <li><a href="#2-低阶多项式近似"><strong>2. 低阶多项式近似</strong>：</a></li>
+            <li><a href="#3-高效计算"><strong>3. 高效计算</strong>：</a></li>
+          </ol>
+        </li>
+        <li><a href="#相较传统方法的优点"><strong>相较传统方法的优点</strong>：</a></li>
+        <li><a href="#一个具体例子"><strong>一个具体例子</strong>：</a></li>
+        <li><a href="#应用场景-1"><strong>应用场景</strong>：</a></li>
+      </ol>
+    </li>
+    <li><a href="#simdsingle-instruction-multiple-data技术">SIMD（Single Instruction, Multiple Data）技术</a>
+      <ol>
+        <li><a href="#simd-技术的基本概念"><strong>SIMD 技术的基本概念</strong>：</a></li>
+        <li><a href="#simd-在同态加密中的应用"><strong>SIMD 在同态加密中的应用</strong>：</a></li>
+        <li><a href="#问题中的同态旋转"><strong>问题中的“同态旋转”</strong>：</a></li>
+        <li><a href="#总结"><strong>总结</strong>：</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/">
+                <img src="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280_hu7007937027802881930.jpg"
+                        srcset="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280_hu7007937027802881930.jpg 800w, /p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/wave-7726187_1280_hu3238104421516428722.jpg 1600w"
+                        width="800" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post 密码学部分问题2" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%9F%A2%E9%87%8F%E9%9A%90%E7%A7%81%E7%BA%BF%E6%80%A7%E8%AF%84%E4%BC%B0-vole/" >
+                矢量隐私线性评估 VOLE
+            </a>
+        
+            <a href="/categories/%E5%9F%BA%E4%BA%8E%E6%A0%B7%E6%9D%A1spline%E7%9A%84-gelu-%E8%BF%91%E4%BC%BC%E6%96%B9%E6%B3%95/" >
+                基于样条（spline）的 GELU 近似方法
+            </a>
+        
+            <a href="/categories/simdsingle-instruction-multiple-data%E6%8A%80%E6%9C%AF/" >
+                SIMD（Single Instruction, Multiple Data）技术
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/">密码学部分问题2</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-12-09</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="矢量隐私线性评估-vole">矢量隐私线性评估 VOLE
+</h2><p>矢量隐私线性评估 (Vector Oblivious Linear Evaluation, 简称 VOLE) 是一种密码学工具，用于高效实现隐私保护的线性运算协议。VOLE 的目标是允许两个或多个参与方在彼此输入保持私密的前提下，协同完成某些线性运算任务。这种方法在安全多方计算 (MPC) 和私有推理中非常有用。</p>
+<hr>
+<h3 id="核心概念"><strong>核心概念</strong>：
+</h3><p>VOLE 通常涉及两方，分别称为发送方和接收方：</p>
+<ol>
+<li><strong>发送方</strong>：
+<ul>
+<li>输入一个矢量 aa 和一个矢量 bb。</li>
+<li>发送方知道这些值，并且希望接收方在不直接得知 aa 和 bb 的情况下，能够执行特定的线性操作。</li>
+</ul>
+</li>
+<li><strong>接收方</strong>：
+<ul>
+<li>输入一个矢量 xx。</li>
+<li>通过与发送方交互，接收方得到一个结果 y=ax+by = ax + b，而不会暴露自己的输入 xx。</li>
+</ul>
+</li>
+<li><strong>隐私性</strong>：
+<ul>
+<li>发送方不会知道接收方的输入 xx。</li>
+<li>接收方不会知道发送方的输入 aa 和 bb，只获得 ax+bax + b 的结果。</li>
+</ul>
+</li>
+<li><strong>高效性</strong>：
+<ul>
+<li>VOLE 协议的设计特别注重计算和通信效率，可以用于处理大规模矢量或矩阵运算。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="工作原理"><strong>工作原理</strong>：
+</h3><p>VOLE 协议通常依赖于预分布的密钥材料或使用更高级的密码技术（如差分隐私、同态加密或秘密共享）来实现：</p>
+<ol>
+<li><strong>初始化阶段</strong>：
+<ul>
+<li>协议开始前，参与方可能会预共享一些随机密钥或生成关联的共享值，用于后续运算。</li>
+</ul>
+</li>
+<li><strong>评估阶段</strong>：
+<ul>
+<li>发送方和接收方通过加密通信执行一个安全协议。</li>
+<li>接收方从协议中获得目标值 ax+bax + b。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="实际例子"><strong>实际例子</strong>：
+</h3><p>假设我们有一个广告推荐系统，其中广告平台想根据用户的兴趣分数 xx 计算推荐的广告得分 y=ax+by = ax + b，但双方不希望透露自己的隐私信息。</p>
+<ul>
+<li>
+<p>发送方（广告平台）</p>
+<p>：</p>
+<ul>
+<li>输入参数 a=[2,3]a = [2, 3] 和偏置 b=[5,−1]b = [5, -1]。</li>
+</ul>
+</li>
+<li>
+<p>接收方（用户）</p>
+<p>：</p>
+<ul>
+<li>输入兴趣向量 x=[4,7]x = [4, 7]。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>通过 VOLE 协议：</p>
+<ol>
+<li>广告平台和用户执行交互，平台不知道用户的兴趣 xx，用户也不知道平台的权重 aa 和偏置 bb。</li>
+<li>协议输出：
+<ul>
+<li>用户收到结果 y=ax+b=[2⋅4+5,3⋅7−1]=[13,20]y = ax + b = [2 \cdot 4 + 5, 3 \cdot 7 - 1] = [13, 20]。</li>
+<li>广告平台无法得知用户的兴趣向量，用户也无法获知广告平台的参数 aa 和 bb。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="应用场景"><strong>应用场景</strong>：
+</h3><ul>
+<li><strong>私有机器学习推理</strong>：比如允许用户在不泄露其私有数据的前提下，利用云端模型进行推理。</li>
+<li><strong>安全多方计算</strong>：如在金融或医疗场景中，多个机构合作完成隐私保护的统计分析。</li>
+<li><strong>隐私保护的广告投放</strong>：用于确保用户的兴趣和广告平台的策略均不暴露。</li>
+</ul>
+<p>这种工具能够平衡效率与隐私，在当前注重隐私的计算任务中具有重要的应用价值。</p>
+<h2 id="基于样条spline的-gelu-近似方法">基于样条（spline）的 GELU 近似方法
+</h2><p>基于样条（spline）的 GELU 近似方法是一种高效且安全的计算方法，用于近似 GELU 激活函数。样条方法通过将复杂的非线性函数分解为多个线性或低阶多项式函数片段来实现快速计算，同时保持较高的精度。</p>
+<hr>
+<h3 id="gelu-函数的定义"><strong>GELU 函数的定义</strong>:
+</h3><p>GELU（Gaussian Error Linear Unit）的数学定义是：</p>
+<p>$\text{GELU}(x) = x \cdot \Phi(x)$</p>
+<p>其中 $\Phi(x)$ 是标准正态分布的累积分布函数：</p>
+<p>$\Phi(x) = \frac{1}{2}\left[1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right]$</p>
+<p>由于 $\text{erf}$（误差函数）和 $\Phi(x)$ 的计算涉及指数函数和积分运算，其直接计算开销较大。</p>
+<hr>
+<h3 id="基于查找表的传统方法"><strong>基于查找表的传统方法</strong>：
+</h3><p>传统方法通过以下步骤实现 GELU 的安全计算：</p>
+<ol>
+<li>使用查找表（LUT）近似 $e^{-x}$。</li>
+<li>用另一张查找表近似指数函数的倒数。</li>
+<li>每一步都需要扩展或截断位宽，以在精度和效率之间找到平衡。</li>
+</ol>
+<p>这种方法尽管有效，但需要多个查找表和逐步逼近，计算流程较复杂。</p>
+<hr>
+<h3 id="基于样条的-gelu-近似"><strong>基于样条的 GELU 近似</strong>：
+</h3><p>基于样条的方法通过分段线性或分段多项式逼近的方式，用更简单的运算替代传统的复杂计算。以下是关键步骤：</p>
+<h4 id="1-样条分段"><strong>1. 样条分段</strong>：
+</h4><ul>
+<li>将输入x 的值域划分为多个区间，例如 [−3,−2][-3, -2], [−2,−1][-2, -1], [1,2][1, 2] 等。</li>
+<li>在每个区间内，用一个简单的函数（通常是一阶或二阶多项式）来近似 GELU 的值。</li>
+</ul>
+<h4 id="2-低阶多项式近似"><strong>2. 低阶多项式近似</strong>：
+</h4><ul>
+<li>在每个区间 [xi,xi+1][x_i, x_{i+1}] 中，使用线性或二次样条拟合 GELU 函数： $\text{GELU}(x) \approx a_i x^2 + b_i x + c_i, \quad x \in [x_i, x_{i+1}]$</li>
+<li>这些系数 $a_i, b_i, c_i$ 是通过离线拟合和训练得到的，确保逼近误差最小。</li>
+</ul>
+<h4 id="3-高效计算"><strong>3. 高效计算</strong>：
+</h4><ul>
+<li>在线计算时，根据输入值 xx 找到对应的分段区间，并应用对应的多项式计算 $\text{GELU}(x)$。</li>
+<li>样条方法仅需简单的加减乘除操作，大大减少了计算复杂度。</li>
+</ul>
+<hr>
+<h3 id="相较传统方法的优点"><strong>相较传统方法的优点</strong>：
+</h3><ol>
+<li><strong>效率高</strong>：样条方法不需要查找多个查找表，也不涉及指数和倒数计算，适合硬件实现。</li>
+<li><strong>精度可控</strong>：通过增加分段数或使用更高阶的样条，可以灵活调整逼近误差。</li>
+<li><strong>更安全</strong>：在安全计算环境中，样条方法减少了中间复杂运算的泄露风险。</li>
+</ol>
+<hr>
+<h3 id="一个具体例子"><strong>一个具体例子</strong>：
+</h3><p>假设我们采用三段分段样条，分段区间为 [−2,−1][-2, -1], [−1,0][-1, 0], 和 [0,2][0, 2]，并拟合出以下二次多项式：</p>
+<ul>
+<li>
+<p>对于 [−2,−1][-2, -1]:</p>
+<p>$GELU(x)≈0.1x2+0.5x+0.2\text{GELU}(x) \approx 0.1x^2 + 0.5x + 0.2$</p>
+</li>
+<li>
+<p>对于 [−1,0][-1, 0]:</p>
+<p>$GELU(x)≈−0.2x2+0.7x+0.1\text{GELU}(x) \approx -0.2x^2 + 0.7x + 0.1$</p>
+</li>
+<li>
+<p>对于 [0,2][0, 2]:</p>
+<p>$GELU(x)≈0.3x2+0.4x+0.3\text{GELU}(x) \approx 0.3x^2 + 0.4x + 0.3$</p>
+</li>
+</ul>
+<p>在线计算时：</p>
+<ol>
+<li>如果 x = -1.5，它属于区间 [−2,−1][-2, -1]，代入第一个多项式： $GELU(−1.5)=0.1(−1.5)2+0.5(−1.5)+0.2=0.025\text{GELU}(-1.5) = 0.1(-1.5)^2 + 0.5(-1.5) + 0.2 = 0.025$</li>
+<li>如果x = 0.5，它属于区间 [0,2][0, 2]，代入第三个多项式： $GELU(0.5)=0.3(0.5)2+0.4(0.5)+0.3=0.725\text{GELU}(0.5) = 0.3(0.5)^2 + 0.4(0.5) + 0.3 = 0.725$</li>
+</ol>
+<hr>
+<h3 id="应用场景-1"><strong>应用场景</strong>：
+</h3><ul>
+<li><strong>硬件实现</strong>：适合加速器或 FPGA 等场景，实现高效的激活函数计算。</li>
+<li><strong>隐私计算</strong>：在多方计算（MPC）或同态加密中，样条方法可减少计算复杂性和通信量。</li>
+<li><strong>大模型推理</strong>：在内存和计算受限的设备上提高推理效率。</li>
+</ul>
+<p>这种方法已经被证明能够有效平衡精度和效率，是安全计算中 GELU 近似的一种重要手段。</p>
+<h2 id="simdsingle-instruction-multiple-data技术">SIMD（Single Instruction, Multiple Data）技术
+</h2><p><strong>SIMD（Single Instruction, Multiple Data）技术</strong>，是指一种通过在同一时刻对多个数据元素执行相同操作的计算技术。SIMD 允许处理器在单条指令下并行地处理多个数据，从而提高计算效率和吞吐量，尤其在执行向量化操作时能够显著加速计算过程。</p>
+<h3 id="simd-技术的基本概念"><strong>SIMD 技术的基本概念</strong>：
+</h3><p>SIMD 是一种并行计算模型，它允许在同一条指令下对多个数据元素进行批量操作。常见的 SIMD 指令集包括 Intel 的 <strong>SSE</strong>、<strong>AVX</strong>，以及 ARM 的 <strong>NEON</strong>，它们都能够将多个数据点（例如 4 个、8 个、16 个数字）装入一个寄存器，并通过单条指令同时对这些数据执行相同的操作（例如加法、乘法等）。</p>
+<h3 id="simd-在同态加密中的应用"><strong>SIMD 在同态加密中的应用</strong>：
+</h3><p>在同态加密（Homomorphic Encryption, HE）中，SIMD 技术用于优化对加密数据的批量处理。比如，假设有一个密文表示的加密数据集，SIMD 可以将这些密文批量处理到单个密文中，从而摊销计算成本，提高处理速度。</p>
+<p>在这类加密方案中，例如 <strong>RLWE（Ring Learning With Errors）</strong> 加密方案，SIMD 可以并行地对多个加密的消息执行相同的操作，如加法、乘法等，从而加速加密数据的计算过程。例如，多个密文的处理可以通过一次向量化操作一次性完成，而不是逐个处理，从而提高效率。</p>
+<h3 id="问题中的同态旋转"><strong>问题中的“同态旋转”</strong>：
+</h3><p>“同态旋转”指的是在同态加密中，对密文进行的某些操作（如加密数据的旋转或重新排列），在 RLWE 等加密方案中常常是通过复杂的同态操作来实现的。这种旋转操作通常涉及对加密数据结构（如向量或多项式）的某些变换。</p>
+<ul>
+<li><strong>同态旋转的成本高</strong>：同态加密中的旋转操作非常昂贵，因为它需要对加密数据进行复杂的同态运算，同时保持加密数据的隐私性。</li>
+<li><strong>摊销成本</strong>：SIMD 技术通过并行处理大量数据，可以在某种程度上摊销这些昂贵的计算成本。也就是说，SIMD 让我们能够在执行加密运算时，将多个计算合并为一个操作，减少每次计算的总消耗。</li>
+</ul>
+<p>然而，由于 <strong>同态旋转</strong> 操作的复杂性，这部分操作的计算仍然是同态加密中性能瓶颈之一，尤其是在需要执行多个旋转和聚合操作时，仍然需要付出较高的计算开销。</p>
+<h3 id="总结"><strong>总结</strong>：
+</h3><p>在加密算法中，<strong>SIMD 技术</strong>通过批量并行处理多个数据元素，能够提高对加密数据（例如 RLWE 密文）的处理效率。而<strong>同态旋转</strong>操作在同态加密中是一个复杂的操作，通常需要昂贵的计算资源。尽管 SIMD 技术可以在一定程度上摊销这一成本，但旋转操作仍然是一个计算瓶颈，导致性能受到一定限制。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function() {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+
+
+    </body>
+</html>
