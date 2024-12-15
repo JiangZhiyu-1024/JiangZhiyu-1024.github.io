@@ -440,33 +440,55 @@ VOLE 是一种双方功能，它接受来自发送方的标量 $x \in F_p$ 并�
 <p><strong>同态加密</strong>
 全同态加密（FHE）是一种加密方案，允许对加密数据执行任意操作 [19]。在实际应用中，它通常以分级方式使用：操作只能执行有限次数，否则密文无法解密。在大多数 FHE 加密系统中 [12], [11], [18], [15]，明文被编码为来自商环 $\mathbb{Z}_p[x]/(x^N + 1)$ 的多项式，其中 $N$ 是 2 的幂，$p$ 是明文模数。明文多项式随后被加密成密文多项式 $\mathbb{Z}_q[x]/(x^N + 1)$，其中 $q$ 是密文模数，它决定了安全级别以及可以执行操作的次数。</p>
 <h2 id="安全矩阵乘法"><strong>安全矩阵乘法</strong>
-</h2><p>MatrixMul 操作接受来自 C 和 S 的两个输入矩阵 $ X \in \mathbb{Z}^{n \times m}<em>{2^l} $ 和 $ Y \in \mathbb{Z}^{m \times k}</em>{2^l} $，并输出 $\langle Z \rangle$，其中 $ Z = XY \in \mathbb{Z}^{n \times k}_{2^l} $。现有的大多数解决方案使用同态乘法和加法以隐私保护的方式计算上述公式。SIMD 技术通常用于通过将 $N$ 个元素批量处理到单个 RLWE 密文中来摊销成本，但它需要昂贵的同态旋转来求和 [28]。Cheetah [27] 用系数打包替代了 SIMD，以消除昂贵的旋转。然而，它仍然需要传输至少 $2n \sqrt{mk} \sqrt{N}$ 个 RLWE 密文，并执行至少 $nmk N$ 次密文-明文同态乘法。</p>
-<p>回顾一下，GPT 需要自回归地生成响应词。因此，单次 GPT 推理需要对不同的 $X$ 和相同的 $Y$ 运行 MatrixMul。我们旨在通过利用 GPT 的这一特性来减少 MatrixMul 的摊销成本。设 $ X = [x_1, x_2, \cdots, x_m] $（其中 $ x_i \in \mathbb{Z}*2^{l} $ 是 $X$ 的每一列），$Y^T = [y'1, y'2, \cdots, y&rsquo;m]$（其中 $y&rsquo;i \in \mathbb{Z}2^{k}$ 是 $Y$ 的每一行），则有
-$Z = \sum_{i=1}^{m} (x_i \otimes y&rsquo;<em>i)$
-假设 S 和 C 需要生成 $t$ 个响应词，则有 $t$ 个输入矩阵：
-$X_1 = [x{1,1}, x{1,2}, \cdots, x{1,m}]$，
-$X_2 = [x{2,1}, x{2,2}, \cdots, x{2,m}]$，
-$\cdots$，
-$X_t = [x</em>{t,1}, x_{t,2}, \cdots, x_{t,m}]$。</p>
-<p>设 $x&rsquo;<em>i = x</em>{1,i} || x_{2,i} || \cdots || x_{t,i}$ 对于所有 $i \in [1, m]$，则有
-$x&rsquo;_i \otimes y&rsquo;<em>i = (x</em>{1,i} \otimes y&rsquo;<em>i) || (x</em>{2,i} \otimes y&rsquo;<em>i) || \cdots || (x</em>{t,i} \otimes y&rsquo;<em>i)$
+</h2><p>矩阵乘法操作（MatrixMul）接受来自$C$和$S$的两个输入矩阵$X \in \mathbb{Z}^{n \times m}<em>{2^l}$和$Y \in \mathbb{Z}^{m \times k}</em>{2^l}$，并输出$\langle Z \rangle$，其中$Z = XY \in \mathbb{Z}^{n \times k}_{2^l}$。现有的大多数解决方案通过同态乘法和加法以隐私保护的方式计算上述公式。通常采用SIMD技术将$N$个元素批处理到一个RLWE密文中以摊销成本，但这需要昂贵的同态旋转来求和【28】。Cheetah【27】用系数打包替代SIMD以消除昂贵的旋转操作。然而，它仍然需要传输$\geq 2n\sqrt{mk} / \sqrt{N}$个RLWE密文，并执行$\geq nmk / N$次密文-明文同态乘法。</p>
+<p>需要注意的是，GPT需要以自回归的方式生成响应词语。因此，单次GPT推理需要对不同的$X$与相同的$Y$运行MatrixMul操作。我们旨在利用GPT的这一特性减少MatrixMul的摊销成本。令$X = [x_1, x_2, \cdots, x_m]$（其中$x_i \in \mathbb{Z}^n_{2^l}$是$X$的每列），$Y^T = [y&rsquo;_1, y&rsquo;_2, \cdots, y&rsquo;<em>m]$（其中$y&rsquo;<em>i \in \mathbb{Z}^k</em>{2^l}$是$Y$的每行），则$Z = \sum</em>{i=1}^m (x_i \otimes y&rsquo;_i)$。</p>
+<p>假设$S$和$C$需要生成$t$个响应词语，因此有$t$个输入矩阵：
+</p>
+$$
+X_1 = [x_{1,1}, x_{1,2}, \cdots, x_{1,m}],\   X_2 = [x_{2,1}, x_{2,2}, \cdots, x_{2,m}],\   \cdots,\   X_t = [x_{t,1}, x_{t,2}, \cdots, x_{t,m}].
+$$<p>
+令$x&rsquo;<em>i = x</em>{1,i} || x_{2,i} || \cdots || x_{t,i}, \ \forall i \in [1, m]$，则
+</p>
+$$
+x'_i \otimes y'_i = (x_{1,i} \otimes y'_i) || (x_{2,i} \otimes y'_i) || \cdots || (x_{t,i} \otimes y'_i).
+$$<p>
 因此，
-$\sum</em>{i=1}^{m} (x&rsquo;_i \otimes y&rsquo;_i) = Z_1 || Z_2 || \cdots || Z_t$
-因此，我们可以通过 $m$ 次外积同时计算 $t$ 次 MatrixMul。</p>
-<p>考虑到 $Y$ 是预先已知的，我们可以引入一个预处理阶段，让 S 和 C 生成 $m$ 个 sVOLE 关联：
-$W_i = u_i \otimes y&rsquo;<em>i + V_i, \quad \forall i \in [1, m],$
-其中 C 持有 $u_i \in \mathbb{Z}<em>{2^l}^{(t \cdot n)}$（这是一个长度为 $t \cdot n$ 的向量）和 $V_i \in \mathbb{Z}</em>{2^l}^{(t \cdot n) \times k}$，S 持有 $y&rsquo;<em>i \in \mathbb{Z}</em>{2^l}^k$ 和 $W_i \in \mathbb{Z}</em>{2^l}^{(t \cdot n) \times k}$。</p>
-<p>在在线阶段，对于输入矩阵 $X_j = [x_{j,1}, x_{j,2}, \cdots, x_{j,m}]$，C 将发送
-$\langle x_{j,i} \rangle_S := x_{j,i} - u_i [(j-1)n + 1, \cdots, j \cdot n], \quad \forall i \in [1, m],$
-给 S，然后 S 计算：
-$\langle x_{j,i} \rangle_S \otimes y&rsquo;<em>i = (x</em>{j,i} - u_i [(j-1)n + 1, \cdots, j \cdot n]) \otimes y&rsquo;<em>i = x</em>{j,i} \otimes y&rsquo;_i - u_i [(j-1)n + 1, \cdots, j \cdot n] \otimes y&rsquo;_i.$</p>
-<p>然后，我们得到：
-$x_{j,i} \otimes y&rsquo;<em>i = \langle x</em>{j,i} \rangle_S \otimes y&rsquo;_i + u_i [(j-1)n + 1, \cdots, j \cdot n] \otimes y&rsquo;<em>i = \langle x</em>{j,i} \rangle_S \otimes y&rsquo;_i + W_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n] - V_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n].$</p>
-<p>注意，S 持有：
-⟨xj,i⟩S⊗yi′+Wi[(j−1)kn+1,⋯ ,j⋅k⋅n],\langle x_{j,i} \rangle_S \otimes y&rsquo;<em>i + W_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n],
-而 C 持有：
-$V_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n];$
-这意味着 S 和 C 秘密共享 $x</em>{j,i} \otimes y&rsquo;<em>i$，因此他们可以局部计算 $Z_j = \sum</em>{i=1}^{m} (x_{j,i} \otimes y&rsquo;_i)$ 的秘密共享。他们可以以这种方式计算所有的 $Z$。</p>
+</p>
+$$
+\sum_{i=1}^m (x'_i \otimes y'_i) = Z_1 || Z_2 || \cdots || Z_t。
+$$<p>
+因此，我们可以通过$m$次外积计算$t$次MatrixMul操作。鉴于$Y$是预先已知的，我们可以引入一个预处理阶段，让$S$和$C$生成$m$个sVOLE相关：
+</p>
+$$
+W_i = u_i \otimes y'_i + V_i, \ \forall i \in [1, m],
+$$<p>
+其中$C$持有$u_i \in \mathbb{Z}^{(t \cdot n)}<em>{2^l}$（这是长度为$t \cdot n$的向量）和$V_i \in \mathbb{Z}^{(t \cdot n) \times k}</em>{2^l}$，$S$持有$y&rsquo;<em>i \in \mathbb{Z}^k</em>{2^l}$和$W_i \in \mathbb{Z}^{(t \cdot n) \times k}_{2^l}$。</p>
+<p>在在线阶段，对于输入矩阵$X_j = [x_{j,1}, x_{j,2}, \cdots, x_{j,m}]$，$C$发送
+</p>
+$$
+\langle x_{j,i} \rangle_S := x_{j,i} - u_i[(j-1)n + 1, \cdots, j \cdot n], \ \forall i \in [1, m]
+$$<p>
+给$S$，然后$S$计算：
+</p>
+$$
+\langle x_{j,i} \rangle_S \otimes y'_i = (x_{j,i} - u_i[(j-1)n + 1, \cdots, j \cdot n]) \otimes y'_i   = x_{j,i} \otimes y'_i - u_i[(j-1)n + 1, \cdots, j \cdot n] \otimes y'_i.
+$$<p>
+然后我们有：
+</p>
+$$
+x_{j,i} \otimes y'_i = \langle x_{j,i} \rangle_S \otimes y'_i + u_i[(j-1)n + 1, \cdots, j \cdot n] \otimes y'_i   = \langle x_{j,i} \rangle_S \otimes y'_i + W_i[(j-1)kn + 1, \cdots, j \cdot k \cdot n]   - V_i[(j-1)kn + 1, \cdots, j \cdot k \cdot n].
+$$<p>
+注意，$S$持有：
+</p>
+$$
+\langle x_{j,i} \rangle_S \otimes y'_i + W_i[(j-1)kn + 1, \cdots, j \cdot k \cdot n],
+$$<p>
+而$C$持有：
+</p>
+$$
+V_i[(j-1)kn + 1, \cdots, j \cdot k \cdot n]
+$$<p>
+这意味着$S$和$C$共同秘密共享了$x_{j,i} \otimes y&rsquo;<em>i$，从而他们可以局部计算出$Z_j = \sum</em>{i=1}^m (x_{j,i} \otimes y&rsquo;_i)$的秘密共享值。他们可以以这种方式计算出所有的$Z$。</p>
 <p>表 2 比较了 Cheetah [27]、Iron [25] 和 CipherGPT 在 MatrixMul 操作中的开销。回顾一下，sVOLE 的复杂度几乎与 $n$ 无关。因此，我们的 MatrixMul 中的公钥操作数量也与 $n$ 无关。具体来说，我们需要传输 $2 \cdot e \cdot m \cdot k / N$ 个 RLWE 密文，并执行 $e \cdot m \cdot k / N$ 次密文-明文乘法来执行反向 VOLE，这两者都与 $n$ 无关。当我们将大量矩阵合并在一起时，即当 $n$ 很大时，我们的节省变得显著。此外，这些开销需要除以 $t$ 来计算摊销成本。</p>
 <p>在计算方面，我们节省了 $t \cdot n \cdot e$ 次密文-明文乘法。假设 $n = 256, m = 768, k = 64, t = 256$ 且 $e = 144$（这是 GPT-2 的真实参数），我们节省了 3,065 次密文-明文乘法，这大约需要超过 4 秒。尽管我们需要做额外的 $(c \cdot m \cdot n \cdot k)$ 次 AES 操作来扩展种子，但在 AES-NI 的帮助下，这可以在大约 100 毫秒内完成。</p>
 <p>在通信方面，我们至少节省了 94 个 RLWE 密文，相当于约 10MB，而 CipherGPT 中 OTs 和明文带来的通信开销仅约为 1.5MB。</p>
@@ -498,17 +520,24 @@ $V_i [(j-1)kn + 1, \cdots, j \cdot k \cdot n];$
 <h2 id="安全的-top-k-选择">安全的 Top-K 选择
 </h2><p>在 vec2word 层，GPT 模型生成一个包含所有可能单词概率的向量。从这个向量中，需要选择出前 K 个最大的概率，并根据这些选择的概率来采样最终的响应单词。本节将重点讨论如何从长度为 $n$ 的向量中选择前 K 个最大值。在后续部分，我们将讨论如何从这 K 个选定的概率中采样一个值。<strong>算法 2</strong> 提供了我们 Top-K 协议的详细描述。总体来说，输入元素首先进行安全洗牌（第 1 行）；然后使用基于比较的选择方法，从洗牌后的列表中识别出前 K 个元素（第 2 行）。<strong>算法 2</strong> 中的选择函数是递归执行的。在每次递归中，向量的最后一个元素作为基准元素进行选择（第 5 行）；然后将向量分为两部分：小于基准元素的部分，记为 SL，大于或等于基准元素的部分，记为 SR（第 6 行到第 15 行）。为了划分向量，所有元素都与基准元素进行比较（第 8 行）。比较结果可以被揭示（第 9 行），而不会泄露原始元素的隐私。这是因为原始元素已经被洗牌，从而比较结果与实际值无关。如果 SR 的大小（记为 $K&rsquo;$）恰好等于 K，意味着 SR 中的所有元素都是我们需要选择的前 K 个最大元素（第 19 行）。如果 $K&rsquo; &gt; K$，则在 SR 上执行下一次递归，进一步缩小选择范围（第 21 行）。另一方面，如果 $K&rsquo; &lt; K$，则在 SL 上执行下一次递归，选择前 $(K - K&rsquo;)$ 个元素，然后将它们与 SR 合并，得到最终的前 K 个元素（第 21 行）。值得注意的是，只有 CMP（第 8 行）需要 $S$ 和 $C$ 之间的交互；算法的其余步骤可以由每一方在本地执行，无需任何交互。选择函数需要 $O(n)$ 次 CMP。</p>
 <h2 id="安全的采样"><strong>安全的采样</strong>
-</h2><p>本节详细解释我们的安全采样协议。该协议的输入为 K 个秘密共享的概率 $(p_1, \dots, p_K)$，其中每个概率通过将其乘以 $2^L$ 并去掉小数部分，转换为整数 $x_i$。协议的输出是一个秘密共享的索引 $j$，使得：
-$\Pr(j = i) = \frac{x_i}{\sum_{k=1}^K x_k}.$
-我们将在第 7.5 节解释如何将该索引映射到响应单词上。<strong>算法 3</strong> 提供了安全采样协议的详细描述。协议基于以下观察：对于随机变量 $p&rsquo; \in [0, 1]$，所选择的索引 $j$ 满足：
-$\sum_{k=1}^{j-1} p_k \le p&rsquo; &lt; \sum_{k=1}^{j} p_k.$
-由于 $(p_1, \dots, p_K)$ 已经被放大了 $2^L$ 倍，$p&rsquo;$ 也需要相应地进行缩放。为此，C 先从 $[0, 2^L - 1]$ 范围中采样一个整数 $v$（第 1 行）。然后，$S$ 和 $C$ 安全地比较 $v$ 与每个 $\sum_{k=1}^{i} x_k$，对于所有 $i \in [1, K]$（第 2-6 行），从而得到一个秘密共享的比特向量 $\langle b \rangle$，使得：
-$\quad \text{for} \quad 1 \le i &lt; j, \quad b_i = 0 \quad \text{for} \quad j \le i \le K.$
-接下来的步骤是构造另一个秘密共享的比特向量 $\langle b&rsquo; \rangle$，使得：
-$b&rsquo;_i = 0 \quad \text{for} \quad i \neq j, \quad b&rsquo;<em>j = 1.$
-这可以通过对 $\langle b \rangle$ 中相邻比特进行异或操作来实现（第 7-10 行）。然后，所需的索引为：
-$\langle j \rangle := \sum</em>{i=1}^K \text{FMUX}(i, \langle b&rsquo;_i \rangle_1) \quad \text{(第 11 行)}.$
-我们指出，$v$ 由 $C$ 单独采样是可以接受的，因为最终输出的 $j$ 对 $C$ 保持未知。</p>
+</h2><p>在本节中，我们详细解释了我们的安全抽样协议。该协议以$K$个秘密共享的概率$(p_1, \dots, p_K)$为输入，其中每个概率通过将其乘以$2^L$并去掉小数部分来缩放为整数$x_i$。协议的输出是一个秘密共享的索引$j$，满足：$Pr(j = i) = \frac{x_i}{\sum_{k=1}^K x_k}$。我们将在第7.5节解释如何将该索引映射到响应词。</p>
+<p>算法3提供了安全抽样协议的详细描述。该协议基于以下观察：对于随机$p&rsquo; \in [0, 1]$，选定的索引$j$满足：$\sum_{k=1}^{j-1} p_k \leq p&rsquo; &lt; \sum_{k=1}^{j} p_k$。由于$(p_1, \dots, p_K)$已经被缩放为$2^L$，因此$p&rsquo;$也应该相应地缩放。为此，我们让$C$从$0$到$2^L - 1$中抽样一个整数$v$（第1行）。$S$和$C$安全地比较$v$与每个$\sum_{k=1}^i x_k, \ \forall i \in [1, K]$（第2-6行），结果是一个秘密共享的比特向量$\langle b \rangle$，满足：$b_i = 1, \ \forall 1 \leq i &lt; j \quad \text{且} \quad b_i = 0, \ \forall j \leq i \leq K$。</p>
+<p>我们的下一步是构建另一个秘密共享的比特向量$\langle b&rsquo; \rangle$，满足：$b&rsquo;_i = 0, \ \forall i \neq j \quad \text{且} \quad b&rsquo;<em>j = 1$。这可以通过对$\langle b \rangle$中的每对相邻比特执行异或操作来实现（第7-10行）。然后，所需的索引为：$\langle j \rangle := \sum</em>{i=1}^K \text{FMUX}(i, \langle b&rsquo;_i \rangle_1)$（第11行）。</p>
+<p>我们需要注意的是，由于最终的输出$j$对$C$是未知的，因此$v$由$C$单独抽样是可以接受的。</p>
+<p><img src="/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241215212331083.png"
+	width="685"
+	height="620"
+	srcset="/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241215212331083_hu2762029947057730686.png 480w, /p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241215212331083_hu6571275859154383001.png 1024w"
+	loading="lazy"
+	
+		alt="image-20241215212331083"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="110"
+		data-flex-basis="265px"
+	
+></p>
 <h2 id="ciphergpt-框架"><strong>CipherGPT 框架</strong>
 </h2><p><img src="/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241209192050004.png"
 	width="539"
