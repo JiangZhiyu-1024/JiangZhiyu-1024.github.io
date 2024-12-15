@@ -7,7 +7,352 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Mon, 09 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 15 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>DP-Forward：在前向传播中使用差分隐私进行语言模型的微调和推理</title>
+        <link>https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Sun, 15 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/spruce-needles-7890105_1280.jpg" alt="Featured image of post DP-Forward：在前向传播中使用差分隐私进行语言模型的微调和推理" /&gt;&lt;h1 id=&#34;dp-forward在前向传播中使用差分隐私进行语言模型的微调和推理&#34;&gt;&lt;strong&gt;DP-Forward：在前向传播中使用差分隐私进行语言模型的微调和推理&lt;/strong&gt;
+&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;摘要&lt;/strong&gt;
+差分隐私随机梯度下降（DP-SGD）通过在反向传播中向梯度添加噪声来保护训练数据，防止隐私泄露，特别是成员推断攻击。然而，它无法应对推理阶段的威胁，例如嵌入逆推和敏感属性推断。此外，在微调大型预训练语言模型（LMs）时，DP-SGD在存储和计算上成本较高。&lt;/p&gt;
+&lt;p&gt;我们提出了一种名为 &lt;strong&gt;DP-Forward&lt;/strong&gt; 的方法，通过在语言模型的前向传播阶段直接扰动嵌入矩阵来实现隐私保护。该方法在训练和推理数据上满足严格的本地差分隐私（Local DP）要求。为了用最小的矩阵值噪声实例化该方法，我们设计了一种解析矩阵高斯机制（aMGM），该机制从矩阵高斯分布中绘制可能非独立同分布（non-i.i.d.）的噪声。我们进一步研究了使用 aMGM 噪声扰动语言模型不同隐藏（子）层输出的效果。&lt;/p&gt;
+&lt;p&gt;在三个典型任务上的实验表明，DP-Forward 的实用性几乎达到非隐私基线，并在中等隐私水平下相较 DP-SGD 的性能提升了最多 7.7 个百分点。同时，它的时间和内存成本是 DP-SGD 的三分之一（基于最新的高速库）。在隐私保护效果方面，DP-Forward 将嵌入逆推和敏感属性推断的平均成功率分别降低了最多 88 个百分点和 41 个百分点，而 DP-SGD 则未能有效应对这些威胁。&lt;/p&gt;
+&lt;h2 id=&#34;引言&#34;&gt;&lt;strong&gt;引言&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;Transformer 深度学习架构 [68] 近年来在计算机视觉领域逐渐流行，并在自然语言处理（NLP）中得到了广泛应用。基于 Transformer 的语言模型（LMs），如 BERT [20] 和 GPT [59, 60]，几乎在所有 NLP 任务中都实现了最先进的性能。这些模型首先在大规模（公共）自标注语料库上进行预训练，然后使用规模更小、可能包含私密信息的语料库进行微调。这种方法避免了从零开始训练的困难以及任务特定语料库可能不足的问题，同时增强了模型的通用性。&lt;/p&gt;
+&lt;p&gt;然而，训练数据对微调后的语言模型实用性的贡献可能包含敏感信息。语言模型可能（无意中）记住这些数据 [12]，因此容易受到成员推断攻击（MIAs）[63] 的威胁，这种攻击可以识别某个样本是否在训练集中。更糟糕的是，仅通过对 GPT-2 进行黑箱访问，就可能提取出原始的训练文本（如社会安全号码 SSNs）[13]。此外，还可以通过提取攻击 [13] 从在临床语料库上训练的 BERT 中恢复个人健康信息（如患者与病症的配对数据）[42]。&lt;/p&gt;
+&lt;p&gt;差分隐私（DP）[22] 已成为保护个人隐私的事实标准。为了防止成员推断攻击，差分隐私随机梯度下降（DP-SGD）[1] 可用于模型训练。DP-SGD 在每个批次中剪裁每个样本的梯度，并向聚合后的梯度添加随机高斯噪声。与早期专注于凸优化问题的尝试 [17, 18] 相比，DP-SGD 更加通用，并已被现代机器学习框架（如 PyTorch 和 TensorFlow）实现。它可以应用于基于语言模型的 NLP 微调管道，同时确保样本级隐私，假设每个个体贡献一个样本（通常是一个序列-标签对）。&lt;/p&gt;
+&lt;p&gt;然而，DP-SGD 通常需要一个受信方来管理用户的敏感训练数据。尽管可以通过安全聚合 [15] 分布式地完成这一过程 [9, 50]，但它需要额外的成本和信任假设，其核心仍然是中心化差分隐私（CDP）。此外，在微调过程中，计算每个样本的梯度需要处理如整个管道大小的庞大参数量（例如，BERT-Base 的参数超过 1.1 亿），成本显然很高。更重要的是，由于高维问题的“维度诅咒”，维护通过带噪梯度训练的管道的实用性非常困难。一项最新研究 [79, 表 4] 显示，在中等隐私级别下，微调语言模型的平均准确率为 65.7%（相比没有差分隐私时为 91.8%）。&lt;/p&gt;
+&lt;p&gt;最后，训练期间添加的噪声不会影响推理阶段的嵌入，这使推理查询容易受到各种恢复攻击 [56, 64] 的威胁，这些攻击涵盖从敏感属性（例如作者身份）到原始文本的恢复。&lt;/p&gt;
+&lt;h3 id=&#34;通过扰动嵌入实现自然隐私&#34;&gt;&lt;strong&gt;通过扰动嵌入实现自然隐私&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;我们提出了 &lt;strong&gt;DP-Forward&lt;/strong&gt;，一种完全不同的方法，通过扰动前向传播信号来实现隐私保护：用户可以在将（带标签的）序列共享用于训练之前，局部地将噪声注入到其嵌入中，区别于在反向传播中（可能由不受信任的方）扰动梯度。该方法旨在提供可证明的本地差分隐私（LDP）保证，因此能有效抵御比 DP-SGD 更强的对手。我们的方法还自然适用于联邦学习（FL）设置，在该设置中，用户的数据不会集中收集，但有显著区别 —— FL 通常共享无噪声的本地模型更新。值得注意的是，对带噪嵌入执行的任何后续计算（例如梯度计算）不会带来额外的隐私损失，因为 LDP 提供了免费的后处理保护。尽管可以通过向用户的每个样本梯度中添加“足够”噪声来强制 DP-SGD 提供 LDP，但在类似隐私级别下，这可能导致无法使用的模型。&lt;/p&gt;
+&lt;p&gt;DP-Forward 还扩展了其应用范围，通过向用户的测试序列嵌入添加噪声来实现推理中的 LDP，确保与训练阶段相同的隐私保护。此外，作为“附带”好处，它能有效缓解基于嵌入的新兴隐私风险 [56, 64]，超越了成员推断攻击（MIAs）的范畴。显然，DP-Forward 的设计目标与我们的总体目标自然契合：提供本地差分隐私（LDP，而非 CDP），更直接地保护原始数据（而非梯度），防范新的隐私威胁 [56, 64]，并且能与常规的非隐私训练一样高效（允许对带噪嵌入进行批处理）。然而，支持这些期望的基础设施遗憾地并不存在。必须有一个专门的机制来扰动前向传播信号。&lt;/p&gt;
+&lt;p&gt;具体来说，我们需要为通过语言模型（LM）管道的前向传播获得的训练/推理文本序列的嵌入导出噪声，作为一个真实值和矩阵值的函数。可以采用经典的高斯机制（GM）[23]，向每个样本添加从一元高斯分布中抽取的独立同分布（i.i.d.）噪声。然而，GM 仅根据差分隐私的充分条件来校准噪声方差，并且其方差公式在低隐私级别下并不适用 [7]。另一种候选方法是矩阵变异高斯（MVG）机制 [14]，它专为矩阵值数据设计：它利用从矩阵高斯分布中抽取的可能非独立同分布的噪声，较少地扰动重要的行/列。尽管 MVG 相较于 GM [14] 可能表现出更好的效用，但由于其依赖于充分条件，它仍然是次优的。为了优化 MVG，我们提出了一种解析矩阵高斯机制（aMGM），通过结合解析高斯机制（aGM）[7] 中针对非 i.i.d. 噪声校准的必要和充分条件。我们的挑战在于操作两个协方差矩阵，而非单一的方差。我们推导出对两个最小奇异值的约束（第 4.2 节），表明 i.i.d. 噪声（如 aGM 中所示）可能已经是适用于像 DP-Forward 这样的通用应用的最优选择。&lt;/p&gt;
+&lt;p&gt;基于 Transformer 的管道包含输入嵌入层、编码器和任务层。所有这些层都显著地操作训练和随后的推理中的文本输入嵌入。我们研究了在任何隐藏（子）层输出的嵌入中添加 aMGM 噪声的效果，目的是在任务层之前进行扰动（图 1）。为了确保序列级别的 LDP，我们需要估计“噪声前”函数对任意两个序列的 L2 灵敏度 [23]。这并不简单，因为这些函数可能包括不同的（子）层，而这些层可能并不是 Lipschitz 连续的 [39]。我们的策略是将函数输出归一化，使其具有固定的 Frobenius（或 L2）范数，类似于梯度裁剪 [1]。这一策略对于较深的子层效果尤为显著，能够实现与非隐私基线相当的任务准确度（第 5 节）。对于前几个（子）层，我们还做了两项特殊调整，将 LDP 放宽至令牌级别，具体内容详见附录 A.2，以提高准确性。&lt;/p&gt;
+&lt;h3 id=&#34;我们的贡献&#34;&gt;&lt;strong&gt;我们的贡献&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;受到语言模型（LM）微调和推理中普遍隐私担忧以及DP-SGD固有缺陷的启发，我们正式研究了一种直观但很少被研究的方法，并探索它与基于 Transformer 的自然语言处理（NLP）管道的集成。具体而言：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;我们提出了 &lt;strong&gt;DP-Forward 微调&lt;/strong&gt;，它通过扰动每个用户（带标签）序列的前向传播嵌入，提供比 DP-SGD 扰动聚合梯度更直接的保护。它的可证明保证（定理 1）是一个新的序列级别 LDP 概念（SeqLDP，定义 4），并且以更严格的 (ε, δ)-LDP 保证仅对序列有效。此外，DP-Forward 可以自然地扩展到推理，确保无标签测试序列的标准 LDP（定理 3），而 DP-SGD 做不到这一点。&lt;/li&gt;
+&lt;li&gt;为了实现 DP-Forward 的最佳输出扰动机制，我们提出了 &lt;strong&gt;aMGM&lt;/strong&gt;，它对于任何矩阵值函数具有独立的兴趣。通过利用来自 aGM [7] 的差分隐私必要和充分条件，它可以从矩阵高斯分布中抽取可能非 i.i.d. 的噪声，像 MVG [14] 一样，同时为高维数据产生数量级更小的噪声（第 5.3 节）。&lt;/li&gt;
+&lt;li&gt;我们在第 5 节进行了三项典型 NLP 任务的实验，展示了关键超参数（例如序列长度）如何影响任务准确度。为了公平比较 DP-SGD 在隐私与效用之间的表现：
+i) 我们通过随机响应 [70] 扰动标签，使得 DP-Forward 微调为序列-标签对提供标准的 LDP（定理 2）。
+ii) 我们通过洗牌 [25] 将标准 LDP 下的 DP-Forward “转换”为（样本级）CDP（如 DP-SGD 提供的）。与 DP-SGD 或其最近改进 [78, 79]（第 7.3 节综述）相比，我们的准确度提升最高可达 7.7 个百分点（pp），在相似隐私级别下。效率方面，即使使用最新的 Opacus 库 [77]，DP-SGD 的时间和 GPU 内存开销也超过 3 倍。&lt;/li&gt;
+&lt;li&gt;我们评估了三类隐私威胁。与 DP-SGD 类似，DP-Forward（包括附录 A.3 中的两个令牌级设计）可以有效防御序列级别的 MIAs，但只有 DP-Forward 能够防止推理时嵌入的两个威胁。具体而言，第 6 节显示，DP-SGD 在两个嵌入逆向攻击中完全失败，而 DP-Forward 显著减少了它们的成功率，最高减少了 88 个百分点。对于基于神经网络的属性推断攻击，DP-SGD 平均仅减少了 15 个百分点的成功率，而 DP-Forward 则实现了大约 41 个百分点的减少，使得攻击预测如同将所有标签分配给多数类。简而言之，DP-Forward 是训练（和测试）深度学习模型，尤其是基于大型语言模型的模型，比 DP-SGD 更好的替代方案。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;初步知识和符号&#34;&gt;&lt;strong&gt;初步知识和符号&lt;/strong&gt;
+&lt;/h2&gt;&lt;h3 id=&#34;bert中的transformer编码器&#34;&gt;&lt;strong&gt;BERT中的Transformer编码器&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;现代基于Transformer的语言模型（LM），包括BERT [20]和GPT [59]，首先在庞大的未标注（公共）语料库上进行预训练，以学习上下文化的文本表示。随后，它们可以通过更小的任务特定数据集进行微调，用于各种下游的自然语言处理（NLP）任务（例如，情感分析、问答等）。&lt;/p&gt;
+&lt;p&gt;我们考虑BERT（如图1所示），它由L个相同的层堆叠而成（即双向Transformer编码器 [68]）。每个层包含两个子层：点积多头注意力（MHA）[68]，有h个头，以及前馈神经网络（FFN）。每个子层都有一个额外的残差连接，后接层归一化 [6]。&lt;/p&gt;
+&lt;p&gt;令 $X = \langle x_i \rangle_{i=1}^{n}$ 为包含n个token的输入序列（例如，字符、单词、子词、q-gram），其中 $x_i$ 来自词汇表 $V$。输入嵌入层首先将每个 $x_i$ 映射到其在 $R^d$ 中的表示，这个表示是token嵌入、段落嵌入和位置嵌入的和。我们重用 $X$ 来表示隐藏的嵌入矩阵 $R^{n \times d}$。&lt;/p&gt;
+&lt;p&gt;对于MHA层中的每一个 $h$ 个注意力 $Att_i$，我们通过将 $X$ 与头特定的权重 $W_Q, W_K, W_V \in R^{d \times d/h}$ 相乘，得到查询、键和值矩阵 $Q, K, V \in R^{n \times d/h}$（$h$ 能整除 $d$）。其输出为：&lt;/p&gt;
+&lt;p&gt;$Att_i(Q, K, V) = \text{softmax}\left( \frac{QK^T}{\sqrt{d/h}} \right) V, \quad \forall i \in [1, h].$&lt;/p&gt;
+&lt;p&gt;softmax(·)的输入是一个 $n \times n$ 的矩阵，包含成对的点积。最后，MHA将所有头的输出进行拼接（表示为 $||$），形成一个 $R^{n \times d}$ 的矩阵，并通过投影矩阵 $W_O \in R^{d \times d}$ 进行右乘：&lt;/p&gt;
+&lt;p&gt;$MHA(X) = [Att_1 || \cdots || Att_h] W_O.$&lt;/p&gt;
+&lt;p&gt;FFN由两个线性映射组成，中间有ReLU激活。它分别且相同地作用于每个 $x_i \in [1, n]$，其操作为：&lt;/p&gt;
+&lt;p&gt;$FFN(x_i) = \text{ReLU}(0, x_i W_1 + b_1) W_2 + b_2,$&lt;/p&gt;
+&lt;p&gt;其中 $W_1, W_2, b_1, b_2$ 是可训练的矩阵/向量参数。它对 $X$ 的输出为：&lt;/p&gt;
+&lt;p&gt;$FFN(X) = [FFN(x_1)^T || \cdots || FFN(x_n)^T].$&lt;/p&gt;
+&lt;p&gt;子层的残差连接为：$X + MHA(X)/FFN(X)$。层归一化（LN）操作将所有 $x_i$ 项归一化，使其具有零均值和单位方差，并通过额外的缩放-平移步骤进行处理。&lt;/p&gt;
+&lt;p&gt;在最终编码器的输出处，隐藏的嵌入矩阵被减少为一个 $R^{1 \times d}$ 的序列特征。标准的降维方法包括均值池化 [61]（计算 $\frac{1}{n} \sum_{i=1}^n x_i$）或采用特殊token $[CLS]$ 的最后一个嵌入用于分类 [20]。&lt;/p&gt;
+&lt;p&gt;BERT的预训练基于两个自监督任务：掩蔽语言模型（MLM）和下一句预测 [20]。我们采用MLM：它随机掩蔽输入序列 $X$ 中的一些token，索引为 $I$。目标是通过最小化交叉熵损失来预测这些被掩蔽的token，公式为：&lt;/p&gt;
+&lt;p&gt;$L_{MLM} = - \sum_{i \in I} \log \text{Pr}[x_i | \hat{X}; \theta],$&lt;/p&gt;
+&lt;p&gt;其中 $\hat{X} = X \setminus { x_i | i \in I }$，$\theta$ 表示BERT Transformer编码器的所有参数。&lt;/p&gt;
+&lt;h3 id=&#34;局部差分隐私&#34;&gt;&lt;strong&gt;（局部）差分隐私&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;差分隐私（DP）[22]是一种严格、可量化的隐私概念。它有两种常见模型：中央差分隐私（Central DP）和局部差分隐私（Local DP）。在中央差分隐私中，一个可信的数据策展人访问所有个体的原始数据集 $X$，并通过带有随机噪声的随机机制 $M$ 处理 $X$。形式化地定义如下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 1（中央差分隐私）&lt;/strong&gt;
+对于隐私参数 $\epsilon \geq 0$ 和 $0 \leq \delta \leq 1$，如果对于所有相邻数据集 $X$ 和 $X′$（用 $X \sim X′$ 表示），以及 $M$ 的任何输出子集 $O$，都有：&lt;/p&gt;
+&lt;p&gt;$\Pr[M(X) \in O] \leq e^{\epsilon} \Pr[M(X′) \in O] + \delta,$&lt;/p&gt;
+&lt;p&gt;则称 $M$ 满足 $(\epsilon, \delta)$-DP。当 $\delta = 0$ 时，我们称其为 $\epsilon$-DP 或纯差分隐私。&lt;/p&gt;
+&lt;p&gt;相邻关系依赖于具体应用（将在第3.1节讨论）。通常，它涉及“替换一个”关系：$X′$ 可以通过替换 $X$ 中一个个体的数据点（例如，序列-标签对）来获得。中央差分隐私提供了对数据集中的任何个体的合理否认（plausible deniability）。&lt;/p&gt;
+&lt;p&gt;与之对比，局部差分隐私（LDP）[38]移除了可信的策展人，允许个体在将数据发送到不可信的聚合器进行分析之前，使用机制 $M$ 局部地扰动他们的数据。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定义 2（局部差分隐私）&lt;/strong&gt;
+对于 $\epsilon \geq 0$ 和 $0 \leq \delta \leq 1$，如果对于任意两个输入 $X$ 和 $X′$ 以及 $M$ 的任何可能输出子集 $O$，都有：&lt;/p&gt;
+&lt;p&gt;$\Pr[M(X) \in O] \leq e^{\epsilon} \Pr[M(X′) \in O] + \delta,$&lt;/p&gt;
+&lt;p&gt;则称 $M$ 满足 $(\epsilon, \delta)$-LDP。同样，当 $\delta = 0$ 时，我们称其为 $\epsilon$-LDP。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;隐私损失随机变量（PLRV）&lt;/strong&gt;
+对于一对特定的输入 $X \sim X′$，通过观察输出 $O$ 所带来的隐私损失（或“实际的 $\epsilon$ 值”）[7]是两种概率的对数比率：&lt;/p&gt;
+&lt;p&gt;$L_{M,X,X′}(O) = \ln \frac{\Pr[M(X) = O]}{\Pr[M(X′) = O]}.$&lt;/p&gt;
+&lt;p&gt;当输出 $O$ 随着 $M(X)$ 变化时，我们得到PLRV $L_{M,X,X′}$。分析PLRV的尾界限是一种有用的处理DP的方法 [23]，我们将在第4.2节中利用这一方法来构建我们提出的机制。&lt;/p&gt;
+&lt;p&gt;差分隐私有两个理想特性：后处理自由性和可组合性。前者意味着对（$\epsilon, \delta$）-DP机制的输出进行进一步计算不会带来额外的隐私损失。后者允许我们在简单机制之上构建更复杂的机制：顺序（且自适应地）对相同输入运行（$\epsilon, \delta$）-DP机制 $k$ 次时，至少得到 $(k\epsilon, k\delta)$-DP。这两个特性在LDP中同样成立，当考虑一个数据集仅包含一行数据时。&lt;/p&gt;
+&lt;p&gt;一个用于矩阵值函数 $f: X \rightarrow R^{n \times d}$ 的输出扰动机制 $M$ 是通过计算输入上的 $f$，然后向其输出添加从随机变量中抽取的随机噪声。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;高斯机制（GM）&lt;/strong&gt;
+对于（$\epsilon, \delta$）-DP，$M$ 的一个典型实例是经典的高斯机制（GM）[23]，它向噪声 $Z \in R^{n \times d}$ 中的每个条目添加独立同分布的噪声，每个条目来自一个一维高斯分布 $N(0, \sigma^2)$。方差 $\sigma^2$ 由以下公式给出：&lt;/p&gt;
+&lt;p&gt;$\sigma^2 = \frac{2 \ln(1.25/\delta) S_2(f)}{\epsilon^2},$&lt;/p&gt;
+&lt;p&gt;其中 $S_2(f)$ 是L2敏感度：&lt;/p&gt;
+&lt;p&gt;$S_2(f) = \sup_{X \sim X′} |f(X) - f(X′)|_F,$&lt;/p&gt;
+&lt;p&gt;其中 $| \cdot |_F$ 表示矩阵的Frobenius范数 [34]。&lt;/p&gt;
+&lt;p&gt;表1总结了本文中使用的缩写。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215090535375.png&#34;
+	width=&#34;422&#34;
+	height=&#34;349&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215090535375_hu7898267522621382871.png 480w, https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215090535375_hu1308797615157488100.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241215090535375&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;120&#34;
+		data-flex-basis=&#34;290px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;dp-forward&#34;&gt;DP-FORWARD
+&lt;/h2&gt;&lt;p&gt;我们以基于 BERT 的管道为例进行研究，因为它们在分类任务中表现优异。DP-Forward 方法可以直接应用于其他涉及前向传播中矩阵运算的（基于 Transformer 的）自然语言处理或计算机视觉模型。假设每个用户持有一个序列-标签对(X, y) 或仅持有 X，用于在不受信任的服务提供商处微调或测试管道。即使共享经过删减的 X（去除了常见的 PII，即个人身份信息）或其特征（即不可读的实数嵌入矩阵）也存在信息泄露的风险【56, 64, 67】。&lt;/p&gt;
+&lt;p&gt;对于 DP-Forward 训练，用户会在本地对其嵌入矩阵进行扰动，以确保满足（新的）本地差分隐私（LDP）的要求，然后再进行共享。如果相应的标签被认为是敏感的，用户还应对标签进行扰动（见第 3.4 节）。我们在第 3.2 节探讨了将管道划分为噪声前函数 f(·) 和噪声后处理 p(·) 的不同选项：用户可以访问 f(·) 来生成嵌入矩阵，并通过输出扰动机制 M（例如高斯机制，GM）对其进行扰动；服务提供商在对噪声化的（标注）嵌入进行微调（见第 3.3 节）或预训练（见第 3.6 节）时运行p(·)。挑战在于分析管道不同部分的 $S^2(f)$，我们通过对f(·) 进行归一化来解决这一问题。&lt;/p&gt;
+&lt;p&gt;与 DP-SGD 不同，DP-Forward 可以自然地用于保护推理序列（见第 3.5 节）。它利用了免费的后处理特性（即推理在噪声化的嵌入上运行），仅需要在管道中额外添加“即插即用”的噪声层，便可将管道改动降至最低。&lt;/p&gt;
+&lt;h3 id=&#34;序列本地差分隐私的概念&#34;&gt;序列（本地）差分隐私的概念
+&lt;/h3&gt;&lt;p&gt;嵌入 f(X) 编码了输入序列 X 的语义信息，每个 X 包含 n 个标记（见第 2.1 节）。微调（或后续推理）NLP 管道的本质在于处理 f(X)。DP-Forward 微调通过在 f(X) 上应用输出扰动机制 M 来保护每个 X，这与 DP-SGD 不同，后者对梯度的聚合f&amp;rsquo;(X, y)（包括 X 和标签 y）进行扰动。简而言之，我们的$(\varepsilon, \delta)-LDP$ 针对 X 提供保护，而 DP-SGD 为 (X, y) 提供集中式差分隐私（CDP）。&lt;/p&gt;
+&lt;p&gt;仅保护序列是有意义的，因为序列通常包含（隐含的）敏感信息（例如作者身份），而标签（如一个表示正/负的单一比特）可以是公开的。对于如何在(X, y) 上实现“完全”的 LDP，我们将在第 3.4 节中详细讨论。为了弥合 DP-SGD 和 DP-Forward 理论保证之间的差距，我们首先在集中式环境下定义序列差分隐私（SeqDP）。&lt;/p&gt;
+&lt;h5 id=&#34;定义-3seqdp&#34;&gt;定义 3（SeqDP）
+&lt;/h5&gt;&lt;p&gt;对于$\varepsilon \geq 0$、$ \leq \delta \leq 1$，如果一个机制 M 满足以下条件，则称其为$(\varepsilon, \delta)-SeqDP$：
+对于任何只在某索引 i 处的序列不同的 $X \simeq X&amp;rsquo;$：
+$(X_i, y_i) \in X$ 和$(X&amp;rsquo;_i, y_i) \in X&amp;rsquo;$，对任意 $X_i, X&amp;rsquo;_i$ 和任何可能的输出子集 O，&lt;/p&gt;
+&lt;p&gt;$\Pr[M(X) \in O] \leq e^\varepsilon \Pr[M(X&amp;rsquo;) \in O] + \delta.$&lt;/p&gt;
+&lt;h4 id=&#34;标签差分隐私label-dp&#34;&gt;标签差分隐私（Label DP）
+&lt;/h4&gt;&lt;p&gt;最近提出的标签差分隐私（Label DP）【26, 31】最初是在 PAC 学习【16】中研究的。它仅保护标签（不保护相应的输入/图像）：$(\varepsilon, \delta)-DP$ 仅针对标签。
+我们的 SeqDP 比标签差分隐私“更安全”或至少“互为补充”，后者存在固有缺陷【11】：由于标签通常依赖于其序列（而非反之），即使标签受到保护（通过任何标签-DP机制），也很可能从原始序列中恢复真实标签。后续研究【72】表明，即使 $(\varepsilon, \delta)$ 任意小，当模型具备泛化能力时，在标签 DP 下保护标签是不可行的。此外，在没有标签（例如推理或自监督学习）的情况下，SeqDP 升级为标准的$(\varepsilon, \delta)-DP$，而标签 DP 则完全不可用。&lt;/p&gt;
+&lt;h4 id=&#34;序列本地差分隐私seqldp&#34;&gt;序列本地差分隐私（SeqLDP）
+&lt;/h4&gt;&lt;p&gt;我们进一步定义了 SeqLDP，这是序列差分隐私的本地版本。关于标签 DP 与 SeqDP 的讨论同样适用于 SeqLDP。&lt;/p&gt;
+&lt;h5 id=&#34;定义-4seqldp&#34;&gt;定义 4（SeqLDP）
+&lt;/h5&gt;&lt;p&gt;对于 $\varepsilon \geq 0$、$0 \leq \delta \leq 1$，如果一个机制 M 满足以下条件，则称其为 $(\varepsilon, \delta)-SeqLDP$：
+对于任何具有相同 y 的 X, X&amp;rsquo; 和任何可能的输出子集 O，&lt;/p&gt;
+&lt;p&gt;$\Pr[M(X, y) \in O] \leq e^\varepsilon \Pr[M(X&amp;rsquo;, y) \in O] + \delta.$&lt;/p&gt;
+&lt;p&gt;理论上，SeqLDP 是一种强大的隐私保护概念（类似于标准的 LDP）。它旨在提供关于序列的信息论保护，并限制任意 X, X&amp;rsquo;（最多在 n 个标记上不同）的不可区分性，从而控制噪声嵌入的“实用性”。&lt;/p&gt;
+&lt;h4 id=&#34;序列级-seqldp-与标记级-seqldp&#34;&gt;序列级 SeqLDP 与标记级 SeqLDP
+&lt;/h4&gt;&lt;p&gt;在实践中，SeqLDP 作为一种强概念，需要平衡看似冲突的需求（理想的理论保证与经验实用性），在实现 SeqLDP 的有意义 $\varepsilon$ 范围方面存在挑战。
+为了满足 $(\varepsilon, \delta)-SeqLDP$，通过向f(·) 的输出添加高斯噪声，需要对 $S_2(f)$ 的 $L_2$ 灵敏度进行约束（对所有 X, X&amp;rsquo;）。我们的方法是对输出进行归一化（见第 3.2 节的附加好处），类似于 DP-SGD 中对梯度的剪裁。这种方法在 f(·) 层数较多时效果更佳（在相同的 $\varepsilon$ 范围内），因为 p(·) 的较少（可训练）参数/层会受到噪声输出的“影响”。然而，当 f(·) 仅包括前几层（例如仅有输入嵌入层可供用户使用，为了节省用户端存储和计算开销），实用性会变差。&lt;/p&gt;
+&lt;p&gt;作为一种综合研究，我们采用基于（Lipschitz 常数的组合的）逐行归一化方法，以在这些情况下维持实用性。与一般归一化不同，此方法旨在实现更弱的标记级 SeqLDP（类似于事件级与用户级 LDP【81】），在“保护层级”上提供更细粒度的保护，即保护任意相邻序列（而非数据集）在任一单一标记（而非序列）上不同的情况。详细内容见附录 A。&lt;/p&gt;
+&lt;h3 id=&#34;我们的序列-ldp-方法&#34;&gt;我们的序列 LDP 方法
+&lt;/h3&gt;&lt;p&gt;本文提出的 &lt;strong&gt;DP-Forward&lt;/strong&gt; 方法（除了附录 A 中的部分内容）适用于任何 $f(\cdot)$ 的序列级（SeqLDP）保护，采用了一种通用的归一化方法。设 $f(\cdot)$ 是一个任意深度的前向传播过程，其范围可以从第一个（输入嵌入）层扩展到 BERT 模型管道中的所有任务层（倒数第一层）之前（见图 1）。相应地，设$p(\cdot)$ 表示剩余的层，其范围从最后的任务层本身到除了第一个（输入嵌入）层以外的所有层。每个序列 X 在编码器的层输出处会被表示为一个嵌入矩阵 $f(X) \in \mathbb{R}^{n \times d}$，或在任务层前被表示为 $\mathbb{R}^{1 \times d}$（见第 2.1 节）。为了提供$(\epsilon, \delta)-SeqLDP $保护，我们采用了一种适当的输出扰动机制 M，例如高斯机制（GM），针对仅包含一个标注序列的数据集。&lt;/p&gt;
+&lt;p&gt;由于 M 可以作用于任意隐藏层的输出，估计 $S_2(f)$ 并非易事。尤其是，多头注意力（MHA）本身（更不用说包含更多层的情况）并不是利普希茨连续的，这意味着即使输入变化微小，其输出也可能发生任意大的变化【39】。为了解决这一问题，我们的方法是对函数输出进行归一化或裁剪：&lt;/p&gt;
+&lt;p&gt;$|f(\cdot)|_F = C \quad \text{或} \quad f(\cdot)/\max(1, |f(\cdot)|_F / C),$&lt;/p&gt;
+&lt;p&gt;类似于 DP-SGD【1】，其中 C 是一个可调参数。这样我们就可以得到 $S_2(f) = 2C$。这种归一化使任务效用对 C 的选择不那么“敏感”，因为信号和噪声会随着 C 成比例增加，而当$f(\cdot)$ 未被裁剪时信号可能保持不变。此外，它还有许多其他优点，例如稳定训练过程、避免过拟合和加速收敛【2】。因此，我们在实验中采用了归一化方法。然后，可以校准高斯噪声 Z，并在加噪后的层 $p(\cdot)$ 中得到 f(X) + Z。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注释&lt;/strong&gt;：
+也可以采用更弱的随机 DP【33】，即对于某个额外参数 $\gamma \in (0, 1)$，$(\epsilon, \delta)-DP$ 在除了 $\gamma$-比例的“不太可能的”$X \simeq X&amp;rsquo;$ 之外的所有数据上成立。当全局敏感度难以计算时，这种方法是有用的。探索该方向留待未来研究。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;需要注意的是，当将噪声添加到第一个 MHA 层的输出时，我们移除了残差连接（如图 1 中的虚线箭头）以避免 $p(\cdot)$ 再次访问 X，从而保持后处理的自由性。然而，这可能会导致不稳定性（如梯度消失现象）【79】。这种问题可以通过预训练一个不含残差连接的新 BERT 模型来缓解，使其与后续的微调/推理保持一致。&lt;/p&gt;
+&lt;p&gt;使用 GM 的 DP-Forward 方法在维度 d 较大时（如 BERT-Base 的 d=768）会遇到“维度灾难”。为缓解这一问题，我们可以附加两个线性映射 $M_1, M_2 \in \mathbb{R}^{d \times d&amp;rsquo;}$（其中 $d&amp;rsquo; \ll d $ ）），使得 ( $f(\cdot) $和 $p(\cdot)$ 分别应用 $M_1$ 和 $M_2$。这两个映射像其他权重一样随机初始化，并通过梯度更新。原始嵌入矩阵首先右乘 $M_1$，得到 $\mathbb{R}^{n \times d&amp;rsquo;}$ 或 $\mathbb{R}^{1 \times d&amp;rsquo;}$，然后进行归一化。我们的隐私保证不会受到影响，因为 $S_2(f) $保持不变。然后使用 $M_2$ 恢复原始管道兼容的维度；由于后处理的自由性，$M_2$ 不会引入额外的隐私损失。&lt;/p&gt;
+&lt;p&gt;尽管如此，这需要对管道进行专门的调整；降维的嵌入矩阵可能也会丢失有用信息，从而降低任务效用。因此，我们将 $M_1$ 和 $M_2$ 设为可选项（见第 5.2 节）。&lt;/p&gt;
+&lt;h3 id=&#34;dp-forward-微调&#34;&gt;DP-Forward 微调
+&lt;/h3&gt;&lt;p&gt;假设我们使用一个原始的、公开的 BERT 检查点进行微调。在第 i 次（$i \geq 1$）步骤的前向传播中，它向一批用户提供最新的 $f^{(i-1)}(\cdot)$，模拟常规的小批量 SGD。其中 $f^{(0)}$ 源自原始的检查点。用户是随机选取的（不放回），批次的用户数量是一个固定参数。这些批次中的用户分别计算其带噪的嵌入 $f^{(i-1)}(X) + Z $以保证序列级差分隐私（SeqLDP）（参见定理 1）。然后，他们将这些嵌入与未扰动的标签 y 一起发送给服务提供方。服务提供方随后运行 $p^{(i-1)}(\cdot) $以计算批次损失 L；在 SeqLDP 下，对嵌入进行的任何后处理都不会导致 X 的隐私进一步恶化。这里的 $p^{(0)} $包括其余的原始 BERT 部分以及随机初始化的任务层。&lt;/p&gt;
+&lt;p&gt;在反向传播期间，服务提供方可以通过噪声嵌入和损失计算得到的梯度更新 $p^{(i-1)}(\cdot)$ 为 $p^{(i)}(\cdot)$。为了避免访问用户的原始 X，需要冻结噪声添加前的层 $f^{(i-1)}(\cdot)$，即保持为 $f^{(0)}$。这种参数冻结与最近的零样本或上下文学习范式（zero-shot or in-context learning paradigm）是兼容的【52】。在模型规模巨大且全量微调代价高昂时，这种方法尤其有用。然而，冻结的层数越多，效用可能越差（即使是在非隐私的情况下）。&lt;/p&gt;
+&lt;h4 id=&#34;安全更新-fi-1cdot-的两种常见方式&#34;&gt;安全更新 $f^{(i-1)}(\cdot)$ 的两种常见方式：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;假设额外的可信方&lt;/strong&gt;（如在 DP-SGD 中），但这会变成中心化的差分隐私（central DP）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;用户本地计算梯度并进行安全聚合&lt;/strong&gt;：用户可以在其本地数据 X 上为 $f^{(i-1)}(\cdot)$ 内的层计算梯度，然后利用安全聚合【9】将这些梯度合并到服务提供方以完成全局更新。然而，这种方法代价高昂。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;为了更好的效用，我们在实验中选择更新 $f^{(i-1)}(\cdot)$，这要求考虑多轮迭代下隐私的退化问题（因为隐私的可组合性，详见下文）。专门平衡效率、隐私和效用的方法留待未来研究。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;定理-1&#34;&gt;定理 1：
+&lt;/h4&gt;&lt;p&gt;设$f(\cdot)$ 为 BERT 流水线的噪声添加前的函数，且 M 为带参数$\varepsilon \geq 0, 0 \leq \delta \leq 1$ 的高斯机制（GM）。对归一化/裁剪后的$f(\cdot)$ 应用 M 的 DP-Forward 微调能够保证$(\varepsilon, \delta)-SeqLDP$。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;证明&lt;/strong&gt;：
+证明过程与高斯机制（GM）【23】一致。关键点在于 $S_2(f)$ 对任意输入 $X, X&amp;rsquo; $的输出归一化是独立的。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;隐私计算&#34;&gt;隐私计算
+&lt;/h4&gt;&lt;p&gt;一个“轮次”（epoch）是指对私有训练语料库的完整遍历。在每一轮中，每个 X 仅被使用一次。轮次数 k 是一个超参数，通常较小。在相同 X 上多次应用 GM 需要估算由于可组合性导致的整体隐私损失（除非冻结 f 以重用 $f(X) + Z$）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;传统方法&lt;/strong&gt;：
+知名的 &lt;em&gt;Moments Accountant&lt;/em&gt;【1】（或其 Rényi 差分隐私【53】的推广）仅提供宽松的上界，并在存在无界矩时无法适用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;改进方法&lt;/strong&gt;：
+高斯差分隐私（Gaussian DP, GDP）【10】基于中心极限定理提出了一个隐私会计器，但该方法会严重低估下界。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;采用的解决方案&lt;/strong&gt;：
+我们采用了一种最近的数值会计方法【32】，该方法通过截断和离散化概率对数比变量（PLRVs）的概率密度函数，并利用快速傅里叶变换（FFT）进行卷积，逼近真实的整体 ε\varepsilon 到任意精度。这种方法比 RDP 或 GDP 表现更优。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;dp-forward-结合-shuffling-与-dp-sgd-的对比&#34;&gt;DP-Forward 结合 Shuffling 与 DP-SGD 的对比
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;DP-Forward&lt;/strong&gt; 在微调过程中确保 &lt;strong&gt;SeqLDP&lt;/strong&gt;，而 &lt;strong&gt;DP-SGD&lt;/strong&gt; 则对序列与标签对提供了中心化差分隐私（CDP）。为了在隐私-效用的权衡中进行公平对比，我们进行了两项改动：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;**标签扰动：**我们使用适当的机制对标签进行扰动，以满足标准的本地差分隐私（LDP），即保护从序列到序列-标签对的隐私。&lt;/li&gt;
+&lt;li&gt;**打乱技术（Shuffling）：**将我们的（已保护标签的）DP-Forward 转化为在样本级别可声称中心化差分隐私（CDP），类似于 &lt;strong&gt;DP-SGD&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;离散标签扰动discrete-labels-perturbation&#34;&gt;离散标签扰动（Discrete Labels Perturbation）
+&lt;/h4&gt;&lt;p&gt;在大多数 NLP 任务中，例如 GLUE 基准测试中的二分类或多分类任务，标签空间 |y| 的大小通常较小。针对离散数据，一个简单且有效的解决方案是几十年前提出的 &lt;strong&gt;随机响应（Randomized Response, RR）&lt;/strong&gt; [70]。具体来说，随机响应将真实标签 y 以概率&lt;/p&gt;
+&lt;p&gt;$\text{Pr}[y = \hat{y}] = \frac{e^\epsilon}{e^\epsilon + |y| - 1}$&lt;/p&gt;
+&lt;p&gt;扰动为自身 $\hat{y} = y$，或者以均匀概率扰动为 $\forall \hat{y} \in y \setminus y$，其中 y 表示标签空间。&lt;/p&gt;
+&lt;p&gt;当 |y| 较大时，可以利用先验知识将标签空间 y 剪枝为较小的 y&amp;rsquo; [31]。这种先验知识可以通过公共数据（例如，与用户数据相似的辅助语料库）获取，或通过多阶段训练从均匀分布逐步优化得到。通过这种方式，可以估算一个最优的 |y&amp;rsquo;| 来最大化正确输出的概率，即：&lt;/p&gt;
+&lt;p&gt;$\text{Pr}[y = \hat{y}]$&lt;/p&gt;
+&lt;p&gt;借助（先验辅助的）随机响应 [31]，我们能够实现完整的本地差分隐私（LDP）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定理 2.&lt;/strong&gt; 假设$f(\cdot) $是 BERT 管道中的预噪声函数，M 是具有 $\epsilon_1 \geq 0, , 0 \leq \delta \leq 1$ 的高斯机制（GM），$M_{\text{RR}}$ 是具有$\epsilon_2 \geq 0$ 的（先验辅助）随机响应机制。那么，对 f(X) 和 y 分别通过 M 和 $M_{\text{RR}}$ 进行扰动的 DP-Forward 微调可确保 $ (\epsilon_1 + \epsilon_2, \delta)-LDP$。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;证明：&lt;/em&gt; 基于基本的组合定理 [23]。&lt;/p&gt;
+&lt;h4 id=&#34;打乱技术带来的隐私增强&#34;&gt;打乱技术带来的隐私增强
+&lt;/h4&gt;&lt;p&gt;如果对经过噪声处理的嵌入-标签对进行适当打乱，DP-Forward 可以声称样本级别的中心化差分隐私（CDP），这通过 $\Theta(\sqrt{N}) $的系数放大了 LDP 的隐私保证（无需额外增加噪声）[25]。&lt;/p&gt;
+&lt;p&gt;我们接下来展示，在类似的隐私约束下，从信噪比（SNR）的角度来看，DP-Forward 的性能优于 DP-SGD。&lt;/p&gt;
+&lt;p&gt;假设我们对私有训练数据集进行一个完整的训练轮次（epoch），并且归一化因子为 C。对于 &lt;strong&gt;DP-SGD&lt;/strong&gt;，设批量大小为 b，子采样概率为 $b/N$，训练步数为 N/b。如果每一步是 $(\epsilon, \delta)-DP$，那么基于强组合性和子采样带来的隐私增强 [1]，整体隐私损失为：&lt;/p&gt;
+&lt;p&gt;$(O(\epsilon \sqrt{b/N}), \delta)\text{-DP}.$&lt;/p&gt;
+&lt;p&gt;对于 &lt;strong&gt;DP-Forward&lt;/strong&gt;，通过打乱技术可视为对 N 次子采样（每次采样比例为 1）的组合，其隐私保证为：&lt;/p&gt;
+&lt;p&gt;$(O(\epsilon \sqrt{1/N}), \delta)\text{-DP},$&lt;/p&gt;
+&lt;p&gt;即由$(\epsilon, \delta)-LDP$ “放大”而得。&lt;/p&gt;
+&lt;p&gt;为了简化信噪比分析，我们省略了随机响应的 $\epsilon_2$，因为总的 $\epsilon$ 主要由子采样的高斯噪声组成。对比中，我们的高斯噪声方差比 DP-SGD 每步小 b 倍；嵌入中的每个条目与 b 个梯度聚合的信噪比分别为：&lt;/p&gt;
+&lt;p&gt;$O(C / \sqrt{nd}) \quad \text{（DP-Forward）}$,$O(C / \sqrt{d&amp;rsquo;}) \quad \text{（DP-SGD）},$&lt;/p&gt;
+&lt;p&gt;其中 $d&amp;rsquo;$ 是梯度维度，远大于嵌入矩阵尺寸 $nd$。&lt;/p&gt;
+&lt;h3 id=&#34;dp-forward-推断&#34;&gt;DP-Forward 推断
+&lt;/h3&gt;&lt;p&gt;在仅有经过微调的流水线部分 ${f(\cdot)}$ 的情况下，用户可以在服务提供商处利用其测试序列生成的噪声嵌入矩阵进行推断，同时保证 ${(\varepsilon, \delta)}$-LDP（本地差分隐私）。采用与噪声微调一致的噪声进行推断，也有助于提高任务的准确性。如果在本地推断中（如 ${\text{DP-SGD}}$）不加入噪声，服务提供商将被迫公开其整个流水线，进而丧失知识产权，并且在处理 ${f(\cdot)}$ 和 ${p(\cdot)}$ 时会导致更多的时间和存储成本。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定理 3.&lt;/strong&gt;
+令 ${f(\cdot)}$ 表示经过微调的加噪前层（基于 ${\text{BERT}}$ 的流水线），${M}$ 表示满足 ${\varepsilon \geq 0, 0 \leq \delta \leq 1}$ 的 ${\text{GM}}$（高斯机制）。在归一化/剪裁后的 ${f(\cdot)}$ 上运行 ${M}$ 的 ${\text{DP-Forward}}$ 推断可确保 ${(\varepsilon, \delta)}$-LDP。其证明继承自 ${\text{GM}}$ [23]。与 ${\text{DP-Forward}}$ 微调不同的是，${\text{LDP}}$ 在测试序列中也成立，因为测试数据中不存在标签。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;dp-forward-预训练&#34;&gt;DP-Forward 预训练
+&lt;/h3&gt;&lt;p&gt;直接使用未经微调的 ${\text{BERT}}$ 可能无法与 ${\text{DP-Forward}}$ 微调/推断“匹配”，从而降低任务的实用性。在公开文本（例如 ${\text{Wikipedia}}$）上使用 ${\text{DP-Forward}}$ 对 ${\text{BERT}}$ 进行预训练（同时结合私有的用户共享数据），可以使未来的操作更好地“适应”噪声。这需要我们修改原始的 ${\text{MLM}}$（掩码语言模型）目标函数（公式 (1)）为：
+LMLM∗=−∑i∈Ilog⁡Pr⁡[xi∣M(f(X^));θ∗],{L^&lt;em&gt;&lt;em&gt;{\text{MLM}} = -\sum&lt;/em&gt;{i \in I} \log \Pr[x_i \mid M(f(\hat{X})); \theta^&lt;/em&gt;],}
+其中，${\theta^*}$ 表示“加噪”后的 ${\text{BERT}}$ 参数。&lt;/p&gt;
+&lt;p&gt;这一目标赋予了加噪 ${\text{BERT}}$ 一定的“去噪”能力，因为目标是从噪声嵌入 ${M(f(\hat{X}))}$ 中预测原始的掩码标记。这并不会真正破坏隐私，因为属于后处理的自由操作；每个序列的 ${\text{LDP}}$ 仍然能够保证，因为预训练是自监督的（不含标签）。这种加噪预训练还可以外包给专用的 ${\text{GPU}}$ 集群，从而实现“${\text{BERT}}$ 去噪即服务”。&lt;/p&gt;
+&lt;p&gt;尽管作为后处理的去噪并不新颖，但大多数现有方法需要先验知识，例如贝叶斯先验。${\text{aGM}}$ 将其表述为一个非同寻常的估计问题，因为每个输入只观察到一个加噪输出，这可以通过适当的估计器（如贝叶斯估计器 [7]）来解决。另一个尝试 [41] 训练了一个独立的加噪自编码器，该编码器学习恒等函数 $f(X) = X$，并堆叠在图像分类网络前，以对加噪输入进行去噪。然而，这种方法仅适用于加噪输入嵌入，且在迁移到 ${\text{NLP}}$ 流水线时需要额外修改，因此应用范围有限。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215102557864.png&#34;
+	width=&#34;771&#34;
+	height=&#34;539&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215102557864_hu10597092045825613655.png 480w, https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215102557864_hu1993708671460644730.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241215102557864&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;143&#34;
+		data-flex-basis=&#34;343px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;优化矩阵高斯噪声&#34;&gt;优化矩阵高斯噪声
+&lt;/h2&gt;&lt;p&gt;为了为DP-Forward中的$f(·) \in \mathbb{R}^{n \times d}$实例化$M$，一个自然的问题是，经典的GM是否是最优的。答案是否定的。它的隐私分析应用了一个足够但不是必要的条件来满足$(\epsilon, \delta)$-DP，同时使用高斯尾部近似，其方差公式无法扩展到单次运行（例如推理）时的$\epsilon &amp;gt; 1$【23】。另一个候选方法是矩阵变异高斯（MVG）机制【14】，它是为矩阵值函数量身定制的。它利用可能不是独立同分布（i.i.d.）的噪声来自矩阵高斯分布，并在多个使用案例中优于GM【14】。然而，它也不是最优的，其根本原因仍然是基于一个足够的DP条件（第4.1节）。为了改进它，我们采用来自aGM【7】的必要且充分条件来校准矩阵高斯噪声（第4.2节）。&lt;/p&gt;
+&lt;h3 id=&#34;矩阵变异高斯mvg机制&#34;&gt;矩阵变异高斯（MVG）机制
+&lt;/h3&gt;&lt;p&gt;与经典的GM不同，MVG采用可能不是i.i.d.的噪声$Z \in \mathbb{R}^{n \times d}$，其来自零均值矩阵高斯分布$MN_{n,d}(0, \Sigma, \Psi)$，其中$\Sigma \in \mathbb{R}^{n \times n}$和$\Psi \in \mathbb{R}^{d \times d}$分别是行和列的协方差矩阵。直观地，它对更“重要”的行或列添加较少的噪声，从而可能提高效用。&lt;/p&gt;
+&lt;p&gt;定义5（矩阵高斯分布）。对于一个$n \times d$的随机变量$Z$，若$Z$服从$MN_{n,d}(0, \Sigma, \Psi)$，其概率密度函数（PDF）为：&lt;/p&gt;
+&lt;p&gt;$\text{Pr}(Z | 0, \Sigma, \Psi) = \exp \left( -\frac{1}{2} || U^{-1} Z V^{-\top} ||_F^2 \right) \frac{1}{(2 \pi)^{nd/2} |\Psi|^{d/2} |\Sigma|^{n/2}}$&lt;/p&gt;
+&lt;p&gt;其中$U \in \mathbb{R}^{n \times n}$和$V \in \mathbb{R}^{d \times d}$是可逆的，且$\Sigma = U U^{\top}$，$\Psi = V V^{\top}$，$| \cdot |$表示矩阵的行列式【34】。这个定义等价于通过矩阵迹给出的常规形式。它是GM中使用的单变量高斯分布的推广；当$\Sigma$和$\Psi$是对角矩阵且取相等值时，$Z$变为i.i.d.。下面列出了MVG机制在$(\epsilon, \delta)$-DP下的主要定理。&lt;/p&gt;
+&lt;p&gt;定理4（带有$(\epsilon, \delta)$-DP的MVG机制【14】）。设$\sigma (\Sigma^{-1}) = [\sigma_1 (\Sigma^{-1}), \dots, \sigma_n (\Sigma^{-1})]^{\top}$，$\sigma (\Psi^{-1}) = [\sigma_1 (\Psi^{-1}), \dots, \sigma_d (\Psi^{-1})]^{\top}$为$\Sigma^{-1}$和$\Psi^{-1}$的奇异值（按非递增顺序排列）向量。如果MVG机制使用来自矩阵高斯分布$MN_{n,d}(0, \Sigma, \Psi)$的噪声，则满足$(\epsilon, \delta)$-DP，当且仅当：&lt;/p&gt;
+&lt;p&gt;$|| \sigma (\Sigma^{-1}) ||_2 \cdot || \sigma (\Psi^{-1}) ||_2 \leq -\beta + \sqrt{\beta^2 + \frac{8 \alpha \epsilon}{2} 4 \alpha^2}$&lt;/p&gt;
+&lt;p&gt;其中$\alpha = [H_r + H_{r,1/2}] \gamma^2 + 2 H_r \gamma S^2(f)$，$\beta = 2 (nd)^{1/4} H_r S^2(f) \zeta(\delta)$，$H_r$（或$H_{r,1/2}$）是$r$阶（或$1/2$阶）的广义调和数，$\gamma$是$\sup_X || f(X) ||_F$，$\zeta(\delta) = 2 \sqrt{-nd \ln \delta} - 2 \ln \delta + nd$。&lt;/p&gt;
+&lt;p&gt;为了说明MVG机制如何工作，我们引用一个例子【14】：在一个肝脏疾病数据集【49】上进行回归分析，数据集包含6个特征和248个样本（即$f \in \mathbb{R}^{248 \times 6}$）。MVG将“ALT”和教师标签作为两个最具指示性的特征，基于某些先验信息，因此对它们添加的噪声较少【14】。为了报告最佳的经验结果，它尝试不同的精度预算（或噪声方差）分配策略，以确保总预算（定理4）不会超支。例如，它将超过50%（一个可调参数）的预算均匀分配给两个重要特征，其余分配给其他四个特征。与使用i.i.d.高斯噪声的GM相比，MVG在相同隐私水平下可以将均方根误差（RMSE）提高最多0.003【14】。&lt;/p&gt;
+&lt;p&gt;MVG的次优性。定理4给出了两个奇异值向量$\sigma(\Sigma^{-1})$和$\sigma(\Psi^{-1})$的L2范数乘积的上界，假设对于任何$X$，$||f(X)||_F$被常数$\gamma$界定。上界随着$\beta$单调递减，而$\beta$依赖于$nd$，当$nd \to \infty$时，它趋近于0，导致噪声方差的总和变大。在高隐私环境下$\epsilon \to 0$时也会出现类似的情况。&lt;/p&gt;
+&lt;p&gt;至少有两个松弛因素导致了次优性。首先是由于$(\epsilon, \delta)$-DP的足够条件【23】：$\text{Pr}[LM, X, X&amp;rsquo; \geq \epsilon] \leq \delta$，这在经典的GM中也被使用。通过Laurent-Massart定理【40】，MVG进一步将其转换为$\text{Pr}[LM, X, X&amp;rsquo; \leq \epsilon] = 1$，适用于所有可能输出的一个子集。第二个因素是基于松散矩阵迹的隐私分析；后续研究【75】通过定义5和矩阵范数不等式推导出了更紧的界限。&lt;/p&gt;
+&lt;h3 id=&#34;分析矩阵高斯机制&#34;&gt;分析矩阵高斯机制
+&lt;/h3&gt;&lt;p&gt;为了增强MVG并继续加入可能的非独立同分布噪声 $Z \sim \text{MN}_{n,d}(0, \Sigma, \Psi)$，我们提出了分析矩阵高斯机制（aMGM），通过利用 $(\epsilon, \delta)$-DP 的必要和充分条件，这些条件是通过分析高斯机制（aGM）[7]中的两个PLRV构造的。这并非 trivial，因为我们现在需要处理两个协方差矩阵 $\Sigma$ 和 $\Psi$，而不是在aGM中使用的单一方差 $\sigma^2$。&lt;/p&gt;
+&lt;p&gt;定理 5 ([7])。一个机制 $M$ 是 $(\epsilon, \delta)$-DP 当且仅当，对于所有 $X \approx X&amp;rsquo;$，有：&lt;/p&gt;
+$$\Pr[LM,X,X&#39; \geq \epsilon] - e^{\epsilon} \Pr[LM,X&#39;,X \leq -\epsilon] \leq \delta$$&lt;p&gt;它直接暗示了充分条件，因为 $\Pr[LM,X&amp;rsquo;,X \leq -\epsilon] \geq 0$。接下来，我们展示aMGM中的 $LM,X,X&amp;rsquo;$ 或 $LM,X&amp;rsquo;,X$ 也是高斯的，类似的结果已在aGM中证明[7, Lemma 3]。&lt;/p&gt;
+&lt;p&gt;引理 1。我们aMGM的PLRV遵循分布 $N(\eta, 2\eta)$，其中 $\eta = |U^{-1}\Delta V^{-\top}|&lt;em&gt;F^2 / 2$，并且 $\Delta = f(X) - f(X&amp;rsquo;)$。根据引理1，我们可以将等式(3)的左侧进行特化。特别地，我们使用高斯累积分布函数（CDF）$\Phi(t) = \Pr[N(0, 1) \leq t] = \frac{1}{\sqrt{2\pi}} \int&lt;/em&gt;{-\infty}^t e^{-y^2 / 2} , dy$ 来显式地表达这两个概率（见引理2），而不是通过高斯分布的尾界来近似它们。&lt;/p&gt;
+&lt;p&gt;引理 2。对于任何 $X \approx X&amp;rsquo;$，设 $\Delta&amp;rsquo; = U^{-1}\Delta V^{-\top}$，则对于任意 $\epsilon \geq 0$，有：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104006985.png&#34;
+	width=&#34;556&#34;
+	height=&#34;163&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104006985_hu1548505521042396112.png 480w, https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104006985_hu2814205634029212733.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241215104006985&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;341&#34;
+		data-flex-basis=&#34;818px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;我们可以进一步将等式(3)的左侧重写为 $g(|\Delta&amp;rsquo;|_F)$：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104030204.png&#34;
+	width=&#34;603&#34;
+	height=&#34;87&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104030204_hu7535913943778262116.png 480w, https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104030204_hu17885047476294569040.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241215104030204&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;693&#34;
+		data-flex-basis=&#34;1663px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这是一个关于 $\Delta$ 和 $(\Sigma, \Psi)$ 的函数；它是针对aGM中的 $\Delta$ 和 $\sigma^2$ 定义的[7]。为了满足定理5，我们需要 $g(|\Delta&amp;rsquo;|_F) \leq \delta$，对于所有 $X \approx X&amp;rsquo;$。由于 $g(\cdot)$ 是单调递增的[7, Lemma 7]，我们首先找到 $|\Delta&amp;rsquo;|_F$ 的上界 $B$，作为 $g(|\Delta&amp;rsquo;|&lt;em&gt;F) = \delta$ 的“解”，然后基于 $B$ 和 $\Delta$ 确定 $U$、$V$（进而确定 $\Sigma$ 和 $\Psi$），其中 $S^2(f) = \sup&lt;/em&gt;{X \approx X&amp;rsquo;} |\Delta|_F$。&lt;/p&gt;
+&lt;p&gt;4.2.1 计算上界 $B$。可以通过使用 $\Phi(t)$ 的尾界来推导 $B$ 的解析表达式，但由于尾界的松弛，这种方法是次优的。相反，我们采用一种“数值求解器”，如算法1所述，来计算 $B$，因为 $\Phi(t)$ 也可以表示为 $\frac{1 + \text{erf}(t/\sqrt{2})}{2}$，其中 $\text{erf}$ 是标准误差函数。&lt;/p&gt;
+&lt;p&gt;对于等式(4)的第一项，其输入 $|\Delta&amp;rsquo;|_F / 2 - \epsilon / |\Delta&amp;rsquo;|_F$ 在 $|\Delta&amp;rsquo;|_F = \sqrt{2\epsilon}$ 时改变符号，而另一项的输入 $-|\Delta&amp;rsquo;|_F / 2 - \epsilon / |\Delta&amp;rsquo;|_F$ 始终为负。因此，我们只考虑 $|\Delta&amp;rsquo;|_F = \sqrt{2\epsilon/\alpha}$，其中 $\alpha$ 是一个变量，且 $\alpha$ 有两个情况：$0 &amp;lt; \alpha \leq 1$ 和 $\alpha &amp;gt; 1$。&lt;/p&gt;
+&lt;p&gt;当 $\alpha = 1$ 时，$\delta_0 = g(\sqrt{2\epsilon})$。如果 $\delta \geq \delta_0$（或 $0 &amp;lt; \alpha \leq 1$），我们可以使用 $v = (1/\alpha - \alpha)^2 / 2$ 来将 $g(\cdot)$ 重写为 $g_{\epsilon}(v)$（第3行）。对于 $\alpha &amp;gt; 1$，我们可以使用 $u = (\alpha - 1/\alpha)^2 / 2$ 来将 $g(\cdot)$ 重写为 $g_{\epsilon}(u)$（第7行）。在这两种情况下，给定通过 $\text{erf}$ 计算 $\Phi(t)$ 的“oracle”，我们通过牛顿法推导出 $u^&lt;em&gt;$ 或 $v^&lt;/em&gt;$，恢复 $\alpha$，并返回 $B = \sqrt{2\epsilon/\alpha}$。&lt;/p&gt;
+&lt;h4 id=&#34;确定协方差矩阵-sigma--u-utop-和-psi--v-vtop&#34;&gt;确定协方差矩阵 $\Sigma = U U^{\top}$ 和 $\Psi = V V^{\top}$。
+&lt;/h4&gt;&lt;p&gt;通过引理6，设 $\sigma_i(\cdot)$ 为第 $i$ 个奇异值，我们有：&lt;/p&gt;
+&lt;p&gt;$|U^{-1}\Delta V^{-\top}|&lt;em&gt;F^2 \leq \min{n,d} \sum&lt;/em&gt;{i=1}^{r} \sigma_i^2(U^{-1}) \sigma_i^2(\Delta) \sigma_i^2(V^{-\top})$&lt;/p&gt;
+&lt;p&gt;由于 $\sigma_i(U^{-1}) = 1/\sigma_{n-i+1}(U)$ 和 $\sigma_i(V^{-\top}) = 1/\sigma_{d-i+1}(V)$，其中 $i \in [1, r]$，我们将等式(5)的右侧转换为：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104303185.png&#34;
+	width=&#34;666&#34;
+	height=&#34;100&#34;
+	srcset=&#34;https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104303185_hu16214493738850854116.png 480w, https://JiangZhiyu-1024.github.io/p/dp-forward%E5%9C%A8%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%B7%AE%E5%88%86%E9%9A%90%E7%A7%81%E8%BF%9B%E8%A1%8C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E5%92%8C%E6%8E%A8%E7%90%86/image-20241215104303185_hu14124899103173517872.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image-20241215104303185&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;666&#34;
+		data-flex-basis=&#34;1598px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;不等式来自定理8，即 $\sigma_1(\cdot) \geq \dots \geq \sigma_r(\cdot)$，最后等式直接来自引理5。给定 $B \geq |U^{-1}\Delta V^{-\top}|_F$，我们只需让 $|\Delta|_F / \sigma_n(U) \sigma_d(V) \leq B$，其中 $\Delta = f(X) - f(X&amp;rsquo;)$，对于所有 $X \approx X&amp;rsquo;$。回忆 $S^2(f)$ 是 $|\Delta|_F$ 的上界，得到最终定理。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;定理 6.&lt;/strong&gt; 我们的 aMGM 满足 $(\epsilon, \delta)$-DP，当且仅当 $S_2(f) / B \leq \sigma_n(U) \sigma_d(V)$，其中 $B = A(\epsilon, \delta)$ 如算法 1 所示，$S_2(f)$ 是 L2 灵敏度，$\sigma_n(U)$ 和 $\sigma_d(V)$ 分别是 $U$ 和 $V$ 的最小奇异值。定理 6 仅对 $\sigma_n(U)$ 和 $\sigma_d(V)$ 的乘积提供了下界限制，这两个最小的奇异值；它为其他所有值提供了无限多的选择，并且 $(\Sigma, \Psi)$ 的设计空间比 MVG 的设计空间（定理 4）还要大。更重要的是，下界与 $nd$ 无关，这可以比 MVG 实现数量级的方差减少，这一点通过我们在第 5 节的实验得到了验证。对于 $\epsilon \to 0$，我们仍然可以从 $2\Phi^{-1}((1 + \delta)/2)$ 推导出一个有效的 $B$。&lt;/p&gt;
+&lt;p&gt;为了确定 $\Sigma$ 和 $\Psi$，另一个隐含的约束是保持较小的噪声以获得更好的效用。我们首先考虑 $\Sigma = UU^\top$。由于它是正定的，我们还可以将其分解为 $W_\Sigma \Lambda_\Sigma W_\Sigma^\top$，然后我们有 $U = W_\Sigma \Lambda_\Sigma^{1/2}$，其中 $\Lambda_\Sigma^{1/2} = {\sigma_i(U)}&lt;em&gt;{i=1}^n$ 指定了按行的噪声幅度。假设最小的总体噪声将提供最佳效用，我们让所有奇异值都等于最小值：$\sigma_1(U) = \dots = \sigma_n(U)$。由于 $W&lt;/em&gt;\Sigma$ 可以是任意单位矩阵，我们简单地使用标准基，得到 $U = \sigma_n(U) \cdot I_n$，其中 $I_n$ 是 $n \times n$ 的单位矩阵，从而得到最终的 $\Sigma$。类似地，我们可以选择 $\Psi = VV^\top$，其中 $V = \sigma_d(V) \cdot I_d$，$I_d$ 是 $d \times d$ 的单位矩阵。&lt;/p&gt;
+&lt;h4 id=&#34;绘制噪声-z&#34;&gt;绘制噪声 $Z$。
+&lt;/h4&gt;&lt;p&gt;给定 $\Sigma$ 和 $\Psi$，最后一步是绘制 $Z$。实际上，我们采用如下的仿射变换。&lt;/p&gt;
+&lt;p&gt;引理 3 ([14])。设 $Z&amp;rsquo; \in \mathbb{R}^{n \times d}$ 是一个随机变量，每个条目独立同分布，且从标准正态分布中抽取。变换后的 $Z = U Z&amp;rsquo; V^\top$ 遵循 $MN_{n,d}(0, U U^\top, V V^\top)$。因此，我们可以首先从 $N(0, 1)$ 中采样 $nd$ 个独立同分布的值，形成 $Z&amp;rsquo;$，然后应用变换 $U Z&amp;rsquo; V^\top$，使得 $Z \sim S_2(f) / B , MN_{n,d}(0, I_n, I_d)$。&lt;/p&gt;
+&lt;p&gt;讨论。使用 aMGM 实现 DP-Forward 时，我们设定 $\sigma_1(U) = \dots = \sigma_n(U)$ 且 $\sigma_1(V) = \dots = \sigma_d(V)$，使得按行和按列的噪声最小，我们的初步实验表明，这样可以获得最佳的任务效用；aMGM 实际上“退化”为具有独立同分布噪声的 aGM。然而，aMGM 也允许像 MVG 那样的非独立同分布噪声：通过调节相应的奇异值变大，我们可以向行/列中添加更多噪声，从而对效用产生负面影响。当 $f(\cdot)$（例如，针对小型肝脏数据集的线性回归）很简单，或者 $p(\cdot)$ 不会“混合”噪声行/列时，这可能会很有帮助。与我们经验性的方法（如 MVG）不同，理论上可以将奇异值的分配形式化为优化问题，最大化针对应用量身定制的不同效用函数。它可能会优于我们均匀的处理方式，但需要更多的专门努力，我们将其作为未来的研究工作。&lt;/p&gt;
+&lt;h2 id=&#34;实验&#34;&gt;实验
+&lt;/h2&gt;&lt;h3 id=&#34;实验设置&#34;&gt;实验设置
+&lt;/h3&gt;&lt;p&gt;我们使用三种典型的广泛用于自然语言处理（NLP）/差分隐私（DP）文献中的数据集/任务 [45, 78–80] 以及 GLUE 基准 [69]：
+i) 斯坦福情感树库（SST-2），
+ii) 互联网电影数据库（IMDb）[47]，用于单句和多句电影评论的二元情感分类，
+iii) Quora 问题对（QQP），用于在 Quora.com 上的问答对语义等价性测试。它们的测试集没有标签；我们使用原始的开发集作为测试集。表 2 总结了它们的特点。它们都存在隐私风险；例如，帖子中的风格特征可能泄露作者的身份。我们使用任务准确度（相对于真实标签）作为效用度量。&lt;/p&gt;
+&lt;p&gt;基准方法
+我们通过经典的 GM、MVG [14] 和 aMGM 实例化 DP-Forward 中的 $M$。如果没有特别说明，所有结果都是基于 aMGM。对于 MVG，我们采用其单峰类型，适用于像预噪声层 $f(\cdot)$ 这样的非对称函数。具体而言，我们使得按行的噪声具有方向性，并为每一行分配相同的精度预算，假设每个 token 的重要性相同。
+默认情况下，我们报告 DP-Forward 推理任务的准确度，这些任务在使用 DP-Forward 微调后（与“DP-Forward 微调 + 非隐私推理”相比，约有 2 个百分点的提升）。我们还使用最新的 Opacus [77] 实现了 DP-SGD 微调，但没有在其推理中添加任何噪声。另一个基准是非隐私的（包括微调和推理）。&lt;/p&gt;
+&lt;p&gt;实现
+我们在搭载 Tesla P100 GPU 的集群上运行实验。我们在 Python 中实现了所有机制和基准方法。我们使用 Huggingface transformers 库中提供的原始 BERT 检查点 bert-base-uncased [27] 进行微调（第 3.3 节）或进一步在 WikiCorpus 上预训练（第 3.6 节）。
+在我们整个实验中使用的超参数为：训练轮次 $k = 3$，学习率 $\eta = 2 \times 10^{-5}$，批次大小 $b = 32$，归一化/裁剪因子 $C = 1$。其他参数（例如，不使用权重衰减，不使用学习率衰减）按照文献 [69] 的默认设置。隐私参数 $\delta$ 固定为 $1 \times 10^{-5}$ [78]。&lt;/p&gt;
+&lt;h3 id=&#34;配置矩阵维度&#34;&gt;配置矩阵维度
+&lt;/h3&gt;&lt;p&gt;序列长度 $n$ 是可变的。尽管在 BERT-Base 中，隐层维度 $d$ 固定为 768，我们可以使用两个线性映射来“调节”它（见第 3.2 节）。由于我们将大小为 $n \times d$ 的嵌入矩阵归一化为固定的范数 $C$，每个条目的信号幅度依赖于 $(n, d)$。相比之下，给定 $C$ 和固定的隐私参数，噪声方差是相同的。影响准确度的信噪比（SNR）可以基于 $(n, d)$ 配置。图 2 显示了使用 DP-Forward 对 SST-2 进行微调时，$n$ 从 16 调整到 256 的评估准确率。我们研究了在五个隐藏层输出中添加 aMGM 噪声的情况。结果表明，最佳准确率通常出现在 $n = 64$ 或 $128$ 时，因此我们在后续实验中选择 $n = 128$（对于大多数序列来说足够）。我们在不同的 $\varepsilon$ 和减少 $d$ 的情况下，对 SST-2 在噪声输出嵌入上进行了微调。表 3 总结了结果。减少 $d$ 会导致更大的 SNR（在固定 $C$ 和 $n$ 的情况下），但也可能丧失有用信息，导致准确度下降。对于相同的 $\varepsilon$，在不同的 $d$ 选择下，大多数准确度变化都在 2 个百分点以内。综合考虑后，我们在后续实验中使用原始的 $d = 768$，这样就不需要对管道进行额外的更改（包括两个线性映射）。&lt;/p&gt;
+&lt;h3 id=&#34;使用序列-ldp-进行微调&#34;&gt;使用序列 LDP 进行微调
+&lt;/h3&gt;&lt;p&gt;我们的方法还支持在微调过程中扰动子层的输出。我们以六个编码器为例，结果如图 3 所示。总体而言，DP-Forward 在较深的编码器中表现更好，因为在微调过程中，受到噪声直接影响的参数更少。另一个观察是，即使在同一个编码器内部，扰动不同子层的输出也可能导致巨大的准确度变化；例如，使用编码器 1 中最后一个子层的噪声输出，比使用第一个子层的输出提高了大约 20 个百分点。接下来，我们评估在不同 $\varepsilon$ 下的隐私-准确度权衡，并比较使用经典 GM、MVG [14] 和 aMGM 的实例。请注意，尽管 GM 方差的计算公式为 $\sigma^2 = 2 \ln(1.25/\delta) S_2^2(f) / \varepsilon^2$ 用于经验评估，但它不能扩展到 $\varepsilon &amp;gt; 1$ 的单次运行，以确保理论上的差分隐私保证。对于基于 GM 和 aMGM 的实例，表 4 显示了所有三个任务的准确度随着 $\varepsilon$ 的增加而提高。由于 aMGM 在所有 $\varepsilon$ 的选择中产生了更小的噪声，我们的方法比基于 GM 的方法准确度更高。尽管噪声方差差距（GM 和 aMGM 之间）随着 $\varepsilon$ 减小而扩大，但在高隐私范围 $\varepsilon &amp;lt; 1$ 中，无法微调有效的模型。基于 MVG 的方法在所有三个任务中表现得像随机猜测，因为它的噪声方差与 $n \cdot d$ 成正比，这在高维设置中甚至比经典的 GM 更大（见第 4.1 节）。例如，在相同的参数设置下（如 $n = 128$、$d = 768$ 和 $\varepsilon = 8$），MVG 产生的噪声方差比 aMGM 大几个数量级（例如，$&amp;gt; 10^8$ 对比 $\sim 0.6$），即使假设 $\sup ||f(·)||_F = 1$。我们指出，所使用的局部 $\varepsilon$ 值并不大。大多数经典的 LDP 研究认为这样的 $\varepsilon$ 处于低隐私范围内，适用于统计分析。与此相对，我们的目标是对基于大语言模型的管道进行微调，这些管道处理高维信号和有限的训练数据，复杂度远高于传统的 LDP 任务。许多先前的工作 [28, 29, 58, 80] 使用较大的 $\varepsilon$ 来确保即使是较弱的令牌级 LDP 变体，而其他研究 [51] 将 $\varepsilon &amp;lt; 10$ 和 $10 \leq \varepsilon &amp;lt; 20$ 分别归类为强隐私和中等隐私，适用于像我们这样的序列级 LDP。更重要的是，它们提供了对各种隐私威胁的有效保护，详细内容请见第 6 节。&lt;/p&gt;
+&lt;h3 id=&#34;dp-forward-与-dp-sgd&#34;&gt;DP-Forward 与 DP-SGD
+&lt;/h3&gt;&lt;p&gt;隐私与准确度权衡的公平比较。如第3.4节所述，我们可以采用RR [70]对标签进行扰动，然后通过使用以下参数来报告DP-Forward的中央ε值，通过洗牌放大，确保在（示例级）CDP下的比较是公平的。对于DP-SGD，子采样概率为 $b/N$，其中 $b = 32$，$N$ 是数据集大小；微调步骤数为 $T = k \cdot N / b$，其中 $k = 3$。对于DP-Forward，子采样概率和非翻转概率分别为 $1/N$（$T = k \cdot N$）和0.9；我们仍然按批处理 $b$ 个噪声嵌入。对于两者，我们使用aGM [7]，即aMGM的退化版本（第4.2节），并使用相同的会计方法 [32] 来报告近似的总体ε值。&lt;/p&gt;
+&lt;p&gt;我们研究了DP-Forward的八个实例，包括扰动输入嵌入层的输出、六个不同的编码器和BERT。在三个隐私级别下，它们在所有三个任务上的准确度，以及DP-SGD和非私有基线的准确度，见表5。我们的一半或更多实例在每个任务上都比DP-SGD表现更好；最大的准确度提升为QQP任务的约7.7个百分点。由于最后一个编码器输出的维度降低（第2.1节），噪声输出嵌入通常会在所有任务上带来最好的准确度，甚至与非私有基线相当。&lt;/p&gt;
+&lt;p&gt;最近的DP-SGD变种[78, 79]通过使用额外的技巧（如低秩适应）来扰动部分梯度项，从而改进了DP-SGD [1]。他们报告了在SST-2和QQP上分别达到92.5%和85.7%的最佳准确度，比非私有基线低2.3个百分点和6.2个百分点，在中央ε = 6.7下[78, 表4]。在ε ≈ 3时，带有标签隐私的DP-Forward，在两个任务上的准确度下降小于1.7个百分点，仍然能够超越这些变种，尽管它们的微调是基于RoBERTa-base，这是一种经过强力优化的BERT方法，它本身由于更大的训练集、更长的训练时间和更好的技术（例如MLM中的动态掩码）而超越了BERT。&lt;/p&gt;
+&lt;p&gt;图4显示了在微调SST-2时的效率比较。我们方法（所有可能实例）的时间和存储开销几乎与非私有基线相同，比DP-SGD小约3倍。这是因为我们允许像正常微调那样进行批处理——无需处理每个示例的梯度。同时，由于嵌入的大小小于梯度的大小，我们的归一化和噪声采样/添加也更快。&lt;/p&gt;
+&lt;h4 id=&#34;带噪声的预训练&#34;&gt;带噪声的预训练
+&lt;/h4&gt;&lt;p&gt;使用DP-Forward对BERT进行预训练，并与带噪声的微调对齐，确实有助于提高准确度。我们以SST-2为例，扰动输入嵌入矩阵。我们继续对BERT进行预训练，使用英文WikiCorpus（2006年版本，约6亿个单词）进行一轮训练。表6显示，与在原始BERT上进行微调相比，对于大多数ε值选择，我们可以获得1到2个百分点的准确度提升。在效率方面，DP-Forward预训练还消耗了更少的资源；例如，现有的工作[5]使用DP-SGD在Google TPU上对BERT-Large（拥有3.4亿参数）进行预训练，这需要足够的内存来处理百万级的批处理。&lt;/p&gt;
+&lt;h2 id=&#34;防御隐私威胁&#34;&gt;防御隐私威胁
+&lt;/h2&gt;&lt;p&gt;根据最近的分类法[64]，我们研究了MIAs以及来自其嵌入的两个新威胁：嵌入反演和属性推断。我们适度地调整了它们以适应我们的背景，例如，将MIAs[64]升级到序列级别。&lt;/p&gt;
+&lt;h3 id=&#34;威胁模型&#34;&gt;威胁模型
+&lt;/h3&gt;&lt;p&gt;对于MIAs，我们遵循之前的研究[63, 64, 76]，考虑一个对整个（DP-SGD/DP-Forward训练的）管道只有黑盒访问权限的对手：它可以查询目标序列的预测结果（例如，每个类别的概率），但无法访问管道权重和架构；隐藏的嵌入不会被揭示。尽管反演或推断（第6.3节或6.4节）的目标“不同”，我们考虑这两种威胁，涉及一个具有黑盒访问训练管道部分$f()$的通用对手。它可以获取目标序列的推断时（清晰/噪声）嵌入[64]。除了公开的先验知识外，它还可以收集一个有限的辅助数据集$X_{\text{aux}}$，该数据集与目标共享相似的属性[64]。DP-SGD只对训练数据提供CDP，并不保护推断时的输入。&lt;/p&gt;
+&lt;p&gt;接下来我们将实验证明DP-Forward在防御更强对手和保护训练及推断时输入方面的主要优点。&lt;/p&gt;
+&lt;h3 id=&#34;成员推断攻击&#34;&gt;成员推断攻击
+&lt;/h3&gt;&lt;p&gt;攻击目标。MIAs预测一个数据点是否在训练集内[63]。它们通常利用训练数据和未见数据之间模型行为的差异，即由于过拟合导致的模型泛化差[76]。在标记/单词级别进行成员推断，例如使用滑动窗口的令牌[64]，并不有趣。我们考虑对整个序列进行更现实的MIAs，这可以扩展为更具破坏性的攻击，例如通过对GPT-2的黑盒访问提取逐字的预训练序列[13]。先前的研究[65, 76]表明，基于阈值的MIAs，使用预测置信度[76]或熵[65]（在适当假设下）与基于影子训练的更复杂的MIAs[63]相当。将基于置信度的MIA适应到我们的背景中，利用了管道通过最小化预测损失进行微调的特点：预测训练序列为其真实标签的置信度/概率应该接近1。当管道$F$的预测标签$l$的置信度大于预设阈值$\tau$时，对手可以推断候选序列$X^*$为成员：&lt;/p&gt;
+&lt;p&gt;$1{ \Pr[F(X^*) = l] \geq \tau }$&lt;/p&gt;
+&lt;p&gt;其中$1{\cdot}$是指示函数。在我们的评估中，我们为所有可能的标签使用固定的$\tau$，尽管它可以是标签依赖的。&lt;/p&gt;
+&lt;p&gt;我们使用的第二个MIA基于训练序列的预测输出（即一个概率向量），该输出往往是一个一热向量，即它的熵应接近0。类似地，当预测熵低于预设阈值$\tau$时，对手可以推断$X^*$为成员；否则，它不被认为是成员：&lt;/p&gt;
+&lt;p&gt;$1\left{- \sum_i \Pr[F(X^&lt;em&gt;) = l_i] \log(\Pr[F(X^&lt;/em&gt;) = l_i]) \leq \tau \right}$&lt;/p&gt;
+&lt;p&gt;对于所有可能的标签${l_i}$。注意，完全错误的预测，概率接近1，也会导致熵接近0。我们可以通过编码$X^*$的真实标签信息来解决这个问题[65]。&lt;/p&gt;
+&lt;p&gt;数值结果。与[79]中的方法一样，所有测试样本和训练样本的一个随机子集（数量与测试样本相同）均匀地分成两个子集（每个子集包含一半的训练/测试样本），一个用于寻找最优的$\tau$，另一个用于报告攻击成功率。鉴于训练和测试样本可能共享相同的分布，我们随机丢弃/替换测试样本中的标记，以扩大预测差异，从而使MIAs更容易发生。我们对DP-Forward、DP-SGD和非私有基线微调的SST-2进行了信心和熵为基础的MIAs评估。对于DP-Forward，我们研究了五个实例，扰动输入嵌入、三个编码器的输出和输出嵌入。表7展示了结果，其中成功率在0.49到0.51之间的用粗体显示。DP-Forward和DP-SGD都能有效地减轻MIAs。对于所有ε的选择，DP-Forward上两种MIA的成功率在更深的层次上降至大约0.5（如随机猜测），在相同隐私级别下比DP-SGD高出超过6个百分点。&lt;/p&gt;
+&lt;h3 id=&#34;嵌入反演攻击&#34;&gt;嵌入反演攻击
+&lt;/h3&gt;&lt;p&gt;攻击目标。这些攻击的目标是从嵌入中恢复原始文本作为（无序的）标记${x_i}$，其中$i \in [n] \subset X$，突出显示直接共享（没有噪声）文本嵌入（用于训练/推断）所带来的风险。它们已被用来重建特定模式，例如身份码和基因片段[56]。我们首先提出一种简单的标记级反演攻击，用于反演由输入嵌入层$\phi(\cdot)$输出的（带噪声）标记嵌入，该层将$V$中的每个标记映射到$\mathbb{R}^d$[73]。它可以表述为：&lt;/p&gt;
+&lt;p&gt;$\forall i \in [n] : \min_{x^&lt;em&gt;_{i} \in V} \left| \phi(x^&lt;/em&gt;&lt;em&gt;{i}) - (\phi(x&lt;/em&gt;{i}) + z_{i}) \right|_2^2,$&lt;/p&gt;
+&lt;p&gt;其中$z_i$是来自M的噪声矩阵$Z$的第$i$行（对于DP-SGD或非私有基线可忽略）。它通过在$V$上进行最近邻搜索，返回与观察到的$x_i$嵌入最接近的$x^&lt;em&gt;_{i}$。来自更深层的标记隐藏嵌入编码了整个序列的更多“抽象”上下文信息，因此，标记级反演可能不那么准确。因此，我们需要一个更通用的攻击[64]。它首先使用线性最小二乘模型$M$将观察到的（带噪声）嵌入映射回低层嵌入，然后选择$n$个标记作为$X^&lt;/em&gt;$，以最小化$X^*$的低层表示与来自$M$的表示之间的L2距离：&lt;/p&gt;
+&lt;p&gt;$\min_{X^* \in V^n} \left| \zeta(X^*) - M(f(X) + Z) \right|_2^2,$&lt;/p&gt;
+&lt;p&gt;其中$\zeta(\cdot)$是比$f(\cdot)$更低层的表示函数。上述最小化是在$|V|^n$的空间上进行的，比标记级候选空间要大。为了确定$X^&lt;em&gt;$，我们首先使用一个连续向量在$R^{|V|}$中放松每个位置$i \in [n]$的标记选择，然后将其输入（带有另一个温度参数）到softmax函数中，以建模选择$V$中每个标记的概率。我们进一步通过将放松向量（每个条目作为权重）与原始嵌入矩阵相乘来推导出标记嵌入$x^&lt;/em&gt;_i$。最后，我们通过基于梯度的方法[64]求解。&lt;/p&gt;
+&lt;p&gt;数值结果。基于梯度的攻击报告了在反演最低层（清晰）嵌入时的最高召回率（或精确度）[64，图2]。为了证明DP-Forward可以缓解这种“最强”的反演，我们实现了（最近邻和基于梯度的）攻击来反演输入嵌入，并使用公开的BERT嵌入查找表作为先验。我们还报告了它们的成功率作为召回率——即正确恢复的比率相对于原始目标。表8显示，DP-Forward可以将它们的成功率降低到相对较低的水平，大部分成功率在0.2以内。然而，DP-SGD在防御上失败。结果证明了我们的主张：DP-Forward直接向嵌入添加噪声，从而缓解了嵌入反演，而DP-SGD仅扰动梯度，对于测试序列的（清晰）推断时嵌入没有提供保护。&lt;/p&gt;
+&lt;h3 id=&#34;敏感属性推断攻击&#34;&gt;敏感属性推断攻击
+&lt;/h3&gt;&lt;p&gt;攻击目标。与恢复精确的标记不同，攻击者可以尝试从目标序列的嵌入中推断敏感属性。这些属性通常与训练/推断目标在统计上无关，但在序列中固有存在，例如风格学，暗示文本的作者身份用于情感分析[62]。我们不关心整个语料库的任何全局属性[30]。我们假设$X_{aux}$包含带有敏感属性标记的序列。对手可以查询$f(\cdot)$以获取带噪声（或清晰的）嵌入：&lt;/p&gt;
+&lt;p&gt;$X_{aux} = {(f(X_i) + Z_i, s_i)}, \forall s_i \in S,$&lt;/p&gt;
+&lt;p&gt;其中$S$是所有可能的敏感属性集合，例如，作者身份。它不关心非敏感属性。为了推断敏感属性，攻击者首先通过监督学习在$X_{aux}$上训练分类器，然后使用该分类器对观察到的带噪声（或清晰的）嵌入$f(X^&lt;em&gt;) + Z$进行预测，得到$X^&lt;/em&gt;$的$s^* \in S$。&lt;/p&gt;
+&lt;p&gt;数值结果。我们训练一个三层神经网络，并使用一个线性分类头作为分类器，从电影评论的输出嵌入中推断电影类型（例如，‘恐怖’）作为敏感属性。我们使用IMDb数据集，其中包含20k个示例（90%用于训练，10%用于验证），作为$X_{aux}$，并使用SST-2提供的3.3k个示例来测试分类器。攻击的成功率通过召回率来衡量。我们研究了五个DP-Forward实例。表9显示，它们“减少”了分类器的预测能力，将所有输入的预测结果都归为多数类（‘动作’）。相比之下，DP-SGD仅相对于非私有基线适度地减少了成功率。这是因为来自DP-SGD训练的/带噪声的模型的嵌入仍然“丢失”了一些有用的信息（参见，DP-SGD在没有噪声的嵌入上的推断准确度下降）。结果确认DP-Forward在阻止属性推断方面更为有效。&lt;/p&gt;
+&lt;h2 id=&#34;相关工作&#34;&gt;相关工作
+&lt;/h2&gt;&lt;h3 id=&#34;大语言模型和嵌入的隐私威胁&#34;&gt;大语言模型和嵌入的隐私威胁
+&lt;/h3&gt;&lt;p&gt;一项活跃的研究工作[8, 13, 56, 64]揭示了现代大语言模型（即使作为黑盒查询“神谕”）在其（隐藏/输出）文本嵌入方面的严重隐私风险。Song 和 Raghunathan [64]构建了一个攻击分类法，覆盖了比并行工作[56]更广泛的范围。这些攻击包括嵌入反演（可以部分恢复原始文本）、成员推断（建立目标和私有训练数据之间的“是否在”关系）以及从嵌入中推断敏感属性，如文本作者身份。一种常见的防御方法是对抗训练，例如[24]。其他研究[8, 13]则研究了大语言模型中的“记忆”现象（即成员推断攻击）。特别是，Carlini 等人[13]定义了k-记忆现象，如果某个字符串出现在最多k个示例中，则该字符串可以被提取或记忆。他们对GPT-2[59]的黑盒攻击可以提取逐字训练文本，即使$k = 1$（例如，仅出现一次的名字仍然可以被提取）。较小的$k$意味着更高的隐私风险。Beguelin 等人[8]定义了差分分数和排名，作为分析更新泄漏的两种新指标，能够恢复用于更新大语言模型的新文本。为了解决记忆问题，结合差分隐私（DP）是一个有前景的解决方案。&lt;/p&gt;
+&lt;h3 id=&#34;输入文本特征扰动用于局部差分隐私ldp&#34;&gt;输入（文本/特征）扰动用于局部差分隐私（LDP）
+&lt;/h3&gt;&lt;p&gt;SynTF[71]在局部差分隐私（LDP）下合成词频（特征）向量，相比于句子嵌入或文本本身，它的应用有限。Feyisetan 等人[28, 29]则采用了度量局部差分隐私（metric-LDP）[4]，这是一种放宽的LDP变体，使用距离度量（例如欧几里得或双曲度量），允许输出的不可区分性随着输入距离的增加而成比例增长。他们首先向非上下文化的标记嵌入模型（例如，GLoVe [57]）的输出添加噪声，然后通过最近邻搜索将其投影回“净化”的文本，作为后处理。与此不同，Yue 等人[80]通过直接采样标记级别的替换来净化文本，避免向高维嵌入添加噪声。所有这些工作仅实现了（变体的）标记级别的度量LDP。为了提供序列级别的保护，最近的研究[46, 51]应用拉普拉斯或指数机制来扰动（句子嵌入的平均值），这些句子嵌入是通过大语言模型（例如BERT [20]）提取的。两者都确保了纯LDP（均匀地保护整个序列），但这可能过于严格并影响效用。相比之下，异质保护[28, 80]可以战略性地管理不同输入的隐私需求。Du 等人[21]在序列级别（不同于先前的工作[28, 80]中的标记级别）实现了度量LDP（通过Purkayastha和平面拉普拉斯机制）。为了进一步提高效用，他们通过类似随机投影的方法缓解了维度灾难。他们还扰动了敏感序列标签，以增强隐私。然而，在基于大语言模型的自然语言处理（NLP）管道中，扰动不同的隐藏（而非标记或句子）嵌入仍未被探索。&lt;/p&gt;
+&lt;h3 id=&#34;dp-sgd变种在训练大语言模型中的应用&#34;&gt;DP-SGD（变种）在训练大语言模型中的应用
+&lt;/h3&gt;&lt;p&gt;早期的一项尝试[50]在联邦学习设置中使用DP-SGD训练长短期记忆（LSTM）大语言模型。通过适当配置超参数（例如，将批次大小设置为百万级），甚至可以使用DP-SGD/Adam预训练BERT-Large（一个具有约3.4亿参数的语言模型），并且能够获得可接受的（MLM）准确度[5]。在预训练/微调大型大语言模型时使用传统的DP-SGD，会由于“维度灾难”导致显著的效率和准确度下降。Yu等人[79]提出了重新参数化梯度扰动：首先将每个高秩权重矩阵重新参数化/分解为两个低秩（梯度载体）矩阵，并添加一个残差矩阵，然后仅扰动这两个低秩梯度以缓解维度灾难。最后，噪声低秩梯度会被投影回去以更新原始的高秩权重。
+将重新参数化应用于每次更新中的每个权重仍然是代价高昂的，并且可能引入不稳定性（例如，噪声在投影过程中被“放大”）。因此，后续研究[78]在最近的参数高效微调成功（例如LoRA[36]、Adapter[35]和Compacter[48]）基础上进行改进：它扰动较少的额外“插件”参数的梯度。然而，Li等人[45]通过实验证明，参数高效微调不一定比完全微调更好；他们提出了“幽灵剪切”（ghost clipping）技术，这是一种节省内存的技术（“与维度约简正交”），用于在完全微调中使用DP-SGD，而无需实例化每个样本的梯度。尽管效率/准确度有所提升，所有这些工作仍然仅通过扰动（较小的）梯度来保护训练数据。&lt;/p&gt;
+&lt;h3 id=&#34;针对矩阵函数的dp机制&#34;&gt;针对矩阵函数的DP机制
+&lt;/h3&gt;&lt;p&gt;高斯机制和拉普拉斯机制通常用于标量/向量值函数[23]。通过将输出向量化并添加独立同分布的噪声，可以将其推广到矩阵值函数，但矩阵函数的结构信息并未被充分利用。因此，MVG机制[14]应运而生，该机制从矩阵高斯分布中抽取定向或非独立同分布的噪声。它将较少的噪声注入到更多“信息丰富”的输出方向，以获得更好的效用，同时仅对两个协方差矩阵的奇异值之和（决定噪声的幅度）施加约束。这样的约束仅是（ε, δ）-差分隐私的充分条件，后续研究[75]通过对奇异值进行更紧的界限改进了这一机制。还有一些专门用于限制矩阵值函数的机制。矩阵机制[43]考虑了一组由查询矩阵$W$和输入向量$x$表示的线性计数查询，形式为$W x$。它仍然依赖于加性拉普拉斯/高斯噪声，但通过额外的变换解决了对噪声$W x$的最小方差估计。另一个非常新的研究[37]专注于仅具有二进制（矩阵）输出的矩阵值查询。它随后设计了一种异或（XOR）机制，通过与来自矩阵值伯努利分布的噪声进行异或操作来处理输出。&lt;/p&gt;
+&lt;h2 id=&#34;结论&#34;&gt;结论
+&lt;/h2&gt;&lt;p&gt;预训练的大语言模型在自然语言处理（NLP）中变得至关重要。然而，令人担忧的是，微调语料库或推理时输入的数据面临各种隐私攻击。流行的DP-SGD通过向梯度中添加噪声，仅能为训练数据提供有限的保护。原始的标记或训练/推理数据中的敏感属性可以在前向计算过程中从嵌入中反演或推断出来。传统的DP-SGD还会带来高GPU内存和计算负担，并且不能进行批处理。
+我们提出了DP-Forward，它直接在前向传递过程中向从原始训练/推理数据中派生的嵌入矩阵添加噪声。其核心是分析矩阵高斯机制，这是一种通用工具，具有独立的兴趣。它使用差分隐私所需且充分的条件，以专门的方式从矩阵高斯分布中抽取最优的矩阵值噪声。在多个层的不同位置扰动嵌入矩阵至少带来两个好处。DP-Forward的用户只需下载派生噪声嵌入的管道部分，这比派生噪声梯度更节省存储和时间。结合我们之前的尝试[21, 80]，对输入文本标记和输出句子嵌入进行净化，我们为用户提供了一整套前向传递信号净化选项，允许用户仅共享经过净化的数据以用于大语言模型即服务（LM-as-a-Service）API，同时保护隐私。
+除了对两个局部差分隐私概念的理论贡献和与基准（例如GM、MVG和DP-SGD）在三个典型NLP任务中的实验比较外，我们还研究了超参数配置，以可重复验证DP-Forward在效率、准确性以及抵御多种攻击方面的潜力。
+总的来说，我们的全新视角为隐私意识深度神经网络训练提供了更好的方法，挑战了传统的梯度关注智慧。作为微调和推理中局部差分隐私的新范式，我们的工作为新的机器学习隐私研究开辟了无数可能性[54]，例如扩展到基于变换器的计算机视觉任务。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>密码学部分问题2</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E5%AF%86%E7%A0%81%E5%AD%A6%E9%83%A8%E5%88%86%E9%97%AE%E9%A2%982/</link>
         <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
@@ -5054,6 +5399,22 @@ $$&lt;p&gt;这种简化降低了计算复杂度，但也限制了模型的表达
 &lt;li&gt;&lt;strong&gt;似然&lt;/strong&gt;用于在已知观测数据时，推断哪个参数最能解释这些数据。&lt;/li&gt;
 &lt;/ul&gt;
 </description>
+        </item>
+        <item>
+        <title></title>
+        <link>https://JiangZhiyu-1024.github.io/p/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/</guid>
+        <description>&lt;h1 id=&#34;hugo文章部署错误&#34;&gt;hugo文章部署错误
+&lt;/h1&gt;&lt;h2 id=&#34;报错信息&#34;&gt;报错信息
+&lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
         </item>
         
     </channel>
