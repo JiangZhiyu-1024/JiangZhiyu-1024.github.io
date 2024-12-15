@@ -74,8 +74,8 @@ VOLE 是一种双方功能，它接受来自发送方的标量 $x \in F_p$ 并�
 &lt;p&gt;&lt;strong&gt;同态加密&lt;/strong&gt;
 全同态加密（FHE）是一种加密方案，允许对加密数据执行任意操作 [19]。在实际应用中，它通常以分级方式使用：操作只能执行有限次数，否则密文无法解密。在大多数 FHE 加密系统中 [12], [11], [18], [15]，明文被编码为来自商环 $\mathbb{Z}_p[x]/(x^N + 1)$ 的多项式，其中 $N$ 是 2 的幂，$p$ 是明文模数。明文多项式随后被加密成密文多项式 $\mathbb{Z}_q[x]/(x^N + 1)$，其中 $q$ 是密文模数，它决定了安全级别以及可以执行操作的次数。&lt;/p&gt;
 &lt;h2 id=&#34;安全矩阵乘法&#34;&gt;&lt;strong&gt;安全矩阵乘法&lt;/strong&gt;
-&lt;/h2&gt;&lt;p&gt;MatrixMul 操作接受来自 C 和 S 的两个输入矩阵 $X \in \mathbb{Z}^{n \times m}&lt;em&gt;{2^l}$ 和 $Y \in \mathbb{Z}^{m \times k}&lt;/em&gt;{2^l}$，并输出 $\langle Z \rangle$，其中 $Z = XY \in \mathbb{Z}^{n \times k}_{2^l}$。现有的大多数解决方案使用同态乘法和加法以隐私保护的方式计算上述公式。SIMD 技术通常用于通过将 $N$ 个元素批量处理到单个 RLWE 密文中来摊销成本，但它需要昂贵的同态旋转来求和 [28]。Cheetah [27] 用系数打包替代了 SIMD，以消除昂贵的旋转。然而，它仍然需要传输至少 $2n \sqrt{mk} \sqrt{N}$ 个 RLWE 密文，并执行至少 $nmk N$ 次密文-明文同态乘法。&lt;/p&gt;
-&lt;p&gt;回顾一下，GPT 需要自回归地生成响应词。因此，单次 GPT 推理需要对不同的 $X$ 和相同的 $Y$ 运行 MatrixMul。我们旨在通过利用 GPT 的这一特性来减少 MatrixMul 的摊销成本。设 $X = [x_1, x_2, \cdots, x_m]$（其中 $x_i \in \mathbb{Z}*2^{l}$ 是 $X$ 的每一列），$Y^T = [y&#39;1, y&#39;2, \cdots, y&amp;rsquo;m]$（其中 $y&amp;rsquo;i \in \mathbb{Z}2^{k}$ 是 $Y$ 的每一行），则有
+&lt;/h2&gt;&lt;p&gt;MatrixMul 操作接受来自 C 和 S 的两个输入矩阵 $ X \in \mathbb{Z}^{n \times m}&lt;em&gt;{2^l} $ 和 $ Y \in \mathbb{Z}^{m \times k}&lt;/em&gt;{2^l} $，并输出 $\langle Z \rangle$，其中 $ Z = XY \in \mathbb{Z}^{n \times k}_{2^l} $。现有的大多数解决方案使用同态乘法和加法以隐私保护的方式计算上述公式。SIMD 技术通常用于通过将 $N$ 个元素批量处理到单个 RLWE 密文中来摊销成本，但它需要昂贵的同态旋转来求和 [28]。Cheetah [27] 用系数打包替代了 SIMD，以消除昂贵的旋转。然而，它仍然需要传输至少 $2n \sqrt{mk} \sqrt{N}$ 个 RLWE 密文，并执行至少 $nmk N$ 次密文-明文同态乘法。&lt;/p&gt;
+&lt;p&gt;回顾一下，GPT 需要自回归地生成响应词。因此，单次 GPT 推理需要对不同的 $X$ 和相同的 $Y$ 运行 MatrixMul。我们旨在通过利用 GPT 的这一特性来减少 MatrixMul 的摊销成本。设 $ X = [x_1, x_2, \cdots, x_m] $（其中 $ x_i \in \mathbb{Z}*2^{l} $ 是 $X$ 的每一列），$Y^T = [y&#39;1, y&#39;2, \cdots, y&amp;rsquo;m]$（其中 $y&amp;rsquo;i \in \mathbb{Z}2^{k}$ 是 $Y$ 的每一行），则有
 $Z = \sum_{i=1}^{m} (x_i \otimes y&amp;rsquo;&lt;em&gt;i)$
 假设 S 和 C 需要生成 $t$ 个响应词，则有 $t$ 个输入矩阵：
 $X_1 = [x{1,1}, x{1,2}, \cdots, x{1,m}]$，
