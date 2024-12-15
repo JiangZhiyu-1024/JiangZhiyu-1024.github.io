@@ -26,6 +26,9 @@
 &lt;p&gt;&lt;strong&gt;高效的线性函数协议&lt;/strong&gt;
 我们提出了一种叫做“不可知线性变换”（Oblivious Linear Transformation，OLT）的原语。我们将OLT描述为一个双方协议，其中两方分别提供私密矩阵 $Q \in \mathbb{Z}_2^{* 2l}$ 和 $V \in \mathbb{Z}_2^{* 2l}$，并生成它们之间的共享 $QV$。使用OLT，我们可以在模 $2l$ 的环上实现两个加法共享矩阵的乘法。基于同态加密（HE）的方法[36]、[54]提供了一个很好的起点。这些方法的一个重要局限性是显著的通信开销，这来自于输出密文的“稀疏”格式。更具体地说，[36]、[54]中的每个输出密文加密了一个长向量。然而，乘法结果只需要该向量中的一小部分元素。为了进行解密，仍然需要传输整个加密向量。为了克服这一不足，我们提出了一种压缩过程，通过同态方式将加密向量中不必要的条目归零，从而将多个“稀疏”向量合并为一个“密集”向量。因此，通信开销减少，因为需要发送的密文数量变少。与之前的密文压缩方法[13]相比，我们的压缩过程快了大约50倍。总体而言，我们观察到与[36]、[54]相比，通信成本减少了80%-90%。&lt;/p&gt;
 &lt;p&gt;除了矩阵乘法，点对点乘法 $x_0 \cdot y_0, x_1 \cdot y_1, \dots$ 也是变换器推理中的一个重要计算。许多基于同态加密的点对点乘法协议[18]、[63]需要设置一个相对较大的明文模数$t$。例如，[18]、[63]都设置HE参数 $t &amp;gt; 22l+40$ 来加密来自 $\mathbb{Z}_2^l$ 的值。在这项工作中，我们提出了一种模数提升函数，用于统一底层HE的秘密共享模数和明文模数。提升函数使我们能够在HE密文上执行模 $2l$ 的算术运算。这使我们能够选择较小的HE参数，即 $t \approx 22l$。我们的实验结果表明，在[63]中应用提升函数后，性能提高了1.3倍。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;为变换器中的激活函数构建高效准确协议的框架&lt;/strong&gt;
+我们首先提出了一个通用框架，用于构建高效且精确的2PC协议，适用于许多变换器模型中使用的激活函数。这些激活函数具有一个共同的特性：在靠近原点的短区间内它们相对平滑，且在两侧几乎是线性的。考虑到这一特性，我们提出使用一个或两个低度多项式来逼近激活函数在短区间内的表现，并在两侧使用恒等函数。例如，我们建议用两个低度的多项式 $P(x)$ 和 $Q(x)$ 来逼近SiLU函数，这两个多项式最小化最小二乘误差，如下所示：
+&lt;/p&gt;
 $$
 \text{SiLU}(x) \approx 
 \begin{cases} 
@@ -47,6 +50,8 @@ $$&lt;p&gt;
 &lt;p&gt;&lt;strong&gt;A. 符号约定&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;我们用 $x = y$ 表示 $x$ 等于 $y$，用 $x := y$ 表示将 $y$ 的值赋给变量 $x$。对于一个交互协议 $\Pi$，我们用 $JxK \gets \Pi$ 表示协议的执行。我们用 $[n]$ 来表示集合 ${0, \dots, n - 1}$，其中 $n \in \mathbb{N}$。对于一个集合 $D$，$x \in R^D$ 表示 $x$ 是从 $D$ 中均匀随机采样的。我们使用 $\lceil \cdot \rceil$、$\lfloor \cdot \rfloor$ 和 $\lfloor \cdot \rceil$ 来分别表示天花板函数、地板函数和四舍五入函数。逻辑与和异或分别表示为 $\land$ 和 $\oplus$。令 $1{P}$ 表示指示函数，当谓词 $P$ 为真时，$1{P}$ 为 1，$P$ 为假时，$1{P}$ 为 0。我们用带有“帽”符号的小写字母，例如 $\hat{a}$，来表示多项式，用 $\hat{a}[j]$ 表示多项式 $\hat{a}$ 的第 $j$ 个系数。我们用点符号 $\cdot$，例如 $\hat{a} \cdot \hat{b}$，来表示多项式的乘法。我们用 $Z_q = Z \cap [0, q)$ 来表示 $q \geq 2$ 时的整数模 $q$。同余式 $x \equiv y \mod 2^l$ 将简写为 $x \equiv_l y$。对于一个二次幂数 $N$，和 $q &amp;gt; 0$，我们写 $R_q$ 来表示整数多项式环 $R_q = Z_q[X] / (X^N + 1)$。我们用粗体字母如 $\mathbf{a}$、$\mathbf{M}$ 来表示向量和矩阵，用 $a[j]$ 来表示向量 $\mathbf{a}$ 的第 $j$ 个分量，用 $M[j, i]$ 来表示矩阵 $\mathbf{M}$ 的 $(j, i)$ 项。Hadamard 乘积表示为 $\mathbf{a} \odot \mathbf{b}$。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;B. 加密原语&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;1.&lt;strong&gt;加法秘密共享&lt;/strong&gt;：本文中我们使用 2-out-of-2 加法秘密共享方案，基于环 $Z_{2^l}$。一个 $l$ 位（$l \geq 2$）的值 $x$ 被加法共享为 $JxK_0$ 和 $JxK_1$，其中 $JxK_l$ 是由参与方 $P_l$ 持有的 $x$ 的随机份额。我们可以将两个共享值的乘法写作：
+&lt;/p&gt;
 $$
 JxK⋅JyK≡l(JxK0+JxK1)⋅(JyK0+JyK1)≡lJxK0JyK0+JxK1JyK1+JxK0JyK1+JxK1JyK0JxK \cdot JyK \equiv_l (JxK_0 + JxK_1) \cdot (JyK_0 + JyK_1)\equiv_l JxK_0JyK_0 + JxK_1JyK_1 + JxK_0JyK_1 + JxK_1JyK_0
 $$&lt;p&gt;
@@ -102,9 +107,15 @@ qˆ 和 vˆ 的所有其他系数设置为0。
 &lt;p&gt;最终版本。我们现在展示图6中的优化版本，它将图4中的复杂度从 O(r · 2r) 次自同构操作降低到了 O(2r) 次自同构操作。我们将展示这个优化版本的直觉。直观上，利用自同构函数的双线性性质，将两个具有相同索引的自同构操作合并为一个自同构操作是合理的。即，对于任何有效的索引 g，两个自同构操作的和 Auto(ˆa, g) + Auto(ˆb, g) 等于对多项式和的自同构操作。然而，应用相同自同构索引的多项式在求和步骤（图4的步骤8）之前，需要先进行不同单位的右移（即图4的步骤6）。为了解决这个问题，我们利用以下方程。即，当 ˆb[i] = 0 对于所有 i ≠ 0 mod 2j 时，&lt;/p&gt;
 $$
 Auto(ˆa,N/2j+1)+Auto(ˆb,N/2j+1)⋅X2j=Auto(ˆa−ˆb⋅X2j,N/2j+1)Auto(ˆa, N/2j + 1) + Auto(ˆb, N/2j + 1) \cdot X^{2j} = Auto(ˆa - ˆb \cdot X^{2j}, N/2j + 1)
-$$$$
+$$&lt;p&gt;
+回想一下，自同构操作 Auto(·, N/2j + 1) 会翻转位于 2j 的奇数倍位置的系数，而保持偶数倍位置的系数不变。同时，通过乘以 $X^{2j}$ 对 ˆb 进行右移，只是改变了 ˆb 的系数位置的奇偶性——从 2j 的奇数倍位置移到偶数倍位置，反之亦然。因此，自同构-然后-右移的模式
+&lt;/p&gt;
+$$
 Auto(ˆb,N/2j+1)⋅X2jAuto(ˆb, N/2j + 1) \cdot X^{2j}
-$$$$
+$$&lt;p&gt;
+等价于取反-右移-然后自同构的方式
+&lt;/p&gt;
+$$
 Auto(−ˆb⋅X2j,N/2j+1)Auto(-ˆb \cdot X^{2j}, N/2j + 1)
 $$&lt;p&gt;
 这样，我们就可以利用双线性特性，将具有相同索引的两个自同构操作合并为一个自同构操作。&lt;/p&gt;
@@ -115,37 +126,77 @@ $$&lt;p&gt;
 &lt;p&gt;复杂度。根据我们的经验结果，选择 mw ≈ √N 是一个可行的选择。然后，算法1中的协议需要大约 O(kn/√N) 次同态自同构操作用于密文交织。相比之下，KRDY+ 基准协议需要 O(kn) 次同态自同构操作。举个例子，设 mw = 26 且 N = 213。在这种设置下，我们协议的密文压缩时间大约是 KRDY+ 密文压缩时间的 1/26 ≈ 1.6%。KRDY+ 和我们协议的通信开销都是 O(kn/N) 个密文。请注意，BOLT 的主模OLT可能根据矩阵维度 [58] 需要更少的同态自同构操作 O(pk²m²n/N²)。&lt;/p&gt;
 &lt;p&gt;安全性。我们仅增加了一个密文压缩步骤来减少通信开销，我们发送的信息是 KRDY 协议的子集，因此我们的安全级别与其相同。定理1的证明参考了 [54]，[36]。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;算法 1 提议的不可知线性变换 \( $ \Pi_{OLT} $\)&lt;/strong&gt;&lt;/p&gt;
-$$ Q \in \mathbb{Z}^{k \times m} $$$$ 2^l $$$$ V \in \mathbb{Z}^{m \times n} $$$$ 2^l $$&lt;p&gt;。&lt;/p&gt;
-$$ JUK $$$$ U \equiv_l Q \cdot V $$$$ pp = (\text{HE.pp}, pk, (kw, mw, nw)) $$&lt;ul&gt;
+&lt;p&gt;&lt;strong&gt;输入：&lt;/strong&gt;&lt;br&gt;
+发送方 \( S \)：&lt;br&gt;
+&lt;/p&gt;
+$$ Q \in \mathbb{Z}^{k \times m} $$$$ 2^l $$&lt;p&gt; 和 \( sk \)。&lt;br&gt;
+接收方 \( R \)：&lt;br&gt;
+&lt;/p&gt;
+$$ V \in \mathbb{Z}^{m \times n} $$$$ 2^l $$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输出：&lt;/strong&gt;&lt;br&gt;
+&lt;/p&gt;
+$$ JUK $$&lt;p&gt;，使得&lt;br&gt;
+&lt;/p&gt;
+$$ U \equiv_l Q \cdot V $$&lt;p&gt;&lt;strong&gt;公共参数：&lt;/strong&gt;&lt;br&gt;
+&lt;/p&gt;
+$$ pp = (\text{HE.pp}, pk, (kw, mw, nw)) $$&lt;ul&gt;
 &lt;li&gt;大小 \( mw \) 是一个 2 的幂，且&lt;br&gt;
 $$ 1 \leq kw \cdot mw \cdot nw \leq N $$&lt;/li&gt;
 &lt;li&gt;&lt;/li&gt;
 &lt;/ul&gt;
-$$ k&#39; = \lceil \frac{k}{kw} \rceil $$$$ m&#39; = \lceil \frac{m}{mw} \rceil $$$$ n&#39; = \lceil \frac{n}{nw} \rceil $$$$ \tilde{m} = \lceil \frac{k&#39; \cdot n&#39;}{mw} \rceil $$&lt;ul&gt;
+$$ k&#39; = \lceil \frac{k}{kw} \rceil $$&lt;p&gt;，&lt;br&gt;
+&lt;/p&gt;
+$$ m&#39; = \lceil \frac{m}{mw} \rceil $$&lt;p&gt;，&lt;br&gt;
+&lt;/p&gt;
+$$ n&#39; = \lceil \frac{n}{nw} \rceil $$&lt;p&gt;，和&lt;br&gt;
+&lt;/p&gt;
+$$ \tilde{m} = \lceil \frac{k&#39; \cdot n&#39;}{mw} \rceil $$&lt;ul&gt;
 &lt;li&gt;注意：如果&lt;br&gt;
 $$ k&#39; &gt; n&#39; $$，则交换发送方和接收方的角色。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;步骤：&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-$$ Q_{\alpha, \beta} \in \mathbb{Z}^{kw \times mw} $$$$ \hat{q}_{\alpha, \beta} := \pi_{\text{lhs}}(Q_{\alpha, \beta}) $$$$ ct&#39;_{\alpha, \beta} := \text{RLWE}_{q, 2l}^{pk} (\hat{q}_{\alpha, \beta}) $$&lt;p&gt;&lt;br&gt;
+&lt;p&gt;发送方 \( S \) 首先将矩阵 \( Q \) 划分为块矩阵&lt;br&gt;
+&lt;/p&gt;
+$$ Q_{\alpha, \beta} \in \mathbb{Z}^{kw \times mw} $$&lt;p&gt; \( 2^l \)。然后，\( S \) 对每个块矩阵编码为多项式&lt;br&gt;
+&lt;/p&gt;
+$$ \hat{q}_{\alpha, \beta} := \pi_{\text{lhs}}(Q_{\alpha, \beta}) $$&lt;p&gt;&lt;br&gt;
+其中 \( \alpha \in [k&#39;] \) 且 \( \beta \in [m&#39;] \)。之后，\( S \) 将每个编码后的密文&lt;br&gt;
+&lt;/p&gt;
+$$ ct&#39;_{\alpha, \beta} := \text{RLWE}_{q, 2l}^{pk} (\hat{q}_{\alpha, \beta}) $$&lt;p&gt;&lt;br&gt;
 发送给 \( R \)。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$ V_{\beta, \gamma} \in \mathbb{Z}^{mw \times nw} $$$$ \hat{v}_{\beta, \gamma} := \pi_{\text{rhs}}(V_{\beta, \gamma}) $$&lt;p&gt;&lt;br&gt;
+&lt;p&gt;接收方 \( R \) 首先将矩阵 \( V \) 划分为块矩阵&lt;br&gt;
+&lt;/p&gt;
+$$ V_{\beta, \gamma} \in \mathbb{Z}^{mw \times nw} $$&lt;p&gt; \( 2^l \)。然后，\( R \) 对每个块矩阵编码为多项式&lt;br&gt;
+&lt;/p&gt;
+$$ \hat{v}_{\beta, \gamma} := \pi_{\text{rhs}}(V_{\beta, \gamma}) $$&lt;p&gt;&lt;br&gt;
 其中 \( \beta \in [m&#39;] \) 且 \( \gamma \in [n&#39;] \)。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$ \{ct&#39;_{\alpha, \beta}\} $$$$ c[\alpha \cdot n&#39; + \gamma] := \bigoplus_{\beta \in [m&#39;]} ct&#39;_{\alpha, \beta} \odot \hat{v}_{\beta, \alpha} $$&lt;p&gt;&lt;br&gt;
+&lt;p&gt;在接收到来自 \( S \) 的&lt;br&gt;
+&lt;/p&gt;
+$$ \{ct&#39;_{\alpha, \beta}\} $$&lt;p&gt; 后，\( R \) 计算一个 RLWE 密文向量 \( c \)，其中&lt;br&gt;
+&lt;/p&gt;
+$$ c[\alpha \cdot n&#39; + \gamma] := \bigoplus_{\beta \in [m&#39;]} ct&#39;_{\alpha, \beta} \odot \hat{v}_{\beta, \alpha} $$&lt;p&gt;&lt;br&gt;
 对于 \( \alpha \in [k&#39;] \)，\( \gamma \in [n&#39;] \)。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
+&lt;p&gt;为了将 \( k&#39; \cdot n&#39; \) 个密文压缩为 \( \tilde{m} \) 个密文而不触及需要的系数，\( R \) 在密文向量 \( c \) 的子向量上运行 InterLeave 操作。例如&lt;br&gt;
+&lt;/p&gt;
 $$ \tilde{c}[\theta] := \text{InterLeave}([c[\theta \cdot mw], c[\theta \cdot mw + 1], \cdots \mid \{z\} mw]) $$&lt;p&gt;&lt;br&gt;
 对于 \( \theta \in [\tilde{m}] \)。&lt;br&gt;
 ▷ 当 \( k&#39; \cdot n&#39; \) 无法被 \( mw \) 整除时，填充零。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$ \hat{c}_{i, 0}, \hat{c}_{i, 1} \leftarrow \text{FH2A}(\tilde{c}[i]) $$$$ JUK_l := \text{ParseMat}(\hat{c}_{0, l}, \hat{c}_{1, l}, \cdots) $$&lt;p&gt;&lt;br&gt;
+&lt;p&gt;对于每个密文 \( \tilde{c}[i] \) 中的密文，运行&lt;br&gt;
+&lt;/p&gt;
+$$ \hat{c}_{i, 0}, \hat{c}_{i, 1} \leftarrow \text{FH2A}(\tilde{c}[i]) $$&lt;p&gt;&lt;br&gt;
+其中 \( S \) 获得 \( \hat{c}_{i, 0} \in R^{2l} \)，\( R \) 获得 \( \hat{c}_{i, 1} \in R^{2l} \)。之后，\( S \) 和 \( R \) 都可以通过附录中的本地过程&lt;br&gt;
+&lt;/p&gt;
+$$ JUK_l := \text{ParseMat}(\hat{c}_{0, l}, \hat{c}_{1, l}, \cdots) $$&lt;p&gt;&lt;br&gt;
 来获取各自的分享。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
@@ -187,6 +238,8 @@ JzK ∈ ZN 2l，使得 ∥z − x ⊙ y mod 2l∥∞ ≤ 1。&lt;/p&gt;
 &lt;p&gt;A. 高斯误差线性单元（GeLU）&lt;/p&gt;
 &lt;p&gt;GeLU 函数的常见定义是：&lt;/p&gt;
 &lt;p&gt;$GeLU(x)=0.5x(1+tanh⁡(2π(x+0.044715x3))).\text{GeLU}(x) = 0.5x(1 + \tanh\left(\frac{\sqrt{2}}{\pi}(x + 0.044715x^3)\right)).$&lt;/p&gt;
+&lt;p&gt;遵循现有的研究工作 [58]、[49]、[24]、[21]，我们使用分段函数来近似 GeLU 函数，如下所示：
+&lt;/p&gt;
 $$
 \text{Seg4GeLU}(x) = 
 \begin{cases}
@@ -204,6 +257,9 @@ $$&lt;p&gt;
 &lt;li&gt;&lt;strong&gt;优化多项式评估&lt;/strong&gt;：对于公式（2）中的 $P_3(x)$ 和 $P_6(x)$ 的评估，我们建议使用更快的平方协议 $\Pi_{\text{square}}$ 来计算所有偶次幂项，如 $x^2$、$x^4$ 和 $x^6$。实际上，在 2PC 中，执行平方操作的成本是标准乘法操作的一半。此外，我们还提出通过减少一半的通信成本来优化奇次幂项的计算。举个例子，考虑给定 $JxK$ 和 $Jx^2K$ 时，如何计算 $Jx^3K$。我们可以使用两次 bOLE 调用来计算 $Jx^3K$，即 $FbOLE(JxK_0, Jx^2K_1)$ 和 $FbOLE(Jx^2K_0, JxK_1)$。对于算法 2 中的 bOLE 构造，P0 将 SIMD(Lift(JxK_0)) 和 SIMD(Lift(Jx^2K_0)) 的密文发送给 P1。我们注意到，当计算 $Jx^2K$ 和 $Jx^4K$ 时，这两个密文已经被发送给 P1。因此，为了计算立方项，玩家可以跳过算法 2 中的步骤 1，按照其余步骤相同地执行。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;权衡。在我们的评估中，我们证明了这三种优化可以使时间减少35%，通信减少7%。需要注意的是，这些改进伴随着近似误差的增加。具体来说，我们的GeLU评估的平均ULP误差约为11，而[58]的平均ULP误差为4。此外，我们在四个transformer模型中测试了提出的GeLU协议，结果表明推理精度的降级非常小，不超过1%。我们认为这是精度和效率之间的合理权衡。&lt;/p&gt;
+&lt;p&gt;B. &lt;strong&gt;Softmax&lt;/strong&gt;
+为了数值稳定性[29，第4章]，softmax函数通常计算为：
+&lt;/p&gt;
 $$
 softmax(x)[i]=exp⁡(x[i]−xˉ)∑jexp⁡(x[j]−xˉ),\text{softmax}(x)[i] = \frac{\exp(x[i] - \bar{x})}{\sum_j \exp(x[j] - \bar{x})},
 $$&lt;p&gt;
@@ -219,6 +275,8 @@ $$&lt;p&gt;
 &lt;li&gt;使用额外一次对 $F_{\text{trunc}}$ 的调用来降低激活函数中的定点精度；&lt;/li&gt;
 &lt;li&gt;缩小近似区间或增加分支数，以便可以使用较低次数的多项式。&lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;最近的工作[58]在狭窄区间内使用低次多项式近似GeLU，即
+&lt;/p&gt;
 $$
 GeLU(x)≈P4(x)=0.5x+∑i=04ci∣x∣iforx∈[−2.7,2.7].\text{GeLU}(x) \approx P_4(x) = 0.5x + \sum_{i=0}^{4} c_i |x|^i \quad \text{for} \quad x \in [-2.7, 2.7].
 $$&lt;p&gt;
@@ -285,6 +343,8 @@ PrivFormer [3] 和 PUMA [21] 是为变换器设计的两种基于三方设置 [4
 &lt;p&gt;通过这种建模方法的表示，Transformer 模型可以利用位置编码 𝒑𝑡 建模不同词元的位置信息。由于不同词元的位置编码仅由其位置唯一决定，因此这种位置建模方式被称为绝对位置编码。尽管绝对位置编码能够一定程度上建模位置信息，然而它只能局限于建模训练样本中出现的位置，无法建模训练数据中未出现过的位置，因此极大地限制了它们处理长文本的能力。&lt;/p&gt;
 &lt;h3 id=&#34;多头自注意力机制&#34;&gt;🍋多头自注意力机制
 &lt;/h3&gt;&lt;p&gt;多头自注意力是Transformer模型的核心创新技术。相比于循环神经网络（Recurrent Neural Network, RNN）和卷积神经网络（ConvolutionalNeuralNetwork,CNN）等传统神经网络，多头自注意力机制能够直接建模任意距离的词元之间的交互关系。作为对比，循环神经网络迭代地利用前一个时刻的状态更新当前时刻的状态，因此在处理较长序列的时候，常常会出现梯度爆炸或者梯度消失的问题。而在卷积神经网络中，只有位于同一个卷积核的窗口中的词元可以直接进行交互，通过堆叠层数来实现远距离词元间信息的交换。&lt;/p&gt;
+&lt;p&gt;多头自注意力机制通常由多个自注意力模块组成。在每个自注意力模块中，对于输入的词元序列，将其映射为相应的查询（Query,𝑸）、键（Key,𝑲）和值（Value,𝑽）三个矩阵。然后，对于每个查询，将和所有没有被掩盖的键之间计算点积。这些点积值进一步除以$\sqrt{D}$进行缩放（𝐷是键对应的向量维度），被传入到softmax函数中用于权重的计算。进一步，这些权重将作用于与键相关联的值，通过加权和的形式计算得到最终的输出。在数学上，上述过程可以表示为：
+&lt;/p&gt;
 $$
 Q = XW^Q,
 $$$$
@@ -293,13 +353,17 @@ $$$$
 V = XW^V,
 $$$$
 Attention(Q,K,V) = softmax(\frac{QK^T}{\sqrt{D}})V.
-$$$$
+$$&lt;p&gt;与单头注意力相比，多头注意力机制的主要区别在于它使用了𝐻组结构相同，但映射参数不同的自注意力模块。输入序列首先通过不同的权重矩阵被映射为一组查询、键和值。每组查询、键和值的映射构成一个“头”，并独立地计算自注意力的输出。最后，不同头的输出被拼接在一起，并通过一个权重矩阵$W^O$∈$R^{H \times H}$ 进行映射，产生最终的输出。如下面的公式所示：
+&lt;/p&gt;
+$$
 head_n = Attention(XW^Q_n,XW^K_n,XW^V_n)
 $$$$
 MHA = Concat(head_1,...,head_N)W^O
 $$&lt;p&gt;由上述内容可见，自注意力机制能够直接建模序列中任意两个位置之间的关系，进而有效捕获长程依赖关系，具有更强的序列建模能力。另一个主要的优势是，自注意力的计算过程对于基于硬件的并行优化（如GPU、TPU等）非常友好，因此能够支持大规模参数的高效优化。&lt;/p&gt;
 &lt;h3 id=&#34;前馈网络层&#34;&gt;🍏前馈网络层
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;为了学习复杂的函数关系和特征，Transformer 模型引入了一个前馈网络层（Feed Forward Netwok, FFN），对于每个位置的隐藏状态进行非线性变换和特征提取。具体来说，给定输入𝒙，Transformer中的前馈神经网络由两个线性变换和一个非线性激活函数组成：
+&lt;/p&gt;
+$$
 FFN(X) = σ(XW^U + b_1)W^D + b_2
 $$&lt;p&gt;
 其中$W^U$ ∈ $R^{H \times H}$ 和$W^D$ ∈ $R^{H \times H}$  分别是第一层和第二层的线性变换权重矩阵，$b_1$ ∈ $R^{𝐻^′}$ 和 $b_2$ ∈ $R^H$ 是偏置项，𝜎是激活函数（在原始的Transformer中，采用 ReLU 作为激活函数）。前馈网络层通过激活函数引入了非线性映射变换，提升了 模型的表达能力，从而更好地捕获复杂的交互关系。&lt;/p&gt;
@@ -319,19 +383,25 @@ $$&lt;p&gt;
 &gt;&lt;/p&gt;
 &lt;center&gt;Transformer 架构图&lt;/center&gt;
 &lt;h3 id=&#34;编码器&#34;&gt;🍐编码器
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;在Transformer 模型中，编码器（Encoder）的作用是将每个输入词元都编码成一个上下文语义相关的表示向量。编码器结构由多个相同的层堆叠而成，其中每一层都包含多头自注意力模块和前馈网络模块。在注意力和前馈网络后，模型使用层归一化和残差连接来加强模型的训练稳定度。其中，残差连接（Residual Connection）将输入与该层的输出相加，实现了信息在不同层的跳跃传递，从而缓解梯度爆炸和消失的问题。而LayerNorm则对数据进行重新放缩，提升模型的训练稳定性。编码器接受经过位置编码层的词嵌入序列𝑿作为输入，通过多个堆叠的编码器层来建模上下文信息，进而对于整个输入序列进行编码表示。由于输入数据是完全可见的，编码器中的自注意力模块通常采用双向注意力，每个位置的词元表示能够有效融合上下文的语义关系。在编码器-解码器架构中，编码器的输出将作为解码器（Decoder）的输入，进行后续计算。形式化来说，第𝑙层（𝑙∈{1,&amp;hellip;,𝐿}）的编码器的数据处理过程如下所示：
+&lt;/p&gt;
+$$
 X^′_l = LayerNorm(MHA(X_{l-1})+X_{l-1})
 $$$$
 X_l = LayerNorm(FFN(X^′_l)+X^′_l)
 $$&lt;p&gt;其中，$X^′_l$ 和 $X_l$ 分别是该Transformer层的输入和输出，$X^′_l$是该层中输入经过多头注意力模块后的中间表示，LayerNorm表示层归一化。&lt;/p&gt;
 &lt;h3 id=&#34;解码器&#34;&gt;🥥解码器
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;Transformer 架构中的解码器基于来自编码器编码后的最后一层的输出表示以及已经由模型生成的词元序列，执行后续的序列生成任务。与编码器不同，解码器需要引入掩码自注意力（MaskedSelf-attention）模块，用来在计算注意力分数的时候掩盖当前位置之后的词，以保证生成目标序列时不依赖于未来的信息。除了建模目标序列的内部关系，解码器还引入了与编码器相关联的多头注意力层，从而关注编码器输出的上下文信息$X_L$。同编码器类似，在每个模块之后，Transformer 解码器也采用了层归一化和残差连接。在经过解码器之后，模型会通过一个全连接层将输出映射到大小为𝑉的目标词汇表的概率分布，并基于某种解码策略生成对应的词元。在训练过程中，解码器可以通过一次前向传播，让每个词元的输出用于预测下一个词元。而在解码过程，解码器需要经过一个逐步的生成过程，将自回归地生成完整的目标序列。解码器的数据流程如下所示：
+&lt;/p&gt;
+$$
 Y^′_l = LayerNorm(MaskedMHA(Y_{l-1})+Y_{l-1})
 $$$$
 Y^&#34;_l = LayerNorm(CrossMHA(Y^′_l,X_L)+Y^′_l)
 $$$$
 Y_l = LayerNorm(FFN(Y^&#34;_l)+Y^&#34;_l)
-$$$$
+$$&lt;p&gt;其中，$Y_{l-1}$ 和 $Y_l$ 分别是该Transformer 层的输入和输出，$Y^′_l$ 和 $Y^&amp;quot;_l$ 是该层中输入经过掩码多头注意力MaskedMHA和交叉多头注意力CrossMHA模块后的中间表示，LayerNorm 表示层归一化。然后将最后一层的输入𝒀𝐿映射到词表的维度上：
+&lt;/p&gt;
+$$
 O = softmax(W^LY_L)
 $$&lt;p&gt;
 其中，𝑶 ∈$R^{H \times V}$ 是模型最终的输出，代表下一个词在词表上的概率分布；$W^L$ ∈ $R^{H \times V}$ 是将输入表示映射到词汇表维度的参数矩阵，而$W^LY_L$是概率化前的中间值，通常被称为logits。&lt;/p&gt;

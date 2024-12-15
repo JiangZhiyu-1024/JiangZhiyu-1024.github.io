@@ -642,11 +642,15 @@ $$\frac{ \text{Pr}[M(x) = y] }{ \text{Pr}[M(x') = y] } \leq e^\epsilon$$<p>通�
 <p>结合方程 (16) 和方程 (17)，可以推导出：</p>
 <p>0 &lt; u(x, y) \leq 1 \tag{19}</p>
 <p>\Delta u = 1 \tag{20}</p>
+<p>给定隐私参数 $\epsilon \geq 0$，对于任意输入 token $x \in C_r(t)$，输出扰动 token $y \in C_r(t)$ 的概率为：
+</p>
 $$
 P_r[y|x] = \frac{\exp \left( \frac{\epsilon}{2} \cdot u(x, y) \right)}{\sum_{y' \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot u(x, y') \right)} \tag{21}
 $$$$
 = \frac{\exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)}{\sum_{y' \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{|d_e(\varphi(x), \varphi(t)) - d_e(\varphi(y'), \varphi(t))|}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)} \tag{22}
-$$$$
+$$<p>对于输入 token $t \in C_r(t)$ 和输出 token $y \in C_r(t)$，可以推导出：
+</p>
+$$
 u(t, y) = 1 - \frac{d_e(\varphi(y), \varphi(t))}{d_e(\varphi(t), \hat{\varphi}(t))} \tag{23}
 $$$$
 P_r[y|t] = \frac{\exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)}{\sum_{y' \in C_r(t)} \exp \left( \frac{\epsilon}{2} \cdot \left( 1 - \frac{d_e(\varphi(t), \varphi(y'))}{d_e(\varphi(t), \hat{\varphi}(t))} \right) \right)} \tag{24}

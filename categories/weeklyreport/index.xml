@@ -390,6 +390,8 @@
 &lt;p&gt;&lt;strong&gt;将实数映射为概率分布&lt;/strong&gt;：Softmax 接受一个实数向量，输出一个与输入维度相同的向量，其中每个元素的值表示该元素作为某个类别的概率，且这些概率的和为1。这样就可以根据这些概率来进行分类预测。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
+&lt;p&gt;&lt;strong&gt;公式&lt;/strong&gt;：Softmax 函数的定义如下：
+&lt;/p&gt;
 $$
    \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
    $$&lt;p&gt;
@@ -681,7 +683,9 @@ $$
 &lt;/h2&gt;&lt;h3 id=&#34;残差连接residual-connection和层归一化layer-normalization是什么&#34;&gt;残差连接（residual connection）和层归一化（layer normalization）是什么？
 &lt;/h3&gt;&lt;p&gt;残差连接（Residual Connection）和 层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：&lt;/p&gt;
 &lt;h4 id=&#34;残差连接residual-connection&#34;&gt;残差连接（Residual Connection）
-&lt;/h4&gt;$$
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+&lt;/p&gt;
+$$
 \text{Output} = \text{Layer}(x) + x
 $$&lt;p&gt;
 其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。&lt;/p&gt;
@@ -692,7 +696,9 @@ $$&lt;p&gt;
 &lt;li&gt;&lt;strong&gt;提高模型性能&lt;/strong&gt;：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;层归一化layer-normalization&#34;&gt;层归一化（Layer Normalization）
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;定义&lt;/strong&gt;：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
+&lt;/p&gt;
+$$
 \text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
 $$&lt;p&gt;
 其中：&lt;/p&gt;
@@ -752,11 +758,19 @@ P(w1,w2,…,wT)
 &lt;/h1&gt;&lt;h2 id=&#34;什么是语言模型&#34;&gt;什么是语言模型
 &lt;/h2&gt;&lt;p&gt;语言模型（Language Model, LM）是自然语言处理中的一个核心概念，其主要任务是对一个词序列的概率分布进行建模。简单来说，语言模型的目标是估计一段文本或句子出现的概率，或者根据前面的词来预测下一个词。&lt;/p&gt;
 &lt;h3 id=&#34;语言模型的定义&#34;&gt;语言模型的定义
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;给定一个词序列
+&lt;/p&gt;
+$$
 P( w_1, w_2, \dots, w_T )
-$$$$
+$$&lt;p&gt;
+，语言模型的目标是计算这个序列的联合概率：
+&lt;/p&gt;
+$$
 P(w_1, w_2, \dots, w_T)
-$$$$
+$$&lt;p&gt;
+这通常可以分解为条件概率的乘积：
+&lt;/p&gt;
+$$
 P(w_1, w_2, \dots, w_T) = P(w_1) \cdot P(w_2 | w_1) \cdot P(w_3 | w_1, w_2) \cdot \dots \cdot P(w_T | w_1, w_2, \dots, w_{T-1})
 $$&lt;p&gt;
 这意味着每个词的概率取决于它前面的词。一个好的语言模型能够通过学习语料库中的模式，准确地捕捉这些条件概率。&lt;/p&gt;
@@ -777,7 +791,9 @@ $$&lt;p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;传统语言模型&#34;&gt;传统语言模型
-&lt;/h3&gt;$$
+&lt;/h3&gt;&lt;p&gt;在神经网络语言模型之前，最常用的语言模型是&lt;strong&gt;n元语法模型（n-gram Model）&lt;/strong&gt;。n元语法模型通过假设一个词的概率只与它前面的n-1个词有关来简化问题。举个例子，三元语法模型（trigram model）认为：
+&lt;/p&gt;
+$$
 P(w_T | w_1, w_2, \dots, w_{T-1}) \approx P(w_T | w_{T-2}, w_{T-1})
 $$&lt;p&gt;这种简化降低了计算复杂度，但也限制了模型的表达能力，因为它只能捕捉到短距离的上下文信息，无法充分考虑长距离的依赖关系。&lt;/p&gt;
 &lt;h3 id=&#34;神经网络语言模型&#34;&gt;神经网络语言模型

@@ -31,18 +31,34 @@
 &lt;p&gt;在&lt;strong&gt;图1&lt;/strong&gt;中，我们展示了一个深度神经网络（DNN）推理的示例。通过执行一系列计算，DNN输出对数值（logit），随后通过对该对数值执行&lt;strong&gt;softmax&lt;/strong&gt;函数生成输入的类别预测概率。&lt;/p&gt;
 &lt;p&gt;在不失一般性的情况下，我们详细描述了VGG16模型【38】中一个典型块的组成。该块包含线性计算、批归一化、激活函数和池化操作。&lt;/p&gt;
 &lt;h4 id=&#34;线性计算&#34;&gt;&lt;strong&gt;线性计算&lt;/strong&gt;
-&lt;/h4&gt;$$x \in \mathbb{R}^n$$$$
+&lt;/h4&gt;&lt;p&gt;假设输入向量 &lt;/p&gt;
+$$x \in \mathbb{R}^n$$&lt;p&gt; 被送入该块，则线性计算公式为：
+&lt;/p&gt;
+$$
 z = W x + b \tag{1}
-$$$$W$$$$b$$&lt;p&gt; 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。&lt;/p&gt;
+$$&lt;p&gt;
+其中，矩阵 &lt;/p&gt;
+$$W$$&lt;p&gt; 和向量 &lt;/p&gt;
+$$b$$&lt;p&gt; 分别表示权重和偏置。由于卷积操作可以高效地转化为矩阵乘法，因此我们在线性计算中仅考虑公式 (1)。&lt;/p&gt;
 &lt;h4 id=&#34;批归一化&#34;&gt;&lt;strong&gt;批归一化&lt;/strong&gt;
-&lt;/h4&gt;$$
+&lt;/h4&gt;&lt;p&gt;在线性计算之后，应用批归一化（Batch Normalization）以解决内部协变量移位问题。在推理阶段，批归一化的参数是固定的，可以被视为一种线性操作，其表达式为：
+&lt;/p&gt;
+$$
 u = c z + b \tag{2}
-$$$$c$$$$b$$&lt;p&gt; 是经过充分训练的固定参数。&lt;/p&gt;
+$$&lt;p&gt;
+其中，&lt;/p&gt;
+$$c$$&lt;p&gt; 和 &lt;/p&gt;
+$$b$$&lt;p&gt; 是经过充分训练的固定参数。&lt;/p&gt;
 &lt;h4 id=&#34;激活函数&#34;&gt;&lt;strong&gt;激活函数&lt;/strong&gt;
-&lt;/h4&gt;$$
+&lt;/h4&gt;&lt;p&gt;在接收到批归一化的输出后，激活函数用于选择性地激活神经元。在这里，采用广泛使用的 ReLU（修正线性单元），其表达式为：
+&lt;/p&gt;
+$$
 t = \text{ReLU}(u) \tag{3}
 $$&lt;h4 id=&#34;池化&#34;&gt;&lt;strong&gt;池化&lt;/strong&gt;
-&lt;/h4&gt;$$\text{Avg}$$$$
+&lt;/h4&gt;&lt;p&gt;池化层可视为一种下采样操作。在这里，采用平均池化（Average Pooling），它将输入划分为矩形区域，并计算每个区域的平均值。设 &lt;/p&gt;
+$$\text{Avg}$$&lt;p&gt; 表示平均操作，则池化过程可表示为：
+&lt;/p&gt;
+$$
 y = \text{Avg}(t) \tag{4}
 $$&lt;p&gt;随后，池化层的输出被送入下一层进行后续计算。最终，DNN 网络输出一个对数值（logit），并通过 &lt;strong&gt;softmax&lt;/strong&gt; 函数生成类别预测概率。&lt;/p&gt;
 &lt;h2 id=&#34;系统模型与设计目标&#34;&gt;系统模型与设计目标
@@ -80,14 +96,22 @@ $$&lt;p&gt;随后，池化层的输出被送入下一层进行后续计算。最
 &lt;/ol&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;系统模型&#34;&gt;系统模型
-&lt;/h3&gt;$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt; 作为代理层，其灵感来源于&lt;strong&gt;代理模式&lt;/strong&gt;【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;所提出的隐私保护且可验证的深度学习推理框架（PVDLI）如&lt;strong&gt;图2&lt;/strong&gt;所示。可以看到，我们引入了 &lt;strong&gt;N+1 个节点&lt;/strong&gt; &lt;/p&gt;
+$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt; 作为代理层，其灵感来源于&lt;strong&gt;代理模式&lt;/strong&gt;【11】。在软件设计模式中，代理【11】是一个连接客户端和实际服务对象的中介对象。类似地，所提出的代理层提供逻辑操作的访问，同时隐藏输入数据和模型参数的信息。&lt;/p&gt;
 &lt;p&gt;框架的伪代码见&lt;strong&gt;算法1&lt;/strong&gt;。具体而言：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-$$F$$$$H = \{h_1, h_2, \dots, h_M\}$$$$M$$&lt;p&gt; 是网络中的总参数数量。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;模型所有者（O）&lt;/strong&gt;&lt;br&gt;
+持有一个经过充分训练的深度学习模型 &lt;/p&gt;
+$$F$$&lt;p&gt;，该模型由参数集合 &lt;/p&gt;
+$$H = \{h_1, h_2, \dots, h_M\}$$&lt;p&gt; 组成，其中 &lt;/p&gt;
+$$M$$&lt;p&gt; 是网络中的总参数数量。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$x$$$$F$$&lt;p&gt; 中进行推理。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;用户（U）&lt;/strong&gt;&lt;br&gt;
+希望将一个私有输入 &lt;/p&gt;
+$$x$$&lt;p&gt; 输入到模型 &lt;/p&gt;
+$$F$$&lt;p&gt; 中进行推理。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;代理层（E）&lt;/strong&gt;&lt;/p&gt;
@@ -141,43 +165,154 @@ $$R&#39; = \{R_i \mid i \in \{1, 2, \dots, N\} \setminus r_v\}$$ （可验证结
 &lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;结束。&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
-$$O$$$$F$$$$H$$$$N$$&lt;p&gt; 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。&lt;/p&gt;
-$$U$$$$x$$$$X$$$$U$$$$X$$$$N$$&lt;p&gt; 份，并分发到代理层以保护输入隐私。&lt;/p&gt;
-$$H^{(i)}$$$$X^{(i)}$$$$E_i$$$$L^{(i)}$$$$U$$$$U$$$$R$$$$U$$$$U$$$$x$$$$y$$&lt;p&gt;；否则，拒绝结果并输出错误。&lt;/p&gt;
+&lt;p&gt;其次，模型所有者 &lt;/p&gt;
+$$O$$&lt;p&gt; 使用多项式来近似训练好的模型 &lt;/p&gt;
+$$F$$&lt;p&gt; 的激活函数。为了保护模型参数，模型所有者将模型参数 &lt;/p&gt;
+$$H$$&lt;p&gt; 分为 &lt;/p&gt;
+$$N$$&lt;p&gt; 份，并将这些份额分发到代理层。这些模型参数的份额是通过一种简单而有效的秘密共享方案【34】生成的。&lt;/p&gt;
+&lt;p&gt;为了提供可验证性，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 将若干标记的可验证数据与输入数据 &lt;/p&gt;
+$$x$$&lt;p&gt; 混合，生成混合数据 &lt;/p&gt;
+$$X$$&lt;p&gt;。同样，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 也将混合数据 &lt;/p&gt;
+$$X$$&lt;p&gt; 分为 &lt;/p&gt;
+$$N$$&lt;p&gt; 份，并分发到代理层以保护输入隐私。&lt;/p&gt;
+&lt;p&gt;在接收到模型参数的份额 &lt;/p&gt;
+$$H^{(i)}$$&lt;p&gt; 和输入数据的份额 &lt;/p&gt;
+$$X^{(i)}$$&lt;p&gt; 后，代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 共同进行安全的矩阵计算。具体细节将在后续小节中介绍。最终，代理层中的每个计算节点输出并返回其对数值（logit）&lt;/p&gt;
+$$L^{(i)}$$&lt;p&gt; 给用户 &lt;/p&gt;
+$$U$$&lt;p&gt;。用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 聚合这些对数值以获得结果 &lt;/p&gt;
+$$R$$&lt;p&gt;。最后，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 验证标记的可验证数据的正确性。如果通过验证，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 输出输入数据 &lt;/p&gt;
+$$x$$&lt;p&gt; 的预测结果 &lt;/p&gt;
+$$y$$&lt;p&gt;；否则，拒绝结果并输出错误。&lt;/p&gt;
 &lt;h3 id=&#34;提出的-pvdli-框架包含以下六个关键模块&#34;&gt;提出的 PVDLI 框架包含以下六个关键模块：
 &lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;
-$$O$$$$U$$$$N+1$$$$E = \{E_0, E_1, \dots, E_N\}$$$$U$$$$D$$&lt;p&gt;，用于后续验证。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{Init}(N) \to (E, D):$$&lt;/strong&gt;&lt;br&gt;
+模型所有者 &lt;/p&gt;
+$$O$$&lt;p&gt; 与用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 协商，选择一个由 &lt;/p&gt;
+$$N+1$$&lt;p&gt; 个节点组成的代理层 &lt;/p&gt;
+$$E = \{E_0, E_1, \dots, E_N\}$$&lt;p&gt;，用于后续的协作隐私保护计算。用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 生成一个可验证数据集 &lt;/p&gt;
+$$D$$&lt;p&gt;，用于后续验证。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$O$$$$F$$$$k$$$$N$$&lt;p&gt; 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{DeployModel}(F, k, N) \to H^{(1)}, \dots, H^{(N)}:$$&lt;/strong&gt;&lt;br&gt;
+模型所有者 &lt;/p&gt;
+$$O$$&lt;p&gt; 使用多项式近似模型 &lt;/p&gt;
+$$F$$&lt;p&gt; 的激活函数。随后，输入安全参数 &lt;/p&gt;
+$$k$$&lt;p&gt;，模型所有者将近似模型的参数分为 &lt;/p&gt;
+$$N$$&lt;p&gt; 份，并将它们分发给代理层中的计算节点。关于近似和份额分发的详细内容将在后续部分提供。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$k$$$$U$$$$D$$$$V$$$$r_v$$$$x$$$$X$$$$X$$$$N$$$$X^{(i)}$$$$E_i$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{GenSplitData}(x, D, k, N) \to X^{(1)}, \dots, X^{(N)}, V, r_v:$$&lt;/strong&gt;&lt;br&gt;
+输入安全参数 &lt;/p&gt;
+$$k$$&lt;p&gt;，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 从可验证数据集 &lt;/p&gt;
+$$D$$&lt;p&gt; 中随机选择若干可验证数据，矩阵 &lt;/p&gt;
+$$V$$&lt;p&gt; 表示这些可验证数据的标签。然后，用户选择一个随机密钥 &lt;/p&gt;
+$$r_v$$&lt;p&gt;，利用该密钥将可验证数据与输入数据 &lt;/p&gt;
+$$x$$&lt;p&gt; 结合，生成混合数据 &lt;/p&gt;
+$$X$$&lt;p&gt;。最后，用户将混合数据 &lt;/p&gt;
+$$X$$&lt;p&gt; 分为 &lt;/p&gt;
+$$N$$&lt;p&gt; 份，并将份额 &lt;/p&gt;
+$$X^{(i)}$$&lt;p&gt; 分发给代理层中的计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$X^{(i)}$$$$H^{(i)}$$$$E_i$$$$1 \leq i \leq N$$$$E_i$$$$L^{(i)}$$$$U$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{Compute}(H^{(1)}, \dots, H^{(N)}, X^{(1)}, \dots, X^{(N)}) \to L^{(1)}, \dots, L^{(N)}:$$&lt;/strong&gt;&lt;br&gt;
+在接收到输入份额 &lt;/p&gt;
+$$X^{(i)}$$&lt;p&gt; 和模型参数份额 &lt;/p&gt;
+$$H^{(i)}$$&lt;p&gt; 后，代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 执行深度学习模型的特定线性操作（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。最终，计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 输出对数值 &lt;/p&gt;
+$$L^{(i)}$$&lt;p&gt; 并将其返回给用户 &lt;/p&gt;
+$$U$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$L^{(1)}, \dots, L^{(N)}$$$$U$$$$X$$$$F$$$$R$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{Aggregation}(L^{(1)}, \dots, L^{(N)}) \to R:$$&lt;/strong&gt;&lt;br&gt;
+在接收到来自代理层的所有对数值 &lt;/p&gt;
+$$L^{(1)}, \dots, L^{(N)}$$&lt;p&gt; 后，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 聚合这些对数值以获得混合数据 &lt;/p&gt;
+$$X$$&lt;p&gt; 在深度学习模型 &lt;/p&gt;
+$$F$$&lt;p&gt; 上的结果 &lt;/p&gt;
+$$R$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-$$R$$$$r_v$$$$U$$$$V$$$$x$$$$y$$$$\perp$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;$$\text{Verify}(R, V, r_v) \to y \text{ or } \perp:$$&lt;/strong&gt;&lt;br&gt;
+输入预测结果 &lt;/p&gt;
+$$R$$&lt;p&gt; 和密钥 &lt;/p&gt;
+$$r_v$$&lt;p&gt;，用户 &lt;/p&gt;
+$$U$$&lt;p&gt; 检查可验证数据的预测结果是否与标签 &lt;/p&gt;
+$$V$$&lt;p&gt; 匹配。如果验证成功，提取并输出输入数据 &lt;/p&gt;
+$$x$$&lt;p&gt; 的预测结果 &lt;/p&gt;
+$$y$$&lt;p&gt;；否则，拒绝结果并输出错误 &lt;/p&gt;
+$$\perp$$&lt;p&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h2 id=&#34;基于秘密共享的安全子协议&#34;&gt;基于秘密共享的安全子协议
 &lt;/h2&gt;&lt;p&gt;本质上，深度学习推理由一系列数学操作完成。在我们提出的框架中，为了避免输入数据和模型参数的泄露，所有操作必须以隐私保护的方式进行。基于秘密共享方案，我们设计并实现了三个安全计算子协议：安全加法协议、安全除法协议和安全矩阵乘法协议。&lt;/p&gt;
 &lt;h4 id=&#34;安全加法协议secadd&#34;&gt;&lt;strong&gt;安全加法协议（SecAdd）：&lt;/strong&gt;
-&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$&lt;p&gt;。在执行过程中，不会交换任何中间值。&lt;/p&gt;
-$$E_i$$$$A$$$$B$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$C^{(i)}$$$$E_0$$&lt;p&gt; 不参与计算。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;给定两个输入矩阵 &lt;/p&gt;
+$$A \in \mathbb{Z}_p^{u \times n}$$&lt;p&gt; 和 &lt;/p&gt;
+$$B \in \mathbb{Z}_p^{v \times n}$$&lt;p&gt; 的随机份额 &lt;/p&gt;
+$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$&lt;p&gt;，代理层执行安全加法并输出份额 &lt;/p&gt;
+$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$&lt;p&gt;，满足 &lt;/p&gt;
+$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A + B$$&lt;p&gt;。在执行过程中，不会交换任何中间值。&lt;/p&gt;
+&lt;p&gt;具体来说，由于秘密共享的加法性质，可以自然地以安全的方式进行加法操作。代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 持有一对来自输入矩阵 &lt;/p&gt;
+$$A$$&lt;p&gt; 和 &lt;/p&gt;
+$$B$$&lt;p&gt; 的份额 &lt;/p&gt;
+$$A^{(i)}, B^{(i)}$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。然后，&lt;/p&gt;
+$$E_i$$&lt;p&gt; 将其份额相加并输出结果 &lt;/p&gt;
+$$C^{(i)}$$&lt;p&gt;。需要注意的是，辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt; 不参与计算。&lt;/p&gt;
 &lt;h4 id=&#34;安全除法协议secdiv&#34;&gt;&lt;strong&gt;安全除法协议（SecDiv）：&lt;/strong&gt;
-&lt;/h4&gt;$$k \in \mathbb{Z}_p$$$$A \in \mathbb{Z}_p^{u \times n}$$$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$&lt;p&gt;。&lt;/p&gt;
-$$E_i$$$$A$$$$A^{(i)}$$$$1 \leq i \leq N$$$$E_i$$$$k$$$$C^{(i)}$$&lt;p&gt;。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;给定一个除数 &lt;/p&gt;
+$$k \in \mathbb{Z}_p$$&lt;p&gt; 和输入矩阵 &lt;/p&gt;
+$$A \in \mathbb{Z}_p^{u \times n}$$&lt;p&gt; 的随机份额 &lt;/p&gt;
+$$A^{(1)}, A^{(2)}, \dots, A^{(N)}$$&lt;p&gt;，代理层执行安全除法并输出份额 &lt;/p&gt;
+$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$&lt;p&gt;，满足 &lt;/p&gt;
+$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A / k$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;这里的除法是逐元素（element-wise）操作。具体来说，每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 持有输入矩阵 &lt;/p&gt;
+$$A$$&lt;p&gt; 的份额 &lt;/p&gt;
+$$A^{(i)}$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。然后，&lt;/p&gt;
+$$E_i$$&lt;p&gt; 将其份额与因子 &lt;/p&gt;
+$$k$$&lt;p&gt; 相除并输出结果 &lt;/p&gt;
+$$C^{(i)}$$&lt;p&gt;。&lt;/p&gt;
 &lt;h4 id=&#34;安全矩阵乘法协议secmul&#34;&gt;&lt;strong&gt;安全矩阵乘法协议（SecMul）：&lt;/strong&gt;
-&lt;/h4&gt;$$A \in \mathbb{Z}_p^{u \times n}$$$$B \in \mathbb{Z}_p^{v \times n}$$$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$&lt;p&gt;。&lt;/p&gt;
+&lt;/h4&gt;&lt;p&gt;给定两个输入矩阵 &lt;/p&gt;
+$$A \in \mathbb{Z}_p^{u \times n}$$&lt;p&gt; 和 &lt;/p&gt;
+$$B \in \mathbb{Z}_p^{v \times n}$$&lt;p&gt; 的随机份额 &lt;/p&gt;
+$$A^{(1)}, B^{(1)}, A^{(2)}, B^{(2)}, \dots, A^{(N)}, B^{(N)}$$&lt;p&gt;，代理层执行安全乘法并输出份额 &lt;/p&gt;
+$$C^{(1)}, C^{(2)}, \dots, C^{(N)}$$&lt;p&gt;，满足 &lt;/p&gt;
+$$C^{(1)} + C^{(2)} + \dots + C^{(N)} = A \cdot B$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;需要注意，输入和模型参数的任何份额都不会发送到辅助节点 &lt;/p&gt;
 $$E_0$$&lt;p&gt;。辅助节点仅与计算节点通信，用于收集和分发乘法过程中的临时结果。&lt;/p&gt;
-$$E_i$$$$A^{(i)}, B^{(i)}$$$$1 \leq i \leq N$$$$A$$$$B$$$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$$$O = P \cdot Q$$&lt;p&gt;。&lt;/p&gt;
-$$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E_0$$&lt;p&gt;）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。&lt;/p&gt;
+&lt;p&gt;具体而言，每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 持有来自两个输入矩阵的份额 &lt;/p&gt;
+$$A^{(i)}, B^{(i)}$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。由于秘密共享方案不直接支持乘法操作，代理层需要额外的辅助随机矩阵来以安全的方式完成矩阵 &lt;/p&gt;
+$$A$$&lt;p&gt; 和 &lt;/p&gt;
+$$B$$&lt;p&gt; 的乘积。假设存在随机矩阵 &lt;/p&gt;
+$$P \in \mathbb{Z}_p^{u \times n}, Q \in \mathbb{Z}_p^{n \times v}, O \in \mathbb{Z}_p^{u \times v}$$&lt;p&gt;，且满足 &lt;/p&gt;
+$$O = P \cdot Q$$&lt;p&gt;。&lt;/p&gt;
+&lt;p&gt;代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 只能访问矩阵 &lt;/p&gt;
+$$P, Q, O$$&lt;p&gt; 的份额 &lt;/p&gt;
+$$P^{(i)}, Q^{(i)}, O^{(i)}$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。但是，矩阵 &lt;/p&gt;
+$$P, Q, O$$&lt;p&gt; 对代理层中的所有节点（包括辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt;）都是保密的。随机矩阵的份额可以通过生成份额的算法【8】轻松生成。这些辅助随机矩阵可以在离线阶段高效地准备，这意味着通信和计算成本不会增加。&lt;/p&gt;
 &lt;h3 id=&#34;安全矩阵乘法过程&#34;&gt;安全矩阵乘法过程
 &lt;/h3&gt;&lt;p&gt;如图 3 所示，该协议包含以下四个部分：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/%E5%9F%BA%E4%BA%8E%E7%A7%98%E5%AF%86%E5%85%B1%E4%BA%AB%E7%9A%84%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E5%92%8C%E5%8F%AF%E9%AA%8C%E8%AF%81%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%8E%A8%E7%90%86/image-20241117192123050.png&#34;
@@ -201,25 +336,62 @@ $$E_i$$$$P, Q, O$$$$P^{(i)}, Q^{(i)}, O^{(i)}$$$$1 \leq i \leq N$$$$P, Q, O$$$$E
 &lt;/ol&gt;
 &lt;hr&gt;
 &lt;h4 id=&#34;对输入矩阵份额进行掩码处理-mask&#34;&gt;&lt;strong&gt;对输入矩阵份额进行掩码处理 (Mask):&lt;/strong&gt;
-&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{A^{(i)}, B^{(i)}, P^{(i)}, Q^{(i)}\}_{i=1}^{N} \to \{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;br&gt;
+代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）对输入矩阵份额进行以下掩码操作：&lt;br&gt;
+&lt;/p&gt;
+$$
 E^{(i)} = A^{(i)} - P^{(i)} \quad;\quad F^{(i)} = B^{(i)} - Q^{(i)}  
-$$$$E_i$$$$E^{(i)}, F^{(i)}$$$$E_0$$$$1 \leq i \leq N$$&lt;p&gt;。&lt;/p&gt;
+$$&lt;p&gt;然后，计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 将份额 &lt;/p&gt;
+$$E^{(i)}, F^{(i)}$$&lt;p&gt; 发送到辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt;，其中 &lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h4 id=&#34;重构并分割结果-split&#34;&gt;&lt;strong&gt;重构并分割结果 (Split):&lt;/strong&gt;
-&lt;/h4&gt;$$E_0$$$$N$$$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$$$E$$$$F$$$$
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N} \to \{E, F, G^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;br&gt;
+辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt; 接收到来自代理层中 &lt;/p&gt;
+$$N$$&lt;p&gt; 个计算节点的份额 &lt;/p&gt;
+$$\{E^{(i)}, F^{(i)}\}_{i=1}^{N}$$&lt;p&gt; 后，先将这些份额聚合以重构矩阵 &lt;/p&gt;
+$$E$$&lt;p&gt; 和 &lt;/p&gt;
+$$F$$&lt;p&gt;，并计算它们的乘积：&lt;br&gt;
+&lt;/p&gt;
+$$
 E = \sum_{i=1}^{N} E^{(i)} \quad;\quad F = \sum_{i=1}^{N} F^{(i)} \quad;\quad G = E \cdot F  
-$$$$E_0$$$$G$$$$\{G^{(i)}\}_{i=1}^{N}$$$$E_0$$$$E, F, G^{(i)}$$$$E_i$$$$1 \leq i \leq N$$&lt;p&gt;）。&lt;/p&gt;
+$$&lt;p&gt;接着，辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt; 使用加法秘密共享方案将乘积 &lt;/p&gt;
+$$G$$&lt;p&gt; 分割为份额 &lt;/p&gt;
+$$\{G^{(i)}\}_{i=1}^{N}$$&lt;p&gt;。辅助节点 &lt;/p&gt;
+$$E_0$$&lt;p&gt; 将 &lt;/p&gt;
+$$E, F, G^{(i)}$$&lt;p&gt; 返回给代理层中的计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h4 id=&#34;计算最终份额-cal&#34;&gt;&lt;strong&gt;计算最终份额 (Cal):&lt;/strong&gt;
-&lt;/h4&gt;$$E_i$$$$1 \leq i \leq N$$$$E, F, G^{(i)}$$$$
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;$$\{E, F, G^{(i)}, P^{(i)}, Q^{(i)}, O^{(i)}\}_{i=1}^{N} \to \{C^{(i)}\}_{i=1}^{N}$$&lt;/strong&gt;&lt;br&gt;
+代理层中的每个计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt;（&lt;/p&gt;
+$$1 \leq i \leq N$$&lt;p&gt;）收到 &lt;/p&gt;
+$$E, F, G^{(i)}$$&lt;p&gt; 后，计算：&lt;br&gt;
+&lt;/p&gt;
+$$
 S^{(i)} = E \cdot Q^{(i)} \quad;\quad T^{(i)} = P^{(i)} \cdot F  
-$$$$E_i$$$$
+$$&lt;p&gt;然后，计算节点 &lt;/p&gt;
+$$E_i$$&lt;p&gt; 输出矩阵份额：&lt;br&gt;
+&lt;/p&gt;
+$$
 C^{(i)} = G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}  
-$$$$
+$$&lt;p&gt;所有份额满足以下关系：&lt;br&gt;
+&lt;/p&gt;
+$$
 C = \sum_{i=1}^{N} C^{(i)} = A \cdot B  
 $$&lt;hr&gt;
 &lt;h4 id=&#34;安全矩阵乘法的正确性证明&#34;&gt;&lt;strong&gt;安全矩阵乘法的正确性证明：&lt;/strong&gt;
-&lt;/h4&gt;$$
+&lt;/h4&gt;&lt;p&gt;通过以下公式可证明安全矩阵乘法的正确性：&lt;br&gt;
+&lt;/p&gt;
+$$
 C = \sum_{i=1}^{N} C^{(i)} = \sum_{i=1}^{N} (G^{(i)} + S^{(i)} + T^{(i)} + O^{(i)}) = G + S + T + O  
 $$$$
 = (E \cdot F) + (E \cdot Q) + (P \cdot F) + (P \cdot Q)  
@@ -227,19 +399,24 @@ $$$$
 = (A - P) \cdot (B - Q) + (A - P) \cdot Q + P \cdot (B - Q) + P \cdot Q  
 $$$$
 = A \cdot B
-$$$$P, Q, O$$&lt;p&gt; 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。&lt;/p&gt;
+$$&lt;p&gt;与现有的安全矩阵乘法协议 [35, 16, 22] 相比，我们提出的子协议能够在多于两个参与方的情况下安全地支持矩阵乘法，即使在合谋设置下也能保证安全性。具体而言，由于采用了 N 出 N 的秘密共享方案，即使部分参与方之间存在合谋，我们提出的协议仍能有效保护输入和输出的隐私。此外，我们提出的协议还能够支持低通信成本的安全矩阵乘法。由于随机掩码矩阵 &lt;/p&gt;
+$$P, Q, O$$&lt;p&gt; 可以离线准备并重复使用，这降低了所有计算方之间的通信成本。&lt;/p&gt;
 &lt;h2 id=&#34;提出的框架&#34;&gt;提出的框架
 &lt;/h2&gt;&lt;h3 id=&#34;initn--e-d&#34;&gt;Init（N） → （E; D)
 &lt;/h3&gt;&lt;p&gt;首先，模型所有者O与用户U协商，选择一个包含N + 1个节点的代理层，其中包括一个辅助节点E₀和N个计算节点E₁, &amp;hellip;, EN进行后续的协同计算。在这里，合理的假设是N ≥ 2，这是由于所采用的秘密共享方案提出的要求。需要注意的是，节点数量不会影响推理的准确性，因为所有节点只涉及安全子协议，这些协议已经被证明与原始计算等效。然而，节点数量确实会影响隐私保护的水平。具体来说，节点数量越多，当节点发生串通时，隐私保护的级别越高。更多的安全性分析将在第6节中提供。
 接下来，为了提供可验证性，用户U生成一个可验证的数据集D = {d₁, &amp;hellip;, dL}。这里，可验证数据集可以离线生成并且可重复使用。每个数据项dᵢ的要求是，它的推理结果（标签）可以很容易地估计或获得。由于通过秘密共享方案可以很好地保护输入数据的隐私，从代理层的角度来看，所有输入数据都是随机值。因此，代理层无法区分可验证数据dᵢ和输入x。选择可验证数据dᵢ时有很多选择；它可以是标记的测试数据，甚至是可以轻松验证的虚拟数据（噪声或无意义的数据）。&lt;/p&gt;
 &lt;h3 id=&#34;deploymodelðf-k-nþ--h1--hm&#34;&gt;&lt;strong&gt;DeployModelðF; k; NÞ → H(1), &amp;hellip;, H(M)&lt;/strong&gt;
-&lt;/h3&gt;$$f(x) = a_0 + a_1x + ... + a_d x^d$$&lt;p&gt;&lt;br&gt;
+&lt;/h3&gt;&lt;p&gt;在经过充分训练的模型F、安全参数k和计算节点数N的支持下，该模块使用多项式来近似模型F的激活函数，并将模型参数分割成N个份额。由于激活函数通常是非线性运算，这些运算无法通过秘密共享方案安全地执行。尽管许多研究专注于探讨如何安全地计算非线性运算，如安全除法、安全比较和安全指数运算，但高通信成本和低效率使得这些方法在实际应用中不切实际。为了解决这些挑战，我们用多项式替代激活函数，以便于后续的安全计算。具体来说，模型所有者O采用度为d的多项式来近似训练好的模型F的所有激活函数。选择多项式的度d的标准将在第7节中讨论。多项式$f(x)$可以表示为：&lt;br&gt;
+&lt;/p&gt;
+$$f(x) = a_0 + a_1x + ... + a_d x^d$$&lt;p&gt;&lt;br&gt;
 其中，所有的系数$a_0, a_1, &amp;hellip;, a_d$在多项式中都是可训练的。替代后，模型所有者O继续通过少量迭代微调模型F，以获得新的近似模型F。令$H = {h_1, &amp;hellip;, h_M}$表示深度学习模型F中所有权重变量的平坦化向量，其中M表示模型中的参数数量。为了保护模型参数$H$的隐私，我们提出使用一个简单而有效的N-out-of-N加法秘密共享方案[34]。具体来说，模型所有者O将模型参数$H$分割成N个份额，并将份额$H(i)$分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。通过这种方式，代理层中的每个计算节点只拥有模型参数$H$的一个份额。具体地，生成参数份额的过程包括以下两个部分：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Setup 1k → Ko&lt;/strong&gt;: 给定安全参数k，模型所有者O从指定的密钥空间${0, 1}^k$生成一个秘密密钥Ko。加密算法的资源需求和攻击者破解安全的概率可以通过安全参数k来表达。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
+&lt;p&gt;&lt;strong&gt;GenShares(Ko; H; N) → H(1), &amp;hellip;, H(N)&lt;/strong&gt;: 模型所有者O利用秘密密钥Ko生成伪随机数序列，从而将模型参数H分割成N个份额。具体来说，输入种子Ko后，采用一个前向安全伪随机数生成器（PRNG）[1]生成伪随机序列$ro_1 = {r_i}_{i=1}^{N-1}$，其中$t = M \times (N-1)$，且$r_i \in {0, 1}$。然后，模型所有者使用这个序列$ro$通过生成算法[8]来生成模型参数$H$的份额，表示为Alg。该过程可以表示为：&lt;br&gt;
+&lt;/p&gt;
 $$Alg(H; ro; N) → H(1), ..., H(N) \in \mathbb{Z}_M^N$$&lt;p&gt;&lt;br&gt;
 最后，模型所有者O将份额$H(i)$分别分配给代理层中的计算节点$E_i$，其中$1 \leq i \leq N$。&lt;/p&gt;
 &lt;/li&gt;

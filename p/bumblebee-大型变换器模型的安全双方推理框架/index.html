@@ -384,6 +384,9 @@
 <p><strong>高效的线性函数协议</strong>
 我们提出了一种叫做“不可知线性变换”（Oblivious Linear Transformation，OLT）的原语。我们将OLT描述为一个双方协议，其中两方分别提供私密矩阵 $Q \in \mathbb{Z}_2^{* 2l}$ 和 $V \in \mathbb{Z}_2^{* 2l}$，并生成它们之间的共享 $QV$。使用OLT，我们可以在模 $2l$ 的环上实现两个加法共享矩阵的乘法。基于同态加密（HE）的方法[36]、[54]提供了一个很好的起点。这些方法的一个重要局限性是显著的通信开销，这来自于输出密文的“稀疏”格式。更具体地说，[36]、[54]中的每个输出密文加密了一个长向量。然而，乘法结果只需要该向量中的一小部分元素。为了进行解密，仍然需要传输整个加密向量。为了克服这一不足，我们提出了一种压缩过程，通过同态方式将加密向量中不必要的条目归零，从而将多个“稀疏”向量合并为一个“密集”向量。因此，通信开销减少，因为需要发送的密文数量变少。与之前的密文压缩方法[13]相比，我们的压缩过程快了大约50倍。总体而言，我们观察到与[36]、[54]相比，通信成本减少了80%-90%。</p>
 <p>除了矩阵乘法，点对点乘法 $x_0 \cdot y_0, x_1 \cdot y_1, \dots$ 也是变换器推理中的一个重要计算。许多基于同态加密的点对点乘法协议[18]、[63]需要设置一个相对较大的明文模数$t$。例如，[18]、[63]都设置HE参数 $t &gt; 22l+40$ 来加密来自 $\mathbb{Z}_2^l$ 的值。在这项工作中，我们提出了一种模数提升函数，用于统一底层HE的秘密共享模数和明文模数。提升函数使我们能够在HE密文上执行模 $2l$ 的算术运算。这使我们能够选择较小的HE参数，即 $t \approx 22l$。我们的实验结果表明，在[63]中应用提升函数后，性能提高了1.3倍。</p>
+<p><strong>为变换器中的激活函数构建高效准确协议的框架</strong>
+我们首先提出了一个通用框架，用于构建高效且精确的2PC协议，适用于许多变换器模型中使用的激活函数。这些激活函数具有一个共同的特性：在靠近原点的短区间内它们相对平滑，且在两侧几乎是线性的。考虑到这一特性，我们提出使用一个或两个低度多项式来逼近激活函数在短区间内的表现，并在两侧使用恒等函数。例如，我们建议用两个低度的多项式 $P(x)$ 和 $Q(x)$ 来逼近SiLU函数，这两个多项式最小化最小二乘误差，如下所示：
+</p>
 $$
 \text{SiLU}(x) \approx 
 \begin{cases} 
@@ -405,6 +408,8 @@ $$<p>
 <p><strong>A. 符号约定</strong></p>
 <p>我们用 $x = y$ 表示 $x$ 等于 $y$，用 $x := y$ 表示将 $y$ 的值赋给变量 $x$。对于一个交互协议 $\Pi$，我们用 $JxK \gets \Pi$ 表示协议的执行。我们用 $[n]$ 来表示集合 ${0, \dots, n - 1}$，其中 $n \in \mathbb{N}$。对于一个集合 $D$，$x \in R^D$ 表示 $x$ 是从 $D$ 中均匀随机采样的。我们使用 $\lceil \cdot \rceil$、$\lfloor \cdot \rfloor$ 和 $\lfloor \cdot \rceil$ 来分别表示天花板函数、地板函数和四舍五入函数。逻辑与和异或分别表示为 $\land$ 和 $\oplus$。令 $1{P}$ 表示指示函数，当谓词 $P$ 为真时，$1{P}$ 为 1，$P$ 为假时，$1{P}$ 为 0。我们用带有“帽”符号的小写字母，例如 $\hat{a}$，来表示多项式，用 $\hat{a}[j]$ 表示多项式 $\hat{a}$ 的第 $j$ 个系数。我们用点符号 $\cdot$，例如 $\hat{a} \cdot \hat{b}$，来表示多项式的乘法。我们用 $Z_q = Z \cap [0, q)$ 来表示 $q \geq 2$ 时的整数模 $q$。同余式 $x \equiv y \mod 2^l$ 将简写为 $x \equiv_l y$。对于一个二次幂数 $N$，和 $q &gt; 0$，我们写 $R_q$ 来表示整数多项式环 $R_q = Z_q[X] / (X^N + 1)$。我们用粗体字母如 $\mathbf{a}$、$\mathbf{M}$ 来表示向量和矩阵，用 $a[j]$ 来表示向量 $\mathbf{a}$ 的第 $j$ 个分量，用 $M[j, i]$ 来表示矩阵 $\mathbf{M}$ 的 $(j, i)$ 项。Hadamard 乘积表示为 $\mathbf{a} \odot \mathbf{b}$。</p>
 <p><strong>B. 加密原语</strong></p>
+<p>1.<strong>加法秘密共享</strong>：本文中我们使用 2-out-of-2 加法秘密共享方案，基于环 $Z_{2^l}$。一个 $l$ 位（$l \geq 2$）的值 $x$ 被加法共享为 $JxK_0$ 和 $JxK_1$，其中 $JxK_l$ 是由参与方 $P_l$ 持有的 $x$ 的随机份额。我们可以将两个共享值的乘法写作：
+</p>
 $$
 JxK⋅JyK≡l(JxK0+JxK1)⋅(JyK0+JyK1)≡lJxK0JyK0+JxK1JyK1+JxK0JyK1+JxK1JyK0JxK \cdot JyK \equiv_l (JxK_0 + JxK_1) \cdot (JyK_0 + JyK_1)\equiv_l JxK_0JyK_0 + JxK_1JyK_1 + JxK_0JyK_1 + JxK_1JyK_0
 $$<p>
@@ -460,9 +465,15 @@ qˆ 和 vˆ 的所有其他系数设置为0。
 <p>最终版本。我们现在展示图6中的优化版本，它将图4中的复杂度从 O(r · 2r) 次自同构操作降低到了 O(2r) 次自同构操作。我们将展示这个优化版本的直觉。直观上，利用自同构函数的双线性性质，将两个具有相同索引的自同构操作合并为一个自同构操作是合理的。即，对于任何有效的索引 g，两个自同构操作的和 Auto(ˆa, g) + Auto(ˆb, g) 等于对多项式和的自同构操作。然而，应用相同自同构索引的多项式在求和步骤（图4的步骤8）之前，需要先进行不同单位的右移（即图4的步骤6）。为了解决这个问题，我们利用以下方程。即，当 ˆb[i] = 0 对于所有 i ≠ 0 mod 2j 时，</p>
 $$
 Auto(ˆa,N/2j+1)+Auto(ˆb,N/2j+1)⋅X2j=Auto(ˆa−ˆb⋅X2j,N/2j+1)Auto(ˆa, N/2j + 1) + Auto(ˆb, N/2j + 1) \cdot X^{2j} = Auto(ˆa - ˆb \cdot X^{2j}, N/2j + 1)
-$$$$
+$$<p>
+回想一下，自同构操作 Auto(·, N/2j + 1) 会翻转位于 2j 的奇数倍位置的系数，而保持偶数倍位置的系数不变。同时，通过乘以 $X^{2j}$ 对 ˆb 进行右移，只是改变了 ˆb 的系数位置的奇偶性——从 2j 的奇数倍位置移到偶数倍位置，反之亦然。因此，自同构-然后-右移的模式
+</p>
+$$
 Auto(ˆb,N/2j+1)⋅X2jAuto(ˆb, N/2j + 1) \cdot X^{2j}
-$$$$
+$$<p>
+等价于取反-右移-然后自同构的方式
+</p>
+$$
 Auto(−ˆb⋅X2j,N/2j+1)Auto(-ˆb \cdot X^{2j}, N/2j + 1)
 $$<p>
 这样，我们就可以利用双线性特性，将具有相同索引的两个自同构操作合并为一个自同构操作。</p>
@@ -473,37 +484,77 @@ $$<p>
 <p>复杂度。根据我们的经验结果，选择 mw ≈ √N 是一个可行的选择。然后，算法1中的协议需要大约 O(kn/√N) 次同态自同构操作用于密文交织。相比之下，KRDY+ 基准协议需要 O(kn) 次同态自同构操作。举个例子，设 mw = 26 且 N = 213。在这种设置下，我们协议的密文压缩时间大约是 KRDY+ 密文压缩时间的 1/26 ≈ 1.6%。KRDY+ 和我们协议的通信开销都是 O(kn/N) 个密文。请注意，BOLT 的主模OLT可能根据矩阵维度 [58] 需要更少的同态自同构操作 O(pk²m²n/N²)。</p>
 <p>安全性。我们仅增加了一个密文压缩步骤来减少通信开销，我们发送的信息是 KRDY 协议的子集，因此我们的安全级别与其相同。定理1的证明参考了 [54]，[36]。</p>
 <p><strong>算法 1 提议的不可知线性变换 \( $ \Pi_{OLT} $\)</strong></p>
-$$ Q \in \mathbb{Z}^{k \times m} $$$$ 2^l $$$$ V \in \mathbb{Z}^{m \times n} $$$$ 2^l $$<p>。</p>
-$$ JUK $$$$ U \equiv_l Q \cdot V $$$$ pp = (\text{HE.pp}, pk, (kw, mw, nw)) $$<ul>
+<p><strong>输入：</strong><br>
+发送方 \( S \)：<br>
+</p>
+$$ Q \in \mathbb{Z}^{k \times m} $$$$ 2^l $$<p> 和 \( sk \)。<br>
+接收方 \( R \)：<br>
+</p>
+$$ V \in \mathbb{Z}^{m \times n} $$$$ 2^l $$<p>。</p>
+<p><strong>输出：</strong><br>
+</p>
+$$ JUK $$<p>，使得<br>
+</p>
+$$ U \equiv_l Q \cdot V $$<p><strong>公共参数：</strong><br>
+</p>
+$$ pp = (\text{HE.pp}, pk, (kw, mw, nw)) $$<ul>
 <li>大小 \( mw \) 是一个 2 的幂，且<br>
 $$ 1 \leq kw \cdot mw \cdot nw \leq N $$</li>
 <li></li>
 </ul>
-$$ k' = \lceil \frac{k}{kw} \rceil $$$$ m' = \lceil \frac{m}{mw} \rceil $$$$ n' = \lceil \frac{n}{nw} \rceil $$$$ \tilde{m} = \lceil \frac{k' \cdot n'}{mw} \rceil $$<ul>
+$$ k' = \lceil \frac{k}{kw} \rceil $$<p>，<br>
+</p>
+$$ m' = \lceil \frac{m}{mw} \rceil $$<p>，<br>
+</p>
+$$ n' = \lceil \frac{n}{nw} \rceil $$<p>，和<br>
+</p>
+$$ \tilde{m} = \lceil \frac{k' \cdot n'}{mw} \rceil $$<ul>
 <li>注意：如果<br>
 $$ k' > n' $$，则交换发送方和接收方的角色。</li>
 </ul>
 <p><strong>步骤：</strong></p>
 <ol>
 <li>
-$$ Q_{\alpha, \beta} \in \mathbb{Z}^{kw \times mw} $$$$ \hat{q}_{\alpha, \beta} := \pi_{\text{lhs}}(Q_{\alpha, \beta}) $$$$ ct'_{\alpha, \beta} := \text{RLWE}_{q, 2l}^{pk} (\hat{q}_{\alpha, \beta}) $$<p><br>
+<p>发送方 \( S \) 首先将矩阵 \( Q \) 划分为块矩阵<br>
+</p>
+$$ Q_{\alpha, \beta} \in \mathbb{Z}^{kw \times mw} $$<p> \( 2^l \)。然后，\( S \) 对每个块矩阵编码为多项式<br>
+</p>
+$$ \hat{q}_{\alpha, \beta} := \pi_{\text{lhs}}(Q_{\alpha, \beta}) $$<p><br>
+其中 \( \alpha \in [k'] \) 且 \( \beta \in [m'] \)。之后，\( S \) 将每个编码后的密文<br>
+</p>
+$$ ct'_{\alpha, \beta} := \text{RLWE}_{q, 2l}^{pk} (\hat{q}_{\alpha, \beta}) $$<p><br>
 发送给 \( R \)。</p>
 </li>
 <li>
-$$ V_{\beta, \gamma} \in \mathbb{Z}^{mw \times nw} $$$$ \hat{v}_{\beta, \gamma} := \pi_{\text{rhs}}(V_{\beta, \gamma}) $$<p><br>
+<p>接收方 \( R \) 首先将矩阵 \( V \) 划分为块矩阵<br>
+</p>
+$$ V_{\beta, \gamma} \in \mathbb{Z}^{mw \times nw} $$<p> \( 2^l \)。然后，\( R \) 对每个块矩阵编码为多项式<br>
+</p>
+$$ \hat{v}_{\beta, \gamma} := \pi_{\text{rhs}}(V_{\beta, \gamma}) $$<p><br>
 其中 \( \beta \in [m'] \) 且 \( \gamma \in [n'] \)。</p>
 </li>
 <li>
-$$ \{ct'_{\alpha, \beta}\} $$$$ c[\alpha \cdot n' + \gamma] := \bigoplus_{\beta \in [m']} ct'_{\alpha, \beta} \odot \hat{v}_{\beta, \alpha} $$<p><br>
+<p>在接收到来自 \( S \) 的<br>
+</p>
+$$ \{ct'_{\alpha, \beta}\} $$<p> 后，\( R \) 计算一个 RLWE 密文向量 \( c \)，其中<br>
+</p>
+$$ c[\alpha \cdot n' + \gamma] := \bigoplus_{\beta \in [m']} ct'_{\alpha, \beta} \odot \hat{v}_{\beta, \alpha} $$<p><br>
 对于 \( \alpha \in [k'] \)，\( \gamma \in [n'] \)。</p>
 </li>
 <li>
+<p>为了将 \( k' \cdot n' \) 个密文压缩为 \( \tilde{m} \) 个密文而不触及需要的系数，\( R \) 在密文向量 \( c \) 的子向量上运行 InterLeave 操作。例如<br>
+</p>
 $$ \tilde{c}[\theta] := \text{InterLeave}([c[\theta \cdot mw], c[\theta \cdot mw + 1], \cdots \mid \{z\} mw]) $$<p><br>
 对于 \( \theta \in [\tilde{m}] \)。<br>
 ▷ 当 \( k' \cdot n' \) 无法被 \( mw \) 整除时，填充零。</p>
 </li>
 <li>
-$$ \hat{c}_{i, 0}, \hat{c}_{i, 1} \leftarrow \text{FH2A}(\tilde{c}[i]) $$$$ JUK_l := \text{ParseMat}(\hat{c}_{0, l}, \hat{c}_{1, l}, \cdots) $$<p><br>
+<p>对于每个密文 \( \tilde{c}[i] \) 中的密文，运行<br>
+</p>
+$$ \hat{c}_{i, 0}, \hat{c}_{i, 1} \leftarrow \text{FH2A}(\tilde{c}[i]) $$<p><br>
+其中 \( S \) 获得 \( \hat{c}_{i, 0} \in R^{2l} \)，\( R \) 获得 \( \hat{c}_{i, 1} \in R^{2l} \)。之后，\( S \) 和 \( R \) 都可以通过附录中的本地过程<br>
+</p>
+$$ JUK_l := \text{ParseMat}(\hat{c}_{0, l}, \hat{c}_{1, l}, \cdots) $$<p><br>
 来获取各自的分享。</p>
 </li>
 </ol>
@@ -545,6 +596,8 @@ JzK ∈ ZN 2l，使得 ∥z − x ⊙ y mod 2l∥∞ ≤ 1。</p>
 <p>A. 高斯误差线性单元（GeLU）</p>
 <p>GeLU 函数的常见定义是：</p>
 <p>$GeLU(x)=0.5x(1+tanh⁡(2π(x+0.044715x3))).\text{GeLU}(x) = 0.5x(1 + \tanh\left(\frac{\sqrt{2}}{\pi}(x + 0.044715x^3)\right)).$</p>
+<p>遵循现有的研究工作 [58]、[49]、[24]、[21]，我们使用分段函数来近似 GeLU 函数，如下所示：
+</p>
 $$
 \text{Seg4GeLU}(x) = 
 \begin{cases}
@@ -562,6 +615,9 @@ $$<p>
 <li><strong>优化多项式评估</strong>：对于公式（2）中的 $P_3(x)$ 和 $P_6(x)$ 的评估，我们建议使用更快的平方协议 $\Pi_{\text{square}}$ 来计算所有偶次幂项，如 $x^2$、$x^4$ 和 $x^6$。实际上，在 2PC 中，执行平方操作的成本是标准乘法操作的一半。此外，我们还提出通过减少一半的通信成本来优化奇次幂项的计算。举个例子，考虑给定 $JxK$ 和 $Jx^2K$ 时，如何计算 $Jx^3K$。我们可以使用两次 bOLE 调用来计算 $Jx^3K$，即 $FbOLE(JxK_0, Jx^2K_1)$ 和 $FbOLE(Jx^2K_0, JxK_1)$。对于算法 2 中的 bOLE 构造，P0 将 SIMD(Lift(JxK_0)) 和 SIMD(Lift(Jx^2K_0)) 的密文发送给 P1。我们注意到，当计算 $Jx^2K$ 和 $Jx^4K$ 时，这两个密文已经被发送给 P1。因此，为了计算立方项，玩家可以跳过算法 2 中的步骤 1，按照其余步骤相同地执行。</li>
 </ol>
 <p>权衡。在我们的评估中，我们证明了这三种优化可以使时间减少35%，通信减少7%。需要注意的是，这些改进伴随着近似误差的增加。具体来说，我们的GeLU评估的平均ULP误差约为11，而[58]的平均ULP误差为4。此外，我们在四个transformer模型中测试了提出的GeLU协议，结果表明推理精度的降级非常小，不超过1%。我们认为这是精度和效率之间的合理权衡。</p>
+<p>B. <strong>Softmax</strong>
+为了数值稳定性[29，第4章]，softmax函数通常计算为：
+</p>
 $$
 softmax(x)[i]=exp⁡(x[i]−xˉ)∑jexp⁡(x[j]−xˉ),\text{softmax}(x)[i] = \frac{\exp(x[i] - \bar{x})}{\sum_j \exp(x[j] - \bar{x})},
 $$<p>
@@ -577,6 +633,8 @@ $$<p>
 <li>使用额外一次对 $F_{\text{trunc}}$ 的调用来降低激活函数中的定点精度；</li>
 <li>缩小近似区间或增加分支数，以便可以使用较低次数的多项式。</li>
 </ol>
+<p>最近的工作[58]在狭窄区间内使用低次多项式近似GeLU，即
+</p>
 $$
 GeLU(x)≈P4(x)=0.5x+∑i=04ci∣x∣iforx∈[−2.7,2.7].\text{GeLU}(x) \approx P_4(x) = 0.5x + \sum_{i=0}^{4} c_i |x|^i \quad \text{for} \quad x \in [-2.7, 2.7].
 $$<p>

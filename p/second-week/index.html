@@ -501,7 +501,9 @@
 </h2><h3 id="残差连接residual-connection和层归一化layer-normalization是什么">残差连接（residual connection）和层归一化（layer normalization）是什么？
 </h3><p>残差连接（Residual Connection）和 层归一化（Layer Normalization）是深度学习中常用的两种技术，主要用于提高神经网络的训练效率和性能。下面是它们的定义和作用：</p>
 <h4 id="残差连接residual-connection">残差连接（Residual Connection）
-</h4>$$
+</h4><p><strong>定义</strong>：残差连接是一种将输入直接与输出相加的结构，通常在深度神经网络中使用。公式表示为：
+</p>
+$$
 \text{Output} = \text{Layer}(x) + x
 $$<p>
 其中 \(x\) 是输入，\(\text{Layer}(x)\) 是通过某个层（如卷积层或全连接层）处理后的输出。</p>
@@ -512,7 +514,9 @@ $$<p>
 <li><strong>提高模型性能</strong>：它允许模型学习恒等映射，这使得训练更深的网络成为可能，提升了模型的表现。</li>
 </ul>
 <h3 id="层归一化layer-normalization">层归一化（Layer Normalization）
-</h3>$$
+</h3><p><strong>定义</strong>：层归一化是一种对网络中每一层的激活进行归一化的技术，它通过计算每个样本的均值和标准差来调整激活值。层归一化的公式为：
+</p>
+$$
 \text{LayerNorm}(x) = \frac{x - \mu}{\sigma + \epsilon} \cdot \gamma + \beta
 $$<p>
 其中：</p>

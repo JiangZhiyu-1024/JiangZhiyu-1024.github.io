@@ -100,6 +100,8 @@
 &lt;p&gt;&lt;strong&gt;将实数映射为概率分布&lt;/strong&gt;：Softmax 接受一个实数向量，输出一个与输入维度相同的向量，其中每个元素的值表示该元素作为某个类别的概率，且这些概率的和为1。这样就可以根据这些概率来进行分类预测。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
+&lt;p&gt;&lt;strong&gt;公式&lt;/strong&gt;：Softmax 函数的定义如下：
+&lt;/p&gt;
 $$
    \text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}
    $$&lt;p&gt;
