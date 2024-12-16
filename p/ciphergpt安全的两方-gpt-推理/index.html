@@ -440,8 +440,16 @@ VOLE 是一种双方功能，它接受来自发送方的标量 $x \in F_p$ 并�
 <p><strong>同态加密</strong>
 全同态加密（FHE）是一种加密方案，允许对加密数据执行任意操作 [19]。在实际应用中，它通常以分级方式使用：操作只能执行有限次数，否则密文无法解密。在大多数 FHE 加密系统中 [12], [11], [18], [15]，明文被编码为来自商环 $\mathbb{Z}_p[x]/(x^N + 1)$ 的多项式，其中 $N$ 是 2 的幂，$p$ 是明文模数。明文多项式随后被加密成密文多项式 $\mathbb{Z}_q[x]/(x^N + 1)$，其中 $q$ 是密文模数，它决定了安全级别以及可以执行操作的次数。</p>
 <h2 id="安全矩阵乘法"><strong>安全矩阵乘法</strong>
-</h2><p>矩阵乘法操作（MatrixMul）接受来自$C$和$S$的两个输入矩阵$X \in \mathbb{Z}^{n \times m}<em>{2^l}$和$Y \in \mathbb{Z}^{m \times k}</em>{2^l}$，并输出$\langle Z \rangle$，其中$Z = XY \in \mathbb{Z}^{n \times k}_{2^l}$。现有的大多数解决方案通过同态乘法和加法以隐私保护的方式计算上述公式。通常采用SIMD技术将$N$个元素批处理到一个RLWE密文中以摊销成本，但这需要昂贵的同态旋转来求和【28】。Cheetah【27】用系数打包替代SIMD以消除昂贵的旋转操作。然而，它仍然需要传输$\geq 2n\sqrt{mk} / \sqrt{N}$个RLWE密文，并执行$\geq nmk / N$次密文-明文同态乘法。</p>
-<p>需要注意的是，GPT需要以自回归的方式生成响应词语。因此，单次GPT推理需要对不同的$X$与相同的$Y$运行MatrixMul操作。我们旨在利用GPT的这一特性减少MatrixMul的摊销成本。令$X = [x_1, x_2, \cdots, x_m]$（其中$x_i \in \mathbb{Z}^n_{2^l}$是$X$的每列），$Y^T = [y&rsquo;_1, y&rsquo;_2, \cdots, y&rsquo;<em>m]$（其中$y&rsquo;<em>i \in \mathbb{Z}^k</em>{2^l}$是$Y$的每行），则$Z = \sum</em>{i=1}^m (x_i \otimes y&rsquo;_i)$。</p>
+</h2><p>矩阵乘法操作（MatrixMul）接受来自 $C$ 和 $S$ 的两个输入矩阵
+</p>
+$$
+X \in \mathbb{Z}^{n \times m}_{2^l} 和 Y \in \mathbb{Z}^{m \times k}_{2^l} 
+$$<p>
+并输出$ \langle Z \rangle $ ，其中 $Z = XY \in \mathbb{Z}^{n \times k}_{2^l}$ 。现有的大多数解决方案通过同态乘法和加法以隐私保护的方式计算上述公式。通常采用SIMD技术将 $N$ 个元素批处理到一个RLWE密文中以摊销成本，但这需要昂贵的同态旋转来求和【28】。Cheetah【27】用系数打包替代SIMD以消除昂贵的旋转操作。然而，它仍然需要传输 $\geq 2n\sqrt{mk} / \sqrt{N}$ 个RLWE密文，并执行 $ \geq nmk / N $ 次密文-明文同态乘法。</p>
+<p>需要注意的是，GPT需要以自回归的方式生成响应词语。因此，单次GPT推理需要对不同的$X$与相同的$Y$运行MatrixMul操作。我们旨在利用GPT的这一特性减少MatrixMul的摊销成本。令$X = [x_1, x_2, \cdots, x_m]$（其中 $x_i \in \mathbb{Z}^n_{2^l}$ 是 $X$ 的每列）</p>
+<p>$Y^T = [y&rsquo;_1, y&rsquo;_2, \cdots, y&rsquo;_m]$</p>
+<p>（其中 $ y_1 \in \mathbb{Z}^{k}_{2^l} $ 是 Y 的每行），</p>
+<p>则 $Z = \sum_{i=1}^m (x_i \otimes y&rsquo;_i)$ 。</p>
 <p>假设$S$和$C$需要生成$t$个响应词语，因此有$t$个输入矩阵：
 </p>
 $$
@@ -462,7 +470,9 @@ $$<p>
 $$
 W_i = u_i \otimes y'_i + V_i, \ \forall i \in [1, m],
 $$<p>
-其中$C$持有$u_i \in \mathbb{Z}^{(t \cdot n)}<em>{2^l}$（这是长度为$t \cdot n$的向量）和$V_i \in \mathbb{Z}^{(t \cdot n) \times k}</em>{2^l}$，$S$持有$y&rsquo;<em>i \in \mathbb{Z}^k</em>{2^l}$和$W_i \in \mathbb{Z}^{(t \cdot n) \times k}_{2^l}$。</p>
+其中$C$持有$u_i \in \mathbb{Z}^{(t \cdot n)}_{2^l}$（这是长度为$t \cdot n$的向量）</p>
+<p>和$V_i \in \mathbb{Z}^{(t \cdot n) \times k}_{2^l}$，</p>
+<p>$S$持有$y_i \in \mathbb{Z}^k_{2^l}$和$W_i \in \mathbb{Z}^{(t \cdot n) \times k}_{2^l}$。</p>
 <p>在在线阶段，对于输入矩阵$X_j = [x_{j,1}, x_{j,2}, \cdots, x_{j,m}]$，$C$发送
 </p>
 $$
@@ -488,7 +498,9 @@ $$<p>
 $$
 V_i[(j-1)kn + 1, \cdots, j \cdot k \cdot n]
 $$<p>
-这意味着$S$和$C$共同秘密共享了$x_{j,i} \otimes y&rsquo;<em>i$，从而他们可以局部计算出$Z_j = \sum</em>{i=1}^m (x_{j,i} \otimes y&rsquo;_i)$的秘密共享值。他们可以以这种方式计算出所有的$Z$。</p>
+这意味着$S$和$C$共同秘密共享了</p>
+<p>$x_{j,i} \otimes y&rsquo;_i$，从而他们可以局部计算出</p>
+<p>$Z_j = \sum_{i=1}^m (x_{j,i} \otimes y&rsquo;_i)$的秘密共享值。他们可以以这种方式计算出所有的$Z$。</p>
 <p>表 2 比较了 Cheetah [27]、Iron [25] 和 CipherGPT 在 MatrixMul 操作中的开销。回顾一下，sVOLE 的复杂度几乎与 $n$ 无关。因此，我们的 MatrixMul 中的公钥操作数量也与 $n$ 无关。具体来说，我们需要传输 $2 \cdot e \cdot m \cdot k / N$ 个 RLWE 密文，并执行 $e \cdot m \cdot k / N$ 次密文-明文乘法来执行反向 VOLE，这两者都与 $n$ 无关。当我们将大量矩阵合并在一起时，即当 $n$ 很大时，我们的节省变得显著。此外，这些开销需要除以 $t$ 来计算摊销成本。</p>
 <p>在计算方面，我们节省了 $t \cdot n \cdot e$ 次密文-明文乘法。假设 $n = 256, m = 768, k = 64, t = 256$ 且 $e = 144$（这是 GPT-2 的真实参数），我们节省了 3,065 次密文-明文乘法，这大约需要超过 4 秒。尽管我们需要做额外的 $(c \cdot m \cdot n \cdot k)$ 次 AES 操作来扩展种子，但在 AES-NI 的帮助下，这可以在大约 100 毫秒内完成。</p>
 <p>在通信方面，我们至少节省了 94 个 RLWE 密文，相当于约 10MB，而 CipherGPT 中 OTs 和明文带来的通信开销仅约为 1.5MB。</p>
@@ -522,7 +534,8 @@ $$<p>
 <h2 id="安全的采样"><strong>安全的采样</strong>
 </h2><p>在本节中，我们详细解释了我们的安全抽样协议。该协议以$K$个秘密共享的概率$(p_1, \dots, p_K)$为输入，其中每个概率通过将其乘以$2^L$并去掉小数部分来缩放为整数$x_i$。协议的输出是一个秘密共享的索引$j$，满足：$Pr(j = i) = \frac{x_i}{\sum_{k=1}^K x_k}$。我们将在第7.5节解释如何将该索引映射到响应词。</p>
 <p>算法3提供了安全抽样协议的详细描述。该协议基于以下观察：对于随机$p&rsquo; \in [0, 1]$，选定的索引$j$满足：$\sum_{k=1}^{j-1} p_k \leq p&rsquo; &lt; \sum_{k=1}^{j} p_k$。由于$(p_1, \dots, p_K)$已经被缩放为$2^L$，因此$p&rsquo;$也应该相应地缩放。为此，我们让$C$从$0$到$2^L - 1$中抽样一个整数$v$（第1行）。$S$和$C$安全地比较$v$与每个$\sum_{k=1}^i x_k, \ \forall i \in [1, K]$（第2-6行），结果是一个秘密共享的比特向量$\langle b \rangle$，满足：$b_i = 1, \ \forall 1 \leq i &lt; j \quad \text{且} \quad b_i = 0, \ \forall j \leq i \leq K$。</p>
-<p>我们的下一步是构建另一个秘密共享的比特向量$\langle b&rsquo; \rangle$，满足：$b&rsquo;_i = 0, \ \forall i \neq j \quad \text{且} \quad b&rsquo;<em>j = 1$。这可以通过对$\langle b \rangle$中的每对相邻比特执行异或操作来实现（第7-10行）。然后，所需的索引为：$\langle j \rangle := \sum</em>{i=1}^K \text{FMUX}(i, \langle b&rsquo;_i \rangle_1)$（第11行）。</p>
+<p>我们的下一步是构建另一个秘密共享的比特向量$\langle b&rsquo; \rangle$，满足：$b&rsquo;_i = 0, \ \forall i \neq j \quad \text{且} \quad b&rsquo;_j = 1$。</p>
+<p>这可以通过对$\langle b \rangle$中的每对相邻比特执行异或操作来实现（第7-10行）。然后，所需的索引为：$\langle j \rangle := \sum_{i=1}^K \text{FMUX}(i, \langle b&rsquo;_i \rangle_1)$（第11行）。</p>
 <p>我们需要注意的是，由于最终的输出$j$对$C$是未知的，因此$v$由$C$单独抽样是可以接受的。</p>
 <p><img src="/p/ciphergpt%E5%AE%89%E5%85%A8%E7%9A%84%E4%B8%A4%E6%96%B9-gpt-%E6%8E%A8%E7%90%86/image-20241215212331083.png"
 	width="685"
@@ -577,7 +590,11 @@ $$<p>
 </ol>
 <p>原则上，<strong>S</strong> 和 <strong>C</strong> 需要使用“统一比特宽度的乘法”来乘以两个秘密共享的值，然后对每次乘法运行安全的截断（保持缩放为 $L$ 位）。然而，为了减少精度损失，我们让 <strong>S</strong> 和 <strong>C</strong> 使用“非统一比特宽度的乘法”（FMult）进行乘法计算，并在 LayerNorm 计算完成后，仅执行一次“截断再缩减”（FTR）。</p>
 <h3 id="掩码自注意力-masked-self-attention"><strong>掩码自注意力 (Masked Self-Attention)</strong>
-</h3><p>自注意力是一种机制，通过将序列中的不同位置联系起来，能够计算出序列的表示 [43]。计算自注意力的第一步是创建三个矩阵：查询矩阵 $Q$、键矩阵 $K$ 和值矩阵 $V$。这是通过将归一化的嵌入矩阵 $X \in \mathbb{Z}^{n \times m}<em>{2^l}$ 与三个训练过程中获得的矩阵（$W_Q \in \mathbb{Z}^{m \times m}</em>{2^l}$，$W_K \in \mathbb{Z}^{m \times m}<em>{2^l}$ 和 $W_V \in \mathbb{Z}^{m \times m}</em>{2^l}$）相乘来实现的：</p>
+</h3><p>自注意力是一种机制，通过将序列中的不同位置联系起来，能够计算出序列的表示 [43]。计算自注意力的第一步是创建三个矩阵：查询矩阵 $Q$、键矩阵 $K$ 和值矩阵 $V$。这是通过将归一化的嵌入矩阵 $X \in \mathbb{Z}^{n \times m}*{2^l}$</p>
+<p>与三个训练过程中获得的矩阵</p>
+<p>$W_Q \in \mathbb{Z}^{m \times m}*{2^l}$，</p>
+<p>$W_K \in \mathbb{Z}^{m \times m}*{2^l}$</p>
+<p>$W_V \in \mathbb{Z}^{m \times m}*{2^l}$）相乘来实现的：</p>
 <p>$\langle Q \rangle := \langle X \rangle \langle W_Q \rangle; \quad \langle K \rangle := \langle X \rangle \langle W_K \rangle; \quad \langle V \rangle := \langle X \rangle \langle W_V \rangle.$</p>
 <p>由于 $W_Q$、$W_K$ 和 $W_V$ 是预先知道的，这样的矩阵乘法可以通过我们在第 3 节中描述的基于 sVOLE 的方案来计算。矩阵乘法后，<strong>S</strong> 和 <strong>C</strong> 需要运行 FTrunc 以确保缩放保持在 $L$ 位。为了简化起见，以下部分我们省略了关于截断的描述。</p>
 <h3 id="多头注意力-multi-headed-attention">多头注意力 (Multi-headed Attention)
@@ -606,13 +623,25 @@ $$<p>
 <h3 id="前馈网络"><strong>前馈网络</strong>
 </h3><p>自注意力的输出将经过一个 LayerNorm 操作。得到的归一化值随后被送入一个前馈神经网络，该网络由两个全连接（FC）层和一个激活层组成。第一个 FC 层的计算为：</p>
 <p>$\langle X_1 \rangle := \langle X \rangle \langle W_1 \rangle + B_1,$</p>
-<p>其中 $X \in \mathbb{Z}^{n \times m}<em>{2^l}$，$W_1 \in \mathbb{Z}^{m \times k}</em>{2^l}$，$B_1 \in \mathbb{Z}^{n \times k}<em>{2^l}$，$X_1 \in \mathbb{Z}^{n \times k}</em>{2^l}$。接着，对 $X_1$ 的每个元素应用 ΠGELU（参见第 4 节），得到 $X&rsquo;_1$。第二个 FC 层的计算为：</p>
+<p>其中</p>
+<p>$X \in \mathbb{Z}^{n \times m}*{2^l}$，</p>
+<p>$W_1 \in \mathbb{Z}^{m \times k}*{2^l}$，</p>
+<p>$B_1 \in \mathbb{Z}^{n \times k}*{2^l}$，</p>
+<p>$X_1 \in \mathbb{Z}^{n \times k}*{2^l}$。</p>
+<p>接着，对 $X_1$ 的每个元素应用 ΠGELU（参见第 4 节），得到 $X&rsquo;_1$。第二个 FC 层的计算为：</p>
 <p>$\langle X_2 \rangle := \langle X&rsquo;_1 \rangle \langle W_2 \rangle + B_2,$</p>
-<p>其中 $X&rsquo;<em>1 \in \mathbb{Z}^{n \times k}</em>{2^l}$，$W_2 \in \mathbb{Z}^{k \times m}<em>{2^l}$，$B_2 \in \mathbb{Z}^{n \times m}</em>{2^l}$，$X_2 \in \mathbb{Z}^{n \times m}_{2^l}$。注意，$W_1$ 和 $W_2$ 是预先已知的，因此我们可以应用基于 sVOLE 的矩阵乘法（参见第 3 节）来计算这两个 FC 层的输出。输出将再次经过多个自注意力和前馈的迭代，每次迭代使用不同的权重，同时保持相同的结构。</p>
+<p>其中 $X&rsquo;<em>1 \in \mathbb{Z}^{n \times k}</em>{2^l}$，</p>
+<p>$W_2 \in \mathbb{Z}^{k \times m}*{2^l}$，</p>
+<p>$B_2 \in \mathbb{Z}^{n \times m}*{2^l}$，</p>
+<p>$X_2 \in \mathbb{Z}^{n \times m}_{2^l}$。</p>
+<p>注意，$W_1$ 和 $W_2$ 是预先已知的，因此我们可以应用基于 sVOLE 的矩阵乘法（参见第 3 节）来计算这两个 FC 层的输出。输出将再次经过多个自注意力和前馈的迭代，每次迭代使用不同的权重，同时保持相同的结构。</p>
 <h3 id="vec2word"><strong>Vec2word</strong>
 </h3><p>经过多次自注意力和前馈迭代后，最终的输出将通过一个 vec2word 层生成预测的响应词。vec2word 的初始操作涉及一个矩阵乘法（MatrixMul），用于生成所有可能词的 one-hot 编码：</p>
 <p>$\langle y_0 \rangle := \langle x \rangle \langle W \rangle,$</p>
-<p>其中 $W \in \mathbb{Z}^{m \times k}<em>{2^l}$，$y_0 \in \mathbb{Z}^{k}</em>{2^l}$，$x \in \mathbb{Z}^{m}<em>{2^l}$ 是 $X \in \mathbb{Z}^{n \times m}</em>{2^l}$ 的最后一行（由于 GPT 在推理时采用的优化）。此时，$k$ 代表所有可能词的数量，这个数量是非常大的。因此，我们的 sVOLE 基于的矩阵乘法不适用于此处，因此我们采用了基于 AHE 的矩阵乘法 [25]。</p>
+<p>其中 $W \in \mathbb{Z}^{m \times k}*{2^l}$，</p>
+<p>$y_0 \in \mathbb{Z}^{k}*{2^l}$，</p>
+<p>$x \in \mathbb{Z}^{m}*{2^l}$ 是</p>
+<p>$X \in \mathbb{Z}^{n \times m}*{2^l}$ 的最后一行（由于 GPT 在推理时采用的优化）。此时，$k$ 代表所有可能词的数量，这个数量是非常大的。因此，我们的 sVOLE 基于的矩阵乘法不适用于此处，因此我们采用了基于 AHE 的矩阵乘法 [25]。</p>
 <p><strong>Top-K</strong>
 为了在多样性和准确性之间保持平衡，从 $y_0$ 中选择最大的 $K$ 个值：</p>
 <p>$\langle y_1 \rangle \leftarrow \Pi_{TopK}(\langle y_0 \rangle), \quad \text{其中} \quad y_1 \in \mathbb{Z}^{K}_{2^l}.$</p>
