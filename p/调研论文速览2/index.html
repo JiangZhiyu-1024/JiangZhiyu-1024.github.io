@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
-<title></title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="第二次调研">
+<title>调研论文速览2</title>
 
-<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/'>
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/'>
 
-<link rel="stylesheet" href="/scss/style.min.819ac8ff77246a79c226a136382b6bcbe7c291f9fd1e0641c81bcb97ac7e8f89.css"><meta property='og:title' content="">
-<meta property='og:description' content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
-<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/'>
+<link rel="stylesheet" href="/scss/style.min.819ac8ff77246a79c226a136382b6bcbe7c291f9fd1e0641c81bcb97ac7e8f89.css"><meta property='og:title' content="调研论文速览2">
+<meta property='og:description' content="第二次调研">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/'>
 <meta property='og:site_name' content='Zion Blaze'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' />
-<meta name="twitter:title" content="">
-<meta name="twitter:description" content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-01-04T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-01-04T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/tree-3358468_1280.jpg' />
+<meta name="twitter:title" content="调研论文速览2">
+<meta name="twitter:description" content="第二次调研"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/tree-3358468_1280.jpg' />
     <link rel="shortcut icon" href="/favicon.ico" />
 
     </head>
@@ -315,23 +316,70 @@
 
 
             <main class="main full-width">
-    <article class="main-article">
+    <article class="has-image main-article">
     <header class="article-header">
+        <div class="article-image">
+            <a href="/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/">
+                <img src="/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/tree-3358468_1280_hu3382411848523589515.jpg"
+                        srcset="/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/tree-3358468_1280_hu3382411848523589515.jpg 800w, /p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/tree-3358468_1280_hu17120098216091832332.jpg 1600w"
+                        width="800" 
+                        height="426" 
+                        loading="lazy"
+                        alt="Featured image of post 调研论文速览2" />
+                
+            </a>
+        </div>
+    
 
     <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/llm/" >
+                LLM
+            </a>
+        
+            <a href="/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/" >
+                隐私保护推理
+            </a>
+        
+    </header>
     
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/"></a>
+            <a href="/p/%E8%B0%83%E7%A0%94%E8%AE%BA%E6%96%87%E9%80%9F%E8%A7%882/">调研论文速览2</a>
         </h2>
     
+        
+        <h3 class="article-subtitle">
+            第二次调研
+        </h3>
         
     </div>
 
     
     
     
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-01-04</time>
+            </div>
+        
+
+        
+    </footer>
     
 
     
@@ -711,6 +759,135 @@ CNN和变换器的最后一层都是Argmax，其输入是一个概率向量，�
     
 
     
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+        
+        
+            <div class="article-image">
+                <img src="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280.15f3b35c7e1f36dd87ab7a0760d697c3_hu16508623753838394004.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 大模型基础知识补习&amp;GPT2代码分析"
+                        
+                        data-hash="md5-FfOzXH4fNt2Hq3oHYNaXww==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">大模型基础知识补习&amp;GPT2代码分析</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">
+        
+        
+            <div class="article-image">
+                <img src="/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.ff7347a9469275bbba133b27dec52763_hu9757057660502133537.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第4周工作总结"
+                        
+                        data-hash="md5-/3NHqUaSdbu6Ezsn3sUnYw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第4周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/transformermodelbase/">
+        
+        
+            <div class="article-image">
+                <img src="/p/transformermodelbase/house-7497002_1280.db5d8d10c07a318d1548ccc1c8785778_hu3374130842880547652.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post transformer模型架构"
+                        data-key="transformerModelbase" 
+                        data-hash="md5-212NEMB6MY0VSMzByHhXeA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">transformer模型架构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/third-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/third-week/cards-8594729_640.6d4d362b955a08c1ac2883a31f793424_hu4843113531480180974.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第3周工作总结"
+                        data-key="third-week" 
+                        data-hash="md5-bU02K5VaCMGsKIOjH3k0JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第3周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/second-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/second-week/leaves-6729056_640.d8f540d517d89998772f4150b9222cbc_hu11404399883202129121.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第2周工作总结"
+                        data-key="second-week" 
+                        data-hash="md5-2PVA1RfYmZh3L0FQuSIsvA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第2周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
 
      
     
