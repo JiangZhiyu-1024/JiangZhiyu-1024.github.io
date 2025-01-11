@@ -7,7 +7,455 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Sun, 03 Nov 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/llm/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 10 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/llm/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>大模型基础知识补习&amp;GPT2代码分析</title>
+        <link>https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/</link>
+        <pubDate>Fri, 10 Jan 2025 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280.jpg" alt="Featured image of post 大模型基础知识补习&amp;GPT2代码分析" /&gt;&lt;h1 id=&#34;大模型基础知识&#34;&gt;大模型基础知识
+&lt;/h1&gt;&lt;p&gt;代码来源：https://github.com/openai/gpt-2&lt;/p&gt;
+&lt;p&gt;GPT2源代码提供了以下几个文件：&lt;/p&gt;
+&lt;p&gt;encoder.py&lt;/p&gt;
+&lt;p&gt;generate_unconditional_samples.py&lt;/p&gt;
+&lt;p&gt;interactive_conditional_samples.py&lt;/p&gt;
+&lt;p&gt;model.py&lt;/p&gt;
+&lt;p&gt;sample.py&lt;/p&gt;
+&lt;h2 id=&#34;model&#34;&gt;model
+&lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def default_hparams():
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return HParams(
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        n_vocab=0,        # 词汇表大小（通常是词汇表中包含的词语或符号数量）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        n_ctx=1024,       # 输入序列的最大长度（例如，一个输入文本序列的最大 token 数量）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        n_embd=768,       # 嵌入层的维度大小（每个词或符号在嵌入空间中的表示长度）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        n_head=12,        # 多头自注意力机制中的头数（即注意力头的数量）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        n_layer=12,       # Transformer 模型中的层数（即堆叠的 transformer 层数）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    )
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;词汇表&#34;&gt;词汇表
+&lt;/h3&gt;&lt;p&gt;词汇表（Vocabulary）是自然语言处理（NLP）模型中用于将语言转换为数字表示的一组词或符号的集合。在深度学习模型中，词汇表用于将文本数据中的每个单词或符号映射为一个唯一的数字（通常是一个整数），以便计算机能够理解和处理。&lt;/p&gt;
+&lt;h4 id=&#34;词汇表的作用&#34;&gt;词汇表的作用：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;映射文本到数字&lt;/strong&gt;：由于机器学习模型无法直接处理文本数据，必须将文本中的每个词或符号转换为数字。词汇表就是这个映射的核心工具。例如，对于句子“我爱自然语言处理”，我们需要将“我”、“爱”、“自然”、“语言”、“处理”这些词转化为模型可以理解的数字。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;限制模型输入的规模&lt;/strong&gt;：在实际操作中，词汇表的大小有限。通常，我们不会为每个可能的字词创建一个索引，而是根据训练数据中出现的词汇频率来限制词汇表的大小。这样，词汇表的规模可以控制模型的输入维度，避免过大的计算和内存开销。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;处理未知词汇&lt;/strong&gt;：词汇表通常会为所有未出现在训练数据中的词汇或符号保留一个特殊的“未知词”标记（如 &lt;code&gt;[UNK]&lt;/code&gt;）。当模型遇到这些未见过的词时，会用这个特殊标记来代替。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;词汇表的组成&#34;&gt;词汇表的组成：
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;词&lt;/strong&gt;：如果你使用的是基于单词的词汇表，那么词汇表中的元素就是单词。例如，假设你有一个很小的词汇表：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;css
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;复制代码
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[&amp;#39;我&amp;#39;, &amp;#39;爱&amp;#39;, &amp;#39;自然&amp;#39;, &amp;#39;语言&amp;#39;, &amp;#39;处理&amp;#39;]
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;子词&lt;/strong&gt;（Subword）：对于一些较为复杂的语言模型，尤其是像 GPT-2 和 BERT 这样的模型，它们通常使用 &lt;strong&gt;子词&lt;/strong&gt; 作为词汇表的基本单元。子词是一个比单词更小的语言单位，它可以是词的一部分或者是一个常见的词根、前缀、后缀等。例如，词汇表中可能包含 &lt;code&gt;##ing&lt;/code&gt;、&lt;code&gt;un&lt;/code&gt; 等子词单元，而不是整个单词 &lt;code&gt;running&lt;/code&gt; 或 &lt;code&gt;undo&lt;/code&gt;。这有助于模型更好地处理未见过的词汇，并减少词汇表的大小。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特殊标记&lt;/strong&gt;：除了实际的词或子词，词汇表通常还会包含一些特殊标记：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;[PAD]&lt;/code&gt;：填充标记，用于将输入文本填充到相同的长度。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[UNK]&lt;/code&gt;：未知标记，用于处理那些在训练集中没有出现过的词。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[CLS]&lt;/code&gt;：分类标记，通常用于标记输入的开始（特别是在 BERT 等模型中）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;[SEP]&lt;/code&gt;：分隔标记，通常用于分隔不同句子或文本段落（在 BERT 等模型中也有使用）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;向量空间vector-space&#34;&gt;向量空间（Vector Space）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;向量空间&lt;/strong&gt;是一个数学概念，指的是所有向量的集合，可以在其中进行加法和标量乘法等操作。在机器学习和自然语言处理中，我们通常将每个词、子词或符号表示为一个高维空间中的向量。例如，一个简单的二维向量空间可能包含了这样的一组向量：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;(1, 0)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(0, 1)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(1, 1)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在 NLP 中，这些向量并没有具体的几何含义，而是用来表示不同的语义特征。每个向量的元素（即各维度的值）代表了某种抽象的语义属性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;词向量空间&lt;/strong&gt;意味着每个词都被映射为一个向量，且这些向量之间有一定的关系。例如，&amp;ldquo;king&amp;rdquo; 和 &amp;ldquo;queen&amp;rdquo; 可能在向量空间中非常接近，因为它们的语义相似，尽管它们的拼写不同。嵌入的目标就是将语言中的词语、句子或其他语言单位映射到这样一个向量空间中。&lt;/p&gt;
+&lt;h3 id=&#34;嵌入embedding&#34;&gt;嵌入（Embedding）
+&lt;/h3&gt;&lt;p&gt;**嵌入（Embedding）**是将一个离散的词汇项（如单词、子词）转换为连续的向量表示的过程。这些向量通常具有固定的维度（例如 300 维、768 维等），并且能够捕捉该词的语义信息。&lt;/p&gt;
+&lt;p&gt;换句话说，嵌入是对词汇的数字表示，它通过将每个词或符号映射到一个向量空间中，使得模型能够理解和处理语言中的复杂结构。&lt;/p&gt;
+&lt;p&gt;例如，假设你有以下三个词汇：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;猫&amp;rdquo;（cat）&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;狗&amp;rdquo;（dog）&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;汽车&amp;rdquo;（car）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;通过嵌入，这些词语会被映射为固定长度的向量，例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;猫&amp;rdquo; → &lt;code&gt;[0.45, 0.87, 0.34, ...]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;狗&amp;rdquo; → &lt;code&gt;[0.42, 0.89, 0.31, ...]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;汽车&amp;rdquo; → &lt;code&gt;[0.21, 0.08, 0.76, ...]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些向量的维度（例如 300 维或 768 维）反映了嵌入空间的复杂度。模型通过训练来优化这些向量，使得语义相似的词在嵌入空间中距离更近，语义不同的词距离较远。&lt;/p&gt;
+&lt;h3 id=&#34;向量vector&#34;&gt;向量（Vector）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;向量&lt;/strong&gt;是在数学和计算机科学中用来表示方向和大小的对象。每个词或符号被嵌入为一个&lt;strong&gt;向量&lt;/strong&gt;，这个向量通常是一个浮动的数字数组。向量的每个元素都表示一个特定的特征维度。&lt;/p&gt;
+&lt;p&gt;在 NLP 中，词的向量通常有以下几个特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;稠密表示&lt;/strong&gt;：每个词的向量是一个低维的稠密向量，不像传统的“one-hot”编码（仅使用0和1来表示词汇）。稠密向量包含了丰富的语义信息。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;语义关系&lt;/strong&gt;：通过训练，词向量可以捕捉到词汇之间的语义关系。例如，“king” 和 “queen” 可能有相似的向量，因为它们共享许多语义特征。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;例如，假设我们训练了一个模型，得到以下的词向量：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;苹果&amp;rdquo; → &lt;code&gt;[0.5, -0.2, 0.1, 0.7]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;香蕉&amp;rdquo; → &lt;code&gt;[0.4, -0.1, 0.2, 0.6]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些向量的数值表示了每个词的特征和语义信息。在训练过程中，模型会通过调整这些向量，使得语义相似的词的向量在空间中彼此接近。&lt;/p&gt;
+&lt;h3 id=&#34;为什么要使用嵌入&#34;&gt;为什么要使用嵌入？
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;捕捉语义相似性&lt;/strong&gt;：通过嵌入，模型可以理解哪些词是相似的，哪些是不同的。比如“猫”和“狗”虽然拼写不同，但它们都是“动物”，因此它们的向量会很接近。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;降维&lt;/strong&gt;：将词语从“one-hot”编码的高维空间（例如，假设有 10,000 个不同的词，one-hot 向量就是 10,000 维的）映射到一个低维空间（如 300 维）。这样可以减少计算的复杂度和内存消耗。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;增强模型理解&lt;/strong&gt;：通过将词转换为向量，模型可以更加有效地理解文本中的语义、句法关系和上下文信息。这对于复杂的任务（如文本分类、情感分析、翻译等）非常重要。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;shape_list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Deal with dynamic shape in tensorflow cleanly.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;static&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;as_list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 获取静态形状&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;dynamic&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 获取动态形状&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dynamic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;None&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;else&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;enumerate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;static&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)]&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;# 返回合并后的形状&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;static = x.shape.as_list()&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;x.shape&lt;/code&gt; 是 TensorFlow 张量 &lt;code&gt;x&lt;/code&gt; 的静态形状。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;as_list()&lt;/code&gt; 将这个形状从 &lt;code&gt;TensorShape&lt;/code&gt; 对象转换为 Python 列表。静态形状的值如果是已知的，会直接作为数值存在。如果某个维度的值是 &lt;code&gt;None&lt;/code&gt;（表示该维度在静态形状中不确定），那么会是 &lt;code&gt;None&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;例如，如果 &lt;code&gt;x&lt;/code&gt; 的形状是 &lt;code&gt;[None, 32, 32, 3]&lt;/code&gt;，则 &lt;code&gt;static&lt;/code&gt; 会是 &lt;code&gt;[None, 32, 32, 3]&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;dynamic = tf.shape(x)&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tf.shape(x)&lt;/code&gt; 返回张量 &lt;code&gt;x&lt;/code&gt; 的动态形状，它是一个 TensorFlow 张量，表示运行时该张量的形状。与静态形状不同，动态形状会根据实际运行时的输入数据进行计算。&lt;/li&gt;
+&lt;li&gt;返回值是一个形状为 &lt;code&gt;[d0, d1, ..., dn]&lt;/code&gt; 的张量（&lt;code&gt;d0&lt;/code&gt;，&lt;code&gt;d1&lt;/code&gt; 等是张量的各个维度的动态大小）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;return [dynamic[i] if s is None else s for i, s in enumerate(static)]&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这个列表推导式的目的是将静态形状和动态形状合并成一个形状列表。如果某个静态形状的维度是 &lt;code&gt;None&lt;/code&gt;（即在静态形状中未指定），那么就使用对应的动态形状。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;enumerate(static)&lt;/code&gt; 会遍历静态形状中的每个维度，如果该维度是 &lt;code&gt;None&lt;/code&gt;，就从动态形状中取对应的维度值；如果该维度不是 &lt;code&gt;None&lt;/code&gt;，则保留静态形状中的值。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设 &lt;code&gt;static = [None, 32, 32, 3]&lt;/code&gt;（第一维度 &lt;code&gt;None&lt;/code&gt;，表示它是动态的）和 &lt;code&gt;dynamic = [64, 32, 32, 3]&lt;/code&gt;（运行时该张量的实际形状是 &lt;code&gt;[64, 32, 32, 3]&lt;/code&gt;）。&lt;/li&gt;
+&lt;li&gt;那么，函数的返回值将是 &lt;code&gt;[64, 32, 32, 3]&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;为什么需要这个函数？&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在 TensorFlow 中，许多操作要求处理的张量形状是已知的（静态形状），但有些情况下形状在执行时才会动态确定，特别是在处理输入数据的批量大小、图像尺寸等变量时。&lt;code&gt;shape_list&lt;/code&gt; 函数就是用来统一处理这两种情况的，使得无论是在静态还是动态形状下，代码都能够正常运行而不会出错。&lt;/p&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;举个例子：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;假设我们有一个张量 &lt;code&gt;x&lt;/code&gt;，它的形状是 &lt;code&gt;[None, 64, 64, 3]&lt;/code&gt;（批量大小未知）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;import tensorflow as tf
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;x = tf.placeholder(tf.float32, shape=[None, 64, 64, 3])  # 动态批量大小
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shape = shape_list(x)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;print(shape)  # 输出形状
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;在这个例子中，如果你传递一个大小为 &lt;code&gt;[32, 64, 64, 3]&lt;/code&gt; 的输入，&lt;code&gt;shape_list&lt;/code&gt; 函数会返回 &lt;code&gt;[32, 64, 64, 3]&lt;/code&gt;，即将 &lt;code&gt;None&lt;/code&gt; 替换为实际的批量大小 &lt;code&gt;32&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def softmax(x, axis=-1): 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    x = x - tf.reduce_max(x, axis=axis, keepdims=True)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ex = tf.exp(x)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return ex / tf.reduce_sum(ex, axis=axis, keepdims=True)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这个函数实现了 Softmax 操作，将输入 &lt;code&gt;x&lt;/code&gt; 转换为概率分布，常用于多分类模型的输出层。通过减去最大值避免指数计算中的数值溢出，确保计算稳定性。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def gelu(x):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return 0.5*x*(1+tf.tanh(np.sqrt(2/np.pi)*(x+0.044715*tf.pow(x, 3))))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;GELU&lt;/strong&gt; 是一种平滑的、概率性的激活函数，能够更自然地通过高斯分布近似非线性激活。相比于 ReLU，GELU 在训练时通常能更好地保留梯度，并且能够减少死神经元的问题。&lt;/p&gt;
+&lt;p&gt;代码中使用了 &lt;code&gt;tf.tanh&lt;/code&gt; 和 &lt;code&gt;tf.pow&lt;/code&gt;（TensorFlow 的函数）与 NumPy 的常量进行计算，确保了在 TensorFlow 中的高效计算。&lt;/p&gt;
+&lt;p&gt;Layer Normalization 是一种在深度学习中常用的技术，旨在对每个样本的特征进行归一化，使得特征的均值为0，方差为1，从而加速训练并提高模型的性能。&lt;/p&gt;
+&lt;p&gt;代码解释：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;norm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;axis&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;epsilon&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;1e-5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;s2&#34;&gt;&amp;#34;&amp;#34;&amp;#34;Normalize to mean = 0, std = 1, then do a diagonal affine transform.&amp;#34;&amp;#34;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;variable_scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;n_state&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;value&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;g&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;g&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n_state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;constant_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n_state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;constant_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;x&lt;/code&gt;&lt;/strong&gt;: 输入张量，通常是经过激活函数后的某一层的输出。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;scope&lt;/code&gt;&lt;/strong&gt;: 变量作用域，用于创建和管理变量。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;axis=-1&lt;/code&gt;&lt;/strong&gt;: 归一化时的维度，通常在 Layer Normalization 中是最后一维（即特征维度）。&lt;code&gt;axis=-1&lt;/code&gt; 表示归一化最后一维，通常是一个样本的所有特征。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;epsilon=1e-5&lt;/code&gt;&lt;/strong&gt;: 为了避免在除法中出现除零错误，&lt;code&gt;epsilon&lt;/code&gt; 是一个很小的常数（默认值为 1e−51e-51e−5）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;n_state = x.shape[-1].value&lt;/code&gt;&lt;/strong&gt;: 获取输入张量 &lt;code&gt;x&lt;/code&gt; 在最后一维的大小，代表特征数目。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;接下来，定义了两个变量 &lt;code&gt;g&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt;，分别用于对归一化后的结果进行线性变换：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;g&lt;/code&gt;&lt;/strong&gt; 是缩放因子（通常称为 Gamma）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;b&lt;/code&gt;&lt;/strong&gt; 是平移因子（通常称为 Beta）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;       &lt;span class=&#34;n&#34;&gt;g&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;g&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n_state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;constant_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n_state&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;constant_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;g&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 都是与输入 &lt;code&gt;x&lt;/code&gt; 的最后一维特征数目相同的向量。&lt;code&gt;g&lt;/code&gt; 初始化为 1，&lt;code&gt;b&lt;/code&gt; 初始化为 0。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;归一化步骤&#34;&gt;归一化步骤：
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        u = tf.reduce_mean(x, axis=axis, keepdims=True)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        s = tf.reduce_mean(tf.square(x - u), axis=axis, keepdims=True)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;u = tf.reduce_mean(x, axis=axis, keepdims=True)&lt;/code&gt;&lt;/strong&gt;: 计算输入 &lt;code&gt;x&lt;/code&gt; 在指定 &lt;code&gt;axis&lt;/code&gt; 维度上的均值（平均值）。这里，&lt;code&gt;axis&lt;/code&gt; 默认为 -1，即沿着最后一维计算均值。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;s = tf.reduce_mean(tf.square(x - u), axis=axis, keepdims=True)&lt;/code&gt;&lt;/strong&gt;: 计算输入 &lt;code&gt;x&lt;/code&gt; 与均值 &lt;code&gt;u&lt;/code&gt; 的差的平方的平均值，即方差。&lt;code&gt;keepdims=True&lt;/code&gt; 保证输出维度与输入相同，便于后续操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        x = (x - u) * tf.rsqrt(s + epsilon)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;dl&gt;
+&lt;dt&gt;&lt;code&gt;x = (x - u) * tf.rsqrt(s + epsilon)&lt;/code&gt;&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;对输入&lt;/p&gt;
+&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;x
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;进行标准化（即归一化处理），使得均值为 0，方差为 1。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;x - u&lt;/code&gt;：减去均值，使得每个元素的均值为 0。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.rsqrt(s + epsilon)&lt;/code&gt;：计算标准差的倒数并进行缩放，&lt;code&gt;rsqrt&lt;/code&gt; 是 &lt;code&gt;1 / sqrt(x)&lt;/code&gt;。&lt;code&gt;epsilon&lt;/code&gt; 用于防止除 0 错误。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        x = x * g + b
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        return x
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;x = x \* g + b&lt;/code&gt;&lt;/strong&gt;: 最后，对标准化后的 &lt;code&gt;x&lt;/code&gt; 进行线性变换，使用参数 &lt;code&gt;g&lt;/code&gt;（缩放因子）和 &lt;code&gt;b&lt;/code&gt;（平移因子）。这种变换使得归一化的结果可以恢复一定的表达能力，类似于 Batch Normalization 中的 affine 变换。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;return x&lt;/code&gt;&lt;/strong&gt;: 返回归一化并经过变换的结果。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def split_states(x, n):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;Reshape the last dimension of x into [n, x.shape[-1]/n].&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    *start, m = shape_list(x)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return tf.reshape(x, start + [n, m//n])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这个函数 &lt;code&gt;split_states&lt;/code&gt; 的作用是将输入张量 &lt;code&gt;x&lt;/code&gt; 的最后一维拆分成两个部分，其中一个部分的大小是 &lt;code&gt;n&lt;/code&gt;，另一个部分的大小是 &lt;code&gt;m // n&lt;/code&gt;（&lt;code&gt;m&lt;/code&gt; 是输入张量的最后一维大小）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;\*start, m = shape_list(x)&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;shape_list(x)&lt;/code&gt; 会返回张量 &lt;code&gt;x&lt;/code&gt; 的形状（作为一个列表）。&lt;code&gt;*start&lt;/code&gt; 会将除了最后一维之外的所有维度（即张量的前几维）存入 &lt;code&gt;start&lt;/code&gt; 变量中，&lt;code&gt;m&lt;/code&gt; 则保存张量最后一维的大小。&lt;/li&gt;
+&lt;li&gt;例如，如果 &lt;code&gt;x&lt;/code&gt; 的形状是 &lt;code&gt;[batch_size, time_steps, features]&lt;/code&gt;，那么 &lt;code&gt;start&lt;/code&gt; 将保存 &lt;code&gt;[batch_size, time_steps]&lt;/code&gt;，&lt;code&gt;m&lt;/code&gt; 将保存 &lt;code&gt;features&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;tf.reshape(x, start + [n, m // n])&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;start&lt;/code&gt; 是 &lt;code&gt;x&lt;/code&gt; 的前几个维度的列表，&lt;code&gt;n&lt;/code&gt; 是传入的参数，表示你想将最后一维拆分成 &lt;code&gt;n&lt;/code&gt; 部分，&lt;code&gt;m // n&lt;/code&gt; 是每一部分的大小。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.reshape&lt;/code&gt; 函数将输入张量 &lt;code&gt;x&lt;/code&gt; 重新调整形状，形状变为 &lt;code&gt;[start, n, m // n]&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;例如，如果 &lt;code&gt;x&lt;/code&gt; 的形状是 &lt;code&gt;[batch_size, time_steps, features]&lt;/code&gt;，并且传入 &lt;code&gt;n = 2&lt;/code&gt;，那么新的形状将是 &lt;code&gt;[batch_size, time_steps, 2, features // 2]&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;def merge_states(x):
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &amp;#34;&amp;#34;&amp;#34;Smash the last two dimensions of x into a single dimension.&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    *start, a, b = shape_list(x)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    return tf.reshape(x, start + [a*b])
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这个函数 &lt;code&gt;merge_states&lt;/code&gt; 的作用是将输入张量 &lt;code&gt;x&lt;/code&gt; 的最后两个维度合并成一个维度。也就是说，它通过将最后两个维度相乘，将它们“压扁”为一个新的维度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;\*start, a, b = shape_list(x)&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;shape_list(x)&lt;/code&gt; 返回张量 &lt;code&gt;x&lt;/code&gt; 的形状，作为一个列表。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;*start&lt;/code&gt; 会将 &lt;code&gt;x&lt;/code&gt; 的所有维度（除了最后两个维度）存入 &lt;code&gt;start&lt;/code&gt;，&lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 分别保存 &lt;code&gt;x&lt;/code&gt; 的倒数第二维和最后一维的大小。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;举个例子：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设 &lt;code&gt;x&lt;/code&gt; 的形状是 &lt;code&gt;[batch_size, time_steps, features, channels]&lt;/code&gt;，那么 &lt;code&gt;start = [batch_size, time_steps, features]&lt;/code&gt;，&lt;code&gt;a = features&lt;/code&gt;，&lt;code&gt;b = channels&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;tf.reshape(x, start + [a \* b])&lt;/code&gt;&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tf.reshape(x, start + [a * b])&lt;/code&gt; 会将 &lt;code&gt;x&lt;/code&gt; 重新调整形状，新的形状由 &lt;code&gt;start&lt;/code&gt;（原先的所有维度，除了最后两个）和 &lt;code&gt;a * b&lt;/code&gt;（将最后两个维度相乘的结果）组成。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;a * b&lt;/code&gt; 是将原本的最后两个维度合并成一个新的维度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个 &lt;code&gt;conv1d&lt;/code&gt; 函数实现了一个 &lt;strong&gt;1D 卷积&lt;/strong&gt; 操作。虽然它的名字和传统的 1D 卷积类似，但它实际上通过矩阵乘法和适当的形状变换来模拟 1D 卷积的操作。以下是代码逐行解释：&lt;/p&gt;
+&lt;h3 id=&#34;代码解释&#34;&gt;代码解释：
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;conv1d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;w_init_stdev&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.02&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;variable_scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scope&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;start&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nx&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;shape_list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;w&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;random_normal_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stddev&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;w_init_stdev&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_variable&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;initializer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;constant_initializer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reshape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;matmul&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reshape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tf&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reshape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;w&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;nf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]))&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;start&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;nf&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;c&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;\*start, nx = shape_list(x)&lt;/code&gt;&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;shape_list(x)&lt;/code&gt; 返回张量 &lt;code&gt;x&lt;/code&gt; 的形状，作为一个列表。&lt;code&gt;*start&lt;/code&gt; 会将除了最后一维之外的所有维度（即张量的前几维）存入 &lt;code&gt;start&lt;/code&gt;，&lt;code&gt;nx&lt;/code&gt; 保存 &lt;code&gt;x&lt;/code&gt; 的最后一维大小。&lt;/li&gt;
+&lt;li&gt;比如，如果 &lt;code&gt;x&lt;/code&gt; 的形状是 &lt;code&gt;[batch_size, length, in_channels]&lt;/code&gt;，那么 &lt;code&gt;start&lt;/code&gt; 将是 &lt;code&gt;[batch_size, length]&lt;/code&gt;，&lt;code&gt;nx&lt;/code&gt; 就是 &lt;code&gt;in_channels&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;w = tf.get_variable(&#39;w&#39;, [1, nx, nf], initializer=tf.random_normal_initializer(stddev=w_init_stdev))&lt;/code&gt;&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;创建一个卷积核（权重） &lt;code&gt;w&lt;/code&gt;，其形状为 &lt;code&gt;[1, nx, nf]&lt;/code&gt;。这里的 &lt;code&gt;1&lt;/code&gt; 是卷积核的大小（即卷积操作是 1D 的），&lt;code&gt;nx&lt;/code&gt; 是输入的最后一维大小（通常是输入通道数），&lt;code&gt;nf&lt;/code&gt; 是卷积操作后输出通道的数量。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;initializer=tf.random_normal_initializer(stddev=w_init_stdev)&lt;/code&gt; 初始化权重值为从正态分布中采样，标准差为 &lt;code&gt;w_init_stdev&lt;/code&gt;，默认为 &lt;code&gt;0.02&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;b = tf.get_variable(&#39;b&#39;, [nf], initializer=tf.constant_initializer(0))&lt;/code&gt;&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;创建偏置 &lt;code&gt;b&lt;/code&gt;，其形状为 &lt;code&gt;[nf]&lt;/code&gt;，即与输出通道数相同，初始化为零。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;c = tf.reshape(tf.matmul(tf.reshape(x, [-1, nx]), tf.reshape(w, [-1, nf])) + b, start + [nf])&lt;/code&gt;&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tf.reshape(x, [-1, nx])&lt;/code&gt;&lt;/strong&gt;: 将输入张量 &lt;code&gt;x&lt;/code&gt; 重塑为形状 &lt;code&gt;[-1, nx]&lt;/code&gt;，即将所有前面的维度展平，保留最后一维 &lt;code&gt;nx&lt;/code&gt;。这一步相当于将输入的多维张量展平成二维矩阵，每一行代表一个数据样本的输入通道。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tf.reshape(w, [-1, nf])&lt;/code&gt;&lt;/strong&gt;: 将卷积核 &lt;code&gt;w&lt;/code&gt; 重塑为形状 &lt;code&gt;[-1, nf]&lt;/code&gt;，这意味着卷积核的权重被展平为一个矩阵，其中每个输入通道的权重被分配到输出通道。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tf.matmul(...)&lt;/code&gt;&lt;/strong&gt;: 执行矩阵乘法。此处是将展平后的输入张量 &lt;code&gt;x&lt;/code&gt; 与展平后的卷积核 &lt;code&gt;w&lt;/code&gt; 相乘，类似于卷积操作中的加权求和过程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;+ b&lt;/code&gt;&lt;/strong&gt;: 将偏置加到结果中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;tf.reshape(..., start + [nf])&lt;/code&gt;&lt;/strong&gt;: 将矩阵乘法后的结果再重塑回原来的形状，保留除了最后一维以外的所有维度，最后一维变为 &lt;code&gt;nf&lt;/code&gt;，即输出通道数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;return c&lt;/code&gt;&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;返回卷积操作后的结果 &lt;code&gt;c&lt;/code&gt;，它的形状是 &lt;code&gt;[batch_size, length, nf]&lt;/code&gt;，即输出的批次大小、长度和输出通道数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结：
+&lt;/h3&gt;&lt;p&gt;这个 &lt;code&gt;conv1d&lt;/code&gt; 函数实现的是一种通过矩阵乘法模拟 1D 卷积操作的方式。传统的 1D 卷积通过滑动窗口对输入进行局部加权求和，而这个实现通过将输入展平成矩阵后与卷积核进行矩阵乘法，从而实现类似的效果。&lt;/p&gt;
+&lt;h3 id=&#34;主要特点&#34;&gt;主要特点：
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;权重形状&lt;/strong&gt;：&lt;code&gt;[1, nx, nf]&lt;/code&gt;，表示卷积核的大小为 &lt;code&gt;1xnx&lt;/code&gt;，即卷积操作是对输入的每个位置进行加权求和，输出通道数为 &lt;code&gt;nf&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;矩阵乘法实现卷积&lt;/strong&gt;：通过 &lt;code&gt;tf.matmul&lt;/code&gt; 将输入张量和卷积核做矩阵乘法，而不是传统的滑动窗口卷积。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;展平操作&lt;/strong&gt;：输入张量和卷积核都通过 &lt;code&gt;tf.reshape&lt;/code&gt; 进行了展平处理，以便进行矩阵乘法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这种方法虽然在实现上与传统的卷积不同，但效果是相同的，并且可以通过矩阵乘法的方式提高计算效率或适应某些特定的任务需求。&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>第4周工作总结</title>
         <link>https://JiangZhiyu-1024.github.io/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/</link>
         <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
@@ -197,214 +645,6 @@ $$&lt;p&gt;
 其中，𝑶 ∈$R^{H \times V}$ 是模型最终的输出，代表下一个词在词表上的概率分布；$W^L$ ∈ $R^{H \times V}$ 是将输入表示映射到词汇表维度的参数矩阵，而$W^LY_L$是概率化前的中间值，通常被称为logits。&lt;/p&gt;
 &lt;p&gt;[1]. JacobDevlin et al. “BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding”. In: NAACL-HLT. 2019.&lt;/p&gt;
 &lt;p&gt;[2]. Alec Radford et al. “Improving language understanding by generative pre-training”. In: OpenAI Blog (2018).&lt;/p&gt;
-</description>
-        </item>
-        <item>
-        <title>LLM预训练数据准备</title>
-        <link>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</link>
-        <pubDate>Mon, 28 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/road-5710320_1280.jpg" alt="Featured image of post LLM预训练数据准备" /&gt;&lt;h1 id=&#34;大模型预训练数据准备&#34;&gt;大模型预训练数据准备
-&lt;/h1&gt;&lt;h2 id=&#34;数据来源&#34;&gt;✅数据来源
-&lt;/h2&gt;&lt;p&gt;根据来源不同，预训练数据主要分为两种类型：通用文本数据和专用文本数据&lt;/p&gt;
-&lt;h3 id=&#34;通用文本数据&#34;&gt;🔥通用文本数据
-&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;网页：随着互联网的普及与发展，网页的数据规模持续扩大，覆盖的内容类型也变得丰富多样。使用大规模网页文本数据进行预训练，有助于大语言模型获取多样化的语言知识，并增强其自然语言理解和生成的能力[1,2]。为了便于使用网页数据进行预训练或相关研究，相关机构已经爬取并发布了多个大规模的网页数据集，包括C4[2]、RefinedWeb[3]、CC-Stories [4] 等。然而，这些网页数据集中既包含了维基百科这种高质量文本，也不可避免地引入了广告网页等低质量文本。因此，在进行预训练之前，对网页进行筛选和处理显得尤为重要，这直接关系到最终数据的质量与预训练效果。&lt;/li&gt;
-&lt;li&gt;书籍：相较于其他语料，书籍中的文本内容往往更为正式与详实，篇幅也相对较长。这些书籍文本在大语言模型的学习过程中，发挥着非常重要的作用，它们不仅能够帮助模型积累丰富的语言知识，还可以加强其长程语义关系的建模。现有的研究工作通常使用Books3和Bookcorpus2等开源书籍数据集。这些数据可以在Pile 数据集中获得[5]。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;专用文本数据&#34;&gt;💯专用文本数据
-&lt;/h3&gt;&lt;p&gt;专用数据集有助于提升大语言模型解决特定下游任务的能力。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;多语文本. 在预训练语料中，加入多语言的文本数据可以增强模型的多语理解与生成能力。BLOOM[6]模型和PaLM[7]模型在其预训练语料中分别使用了涵盖46种和122种语言的多语数据，进而使得这两个模型在翻译、跨语言摘要和问答等多语言任务中性能表现优异。相比于仅针对单一目标语言进行微调的模型，在多语言语料库上训练过的大语言模型能够更好地建立多语言间的语义关联，为跨语言理解与对话任务提供支持。不仅如此，多语言数据还能有效增加数据的多样性，从而有助于提升模型的综合性能。&lt;/li&gt;
-&lt;li&gt;科学文本. 随着科学研究的不断发展，相关出版物的数量不断增加。为了增强大语言模型对科学知识的理解，可以将科学文本数据加入到模型的预训练语料中。通过在大规模的科学文本语料上进行预训练，大语言模型可以在自然科学以及工程技术方面建立坚实的知识基础，从而在科学问答与推理等任务上取得出色的表现[8]。构建科学文本语料的常用方法是收集arXiv论文、科学教材、数学网页等科学资源。然而，由于科学文本数据中包含数学公式、蛋白质序列等特殊符号，通常需要采用特定的分词和预处理技术，将这些不同格式的数据转化为大语言模型能够处理的统一格式。&lt;/li&gt;
-&lt;li&gt;代码. 代码能力目前已经成为大语言模型备受关注的一种能力。为了提高模型的代码能力，需要在大量代码语料上进行预训练，进而提高其所生成的程序质量。这些由大语言模型编写的程序甚至可以成功通过专家设计的单元测试用例[9] 或解决具有挑战性的算法竞赛问题[10]。一般来说，常用于大语言模型预训练的代码语料有两种来源，第一种是StackExchange等编程问答社区的数据，第二种是 GitHub 等开源项目仓库。这两种来源包含了代码以及对应的注释和文档。与自然语言文本相比，代码主要以结构化的编程语言形式呈现。在代码数据上训练能够提升模型的结构化语义理解与逻辑推理能力[11]。同时，代码中的函数调用关系还有助于增强模型的工具使用与学习能力[12]。此外，将推理任务格式化为代码 可以帮助大语言模型生成更准确的结果[13,14]。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id=&#34;数据预处理&#34;&gt;🗡数据预处理
-&lt;/h2&gt;&lt;p&gt;当收集了丰富的文本数据之后，为了确保数据的质量和效用，还需要对数据进行预处理，从而消除低质量、冗余、无关甚可能有害的数据。&lt;/p&gt;
-&lt;h3 id=&#34;质量过滤&#34;&gt;🌈质量过滤
-&lt;/h3&gt;&lt;h4 id=&#34;基于启发式规则的方法p74&#34;&gt;基于启发式规则的方法（P74）
-&lt;/h4&gt;&lt;p&gt;设计规则来针对地识别和剔除低质量的文本数据[6,15]。&lt;/p&gt;
-&lt;p&gt;基于语种的过滤.&lt;/p&gt;
-&lt;p&gt;基于简单统计指标的过滤.&lt;/p&gt;
-&lt;p&gt;基于关键词的过滤.&lt;/p&gt;
-&lt;h5 id=&#34;思考启发式规则过滤需要自己设计并决定使用什么规则很考验想法的合理性和这方面的经验&#34;&gt;思考：启发式规则过滤需要自己设计并决定使用什么规则，很考验想法的合理性和这方面的经验。
-&lt;/h5&gt;&lt;h4 id=&#34;基于分类器的方法&#34;&gt;基于分类器的方法
-&lt;/h4&gt;&lt;p&gt;训练用于判别数据质量的文本分类器，进行预训练语料的清洗。&lt;/p&gt;
-&lt;p&gt;可以将维基百科等高质量数据作为正样本，同时从网页中筛选出含有不良内容或低质量数据的样本作为负样本。利用这个训练好的文本分类器，能够精准地识别和过滤低质量数据，从而显著提升整个语料库的质量。&lt;/p&gt;
-&lt;p&gt;注意：基于分类器的方法也可能无意中删除一些低资源但高质量的文本，如文言文数据等，数据清洗人员需要意识到这种情况，并且建立合理的数据召回与保留机制。&lt;/p&gt;
-&lt;p&gt;目前常用来实现分类器的方法包括：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;轻量级模型（如FastText等）&lt;/li&gt;
-&lt;li&gt;可微调的预训练语言模型（如BERT、BART或者LLaMA等）&lt;/li&gt;
-&lt;li&gt;闭源大语言模型API（如 GPT-4、Claude 3）&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;这三个方法各自具有不同的优缺点：轻量级模型效率较高，但是分类的准确率和精度可能受限于模型能力；预训练语言模型可以针对性微调， 但是分类性能的通用性和泛化性仍然有一定的限制；闭源大语言模型的能力较强， 但是无法灵活针对任务进行适配，而且用于预训练数据清洗需要花费较高的成本。 对于后两种方法来说，除了简单地进行数据过滤，还可以针对性进行数据的改写，从而使得一些整体质量还不错、但存在局部数据问题的文本仍然可以被保留下来使用。&lt;/p&gt;
-&lt;p&gt;效率问题：&lt;/p&gt;
-&lt;p&gt;启发式规则写得好，过滤起来快又好，分类器更精准但是慢，可以结合一下，首先利用启发式规则进行初步筛选，以快速排除不符合要求的文档，随后再采用分类器方法进一步精细过滤，确保最终筛选出的语料具有较好的文本质量。在这一过程中，还可以同时应用多种分类器，可以先使用轻量级分类器进行数据过滤，进而使用更为有效但是资源消耗更高的分类器在粗滤后的数据上再次进行选择。&lt;/p&gt;
-&lt;p&gt;这看起来怎么似曾相识呢？果然计算机里面好多知识都是互通的。&lt;/p&gt;
-&lt;h3 id=&#34;敏感内容过滤&#34;&gt;📚敏感内容过滤
-&lt;/h3&gt;&lt;p&gt;与质量过滤类似，不同类型的数据内容往往需要采用特定的过滤规则。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;过滤有毒内容：为了精确过滤含有有毒内容的文本，可以采用基于分类器的过滤方法。Jigsaw评论数据集[16]提供了用于训练毒性分类器的数据。该数据集收集了近160K条论坛评论数据，每条评论都经过细致的标注，包括“有毒”、“严重有毒”、“有威胁”、“侮辱性”、“暴力”以及“身份仇恨”等六个类别。利用这一数据集进行训练，可以构建出高效的毒性文本分类器。通过设置合理的阈值，训练完成的分类器将能够有效识别并过滤掉含有有毒内容的信息。在进行分类阈值设置时，需要在精确度和召回率之间寻求平衡，避免过多或者过少去除候选数据。Dolma的技术报告[17]指出，使用高阈值时去除的数据会过少，语料中未过滤掉的有毒内容会导致模型在下游任务上的性能下降；而低阈值则会过滤更多的有毒内容，但同时也会造成大量数据的浪费。考虑到后续的预处理操作（如质量筛选、去重等）同样能够有效剔除有害内容，Dolma选择为分类器设定了一个相对较高的阈值（0.4），从而保留更多的候选数据。最终，Dolma在这一阶段仅过滤了CommonCrawl中30%左右的数据。&lt;/li&gt;
-&lt;li&gt;过滤隐私内容：预训练文本数据大多来自互联网，其中可能包括用户生成的敏感信息或可识别的个人信息（Personally Identifiable Information, PII），如姓名、地址和电话号码等。这些信息如果不加处理，将增加隐私泄露的潜在风险。例如，在2023年11月有用户发现，反复要求ChatGPT重复某个单词可能会使其无意间泄露训练数据中的个人隐私信息，这个漏洞现在已经修复。因此，在预处理阶段，需要去除这些可识别的个人信息。一种直接且有效的方法是使用启发式方法，如关键字识别，来检测和删除这些私人信息[18]。Dolma采用了基于规则的方法来过滤数据集中的隐私内容，主要标注了三类敏感信息：邮箱地址、IP地址以及电话号码。在文本收集过程中，一旦检测到这些隐私信息，Dolma会根据其出现的频率采取不同的处理策略。具体来说，如果某个文档中的隐私信息少于五条，Dolma 会使用特定的词元（如“|||EMAIL_ADDRESS|||”、“|||PHONE_NUMBER|||” 和“|||IP_ADDRESS|||”）来替换这些信息，以保护用户的隐私。然而，如果文档中的隐私信息达到六条或更多，Dolma会选择直接删除整个文档。这是因为当文档中频繁出现隐私信息时，很可能还隐藏着其他未标注的敏感内容。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id=&#34;数据去重&#34;&gt;📈数据去重
-&lt;/h3&gt;&lt;p&gt;由于大语言模型具有较强的数据拟合与记忆能力，很容易习得训练数据中的重复模式，可能导致对于这些模式的过度学习。总体来说，去重算法的设计可以基于不同的计算粒度以及匹配方法。&lt;/p&gt;
-&lt;p&gt;计算粒度.去重可以在句子级别、文档级别和数据集级别等多种粒度上进行。现有方法主要依靠单词或 n 元词组的重叠这类表层特征，来衡量文档的重叠比率，进而检测和删除包含相似 内容的重复文档。现有的数据集往往采用多阶段、多粒度的方式来实现高效的去重。首先针对数据集和文档级别进行去重，旨在去除那些具有高度相似甚至完全一致内容的文档，例如多个URL可能具有相同的网页内容，或者网页数据集和新闻数据集中包含相同的新闻文档。随后，可以进一步在句子级别实现更为精细的去重。例如，可以计算两个句子之间公共子串的长度（公共子串长度，好熟悉，算法无处不在。），当其长度过长时直接删除某一个句子。&lt;/p&gt;
-&lt;p&gt;用于去重的匹配方法.在去重过程中，可以使用精确匹配算法（即每个字符完全相同）或近似匹配算法（基于某种相似性度量）[19]。对于精确匹配来说，通常使用后缀数组来匹配最小长度的完全相同子串[20]。对于近似匹配来说，可以采用局部敏感哈希（Locality-SensitiveHashing,LSH）算法，如最小哈希（MinHash） 来实现。考虑到预训练数据集合的规模非常大，实现中可以综合考虑去重效率和去重效果之间的权衡。例如，RefinedWeb在文档层面采用了开销较小的近似匹配技术来实现去重，而在句子层面则采用了精确匹配算法来确保去重的准确性。&lt;/p&gt;
-&lt;h2 id=&#34;词元化&#34;&gt;⭐词元化
-&lt;/h2&gt;&lt;p&gt;词元化（Tokenization）是数据预处理中的一个关键步骤，旨在将原始文本分割成模型可识别和建模的词元序列，作为大语言模型的输入数据。&lt;/p&gt;
-&lt;h3 id=&#34;bpe分词&#34;&gt;🌼BPE分词
-&lt;/h3&gt;&lt;p&gt;BPE算法从一组基本符号（例如字母和边界字符）开始，迭代地寻找语料库中的两个相邻词元，并将它们替换为新的词元，这一过程被称为合并。合并的选择标准是计算两个连续词元的共现频率，也就是每次迭代中，最频繁出现的一对词元会被选择与合并。合并过程将一直持续达到预定义的词表大小。&lt;/p&gt;
-&lt;h4 id=&#34;bpe算法的代码如下&#34;&gt;BPE算法的代码如下
-&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;40
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;re&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;collectionsimportdefaultdict&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;extract_frequencies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sequence&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;#给定一个字符串，计算字符串中的单词出现的频率，并返回词表（一个词到频率的映射字典）。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;token_counter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Counter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;item&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;insequence&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;tokens&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;item&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;lt;/w&amp;gt;&amp;#39;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;token_counter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tokens&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;token_counter&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;frequency_of_pairs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;frequencies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#给定一个词频字典，返回一个从字符对到频率的映射字典。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;pairs_count&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Counter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;token&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;frequencies&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;items&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;token&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;split&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;inrange&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;n&#34;&gt;pair&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chars&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;n&#34;&gt;pairs_count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;count&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pairs_count&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;merge_vocab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge_pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vocab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;c1&#34;&gt;#给定一对相邻词元和一个词频字典，将相邻词元合并为新的词元，并返回新的词表。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;re_pattern&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;escape&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge_pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;pattern&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;re&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;compile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sa&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;(?&amp;lt;!\S)&amp;#39;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;re_pattern&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;(?!\S)&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;updated_tokens&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pattern&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge_pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;token&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;freq&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;token&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;freq&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;invocab&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;items&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()}&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;updated_tokens&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;encode_with_bpe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;texts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iterations&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;#给定待分词的数据以及最大合并次数，返回合并后的词表。&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;vocab_map&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;extract_frequencies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;texts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;range&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iterations&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;pair_freqs&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;frequency_of_pairs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vocab_map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;not&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pair_freqs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;            &lt;span class=&#34;k&#34;&gt;break&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;most_common_pair&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pair_freqs&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;most_common&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;vocab_map&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;merge_vocab&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;most_common_pair&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vocab_map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vocab_map&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;num_merges&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1000&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;bpe_pairs&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;encode_with_bpe&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;num_merges&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;字节级别的BPE（Byte-levelBPE,B-BPE）是BPE算法的一种拓展。它将字节视为合并操作的基本符号，从而可以实现更细粒度的分割，且解决了未登录词问题。采用这种词元化方法的代表性语言模型包括GPT-2、BART和LLaMA。具体来说，如果将所有Unicode字符都视为基本字符，那么包含所有可能基本字符的基本词表会非常庞大（例如将中文的每个汉字当作一个基本字符）。而将字节作为基本词表可以设置基本词库的大小为256，同时确保每个基本字符都包含在词汇中。例如，GPT-2的词表大小为50,257，包括256个字节的基本词元、一个特殊的文末词元以及通过50,000次合并学习到的词元。&lt;/p&gt;
-&lt;h4 id=&#34;bpe算法的具体流程示例&#34;&gt;BPE算法的具体流程示例
-&lt;/h4&gt;&lt;p&gt;假设语料中包含了五个英文单词： “loop”，“pool”，“loot”，“tool”，“loots”&lt;/p&gt;
-&lt;p&gt;在这种情况下，BPE假设的初始词汇表即为： [“l”,“o”,“p”,“t”,“s”]&lt;/p&gt;
-&lt;p&gt;在实践中，基础词汇表可以包含所有ASCII字符，也可能包含一些Unicode字符 （比如中文的汉字）。如果正在进行分词的文本中包含了训练语料库中没有的字 符，则该字符将被转换为未知词元（如“&amp;lt;UNK&amp;gt;”）。 假设单词在语料库中的频率如下： （“loop”，15），（“pool”，10），（“loot”，10），（“tool”，5），（“loots”，8）&lt;/p&gt;
-&lt;p&gt;其中，出现频率最高的是“oo”，出现了48次，因此，学习到的第一条合并规则 是（“o”,“o”）→“oo”，这意味着“oo”将被添加到词汇表中，并且应用这一 合并规则到语料库的所有词汇。在这一阶段结束时，词汇和语料库如下所示： 词汇：[“l”,“o”,“p”,“t”,“s”,“oo”] 语料库：（“l” “oo” “p”，15），（“p” “oo” “l”，10），（“l” “oo” “t”， 10），（“t” “oo” “l”，5），（“l” “oo” “t” “s”，8）&lt;/p&gt;
-&lt;p&gt;此时，出现频率最高的配对是（“l”，“oo”），在语料库中出现了33次，因此学习 到的第二条合并规则是（“l”，“oo”）→“loo”。将其添加到词汇表中并应用到所 有现有的单词，可以得到： 词汇：[“l”,“o”,“p”,“t”,“s”,“oo”,“loo”] 语料库：（“loo” “p”，15），（“p” “oo” “l”，10），（“loo” “t”，10），（“t” “oo” “l”， 5），（“loo” “t” “s”，8）&lt;/p&gt;
-&lt;p&gt;现在，最常出现的词对是（“loo”,“t”），因此可以学习合并规则（“loo”,“t”） →“loot”，这样就得到了第一个三个字母的词元： 词汇：[“l”,“o”,“p”,“t”,“s”,“oo”,“loo”,“loot”] 语料库：（“loo” “p”，15），（“p” “oo” “l”，10），（“loot”，10），（“t” “oo” “l”， 5），（“loot” “s”，8） 可以重复上述过程，直到达到所设置的终止词汇量。&lt;/p&gt;
-&lt;h3 id=&#34;wordpiece-分词&#34;&gt;🎵WordPiece 分词
-&lt;/h3&gt;&lt;p&gt;WordPiece分词和BPE分词的想法非常相似，都是通过迭代合并连续的词元，但是合并的选择标准略有不同。在合并前，WordPiece分词算法会首先训练一个语言模型，并用这个语言模型对所有可能的词元对进行评分。然后，在每次合并时，它都会选择使得训练数据的似然性增加最多的词元对。&lt;/p&gt;
-&lt;p&gt;谷歌并未发布WordPiece分词算法的官方实现&lt;/p&gt;
-&lt;p&gt;与BPE类似，WordPiece 分词算法也是从一个小的词汇表开始，其中包括模型使用的特殊词元和初始词汇表。由于它是通过添加前缀（如BERT的##）来识别子词的，因此每个词的初始拆分都是将前缀添加到词内的所有字符上。举例来说，“word”会被拆分为：“w##o ##r ##d”。与BPE方法的另一个不同点在于，WordPiece分词算法并不选择最频繁的词对，而是使用下面的公式为每个词对计算分数：
-&lt;/p&gt;
-$$
-得分 = \frac{\text{词对出现的频率}}{\text{第一个词出现的频率} \times \text{第二个词出现的频率}}
-$$&lt;h3 id=&#34;unigram-分词&#34;&gt;🐉Unigram 分词
-&lt;/h3&gt;&lt;p&gt;与BPE分词和WordPiece 分词不同，Unigram 分词方法 [21] 从语料库的一组足够大的字符串或词元初始集合开始，迭代地删除其中的词元，直到达到预期的词表大小。它假设从当前词表中删除某个词元，并计算训练语料的似然增加情况，以此来作为选择标准。这个步骤是基于一个训练好的一元语言模型来进行的。为估计一元语言模型，它采用期望最大化（Expectation–Maximization,EM）算法：在每次迭代中，首先基于旧的语言模型找到当前最优的分词方式，然后重新估计一元概率从而更新语言模型。这个过程中一般使用动态规划算法（即维特比算法，Viterbi Algorithm）来高效地找到语言模型对词汇的最优分词方式。采用这种分词方法的代表性模型包括T5和mBART。&lt;/p&gt;
-&lt;h2 id=&#34;数据调度&#34;&gt;🍌数据调度
-&lt;/h2&gt;&lt;p&gt;数据调度（DataScheduling）主要关注两个方面：各个数据源的混合比例以及各数据源用于训练的顺序（称为数据课程，Data Curriculum）。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963.png&#34;
-	width=&#34;684&#34;
-	height=&#34;252&#34;
-	srcset=&#34;https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu14172581646839069204.png 480w, https://JiangZhiyu-1024.github.io/p/pretraining-data-preparation-for-large-models/image-20241028165311963_hu10794267152505365926.png 1024w&#34;
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;image-20241028165311963&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;271&#34;
-		data-flex-basis=&#34;651px&#34;
-	
-&gt;&lt;/p&gt;
-&lt;center&gt;预训练大语言模型时数据调度的示意图&lt;/center&gt;
-&lt;h3 id=&#34;数据混合&#34;&gt;🎈数据混合
-&lt;/h3&gt;&lt;p&gt;在预训练期间，将根据混合比例从不同数据源中采样数据：数据源的权重越大，从中选择的数据就越多。进一步，可能会对每个数据源的全部数据进行上采样或下采样，以创建特定的数据混合集合作为预训练数据。&lt;/p&gt;
-&lt;h3 id=&#34;数据课程&#34;&gt;🎉数据课程
-&lt;/h3&gt;&lt;p&gt;除了设置有效的数据混合配比外，在训练过程中对于预训练数据的顺序进行合适的安排也比较重要。具体来说，数据课程是指按照特定的顺序安排预训练数据进行模型的训练。例如，从简单/通用的数据开始，逐渐引入更具挑战性/专业化的数据。更广泛地说，它可以指训练期间在不同阶段使用不同的数据源混合配比。为了设定合适的数据课程，一种实用方法是基于专门构建的评测基准监控大语言模型的关键能力的学习过程，然后在预训练期间动态调整数据的混合配比。&lt;/p&gt;
-&lt;h2 id=&#34;参考文献&#34;&gt;🧨参考文献
-&lt;/h2&gt;&lt;p&gt;[1]. Alec Radford et al. “Language models are unsupervised multitask learners”. In: OpenAI Blog (2019).&lt;/p&gt;
-&lt;p&gt;[2]. Colin Raffel et al. “Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer”. In: J. Mach. Learn. Res. (2020).&lt;/p&gt;
-&lt;p&gt;[3]. JiantaoQiuetal. “WanJuan-CC:ASafeandHigh-QualityOpen-sourcedEnglish Webtext Dataset”. In: arXiv preprint arXiv:2402.19282 (2024).&lt;/p&gt;
-&lt;p&gt;[4]. Trieu H. Trinh and Quoc V. Le. “A Simple Method for Commonsense Reasoning”. In: arXiv preprint arXiv:1806.02847 (2018).&lt;/p&gt;
-&lt;p&gt;[5]. LeoGaoetal.“ThePile: An 800GBDataset of Diverse Text for Language Modeling”. In: arXiv preprint arXiv:2101.00027 (2021).&lt;/p&gt;
-&lt;p&gt;[6]. Teven Le Scao et al. “BLOOM: A 176B-Parameter Open-Access Multilingual Language Model”. In: arXiv preprint arXiv:2211.05100 (2022).&lt;/p&gt;
-&lt;p&gt;[7]. Aakanksha Chowdhery et al. “PaLM: Scaling Language Modeling with Pathways”. In: arXiv preprint arXiv:2204.02311 (2022).&lt;/p&gt;
-&lt;p&gt;[8]. Tarek Saier, Johan Krause, and Michael Färber. “unarXive 2022: All arXiv Publications Pre-Processed for NLP, Including Structured Full-Text and Citation Network”. In: arXiv preprint arXiv:2303.14957 (2023).&lt;/p&gt;
-&lt;p&gt;[9]. MarkChenetal.“EvaluatingLargeLanguageModelsTrainedonCode”.In:arXivpreprint arXiv:2107.03374 (2021).&lt;/p&gt;
-&lt;p&gt;[10]. YujiaLietal.“Competition-LevelCodeGenerationwithAlphaCode”.In:Science(2022).&lt;/p&gt;
-&lt;p&gt;[11]. Yingwei Ma et al. “At Which Training Stage Does Code Data Help LLMs Reasoning?” In: arXiv preprint arXiv:2309.16298 (2023).&lt;/p&gt;
-&lt;p&gt;[12]. Ke Yang et al. “If LLM Is the Wizard, Then Code Is the Wand: A Survey on How Code Empowers Large Language Models to Serve as Intelligent Agents”. In: arXiv preprint ar Xiv:2401.00812 (2024).&lt;/p&gt;
-&lt;p&gt;[13]. AmanMadaan et al. “Language Models of Code are Few-Shot Commonsense Learners”. In: EMNLP. 2022.&lt;/p&gt;
-&lt;p&gt;[14]. Yuhuai Wu et al. “Autoformalization with Large Language Models”. In: arXiv preprint a rXiv:2205.12615 (2022).&lt;/p&gt;
-&lt;p&gt;[15].  JackW.Raeetal.“ScalingLanguageModels:Methods,Analysis&amp;amp;InsightsfromTraining Gopher”. In: arXiv preprint arXiv:2112.11446 (2021).&lt;/p&gt;
-&lt;p&gt;[16]. CJ Adams et al. Toxic comment classification challenge, 2017. &lt;a class=&#34;link&#34; href=&#34;https://kaggle.com/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;https://kaggle.com/&lt;/a&gt; competitions/jigsaw-toxic-comment-classification-challenge. 2017.&lt;/p&gt;
-&lt;p&gt;[17]. Luca Soldaini et al. “Dolma: an Open Corpus of Three Trillion Tokens for Language Model Pretraining Research”. In: arXiv preprint arXiv:2402.00159 (2024).&lt;/p&gt;
-&lt;p&gt;[18]. Hugo Laurençon et al. “The bigscience roots corpus: A 1.6 tb composite multilingual dataset”. In: Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track. 2022.&lt;/p&gt;
-&lt;p&gt;[19]. Guilherme Penedo et al. “The RefinedWeb dataset for Falcon LLM: outperforming curated corpora with web data, and web data only”. In: arXiv preprint arXiv:2306.01116 (2023).&lt;/p&gt;
-&lt;p&gt;[20]. Udi Manber and Eugene W. Myers. “Suffix Arrays: A New Method for On-Line String Searches”. In: SIAM J. Comput. (1993).&lt;/p&gt;
-&lt;p&gt;[21]. Taku Kudo. “Subword Regularization: Improving Neural Network Translation Models with Multiple Subword Candidates”. In: ACL. 2018.&lt;/p&gt;
 </description>
         </item>
         <item>

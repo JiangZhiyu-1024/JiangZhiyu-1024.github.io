@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
+<title></title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/'>
+
+<link rel="stylesheet" href="/scss/style.min.819ac8ff77246a79c226a136382b6bcbe7c291f9fd1e0641c81bcb97ac7e8f89.css"><meta property='og:title' content="">
+<meta property='og:description' content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' />
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="调研论文速览2 A Practical and Privacy-Preserving Framework for Real-World Large Language Model Services 《一种实际且隐私保护的框架用于现实世界的大语言模型服务》\n大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#a-practical-and-privacy-preserving-framework-for--real-world-large-language-model-services">A Practical and Privacy-Preserving Framework for  Real-World Large Language Model Services</a>
+      <ol>
+        <li><a href="#引言">引言</a></li>
+        <li><a href="#相关工作">相关工作</a>
+          <ol>
+            <li><a href="#a-语言模型">A. 语言模型</a></li>
+            <li><a href="#b-llm推理阶段中的隐私保护">B. LLM推理阶段中的隐私保护</a></li>
+            <li><a href="#盲签名">盲签名</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#bolt-privacy-preserving-accurate-and-efficient-inference-for-transformers">BOLT: Privacy-Preserving, Accurate and Efficient Inference for Transformers</a></li>
+    <li><a href="#curl-private-llms-through-wavelet-encoded-look-up-tables">Curl: Private LLMs through Wavelet-Encoded Look-Up Tables</a>
+      <ol>
+        <li><a href="#引言-1">引言</a></li>
+        <li><a href="#相关工作-1">相关工作</a>
+          <ol>
+            <li><a href="#聚焦于函数秘密共享">聚焦于函数秘密共享</a></li>
+          </ol>
+        </li>
+        <li><a href="#聚焦于预处理">聚焦于预处理</a></li>
+        <li><a href="#聚焦于全同态加密">聚焦于全同态加密</a></li>
+        <li><a href="#聚焦于安全llm推理">聚焦于安全LLM推理</a></li>
+        <li><a href="#专注于安全截断"><strong>专注于安全截断</strong></a></li>
+        <li><a href="#正确性误差"><strong>正确性误差</strong></a></li>
+        <li><a href="#安全性"><strong>安全性</strong></a></li>
+        <li><a href="#四舍五入误差"><strong>四舍五入误差</strong></a></li>
+      </ol>
+    </li>
+    <li><a href="#我们的贡献"><strong>我们的贡献</strong></a></li>
+    <li><a href="#east-efficient-and-accurate-secure-transformer-framework-for-inference">East: Efficient and Accurate Secure Transformer Framework for Inference</a></li>
+    <li><a href="#efficient-privacy-preserving-kan-inference-using-homomorphic-encryption">Efficient Privacy-Preserving KAN Inference Using Homomorphic Encryption</a></li>
+    <li><a href="#encryption-friendly-llm-architecture">ENCRYPTION-FRIENDLY LLM ARCHITECTURE</a></li>
+    <li><a href="#faster-cryptonets-leveraging-sparsity-for--real-world-encrypted-inference">Faster CryptoNets: Leveraging Sparsity for  Real-World Encrypted Inference</a></li>
+    <li><a href="#hetal-efficient-privacy-preserving-transfer-learning-with-homomorphic--encryption">HETAL: Efficient Privacy-preserving Transfer Learning with Homomorphic  Encryption</a></li>
+    <li><a href="#iron-private-inference-on-transformers">Iron: Private Inference on Transformers</a></li>
+    <li><a href="#power-softmax-towards-secure-llm-inference-over--encrypted-data">POWER-SOFTMAX: TOWARDS SECURE LLM INFERENCE OVER  ENCRYPTED DATA</a></li>
+    <li><a href="#powerformer-efficient-privacy-preserving-transformer-with-batch-rectifier-power--max-function-and-optimized-homomorphic-attention">Powerformer: Efficient Privacy-Preserving Transformer with Batch Rectifier-Power  Max Function and Optimized Homomorphic Attention</a>
+      <ol>
+        <li><a href="#批量整流器-幂最大brpmax方法"><strong>批量整流器-幂最大（BRPmax）方法</strong></a></li>
+        <li><a href="#优化同态注意力"><strong>优化同态注意力</strong></a></li>
+        <li><a href="#端到端基于he的变换器实现"><strong>端到端基于HE的变换器实现</strong></a></li>
+      </ol>
+    </li>
+    <li><a href="#privformer-privacy-preserving-transformer-with-mpc">Privformer: Privacy-preserving Transformer with MPC</a></li>
+    <li><a href="#relus-revival-on-the-entropic-overload-in-normalization-free-large-language-models">ReLU’s Revival: On the Entropic Overload in Normalization-Free Large Language Models</a></li>
+    <li><a href="#secure-transformer-inference-made-non-interactive">Secure Transformer Inference Made Non-interactive</a>
+      <ol>
+        <li><a href="#引言-2">引言</a></li>
+        <li><a href="#在非交互式安全推理的背景下变换器与卷积神经网络cnn模型之间有两个关键区别">在非交互式安全推理的背景下，变换器与卷积神经网络（CNN）模型之间有两个关键区别。</a></li>
+        <li><a href="#a-我们的贡献">A. 我们的贡献</a></li>
+      </ol>
+    </li>
+    <li><a href="#selective-network-linearization-for-efficient-private-inference">Selective Network Linearization for Efficient Private Inference</a></li>
+    <li><a href="#sigma-secure-gpt-inference-with-function-secret-sharing">Sigma: Secure GPT Inference with Function Secret Sharing</a></li>
+    <li><a href="#the-x-privacy-preserving-transformer-inference-with-homomorphic-encryption">THE-X: Privacy-Preserving Transformer Inference with Homomorphic Encryption</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/"></a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="调研论文速览2">调研论文速览2
+</h1><h2 id="a-practical-and-privacy-preserving-framework-for--real-world-large-language-model-services">A Practical and Privacy-Preserving Framework for  Real-World Large Language Model Services
+</h2><p>《一种实际且隐私保护的框架用于现实世界的大语言模型服务》</p>
+<p>大语言模型（LLMs）在文本理解和生成方面展现了卓越的能力，越来越多地被应用于各个领域以提升生产力。然而，由于训练和维护这些模型的高成本，再加上一些LLM是专有的，个人往往依赖于LLM公司提供的在线人工智能即服务（AIaaS）。这种商业模式带来了显著的隐私风险，因为服务提供商可能会利用用户的痕迹模式和行为数据。本文提出了一种实际且隐私保护的框架，通过防止服务提供商将请求与提交者个人关联，确保用户的匿名性。我们的框架基于部分盲签名，保证用户请求的不可链接性。此外，我们还提出了两种针对基于订阅和基于API的服务模型的策略，确保既保护用户的隐私，又维护服务提供商的利益。该框架设计与现有LLM系统无缝集成，因为它不需要修改底层架构。实验结果表明，我们的框架几乎不增加计算和通信开销，使其成为现实应用中可行的解决方案。</p>
+<h3 id="引言">引言
+</h3><p>训练架构和数据的快速进展使得大语言模型（LLMs）在内容分析和生成方面表现出色。鉴于这些能力，LLM已广泛应用于各个领域，以提高生产力和效率，包括医学[1]、机器人技术[2, 3]和教育[4]。然而，训练和维护这些模型的高成本（例如，LLaMa-3是在15万亿多语言标记上进行预训练的[5]），以及一些LLM无法公开访问的事实，为个人和小企业开发和维护自己的LLM带来了重大挑战。因此，许多专注于LLM的公司开始提供在线LLM服务，这通常被称为人工智能即服务（AIaaS）（例如，OpenAI的ChatGPT、Google的Gemini）。尽管AIaaS带来了好处，但依赖这些服务引发了严重的隐私问题，特别是用户信息可能被曝光。服务提供商可能会记录与用户请求相关的信息，如请求者的身份、请求时间和响应。这些信息可能被用来追溯查询到个人用户，从而损害用户的隐私。因此，LLM服务中迫切需要保证匿名性，这与其他在线服务中的隐私保护需求类似。</p>
+<p>在LLM服务中的隐私保护方法中，一种常见的做法是加密用户请求数据，使得服务器无法解释请求的内容。常用的技术包括同态加密（HE）[6, 7, 8]、多方计算（MPC）[9, 10]和秘密共享（SS）[11]。然而，这些方法通常需要大量资源，带来显著的计算需求和通信开销，同时还需要修改现有架构以支持加密。此外，虽然这些技术可以防止服务提供商了解查询的内容，但请求和响应的时间等侧信道信息仍然可能无意中泄露用户的活动模式。</p>
+<p>为了解决这些问题，一个实用的安全框架应满足几个关键属性，以保证LLM服务中的用户匿名性。首先，该框架应防止服务提供商将请求与单个用户关联，从而保护匿名性。其次，它应具有足够的通用性，能够与现有LLM架构兼容，确保实用性并与其他系统模块无缝集成。本文提出了一个满足这些要求的框架。我们的框架将现有的LLM服务视为黑盒，并作为一个附加层操作，对底层系统完全透明，即无需对现有基础设施进行更改。此外，该框架采用盲签名来确保请求的完全匿名性，防止服务提供商追溯请求的来源。具体而言，系统采用部分盲签名和定制策略来解决LLM服务中两种常见的商业模式。对于订阅模式，基于部分盲签名的方案通过限制订阅期，允许用户在指定时间内进行无限次请求。相比之下，基于API的模式采用另一种基于部分盲签名的方案，结合请求级别的计费策略，限制用户的请求次数或资源（例如，预定义的请求中发送的令牌数量）。</p>
+<p>本框架的贡献如下：</p>
+<ul>
+<li>该框架提供了一种实用的解决方案，在保持LLM服务中用户匿名性的同时，适应现有的商业模式。</li>
+<li>提议的系统可以无缝集成到当前系统中，几乎不增加计算和通信开销。</li>
+<li>框架展示了部分盲签名与定制策略在实际场景中的应用，展示了它在其他在线服务中的扩展潜力。</li>
+<li>提供了框架的实验结果，衡量了系统中部分盲签名的性能。这些结果为部分盲签名相关的计算和通信成本提供了有价值的见解。</li>
+</ul>
+<h3 id="相关工作">相关工作
+</h3><h4 id="a-语言模型">A. 语言模型
+</h4><p>语言模型（LMs）是预测给定上下文中后续或缺失标记概率的统计模型。大语言模型（LLMs）是预训练语言模型（PLMs）的一类，利用前所未有的规模进行机器学习[12]。LLM与其他PLM的主要区别在于其庞大的训练数据和模型规模，这使得它们具备了突现能力——这些能力是通过扩展模型规模而产生的行为[13]。这些模型在内容分析和生成方面展现了卓越的性能，通常能够在各种任务中实现类人表现[14]。LLM已广泛应用于多个领域，包括教育、金融和医疗保健[15]。此外，一种名为“提示工程”的技术应运而生，用于优化LLM在特定任务中的输出[16, 17]。</p>
+<p>LLM的开发涉及三个主要阶段：预训练、微调和推理。</p>
+<ol>
+<li><strong>预训练</strong>：在预训练阶段，LLM在大规模数据集上进行训练，以获取一般知识。这些数据集通常包含来自不同来源的内容，如博客、文章和书籍。例如，2024年8月的CommonCrawl数据集包含了23亿网页。GPT-3是在包括过滤后的CommonCrawl数据和维基百科在内的数据集上进行预训练的，数据量约为3000亿个标记[18]。类似地，LLaMA-3的预训练数据集包含了15万亿个多语言标记[5]。预训练过程计算密集且耗时。例如，训练LLaMA-3.1 70B模型需要估计700万小时的H100-80GB硬件计算时间[4]。</li>
+<li><strong>微调</strong>：预训练完成后，LLM会针对特定任务进行微调。用于微调的数据集通常较小，并包含领域特定的知识。在这个阶段，通常会采用人类反馈的强化学习（RLHF）来优化模型的性能，正如GPT-4的训练过程中所采用的那样[19]。</li>
+<li><strong>推理</strong>：一旦完成预训练和微调，LLM就可以用于推理。然而，部署LLM面临着显著的存储和计算挑战，因为它们的架构复杂，模型规模庞大，通常包含数十亿个参数。因此，对于个人用户来说，在本地运行LLM通常是不切实际的。为了解决这些挑战，许多公司提供了AI即服务（AIaaS）的LLM服务，例如OpenAI的ChatGPT和Google的Gemini。</li>
+</ol>
+<h4 id="b-llm推理阶段中的隐私保护">B. LLM推理阶段中的隐私保护
+</h4><p>在当前的商业模式中，LLM公司通常部署训练好的模型，并通过在线服务将推理阶段暴露给用户。这些服务允许用户提交输入数据，系统基于这些数据返回LLM生成的推理结果。然而，这种方法可能会暴露用户潜在的隐私风险。为了利用LLM进行文本分析或生成，用户通常需要在请求中提供信息，其中可能包括敏感数据。</p>
+<p>为了解决这些问题，许多研究工作专注于增强LLM推理过程中的用户隐私保护。**同态加密（HE）**是其中一种方法，它允许对加密数据进行计算。通过将HE集成到LLM中，用户可以提交加密的输入数据进行推理，只有最终结果需要解密。像[7]和[20]这样的研究提出了基于HE的协议，以高效地执行矩阵乘法——这一在变换器模型中常见的操作，从而实现对加密数据的计算。另一种方法是[6]提出的加密友好的近似技术，用于优化变换器中的组件，以减少处理加密数据时的计算开销。</p>
+<p>另一种密码学技术是<strong>多方计算（MPC）</strong>，在这种方法中，多方共同计算部分结果，且没有任何一方可以访问完整的输入或结果。最终的输出通过结合每一方的部分结果来重建。[21]提出了一种协议，确保在包括模型所有者、MPC服务器和用户的三方系统中，任何单一的MPC服务器都无法独立恢复用户的输入数据。</p>
+<p>**差分隐私（DP）**是另一种保护用户隐私的著名技术，确保无法从数据中推断出单个用户的信息。[22]将DP应用于扰动LLM输出，而[23]提出了DP-forward技术，在前向传播过程中扰动嵌入矩阵，以确保训练和推理阶段的安全性。尽管这些方法提供了不同程度的安全性，但它们通常会引入大量的计算和通信开销，导致在实际场景中的推理变得不切实际。例如，在一个安全的三方协议下，生成一个64个单词的句子可能需要长达20分钟的时间[21]。此外，某些侧信道漏洞，如用户请求的时机和数据的大小，仍然可能被服务提供商利用。</p>
+<h4 id="盲签名">盲签名
+</h4><p>盲签名方案最早由Chaum [24]提出，是一种交互式密码协议，允许签名者在不查看消息内容的情况下对其进行认证。这保证了请求者的匿名性，同时保持签名消息的完整性。该方案的一个变体，称为<strong>部分盲签名</strong>，随后被提出，允许请求者和签名者共同预先商定部分消息内容。这种变体在实际场景中尤为有用，例如在需要共享信息（如过期日期或发行时间戳）时 [25]。盲签名已广泛应用于确保用户匿名的系统中。Chaum的开创性工作——不可追踪的数字现金——使用盲签名来追踪双重支付，同时确保交易无法追溯到花费者的身份 [26]。此外，盲签名还被集成到许多电子投票系统中，用以保护选民的身份并维护投票过程的机密性 [27]。类似地，[28]提议将盲签名集成到比特币协议中，以使交易接收者与其公钥解关联，从而增强隐私性。</p>
+<h2 id="bolt-privacy-preserving-accurate-and-efficient-inference-for-transformers">BOLT: Privacy-Preserving, Accurate and Efficient Inference for Transformers
+</h2><p><strong>摘要</strong>——变压器（transformers）的出现带来了传统机器学习任务的重大进展。然而，它们的广泛应用引发了对推理过程中敏感信息泄露的潜在担忧。现有的基于安全多方计算（MPC）的方法在应用于变压器模型时面临局限性，主要由于模型规模庞大以及资源密集型的矩阵乘法运算。本文提出了BOLT，一个用于变压器模型的隐私保护推理框架，支持高效的矩阵乘法和非线性计算。结合我们创新的机器学习优化方法，BOLT将通信成本降低了10.91倍。我们在不同数据集上的评估表明，BOLT在保持与浮点模型相当的准确性的同时，在各种网络环境下实现了比现有最先进系统快4.8到9.5倍的推理速度。</p>
+<p><strong>引言</strong>
+变压器模型（Transformer models）近年来已成为一项颠覆性技术。ChatGPT [1] 使得基于变压器的语言模型的强大功能对所有人都可获取。与传统的监督学习和任务特定学习相比，大型变压器模型在大量未标注的文本数据上进行训练，并且直接适用于多种应用，如翻译、内容生成或问答。例如，它们可以在医疗领域用于通过分析电子健康记录、医学文献和临床笔记来识别模式和风险因素，从而显著推动诊断、治疗和药物发现 [66]，[5]，[62]。变压器是一种通用的神经网络架构，其特点是使用注意力机制 [71]。注意力机制能够有效地捕捉标记之间的关系，建模上下文信息并捕获输入标记序列中的长程依赖性。然而，尽管这些强大的模型具有优异的性能，但也伴随着隐私等方面的风险 [46]，[69]。ChatGPT 是机器学习即服务（MLaaS）的一个例子，其中服务器（OpenAI）托管一个专有模型，用户将数据输入模型并返回预测结果。然而，MLaaS 设置会引发隐私问题：用户要么必须将私密数据上传到公司的服务器，要么服务器需要将专有模型存储在用户的边缘设备上。ChatGPT 操作的就是前者设置。因此，用户数据隐私的严重问题被提出，甚至导致意大利暂时禁用 ChatGPT [47]，[55]，[45]。虽然隐私权与有效的数据分析似乎存在冲突，但我们可以采用一种称为安全多方计算（MPC）的密码学方法，在不影响功能的情况下保障数据和模型的隐私。从高层次看，MPC 允许 n 个参与方 p1, …, pn，具有相应的输入 x1, …, xn，通过计算公共函数 f(x1, …, xn) 的输出，而无需向其他方泄露各自的 xi。每个方的数据在整个计算过程中都有效“加密”。在计算结束时，每个方只会知道最终结果，而无法获得任何额外的信息。虽然 MPC 可以用于通用计算，但由于加密原语的开销，它通常会带来大量的计算和通信成本。近期的研究集中在开发针对特定工作负载的优化解决方案，以提高卷积神经网络（CNN）的私密评估和训练效率 [49]，[50]，[25]，[41]，[60]，[4]。然而，保护变压器模型的隐私尤其具有挑战性，原因有以下几点：</p>
+<ol>
+<li>变压器的规模远大于卷积神经网络，包含数亿到数十亿个参数 [17]，[52]，[56]，[57]。</li>
+<li>先前关于私密神经网络的研究提出了优化的私密矩阵-向量乘法协议，但变压器需要进行大规模的矩阵-矩阵乘法。</li>
+<li>安全地评估变压器中的成千上万个输入以进行复杂的非线性计算是非常昂贵的。</li>
+</ol>
+<p>因此，需要开发新的协议来保护变压器推理的隐私。根据我们所知，Iron [28] 是目前最先进的系统，研究了如何在标准变压器推理过程中完全保护数据隐私。然而，由于其显著的性能开销，它在提供实际可行的解决方案方面存在不足。例如，我们对 Iron 的实现要求 280.99 GB 的通信，用时 216 分钟完成 BERT-base 模型（110M 参数 [17]）在 WAN 设置（100 Mbps, 80 ms）下的端到端推理。随着系统和硬件的持续发展 [63]，[64]，[36]，[37]，[68]，我们认为，减少网络通信至关重要，因为计算可以加速和并行化。BOLT 中的线性和非线性协议以及机器学习优化方法显著减少了通信开销，同时保持了计算效率，标志着隐私保护变压器推理的实用性取得了重要进展。</p>
+<p><strong>我们的贡献</strong>
+我们提出了 BOLT，一个新颖的隐私保护推理系统，用于变压器模型，它通过减少通信开销来解决上述挑战，从而提高了端到端的运行时性能。BOLT 保证了客户端输入数据的机密性，同时保护了服务提供商的知识产权——其模型。BOLT 集成了加密改进、非线性函数的准确高效近似以及从机器学习角度出发的算法增强。</p>
+<p><strong>通信优化和计算高效的线性操作</strong>
+在 BOLT 中，我们面临的第一个挑战是变压器模型中的线性操作要复杂得多，且具有较高的乘法深度。许多过去的安全推理协议仅将同态加密（HE）用于明文-密文的矩阵-向量乘法，这些操作通常出现在卷积神经网络中。Iron 通过使用 HE 和 MPC 的混合来解决这个问题，但这种方法导致了较高的通信成本。相反，BOLT 的加密改进仅使用 HE 来有效节省通信成本。我们在 HE 中开发了计算高效、低深度的算法。我们的第一个思路是对密文-明文矩阵-矩阵乘法进行替代性解释，这样可以实现优化的密文打包。先前的工作 [35]，[28] 浪费了一部分通信，因为它们让一些密文槽“空着”。然而，单纯改变打包方式并不够，因为这仍然需要大量计算开销较大的旋转操作来执行变压器模型中的矩阵乘法。我们提出了第二个优化方案来解决这个问题：我们将婴儿步-巨人步策略 [27]，[7] 应用于我们的矩阵乘法算法，以减少输入密文旋转的次数，而是将旋转操作应用于部分求和的中间结果。这使得 BERT-base 模型的密文旋转次数减少了 2.33 倍到 9.33 倍。最后，我们设计了高效且低乘法深度的密文-密文矩阵乘法算法，以提高 HE 中的计算效率。</p>
+<p><strong>准确且高效的非线性操作</strong>
+对于非线性操作，准确和高效的协议也是至关重要的。Iron 表明，超过 75% 的总运行时间都花费在非线性层上，这是因为将明文非线性公式直接转换为 MPC 协议时，涉及的复杂计算非常昂贵。这些计算包括三角函数和指数函数，这些在 MPC 中本身就已经非常昂贵 [59]。为了解决这个问题，我们为 GELU 和 Tanh 引入了两种高精度的多项式近似，分别是 4 阶和 5 阶多项式，并且优化了 Softmax 程序。考虑到即使是四次或五次乘法，在输入维度较大的情况下（例如，BERT-base 中 12 层的每个 GELU 函数的维度为 128 × 3072），这些操作也可能非常昂贵，我们基于 [51] 提出了一个额外的优化，这个优化对于安全计算领域具有独立意义：一种多项式预处理技术，允许在已知多项式系数的情况下，将评估阶数为 n 的多项式（霍纳法则）的乘法次数减少到大约 ⌈ n / 2 ⌉ 次。</p>
+<p><strong>机器学习优化</strong>
+我们还提出了机器学习优化，以提高效率和准确性。具体而言，我们开发了基于注意力得分的“无关词消除”。这些得分衡量了输入标记之间的相关性，作为标记重要性的度量。然后，我们应用无关的比托尼克排序（Oblivious Bitonic Sort）来丢弃贡献较小的标记，从而显著减少输入大小。此外，我们还利用安全计算感知的微调来弥合安全计算和浮动点计算之间的差距，进一步提高准确性。</p>
+<p>结合我们所有的优化，BOLT 在不同的网络设置下比 Iron 减少了 10.91 倍的通信，并且总运行时间提高了 4.8 到 9.5 倍。我们认为这是向实用的隐私保护变压器推理迈出的重要一步。我们的代码已开源，您可以在 <a class="link" href="https://github.com/Clive2312/BOLT"  target="_blank" rel="noopener"
+    >https://github.com/Clive2312/BOLT</a> 找到。</p>
+<h2 id="curl-private-llms-through-wavelet-encoded-look-up-tables">Curl: Private LLMs through Wavelet-Encoded Look-Up Tables
+</h2><p>Curl: 通过小波编码查找表实现私有化大语言模型（LLMs）</p>
+<p>最近，变压器模型的进展已经彻底改变了机器学习，成为大规模语言模型（LLMs）的核心。然而，将这些系统集成到日常应用中时，暴露客户查询给模型所有者引发了隐私问题。安全多方计算（MPC）允许各方在保持敏感用户输入和专有模型私密的情况下评估机器学习应用程序。由于MPC本身的成本，最近的研究提出了针对特定模型的优化，但这些优化妨碍了机器学习研究人员的广泛采用。CrypTen（NeurIPS’21）旨在通过常见的机器学习抽象（如张量和模块化神经网络）暴露MPC原语来解决这个问题。不幸的是，CrypTen和许多其他MPC框架依赖于非线性函数的多项式近似，导致较高的误差和通信复杂性。</p>
+<p>本文介绍了Curl，这是一个易于使用的MPC框架，通过查找表来评估非线性函数，从而获得更好的近似，并显著减少了回合和通信开销。Curl暴露了与CrypTen类似的编程模型，并且通过张量实现高度并行化。Curl的核心依赖于离散小波变换，以减少查找表的大小而不牺牲准确性，从而在非线性函数（如对数和倒数）的评估中，相较于CrypTen实现了最多19倍的回合和通信减少。我们在包括BERT、GPT-2和GPT Neo在内的多种LLM上评估了Curl，并与一些最先进的相关工作进行了比较，如Iron（NeurIPS’22）和Bolt（S&amp;P’24），在通信和延迟方面至少减少了1.9倍。</p>
+<p>最后，我们通过在独立模型中证明广泛使用的概率截断协议的安全性，解决了关于其安全性的长期争议。此问题具有独立意义，因为许多相关工作依赖于这种截断样式。</p>
+<h3 id="引言-1">引言
+</h3><p>像GPT-2、GPT-4 [1]、BERT [19] 和 LLaMA [66] 这样的“大型语言模型”（LLMs）已经成为展示人工智能能力的典范。LLM帮助个人和企业完成日常任务，从机器翻译 [5]、文本生成 [31] 到问答系统 [56] 等等。为了生成类人响应，LLM已在大量数据上进行训练，并通过与用户的互动不断学习。然而，随着LLM日益融入人们的生活，隐私问题成为了一个关键关注点，因为个人经常分享敏感信息，包括姓名、地址、信用卡号码，甚至是财务和医疗信息 [60]。更进一步，个性化AI的发展也在推动这种趋势，OpenAI为ChatGPT启用了记忆功能 [28]。为了使一个基于LLM的助手能够理解个人偏好、习惯和工作流程，并提供量身定制的帮助，它需要访问大量个人数据。随着这些个性化数据的保留并用于持续改进LLM，数据泄露或未经授权访问的可能性对个人隐私构成了巨大的风险。</p>
+<p>隐私增强技术（PETs），如多方计算（MPC） [27,75]，为隐私保护机器学习（PPML）用例提供了大量可能性。在最常见的设置中，服务器拥有一个专有模型，并旨在将其作为服务提供给客户，以便客户可以在不暴露任何数据给模型的情况下使用该模型 [13,45,46,37,32]。目标是使客户仅获得推理结果，而不会获取有关模型的任何信息，同时模型提供者不会了解客户的输入。另一个常见的PPML用例涉及多个不信任方共同安全地训练一个模型，使用他们的敏感数据，但彼此之间不暴露任何数据 [52,65,44,73,39]。一些MPC系统利用线性秘密共享方案，因为它们允许以最小的通信开销执行线性操作 [17,24]。然而，非线性操作（如平方根、对数）通常会带来更大的挑战，并需要专门的技术，如多项式近似 [45]、查找表评估 [69] 或其他特定协议的解决方案 [8,16]。此外，结合领域知识可以显著提高这些协议的效率和效果，通过调整参数更好地适应特定的使用场景 [35,47,57]。</p>
+<h3 id="相关工作-1">相关工作
+</h3><h4 id="聚焦于函数秘密共享">聚焦于函数秘密共享
+</h4><p>最近，几项安全计算研究通过利用函数秘密共享（FSS） [3,69,64,55,54] 取得了进展。Pika [69] 扩展了 [3] 的前期工作，展示了一种通过FSS安全评估查找表（LUTs）的新方法。尽管它在像MNIST和CIFAR-10这样的流行数据集上展现了有效性，但其扩展性仍然面临挑战。正如Grotto [64] 所指出的，对于大型LUT，其计算成本可能由于需要大量的分布式点函数（DPF）评估而使得协议不可行。与之相比，Curl通过集成离散小波变换（DWT）技术，避免了对DPF评估的需求，从而解决了这一挑战。此外，我们的技术还能通过减少LUT的大小，降低计算和通信的复杂性，从而使基于FSS的框架受益。</p>
+<p>另一方面，Grotto [64] 提出了利用自定义样条和DPF来高效处理部分函数的创新协议。然而，与Sigma [32]等替代方案相比，它在计算和通信开销方面仍面临挑战。Orca [39] 展示了GPU加速在FSS协议中的潜力，特别是为卷积神经网络（CNNs）量身定制的协议。然而，由于其依赖于复杂的非线性操作，Orca在面向其他架构（如变压器模型）时的适用性受到质疑 [39]。Sigma [32] 在Orca的基础上进行构建，并通过适用于小范围的协议，依赖最小大小的LUT来区别于其他方案。尽管其通过自定义协议和小尺寸的LUT展现了效率，但它仍然需要大量的计算和通信资源（例如1TB的RAM和大约9Gbps的通信链路）。此外，它使用确定性截断，尽管声称提高了安全性，但与概率截断方法相比，其速度仍显不足。不幸的是，所有基于FSS的工作都集中在两方设置中，因为当参与方超过两方时，FSS变得不切实际。</p>
+<h3 id="聚焦于预处理">聚焦于预处理
+</h3><p>由Pika [69] 发起的这一研究方向，集中在带有额外经销商方的两方设置。在这种情况下，预处理阶段需要经销商准备并分发一个大小为O(n)的元素。在假设经销商不会与任何一方串通的前提下，减少对这种假设的依赖是理想的。这促使了无需经销商的协议的发展。值得注意的是，一些先前的工作已经试图在两方设置中实现这一点，使得双方能够独立生成所需的预处理材料 [38,18,6]。</p>
+<p>一次性真值表（OTTT）协议 [38] 使用布尔电路表示每个可能输入的表，导致相对于比特大小的指数级复杂性。OP-LUT协议 [18] 尝试增强OTTT预处理阶段，但仅在小比特大小下取得改进，通信成本依然是指数级的。SP-LUT协议 [18] 显著增强了预处理阶段，但修改了在线阶段，导致在线阶段在比特大小上的通信成本呈指数级增长。FLUTE [6] 相比于之前的工作有所进步，但在设置阶段仍然需要O(2n)的通信。因此，寻找一个具有亚指数级通信复杂度的预处理阶段，同时保持在线阶段的高效性，仍然是一个未解决的挑战。</p>
+<h3 id="聚焦于全同态加密">聚焦于全同态加密
+</h3><p>全同态加密（FHE）方案通过使用查找表（LUT）显著提高了性能并开启了新的应用场景。这一概念最初由Ducas和Micciancio [22] 提出，他们设计了一种方法，使用LUT在FHE中评估任意二进制门。基于这一基础，Chillotti等人 [10] 通过一组分层多路复用器实现了任意函数的评估，从而发展出了Torus FHE（TFHE）方案。尽管他们开发了一种快速的自引导机制，能够在大约10毫秒内在CPU上执行，但其采用受限。这主要是因为多路复用器的控制输入需要新的密文，这意味着无法对其进行先前计算——而且这种方法要求将程序表示为确定性自动机。</p>
+<p>TFHE的进一步改进出现在[11]中，提出了可编程自引导（PBS）技术，允许高效和通用的LUT评估。为了增强适应性，HELM [29] 在PBS技术的基础上进行了扩展，并引入了一个框架，能够自动将Verilog硬件描述语言（HDL）转换为加密电路。HELM有三种操作模式。第一种模式专门处理二进制门。第二种模式使用安全的LUT评估来处理整数。第三种混合模式与二进制电路一起工作，并在返回二进制领域之前，使用LUT评估进行整数的安全处理。然而，HELM的限制在于它只能处理非常低精度的LUT。这一限制的原因在于，将整数转换为多个比特需要多个n对1的LUT。</p>
+<p>最近，Ripple [30] 提出了基于离散小波变换（DWT）理论的压缩技术，用于减小LUT的大小，从而加速PBS技术在平滑函数上的应用。</p>
+<h3 id="聚焦于安全llm推理">聚焦于安全LLM推理
+</h3><p>由于变压器相比传统神经网络具有更高的复杂性，安全LLM推理框架最近才开始受到关注。确保安全推理的技术包括一些著名的实现，例如THE-X [9] 和Iron [35]，它们是最早使用同态加密进行矩阵乘法和非线性函数计算的框架。随后，几项研究探讨了多方计算（MPC）技术在私有变压器推理系统中的应用 [47,21]。MPCFormer [47] 利用CrypTen [45] MPC引擎，而Puma [21] 则使用SecretFlow-SPU [51] MPC引擎来评估MPC在LLM推理中的适用性。MPCFormer引入了一种蒸馏过程，强模型训练弱模型以提高准确性，从而弥补使用小（2阶）非线性函数近似的局限性。然而，MPCFormer面临着近似精度损失的问题，需要对模型进行微调。另一方面，Puma使用GeLU激活函数的分段近似，这需要进行多达6阶的比较和多项式计算。</p>
+<p>最近的研究越来越多地关注混合解决方案，将特定操作的最佳技术结合起来 [57,39]。Bolt [57] 开发了一种整合全同态加密和MPC的解决方案。与Puma [21] 类似，Bolt使用分段近似，需要进行比较，这增加了轮次复杂度和通信开销。为了提高效率，Bolt采用了单词消除技术，同时保持准确性。此外，Bolt通过增加多项式的阶数来增强MPCFormer的多项式近似，并通过Motzkin多项式预处理程序减轻相应的效率损失。与此不同，Curl通过使用优化的查找表协议避免了比较和多项式近似，从而减少了通常由多项式近似带来的轮次和通信复杂度，同时保持了准确性。</p>
+<h3 id="专注于安全截断"><strong>专注于安全截断</strong>
+</h3><p>机器学习任务使用浮点数来构建精确的模型[34]。然而，广泛认为，使用浮点数会导致多方计算（MPC）在效率方面变得不切实际。为此，大多数关于机器学习在MPC中的研究采用了定点表示，而不是浮点表示，这需要一个截断协议来保持恒定的精度。在现有的截断方法中——确定性、最接近整数和概率性——确定性和概率性方法（见第3节）在安全计算环境中应用最为广泛[8,48]。此外，许多研究倾向于使用概率性截断，因为它具有较低的通信成本，从而提高了性能，例如[53,52,59,13,14,46,44,63]。尽管如此，一些最新的研究表达了对概率性截断的担忧，并选择了更加资源密集的协议来实现确定性截断[48,33,32]。关于概率性截断的担忧包括安全性和四舍五入误差。</p>
+<h3 id="正确性误差"><strong>正确性误差</strong>
+</h3><p>在讨论上述两个问题之前，我们回顾一下，由Catrina和Hoogh提出的广泛使用且廉价的概率性截断协议在域上具有正确性误差，误差概率为 $2^{-(n - |x|)}$，其中 $|x|$ 是截断输入 $x$ 的最大位数。这就要求使用显著更大的环，并设置 $n \geq |x| + \kappa$，其中 $\kappa$ 是统计安全参数。Damgård 等人[15]提出了一个概率性协议，正确性误差为零，但它需要一个非常规的位分解协议。随后的研究[13,25]优化了[8,15]，并展示了一个常规回合的概率性截断协议，其通信和计算成本与Catrina和Hoogh[8]相匹配，但没有正确性误差，并且允许 $n \geq |x| + 1$。CrypTen[45] 提出了一个受[70]启发的协议，用于公有值除法，可以简化为一个带有非零正确性误差的概率性截断。</p>
+<h3 id="安全性"><strong>安全性</strong>
+</h3><p>最近，Li等人[48]发现了[8]中概率性截断安全性证明的一个安全漏洞，揭示了该协议泄露的信息与理想的概率性截断功能之间的差异。值得注意的是，同样的问题也出现在[25]中的 $n$-最优概率性截断中。这导致了最近一些论文，如[32,32]，因对安全性问题的担忧而放弃了廉价的概率性截断协议。在本文中，我们展示了[25]中的 $n$-最优概率性截断协议（以及[8]中的原始概率性截断）安全地实现了我们定义的自然理想概率性截断功能。这使我们能够在不妥协安全性的情况下，利用概率性截断的效率优势（见第3节）。</p>
+<h3 id="四舍五入误差"><strong>四舍五入误差</strong>
+</h3><p>LLAMA论文[33]最近建议使用确定性截断，声称它能提高推理精度。然而，这一主张并没有得到实验证据的支持，而早期的研究表明，概率性截断可能会导致精度下降的结果，也未通过实验证明[63,13]。有趣的是，Gupta等人[34]证明，使用16位定点数并具有12位精度和概率性截断的计算，能够实现与32位浮点数几乎等效的精度。相反，在这样的条件下，截断到最接近整数无法有效地训练。此外，尽管这不是工作的主要焦点，Keller和Sun[43]提供了实验证据，表明在神经网络中，概率性截断与截断到最接近整数之间的差异很小。实际上，在28个不同的实验中，13个显示概率性截断具有更好的准确性，13个显示截断到最接近整数更优，2个实验的准确性相同。</p>
+<h2 id="我们的贡献"><strong>我们的贡献</strong>
+</h2><p>在本文中，我们介绍了Curl，一个用户友好的多方计算（MPC）框架，旨在通过查找表（LUT）高效地评估非线性函数。Curl解决了安全协议中三个至关重要的方面：效率、准确性和安全性。Curl采用了一种新颖的LUT压缩技术，利用离散小波变换（DWT）实现高效的近似，并将误差降到最小。这有效地减小了原始LUT的大小，同时保持了非线性函数的准确性，从而超越了传统的多项式分段近似方法。通过最小化通信成本，Curl显著提高了端到端的运行时性能，并支持包括GeLU、SiLU、高斯误差函数、Sigmoid和双曲正切在内的广泛激活函数。此外，Curl将[57,32]中的GeLU协议中使用的分段近似方法推广到任何有界的奇偶函数，适用于任何收敛到分段多项式的函数。Curl的核心技术扩展到LLM（大语言模型）使用的复杂非线性函数，确保了客户输入数据的隐私，同时保护了服务提供商的知识产权，例如其模型。</p>
+<p>我们在多个LLM模型上评估了Curl，包括BERT（tiny、base、large）、GPT-2和GPT-Neo，涵盖了CPU和GPU后端。我们的评估显示，Curl在技术上超越了现有的最先进框架，达到了至少减少6.5倍的回合数和1.9倍的通信开销。最后，Curl通过引入自然理想功能、相应协议并提供仿真安全性证明，解决了关于高效概率性截断的安全性问题。许多依赖这种截断方式的工作已经被[48]证明存在安全漏洞，因为它们无法在真实-理想范式下进行仿真。我们的结果具有独立意义，因为我们的证明解决了这一争议，并恢复了人们对安全概率性截断协议的信心。</p>
+<p>我们总结了以下贡献：</p>
+<ul>
+<li>基于DWT压缩的创新框架，在低回合数和通信复杂度的前提下实现高精度。将其应用于LLM推理时，与现有方法相比，Curl实现了至少6.5倍的回合复杂度降低和1.9倍的通信降低。</li>
+<li>Curl基于用户友好的CrypTen[45]框架，提供了高度的灵活性和较低的采用门槛，便于开发者和研究人员使用，从而促进了安全计算技术的普及。作为概念验证，我们实现了多种LLM模型和多个非线性函数，均可在CPU和GPU上运行。</li>
+<li>我们引入了一种新颖的自然理想功能，用于高效的概率性截断，并证明了Escudero等人[25]的安全性。该结果具有独立意义。</li>
+</ul>
+<h2 id="east-efficient-and-accurate-secure-transformer-framework-for-inference">East: Efficient and Accurate Secure Transformer Framework for Inference
+</h2><p><strong>East: 高效且准确的安全Transformer推理框架</strong></p>
+<p><strong>摘要</strong>
+Transformer因其强大的优势，已成功应用于实际场景，如ChatGPT。然而，在服务过程中，用户的输入会泄露给模型提供者。随着人们对隐私的关注，隐私保护的Transformer推理服务需求日益增加。非线性函数的安全协议在隐私保护的Transformer推理中至关重要，但这一领域的研究仍不充分。因此，设计实用的安全协议以处理非线性函数，尽管困难，却对模型性能具有重要意义。本文提出了一个名为East的框架，旨在实现高效且准确的安全Transformer推理。首先，我们提出了一种新的不可知分段多项式评估算法，并将其应用于激活函数，相较于现有方法，显著降低了GELU的运行时和通信开销，分别提升了1.5倍和2.5倍。其次，我们精心设计了softmax和层归一化的安全协议，确保准确地保持所需功能。第三，我们详细进行了若干优化，以提高整体效率。我们将East应用于BERT，并且结果表明，推理精度与明文推理一致，且无需微调。与Iron相比，我们在通信成本上降低了约1.8倍，运行时减少了约1.2倍。</p>
+<p>THE-X[11] 是首个探索使用加密技术进行隐私保护Transformer推理（PPTi）的工作。在THE-X[11]中，GELU被替换为ReLU，且不支持tanh。THE-X[11]使用近似方法处理softmax和层归一化（LN），将Transformer转换为支持完全同态加密（HE）操作的函数。THE-X[11]存在几个问题：（1）THE-X[11]缺乏对服务器隐私的保护，因为在计算ReLU时，THE-X[11]将中间结果泄露给客户端，这可能导致服务器隐私泄露。（2）与明文推理相比，THE-X[11]的准确性平均下降超过1%。（3）在使用THE-X[11]时，原始模型需要转换为近似形式，这使得原始模型参数无法使用，并需要额外的模型重新训练。一些后续工作（[12][13]，[14]，[15]）通过采用更有效的近似方法并使用MPC确保隐私，解决了前两个问题。这些工作集中在Transformer的MPC友好近似上，而忽略了第三个问题。事实上，在明文训练模型时，MPC友好的Transformer可能会限制其灵活性。类似的通过改变模型架构加速计算的工作也在[16]中使用，该工作在文本生成任务中进行隐私保护。最近的工作Iron[17]提供了解决所有三个问题的方案。</p>
+<p>Iron[17]保留了原始模型架构，并基于同态加密（HE）和秘密共享（SS）构建了多个隐私保护的Transformer协议。在Iron[17]中，矩阵乘法通过优化自Cheetah[9]的HE实现来构建，而非线性函数的安全协议则通过基于查找表（LUT）和SS的原语从SIRNN[18]中设计。最近，另一项工作[19]直接使用加密电路（GC）来处理非线性函数，这与Iron[17]不同。另一项工作[20]为高开销函数设计了高质量的近似，并获得了比[12]更好的结果，但[20]使用了安全三方计算（3PC）技术，这与2PC适用的场景不同。在上述工作中，据我们所知，Iron[17]是目前最先进的2PC PPTi工作。Iron[17]的障碍在于基于LUT的非线性函数带来了相当大的开销。在Iron[17]中，非线性函数的运行时和通信分别占总开销的约80%和87%。因此，设计既高效又安全的非线性函数协议，同时保持模型架构，是一个挑战。</p>
+<p>我们的贡献</p>
+<p>在本文中，我们设计了East，一个高效且准确的安全Transformer推理框架。本文的贡献如下：</p>
+<ul>
+<li>提出了用于激活函数（如GELU和tanh）的通信高效协议，采用我们新的隐式近似函数评估方法。与NFGen[21]相比，我们的协议在运行时和通信方面分别提高了约1.5倍和2.6倍。</li>
+<li>通过提出的转换方法和误差限制确定方法，仔细设计了softmax和LN的协议。与Iron[17]相比，我们的协议在softmax的通信开销上减少了约1.3倍，在LN的运行时上减少了约1.2倍。</li>
+<li>进行了多项优化以提升整体性能，包括线性层合并、截断优化、打包通信处理以及填充和掩蔽处理。</li>
+</ul>
+<p>我们使用East进行了BERT[22]推理，结果表明推理准确性与明文推理一致。与Iron[17]相比，我们在非线性函数的运行时上减少了约1.2倍，通信开销减少了约1.8倍。</p>
+<h2 id="efficient-privacy-preserving-kan-inference-using-homomorphic-encryption">Efficient Privacy-Preserving KAN Inference Using Homomorphic Encryption
+</h2><p>使用同态加密进行高效的隐私保护KAN推理</p>
+<p>最近提出的Kolmogorov-Arnold网络（KANs）提供了更强的可解释性和更高的模型表现力。然而，KANs在推理过程中也面临隐私泄露的挑战。同态加密（HE）促进了深度学习模型的隐私保护推理，使资源有限的用户能够在确保数据安全的情况下受益于深度学习服务。然而，KANs的复杂结构，尤其是包含像SiLU激活函数和B样条函数等非线性元素，使现有的隐私保护推理技术无法满足需求。为了解决这一问题，我们提出了一种专为KANs量身定制的高效且准确的隐私保护推理方案。我们的方法引入了一种任务特定的多项式近似方法，用于SiLU激活函数，动态调整近似范围以确保在实际数据集上获得高精度。此外，我们还开发了一种高效的方法，用于在HE域内计算B样条函数，利用重复打包、懒惰组合和比较函数等技术。我们在符号公式评估和图像分类任务中评估了我们的隐私保护KAN推理方案的有效性。实验结果表明，我们的模型在多个数据集上实现了与明文KANs相当的准确性，并且优于明文MLPs。此外，在CIFAR-10数据集上，我们的推理延迟比原始方法快了超过7倍。</p>
+<h2 id="encryption-friendly-llm-architecture">ENCRYPTION-FRIENDLY LLM ARCHITECTURE
+</h2><p>适合加密的LLM架构</p>
+<p>大型语言模型（LLMs）根据用户互动提供个性化回应，但这一应用场景引发了严重的隐私问题。同态加密（HE）是一种支持加密状态下算术运算的加密协议，并为隐私保护机器学习（PPML）提供了潜在的解决方案。然而，变压器模型的计算强度给将HE应用于LLMs带来了挑战。在这项工作中，我们提出了一种修改后的HE友好型变压器架构，重点关注个性化（私密）微调后的推理。通过利用LoRA微调和高斯核，我们在保持与明文模型相当的性能的同时，实现了显著的计算加速——微调加速为6.94倍，推理加速为2.3倍。我们的研究结果为在数据保护至关重要的领域提供隐私保护LLM服务提供了可行的概念验证。</p>
+<p>引言</p>
+<p>大型语言模型（LLMs）的出现，如BERT系列（Devlin等，2019；Liu等，2019；Sanh等，2019；Lan等，2020；Clark等，2020；He等，2021）、GPT系列（Radford，2018；Radford等，2019；Tom B. Brown等，2020；OpenAI，2023）和ChatGPT（OpenAI，2024），开启了自然语言处理（NLP）和人工智能（AI）的新时代。LLMs的众多能力中，最受关注之一是它们能够根据用户交互提供个性化响应，特别是在微调的应用下。然而，这种应用场景引发了关于用户隐私的严重担忧。对此，GDPR（欧洲联盟，2016）和CCPA（加利福尼亚州，2018）等法规已进行修订。在意大利，ChatGPT甚至一度被暂时禁用（McCallum，2023），包括苹果和三星在内的多家大型企业也限制了其在公司内部的使用（Mok，2023）。</p>
+<p>隐私保护机器学习（PPML）指的是在保护数据隐私的同时使用机器学习的方法。PPML的技术包括安全多方计算（MPC）（Yao，1982）、差分隐私（Dwork，2006）和同态加密（HE）（Rivest等，1978；Gentry，2009）。其中，只有MPC和HE基于加密假设提供了可证明的安全性。MPC利用方之间的通信，但这些通信使得加速和并行化神经网络的重计算变得具有挑战性。相比之下，HE支持在加密状态下进行算术计算，无需通信。自Gentry（2009）开创性工作以来，已开发出多个HE方案（Brakerski，2012；Brakerski等，2014；Ducas和Micciancio，2015；Chillotti等，2016；Cheon等，2017）。特别是，CKKS（Cheon等，2017）方案对于并行评估大规模实数（而非整数）数据特别高效，且在PPML文献中得到广泛应用（Han等，2019；Lee等，2022a；b；c；2023b）。</p>
+<p>理论上，同态加密（HE）为解决LLMs相关的隐私问题提供了优雅的解决方案。然而，尽管在HE操作的理论和实现上取得了显著的近期进展，保护LLMs的HE仍然面临挑战，主要是由于它们的计算规模。变压器模型（Vaswani等，2017）以大量矩阵乘法和各种非多项式操作为特征，直接将这些操作适应到HE中会导致显著的计算时间增加和精度损失。</p>
+<p>在这项工作中，我们提出了一种修改后的HE友好型变压器架构，重点关注个性化（私密）微调后的推理。我们指出，之前关于同态加密变压器的研究通常忽视了微调，因为它的复杂性。我们的方法有两个主要的算法组件：LoRA（Hu等，2022）微调和使用高斯核（GK）替代注意力机制中的softmax。我们展示了LoRA和GK能够在HE下显著加速加密变压器计算，同时保持与明文模型相当的性能水平。使用CKKS方案对加密数据进行的修改后BERT模型的实验结果证明了其安全处理自然语言数据的能力。我们的研究结果为在数据保护至关重要的领域提供隐私保护LLM服务提供了希望。</p>
+<p>先前的研究</p>
+<p>基于变压器的语言模型和LoRA。自从注意力机制的出现（Vaswani等，2017）以来，变压器已成为语言模型的标准。基于变压器的语言模型有三种类型：仅编码器模型，包括BERT系列（Devlin等，2019；Liu等，2019；Sanh等，2019；Lan等，2020；Clark等，2020；He等，2021），输出可用于下游任务的输入嵌入；编码器-解码器模型，使用原始变压器架构，如MarianMT（Junczys-Dowmunt等，2019）、T5（Raffel等，2020）、BART（Lewis等，2020）、mBART（Liu等，2020）和mT5（Xue等，2021），用于翻译、摘要等任务；仅解码器模型，包括GPT系列（Radford，2018；Radford等，2019；Tom B. Brown等，2020；OpenAI，2023）和Llama系列（Touvron等，2023a；b；Dubey等，2024），生成对用户查询的回答。这些大型语言模型（LLMs）遵循扩展法则（Kaplan等，2020），因此LLMs的规模趋向于不断增长。因此，这些模型需要大量的内存容量进行推理和微调。为了解决这个问题，LoRA（Hu等，2022）主要用于微调预训练的LLM。通过冻结所有其他权重，LoRA适配器被添加到模型的重要层，如微调期间的注意力层。使用LoRA，可以微调LLMs，仅更新不到1%的所有参数。</p>
+<p>使用HE的隐私保护变压器。许多研究者探索了利用HE为变压器模型提供隐私保护的算法。主要有两种场景：交互式，结合了安全多方计算（MPC）与HE，和非交互式，仅依赖HE。在交互式场景中，可以通过方之间的通信来减少加密计算时间。THE-X（Chen等，2022）提出了第一个BERT-tiny推理协议，引入了HE友好的工作流程和通过通信进行的非多项式评估。随后的研究（Hao等，2022；Li等，2023；Akimoto等，2023；Dong等，2023；Pang等，2024）提高了计算时间并降低了通信成本。然而，随着模型规模的增加，交互式方法可能在大规模通信中遇到困难，并且它们还要求数据所有者在计算过程中保持在线。为了解决这些问题，非交互式研究正在进行。Zimerman等（2024）提出了第一个HE友好的变压器模型，替换了原始变压器结构，最小化了逼近域，并获得了经过更改结构的预训练权重。使用这些权重，他们进行了BERT的非交互式推理。NEXUS（Zhang等，2024a）进一步提出了一种非交互式BERT推理方法，在不重新训练的情况下，使用多项式逼近处理非多项式操作。最近，Park等（2024）提出了Powerformer，像我们的方法一样，提出将注意力中的softmax替换为他们的BRP-max函数，以实现同态推理。</p>
+<p>微调在提升变压器模型和提供更个性化的响应中起着至关重要的作用。然而，先前的工作主要集中在安全推理上，因其涉及的显著计算复杂性，尤其是在非交互式设置中，微调这一挑战大多被忽视。只有少数尝试，如Lee等（2022b）和HETAL（Lee等，2023b）的研究，探索了微调，专注于分类头，而忽略了其他关键组件，如注意力层和前馈网络。</p>
+<p>贡献</p>
+<p>我们提出了一种同态加密（HE）友好的变压器架构，重点关注个性化（私密）微调后的推理。我们解决了HE变压器模型的两个计算瓶颈：（i）通过使用LoRA，我们避免了大规模的密文-密文矩阵乘法（CCMMs），（ii）我们使用更简单的高斯核（GK）替代了softmax层，而softmax层在HE下的计算通常具有挑战性。在对HE加密的BERT风格变压器进行实验时，我们展示了微调加速了6.94倍，推理加速了2.3倍。</p>
+<h2 id="faster-cryptonets-leveraging-sparsity-for--real-world-encrypted-inference">Faster CryptoNets: Leveraging Sparsity for  Real-World Encrypted Inference
+</h2><p>更快的 CryptoNets：利用稀疏性实现现实世界中的加密推理</p>
+<p><strong>摘要</strong>—同态加密使得可以在数据保持加密状态的情况下进行任意计算。这一隐私保护特性对机器学习具有吸引力，但由于加密方案的巨大开销，计算时间通常较长。我们提出了Faster CryptoNets，这是一种利用神经网络进行高效加密推理的方法。我们开发了一种剪枝和量化方法，利用底层加密系统中的稀疏表示来加速推理。我们推导出了流行激活函数的最佳近似方法，能够实现最大稀疏编码并最小化近似误差。我们还展示了如何利用隐私安全的训练技术，通过迁移学习和差分隐私来减少加密推理在现实数据集上的开销。实验结果表明，我们的方法在保持竞争性准确度的同时，较以前的方法实现了显著的加速。该研究提高了使用同态加密保护用户隐私的深度学习系统的可行性。</p>
+<p><strong>引言</strong>
+随着基于云的机器学习服务的普及，确保敏感医疗记录、财务数据以及进入第三方管道的其他信息的机密性变得尤为重要。传统的机器学习算法需要访问原始数据，这可能带来潜在的安全和隐私风险。在某些领域，如医疗行业，法规可能会禁止使用外部预测服务，特别是在技术无法提供必要的隐私保障时。本文针对加密推理任务，以实现安全的机器学习服务。我们假设第三方服务提供商已经拥有一个训练好的模型，这在“机器学习即服务”范式中是常见的做法。利用加密技术，像研究医院或欺诈检测公司这样的组织可以为用户提供预测服务，同时确保所有相关方的安全保障。我们遵循前人的方法[29]，[68]，采用同态加密（HE）将训练好的机器学习模型转换为支持HE的模型。同态加密[56]允许机器学习模型在加密数据上执行计算。根据设计，输出的预测结果也是加密的，这防止了输入或输出信息泄露给模型的宿主。如图1所示，模型既不解密数据，也不需要私钥[12]。然而，有几个挑战阻碍了加密机器学习的广泛应用。一个主要瓶颈是计算复杂性。对于普通网络，推理通常在毫秒级别完成，而加密网络则需要每个样本数分钟或数小时[29]，[38]。此外，同态加密的算术运算集较小，无法使用现代激活函数[15]，因此需要使用较为简单且性能较低的激活函数。</p>
+<h2 id="hetal-efficient-privacy-preserving-transfer-learning-with-homomorphic--encryption">HETAL: Efficient Privacy-preserving Transfer Learning with Homomorphic  Encryption
+</h2><p><strong>摘要</strong>
+迁移学习是一种公认的标准方法，用于通过向在大规模数据集上预训练的模型添加和微调新的分类层，从而高效地训练解决数据稀缺问题的机器学习模型。尽管许多之前的研究提出了使用同态加密解决机器学习即服务环境中迁移学习的数据隐私问题，但它们大多仅专注于加密推理。本文提出了HETAL，一种基于同态加密的迁移学习算法，旨在通过使用CKKS同态加密方案加密客户数据来保护客户在训练任务中的隐私。HETAL是首个严格提供加密训练的实际方案，采用基于验证的早期停止，并实现了与非加密训练相同的准确度。我们提出了一种高效的加密矩阵乘法算法，其速度比先前的方法快1.8到323倍，并且还提出了一种精度更高、覆盖面更广的softmax近似算法。对五个知名基准数据集的实验结果表明，总训练时间为567至3442秒，均低于一个小时。</p>
+<h2 id="iron-private-inference-on-transformers">Iron: Private Inference on Transformers
+</h2><p><strong>Iron: Transformer模型上的私密推理</strong></p>
+<p>我们开启了在客户端-服务器环境中对基于Transformer的模型进行私密推理的研究，其中客户端拥有私密输入，服务器持有专有模型。我们的主要贡献是提供了若干种新的安全协议，用于矩阵乘法和复杂的非线性函数（如Softmax、GELU激活函数和LayerNorm），这些都是Transformer模型中的关键组成部分。具体来说，我们首先提出了一种基于同态加密的定制协议，用于矩阵乘法，关键依赖于一种新颖的紧凑打包技术。该设计在最有效的工作下，实现了√m×的通信量减少（m是输出矩阵的行数）。其次，我们通过整合先进的底层协议和专门的优化，设计了三个非线性函数的高效协议。与现有的最先进协议相比，我们的方法减少了大约一半的通信和计算开销。此外，所有协议都具有数值精度，能够保持明文模型的准确性。这些技术共同使我们能够实现Iron，一个高效的基于Transformer的私密推理框架。对多个现实数据集和模型进行的实验表明，Iron在通信和运行时上比现有方法分别减少了3∼14倍和3∼11倍。</p>
+<p><strong>引言</strong>
+基于Transformer的模型[1–5]由于其强大的表示能力，在自然语言处理（NLP）和计算机视觉（CV）领域取得了巨大的成功。作为一种新型的神经网络架构，Transformer[1]主要利用自注意力机制来计算表示，而不依赖于序列对齐的递归或卷积。基于此的工作，许多Transformer变体，如NLP中的BERT[2]和GPT[3]，以及CV中的ViT[4]和Swin Transformer[5]，在许多现实任务中达到了最先进的性能。Transformer及其他大模型的成功推动了新兴的推理服务和应用[6, 7]。特别是，服务提供商基于Transformer训练复杂的模型，并将其部署为付费推理服务，例如机器翻译和问答服务。客户端提交输入样本并获得所需的响应。然而，当前的推理系统面临严重的隐私问题[8]。一方面，客户端需要将机密输入发送给服务提供商，如果提供商不可信，可能会泄露客户端的数据隐私；另一方面，提供商不愿将专有的Transformer模型分发给客户端，因为模型的构建需要大量数据和计算资源[9]。因此，尽管Transformer在性能上取得了前所未有的突破，但在隐私约束下仍存在一定的差距，这也激励了我们对私密Transformer推理的研究。</p>
+<p>私密推理旨在保护服务器的模型权重不被客户端泄露，同时保证服务器无法获取客户端私密输入的任何信息。近年来，使用安全的2方计算（2PC）技术[10–14]，已在传统神经网络（如卷积神经网络）上实现私密推理。然而，由于结构上的根本差异，私密Transformer推理带来了若干新的挑战。首先，基于Transformer的模型使用大量的高维矩阵乘法，而不是以往研究中广泛使用的矩阵-向量乘法。尽管我们可以直接将先前的矩阵-向量乘法协议扩展到我们的环境，但不幸的是，即使是最有效的设计[14]，由于大量密文的交互，通信开销也非常大。其次，Transformer模型在每个模块中使用复杂的数学函数，如Softmax、GELU激活函数[15]和LayerNorm，而不是像ReLU和Maxpool这样的加密友好型非线性函数。现有方法要么使用精度受损的高阶多项式近似[16, 11]，要么仅支持特定场景下的有限数学函数[17]。更糟糕的是，这些方法计算量大，且通常需要大量的通信（更多相关工作请参见附录A.5）。为了在隐私敏感场景中促进基于Transformer的推理服务的广泛应用，设计高效的协议来处理上述复杂操作至关重要。</p>
+<p>本文设计了Iron，一个高效的混合加密框架，用于私密Transformer推理，确保不会泄露服务器模型权重或客户端输入的任何敏感信息。Iron为Transformer中的复杂操作提供了若干新的专门化协议，以缓解性能开销。具体而言，我们首先提出了一种定制的基于同态加密的矩阵乘法协议。我们的创新点在于，通过设计一种紧凑的打包方法，将更多的明文输入打包到单个密文中，同时保持矩阵乘法的功能。与在Cheetah中实现的最有效的矩阵-向量乘法解决方案[14]相比，我们在通信开销上实现了√m×的改进（m是输出矩阵的行数），这对于各种Transformer模型而言，约减少了8倍。其次，我们精心设计了针对Softmax、GELU和LayerNorm的高效协议。这些协议基于SIRNN[17]，这是用于递归神经网络的私密推理的最先进加密框架，并进行了若干定制优化，如减少Softmax中的指数运算开销，并简化GELU和LayerNorm的计算。这些优化在三个非线性函数上实现了1.3∼1.8倍的运行时减少和1.4∼1.8倍的通信减少。此外，这些协议在数值上具有精确性，能够保持明文模型的准确性。我们还为所设计的协议提供了正式的安全性证明，以展示其安全保障。</p>
+<p>基于上述高效组件，我们实现了私密Transformer推理框架Iron，并在GLUE基准测试[18]上对多种BERT架构[2]（包括BERT-Tiny、BERT-Medium、BERT-Base和BERT-Large）进行了端到端实验。值得注意的是，由于这些模型共享非常相似的架构和相同的操作，Iron可以轻松扩展到其他基于Transformer的模型（如ViT）。实验结果表明，Iron在四个BERT模型上相较于SIRNN实现了3∼14倍的通信减少和3∼11倍的运行时减少。此外，与通用的最先进框架MP-SPDZ[16]相比，Iron在通信和计算效率上分别提升了两个数量级。</p>
+<p>与此同时，另有一项并行工作[19]提出了一个名为THE-X的基于同态加密的隐私保护Transformer推理方法。下面，我们将说明在协议设计和安全性方面的几个重要区别。
+（1）协议设计。我们的工作旨在为Transformer模型的复杂操作设计新的高效协议，而THE-X则通过替换为加密友好的操作来实现这一目标。例如，THE-X将GELU替换为更简单的ReLU操作，将Softmax替换为ReLU与多项式的组合。
+（2）安全性。我们的工作比THE-X提供了更严格的隐私保护。具体而言，我们的工作使用同态加密和秘密共享技术，隐藏所有层的私密信息（包括中间结果）。这种严格的隐私保证符合最近的最先进私密推理工作[14, 17]。然而，在THE-X中，每个非线性层的输入会泄露给客户端，这在实际应用中可能导致严重的隐私泄露[13]。因此，我们的工作可以用来增强THE-X的安全性。</p>
+<h2 id="power-softmax-towards-secure-llm-inference-over--encrypted-data">POWER-SOFTMAX: TOWARDS SECURE LLM INFERENCE OVER  ENCRYPTED DATA
+</h2><p><strong>POWER-SOFTMAX：面向加密数据的安全LLM推理</strong></p>
+<p><strong>摘要</strong>
+现代加密方法，如同态加密（HE），用于实现隐私保护的大型语言模型（LLMs）要求LLMs具有多项式形式。然而，由于Transformer模型包含非多项式组件，如Softmax和层归一化，形成这种表示形式具有挑战性。以往的方法要么直接用高阶多项式来近似预训练模型，这在同态加密下效率较低，要么在训练前将非多项式组件替换为更容易近似的原语，例如将Softmax替换为逐点注意力。后者方法可能会带来可扩展性问题。我们提出了一种新的同态加密友好的自注意力变体，它提供了一种稳定的形式用于训练，并且易于用多项式进行近似，从而实现安全推理。我们的工作引入了第一个具有32层和超过十亿参数的多项式LLM，超越了以往模型的规模十倍以上。所得到的模型展示了与相同大小的标准Transformer相当的推理能力和上下文学习（ICL）能力，标志着该领域的一项突破。最后，我们提供了加密数据上每个计算的详细延迟分解，为进一步优化铺平了道路，并探讨了依赖于我们HE友好变体的Transformer与标准Transformer之间的归纳偏差差异。我们的代码附在补充材料中。</p>
+<p><strong>引言</strong>
+隐私保护机器学习（PPML）解决方案，特别是隐私保护的大型语言模型（LLMs）Yan et al.（2024）；Yao et al.（2024），旨在为用户数据、模型拥有者或两者提供机密性保证。实现这一目标的一个显著加密原语是同态加密（HE），它允许在加密数据上执行计算，而不会向（可能不可信的）计算环境泄露任何信息。此外，它还支持非交互式计算，从而提高了这些解决方案的可用性。</p>
+<p>然而，现代的同态加密方案，如CKKS Cheon et al.（2017），面临着仅支持对加密数据执行多项式计算的重大挑战。这一限制使得在HE环境中部署深度学习模型变得复杂，特别是对于依赖非多项式函数（如自注意力中的Softmax）的LLM。为了克服这一问题，现有方法已经将这些非多项式操作通过诸如唯一多项式近似Lee et al.（2021）或微调程序Baruch et al.（2022）等技术转化为多项式形式。虽然这些方法已经使得前馈网络（FFNs）、卷积神经网络（CNNs）Baruch et al.（2023）；Lee et al.（2022），以及小型Transformer Zimerman et al.（2024）；Zhang et al.（2024b）能够在HE上执行，但它们通常会面临稳定性和敏感性问题Zhou et al.（2019）；Goyal et al.（2020），从而阻碍了有效的扩展。</p>
+<p>我们采取了不同的方法。我们并不是修改现有的Transformer模型以适应HE的约束，而是通过CKKS约束的视角重新审视Transformer架构的核心设计原则Vaswani et al.（2017）。具体来说，我们提出：是否存在适用于HE的操作符，可以复制自注意力的关键设计原则？我们找到了肯定的答案，通过引入基于幂运算的自注意力变体，使其更容易用多项式表示。具有这一变体的模型在多个基准测试中保持了与基于Softmax的Transformer相当的性能，并保持了自注意力的核心设计特性。我们还提出了包括长度无关的近似或改进数值稳定性的变体。整体机制提供了一种比以往方法更适合HE且更高效的Transformer解决方案，使我们的方法能够高效扩展到具有32层和14亿参数的LLM。</p>
+<p>我们的主要贡献：（i）我们提出了一种专门针对HE环境的HE友好的自注意力变体。该变体最大限度地减少了非多项式操作的使用，同时保持了注意力机制的核心原则。此外，我们通过引入数值稳定的训练方法和用于推理的长度无关的计算策略，扩展了这一方法。因此，我们的模型能够实现大规模的安全推理，并且比现有方法更高效。（ii）我们利用这一技术开发了RoBERTa的多项式变体，以及首个多项式LLM，具有推理和上下文学习（ICL）能力，并且是迄今为止训练的最大多项式模型，包含32层Transformer和大约十亿个参数。（iii）我们提供了早期的消融研究和加密数据上的延迟分析，为进一步改进铺平了道路。</p>
+<h2 id="powerformer-efficient-privacy-preserving-transformer-with-batch-rectifier-power--max-function-and-optimized-homomorphic-attention">Powerformer: Efficient Privacy-Preserving Transformer with Batch Rectifier-Power  Max Function and Optimized Homomorphic Attention
+</h2><p>&ldquo;Powerformer: 高效隐私保护变换器，采用批量整流器-幂最大函数和优化同态注意力&rdquo;</p>
+<p><strong>摘要</strong>
+我们提出了一种高效的非交互式隐私保护变换器推理架构，称为Powerformer。由于softmax是一个非代数运算，之前的研究尝试修改它以使其适应同态加密（HE），但这些方法由于多次引导（bootstrapping）而导致准确度下降或执行时间延长。我们提出用一种基于ReLU的新函数——批量整流器-幂最大（Batch Rectifier-Power max, BRPmax）函数替代softmax，且无需任何不稳定的近似方法，该方法在BERT-Large模型中超越了原始BERT的性能，同时需要的层数更少，从而只需一次引导即可运行。我们还提出了一种专门针对注意力模块的矩阵乘法算法，相比现有的最先进方法，减少了35%到91%的密钥切换次数。我们设计了清晰的端到端基于HE的私有变换器模型实现，我们在BERT-tiny模型上使用RNS-CKKS实现的Powerformer，在单线程CPU上运行时需时503秒，据我们所知，这是首个使用HE的端到端非交互式变换器实现。</p>
+<p><strong>引言</strong>
+变换器（Transformer）模型是近年来最突出的技术之一，基于变换器的语言模型ChatGPT通过最大化大型语言模型的潜力，推动了传统人工智能能力的边界，实现了与人类的自然互动，带来了重大创新。然而，ChatGPT目前采用的是机器学习即服务（MLaaS）模型，其中客户端将数据发送到服务器，服务器使用其模型进行推理并将结果返回给客户端。这个过程将客户端的数据暴露给服务器，产生了显著的隐私问题。由于这些问题，注重安全的公司对使用ChatGPT持谨慎态度，担心企业数据的潜在泄露，这最终限制了强大的基于变换器的模型的充分利用。为了解决MLaaS环境中的隐私问题，利用同态加密（HE）对加密数据进行推理的隐私保护机器学习（PPML）得到了积极研究 [3, 7, 13, 16, 19, 27]。随着对变换器模型关注的增加，关于变换器安全推理的研究也日益增多 [4, 6, 9, 21, 23, 28, 29]。PPML研究分为交互式PPML（通过客户端与服务器之间的通信进行推理）和非交互式PPML（服务器在没有通信的情况下对加密数据进行推理）。</p>
+<p><strong>交互式PPML</strong> [6, 9, 13, 21, 23, 24, 27] 主要采用使用同态加密（HE）和多方计算（MPC）的方法，这些方法具有相对较快的执行时间。然而，当针对像变换器这样的复杂模型时，这种方法可能会导致通信成本超过几十GB，这在带宽不足的环境中可能成为限制因素。与此相对，<strong>非交互式PPML</strong> 仅涉及服务器对客户端加密数据进行计算，无需任何通信，客户端只需发送加密数据并接收加密后的最终结果。由于不需要在线通信的优势，许多研究采用了非交互式方法 [3, 7, 10, 16, 19, 28, 29]。本文重点讨论非交互式隐私保护变换器推理。<strong>RNS-CKKS</strong> [5] 是非交互式变换器推理的良好选择，因为它具有快速执行大量实数运算的优势。在RNS-CKKS上实现高效的非交互式隐私保护变换器推理的两个主要挑战是softmax操作和注意力所需的矩阵乘法。基于HE的变换器研究中最关键的问题是，目前仍没有完整解决基于HE的变换器模型在实践中稳定运行的清晰端到端实现的论文。</p>
+<p><strong>Softmax函数</strong>
+Softmax函数可以通过以下方程计算，其中减去$x_{\text{max}}$是为了数值稳定性 [15]：
+</p>
+$$
+y_i = \frac{\exp(x_i - x_{\text{max}})}{\sum_{j=0}^{m-1} \exp(x_j - x_{\text{max}})}
+$$<p>
+在同态加密（HE）中应用softmax函数的两种最常见方法是：用多项式函数替代softmax函数，或准确地近似softmax函数本身。第一种方法是用多项式替代softmax函数并对模型进行微调，可能改善基于HE的实现中的时间性能，但一个关键问题是，当多项式未能有效替代神经网络中的softmax时，可能会导致准确度下降。例如，Zimerman等人提出的softmax替代方法 [29] 显著降低了准确度，如第2.1节中的实验结果所示。第二种方法则专注于提供快速且准确的近似。例如，最近的研究，如 [28]，使用泰勒级数和Goldschmidt多项式近似方法来近似softmax函数。由于指数函数的高不稳定性，在RNS-CKKS上进行准确计算是困难的。因此，为了稳定性，使用$x_{\text{max}}$进行减法变得不可避免，这进一步需要大量的比较操作，导致在安全推理过程中显著的计算开销。</p>
+<p><strong>矩阵乘法</strong>
+所有涉及基于同态加密（HE）私有推理的论文都未完全呈现适用于整个变换器网络的端到端矩阵乘法方法。例如，本研究领域的先前研究包括NEXUS [28]和Zimerman等人的研究 [29]。NEXUS提出了一种用于计算多头注意力中查询矩阵（Qi）、键矩阵（Ki）和值矩阵（Vi）的密文-明文乘法算法，以及用于计算$Q_iK_i^T$的密文-密文乘法。然而，后续乘法的同态算法，如与Vi的乘法或输出权重矩阵$W_O$的乘法，在NEXUS中并未提及。此外，NEXUS采用了多种打包方法，如按组件打包、按行打包、按列打包和按对角线打包，但没有详细说明推理过程中打包结构如何变化，以支持非交互式计算。上述打包方法的定义在B.2节中提供。另一方面，Zimerman等人的研究 [29]没有提供详细的实现细节，如同态矩阵乘法算法，也没有提供在加密状态下的实现代码，使得很难复现他们的非交互式实现并分析其效率。因此，未来的基于HE的变换器实现研究必须提出专门适用于HE私有变换器推理的矩阵乘法方法，并提供该方法的端到端实现源代码。</p>
+<p>尽管没有完全解决变换器网络的HE实现问题，但在HE-MPC混合实现中提出了几种适用于注意力模块的矩阵乘法方法。然而，这些矩阵乘法的计算量并未得到优化，或者由于非紧凑实现，产生了大量的中间密文，从而导致了显著的引导操作量。例如，BOLT [23]提出了一种利用列主打包的同态矩阵乘法算法，尽管明文-密文乘法需要2√d个密钥切换，效率相对较高，但密文-密文矩阵乘法仍然需要多达$d \log d + 2d$个密钥切换，相比于Jiang等人提出的著名同态矩阵乘法方法 [10]，这是一个效率较低的实现。另一方面，NEXUS [28]中使用的按行和按列打包方法效率较低，因为它们留下了许多未使用的槽位，我们的分析表明，使用这些打包方法需要大量的引导操作。此外，撇开引导操作的数量不谈，使用NEXUS提出的矩阵乘法算法实现多头注意力时，至少需要6d²次密钥切换。对于我们所针对的变换器模型（d = 128），这会导致过多的密钥切换。虽然Jiang等人提出了一种高效的通用密文-密文矩阵乘法算法，但该方法需要为注意力模块（具有复杂的矩阵操作结构）进行专门化。</p>
+<p><strong>我们的贡献</strong>
+我们提出了一种高效的端到端私有基于同态加密（HE）的变换器实现，称为PowerFormer，通过解决基于HE实现的两个重要研究问题：</p>
+<ul>
+<li>我们引入了一组新的softmax替代函数——批量整流器-幂最大（Batch Rectifier-Power max，BRPmax）函数集，超越了现有的softmax替代方法。这一创新方法通过我们新的训练方法实现了高数值稳定性、与原始BERT模型几乎相同的分类准确性，以及高效的推理运行时性能。</li>
+<li>我们提出了一种针对多头注意力优化的矩阵乘法操作，呈现了一种端到端实现方法，最小化了多头注意力中的密钥切换操作次数和引导操作次数。</li>
+</ul>
+<h3 id="批量整流器-幂最大brpmax方法"><strong>批量整流器-幂最大（BRPmax）方法</strong>
+</h3><p>我们提出将softmax函数近似为$ \text{ReLU}(x + c)^p / R_d $，其中$c$、$p$和$R_d$是常数，且$c$、$p$是固定的。通过采用批量归一化中的批量方法，运行中的分母$R_d$在训练过程中被学习，并在推理过程中作为常数处理，从而通过乘以常数$1/R_d$来在加密数据上执行操作。ReLU函数通过Lee等人提出的方法 [17, 18] 被精确近似。我们通过数值实验展示了Powered ReLU（整流器-幂）函数有效地替代了指数函数。我们还展示了蒸馏学习中的批量方法解决了动态缩放问题，这是PPML中的常见挑战。</p>
+<h3 id="优化同态注意力"><strong>优化同态注意力</strong>
+</h3><p>我们进一步优化了Jiang等人 [10] 提出的矩阵-矩阵乘法算法。对于明文-密文矩阵乘法，我们将密文-密文矩阵乘法算法中的多个明文-密文乘法步骤集成到一个单一的baby-step giant-step求和中，与 [10] 相比，密钥切换次数减少了85%到91%。我们还提出了一种针对查询矩阵和键矩阵乘法优化的分块矩阵乘法算法，密钥切换次数比 [10] 减少了35%。</p>
+<h3 id="端到端基于he的变换器实现"><strong>端到端基于HE的变换器实现</strong>
+</h3><p>我们提出了首个端到端非交互式安全变换器推理架构——Powerformer。该架构通过使用多项式近似替代非线性操作（如softmax、GELU和层归一化），同时利用我们高效的矩阵乘法算法。尽管我们的重点是BERT-tiny模型，但该架构可以轻松扩展到其他模型，如BERT-medium和BERT-base。我们已使用RNS-CKKS库Lattigo [1] 完成了Powerformer架构的端到端实现。与仅提供加密数据上执行的单个组件结果的NEXUS不同，我们实现了整个过程并展示了完整的结果。我们的实现仅在单个CPU线程上运行了503秒，比基于单线程性能的NEXUS快至少39倍。鉴于这是单线程实现，我们预计在GPU或硬件加速的情况下，运行时间将减少数十到数百倍 [12, 14]。</p>
+<h2 id="privformer-privacy-preserving-transformer-with-mpc">Privformer: Privacy-preserving Transformer with MPC
+</h2><p>&ldquo;Privformer: 基于多方计算的隐私保护Transformer&rdquo;</p>
+<p>摘要——Transformer 是一种处理序列数据的深度学习架构。Transformer 在多个序列数据分析任务中达到了最先进的水平，其变体，如 BERT 和 GPT-3，已成为解决自然语言处理（NLP）一般任务的事实标准。本文提出了一种三方多方计算（MPC）协议，用于在诚实多数设置下进行 Transformer 的安全推理。当使用现有构建块实现 Transformer 的 MPC 协议时，注意力层是最耗时的部分。注意力机制是 Transformer 的核心组件，能够捕捉和利用输入序列中元素之间的复杂依赖关系。注意力机制调用指数函数 O(S²) 次，这在使用现有 MPC 原语实现 Transformer 时成为主要瓶颈。为了解决这个问题，我们采用了 Performer [11]，这是 Transformer 的一种变体，其中调用指数函数的 sigmoid 函数被 ReLU 函数替代，ReLU 是一种更适合 MPC 的非线性函数。此外，通过引入基于核的注意力矩阵近似方法，并使用随机正交矩阵，我们展示了注意力层可以通过 O(S) 次 ReLU 函数调用来处理。我们通过三方 MPC 对 Transformer 进行端到端实现，研究了该方法的效率。实验评估表明，对于一个输出序列长度为 64 的翻译任务，整个计算过程在局域网环境下大约需要 19 分钟。</p>
+<p>引言——Transformer [49] 在机器学习中广泛应用于自然语言处理（NLP）任务，如机器翻译 [51]、文本摘要 [33]、问答 [8] 等。最初，Transformer 被应用于需要利用输入序列中元素间复杂依赖关系的 NLP 任务（例如，依存句法分析用于确定语法结构）。随后，Transformer 也被应用于视觉问答（VQA）[10]、图像分类 [18]、图像生成 [56] 和蛋白质折叠预测（AlphaFold 2）[24] 等任务。有关 Transformer 及其变体的更多信息，请参见 [48]。在大规模通用数据集（例如，通用文本语料库）上训练的 Transformer 被称为预训练模型（如 BERT、GPT-3），并且已知能够处理多种任务。将预训练模型应用于特定任务时，通常通过迁移学习使用专门为该任务准备的小量训练数据对模型进行微调。通过结合预训练和迁移学习，即使在合理的计算时间内，使用少量的训练数据也能实现高精度的识别性能。</p>
+<p>使用基于 Transformer 的模型的一大难题是其庞大的模型规模。例如，GPT-3 是一个生成句子的语言模型，包含大约 1750 亿个参数。因此，在使用基于 Transformer 的模型时，通常将模型部署在云服务器上，而不是本地计算资源上。使用时，信息流遵循 API 模式；用户将输入数据发送到服务器，服务器使用模型进行处理，并仅将结果返回给用户。从用户的角度来看，数据隐私是云端模型部署中的主要问题之一。在 API 模式下，用户必须将所有数据提交到云服务器。例如，考虑将文件进行云端机器翻译。如果文件内容高度机密，将整个文件发送到云服务器是不可接受的。此外，借助最先进的机器翻译技术，实时口译对话已成为可能。然而，由于同样的原因，当需要保护机密性时，基于云的 API 模式并不现实。隐私问题可以通过将整个模型分发给用户并在用户端执行所有计算来解决。然而，近期的最先进的基于 Transformer 的模型规模极大，需要 GPU 进行处理。在用户端准备如此大规模的计算环境也是不现实的。此外，模型通常需要经过大量的努力和成本进行特定任务的微调。这样的模型是宝贵的信息资产，将这些模型分发给用户可能是不可接受的。</p>
+<p>在过去十年中，已经开发了多种用于处理序列数据的架构，如循环神经网络（RNN）、LSTM 和 Seq2Seq。目前，预训练的 Transformer 变体，如 BERT（Bidirectional Encoder Representations from the Transformers）[17] 和 GPT（Generative Pre-trained Transformers）-3 [6]，被认为是许多 NLP 任务的最先进技术，并被广泛作为事实标准使用。考虑到上述情况，本文旨在开发一种三方多方计算（MPC）协议，用于在诚实多数设置下对 Transformer 进行安全推理，使得能够通过 API 使用部署在云服务器上的 Transformer，同时保护模型和用户的隐私。</p>
+<p>相关工作——在过去五年中，深度学习推理和训练中的隐私保护取得了显著进展。大多数研究依赖于一种或多种隐私保护计算技术，如同态加密 [46]、[22]、秘密共享 [32]、[44]、[13] 以及它们的组合 [45]、[23]、[35]。卷积神经网络（CNN）的隐私保护推理和训练已被深入研究，并通过 CrypTFlow [26]、CrypTFlow 2 [43]、CryptGPU [47]、[39] 等展示了对大规模 ImageNet 数据进行隐私保护计算是可行的。综述论文 [43] 总结了深度学习隐私保护计算技术的最新进展。隐私保护计算技术在序列分析（例如自然语言处理、语音识别、时间序列分析）中的应用，仍然少于在图像识别中的应用。然而，已有一些研究探索了深度神经网络在序列分析中的隐私保护计算，如循环神经网络（RNN）、LSTM、Seq2Seq 和基于 Transformer 的模型。SIRNN [42] 提出了一个二方协议，用于处理序列数据的 RNN 推理。他们引入了高效的通信协议，用于处理通过多方计算（MPC）计算成本高昂的非线性函数，如指数函数、sigmoid 函数、tanh 函数和平方根逆函数，采用查找表和混合位宽的方法。该协议结合了秘密共享和盲传输，保证了半诚实安全性。冯等人提出了使用加法和乘法秘密共享的 n 方协议，用于计算在神经网络中常用的典型非线性函数 sigmoid 函数和 tanh 函数 [19]。使用这些技术，冯等人提出了 PrivLSTM 和 PrivSeq2Seq，分别在半诚实对抗模型中安全地计算 LSTM 和 Seq2Seq 的推理。王等人提出了一种 n 方 MPC 协议，使用加法和二进制秘密共享，在半诚实对抗模型中实现 Transformer 的近似推理 [53]。该工作集中于 Transformer 计算中软最大（softmax）函数评估所占的主导地位；他们提出通过使用 Linformer [52] 和 Nystromformer [55]，这些方法可以近似计算 Transformer，从而减少 softmax 函数的评估时间。该工作的目标和方法与我们的工作相似，但在以下两点上存在显著差异。</p>
+<p>首先，Nystromformer 仅考虑了 Transformer 的编码器部分，而未考虑涉及遮罩注意力的解码器部分。遮罩注意力是处理复杂任务（如机器翻译和句子生成）所必需的组件。正如我们将在 5.2 节中详细讨论的那样，在应用多方计算（MPC）时，特别需要考虑如何将遮罩矩阵应用到注意力矩阵中。其次，该框架假设使用半诚实对手模型，并不支持对抗恶意对手的安全性。我们的协议是在诚实多数设置下工作的。陈等人提出了一种协议 THE-X，用于使用同态加密进行 Transformer 的安全推理 [9]。陈等人通过微调引入了 Transformer 的多项式激活函数近似。给定一个预训练的 Transformer 模型，非多项式函数（如高斯误差线性单元（GELU）、softmax 和层归一化）被多项式替代，整个模型进行了微调，以提高其推理性能。他们的实验评估评估了预测性能，但未报告计算时间和通信带宽。李等人还提出了基于同态（CKKS）加密的隐私保护嵌入，并通过对 BERT 嵌入的加密进行文本分类来展示其性能 [30]。该框架支持 CKKS 加密方案的高效 GPU 实现；然而，只有下游分类（逻辑回归）部分通过同态加密得到保护，整个序列编码部分则没有加密保护。除了 Transformer 的隐私保护计算外，还有一些关于模型隐私和输入隐私的研究。Lang 等人和 Coavoux 等人研究了 Transformer 编码器获得的潜在表示信息泄露的风险，并提出了使用对抗训练的防御方法 [12]，[29]。Lu 等人揭示了使用在联邦学习过程中收集的梯度信息来反转 Transformer 梯度的风险 [34]。Qu 等人研究了相同的私人输入泄露风险，并提出了使用差分隐私的对策 [41]。这些研究的目标与我们的工作是正交的，且这些研究采用了不同的安全模型。</p>
+<p>我们的贡献</p>
+<p>Transformer 编码器层对某些任务（如分类）非常有用。然而，当 Transformer 被要求作为生成模型工作时（例如机器翻译和句子生成），涉及遮罩注意力的解码器部分是必不可少的。在本研究中，我们开发了用于全 Transformer 模型推理的多方计算（MPC）协议，包括编码器层和解码器层。本工作的贡献总结如下：</p>
+<p>我们设计了一个 3 方 MPC 协议，用于在诚实多数设置下对 Transformer 进行安全推理。诚实多数设置下的 MPC 协议由 Araki 等人 [3] 和 Furukawa 等人 [20] 首先提出，并随后应用于 ABY3 [16]、SecureNN [50] 和 FALCON [31] 中的机器学习模型的推理和训练。FALCON 引入的 MPC 协议实现了隐私保护计算，这些计算通常用于深度神经网络，如矩阵乘法、修正线性单元（ReLU）、ReLU 的导数（DReLU）和批量归一化。其中一些协议是通过结合 ABY3 和 SecureNN 中使用的技术设计的。我们的协议也在很大程度上依赖于这些工作的协议。</p>
+<p>我们的技术贡献有三个方面：</p>
+<ol>
+<li>一个用于计算注意力的 MPC 协议，ReLU 注意力，使用 O(S) 次 ReLU 调用，且在 O(1) 轮中完成；</li>
+<li>两个用于遮罩注意力的 MPC 协议：一个在 O(1) 轮中需要 O(S²) 时间，另一个在 O(S) 轮中实现 O(S) 时间复杂度；</li>
+<li>一个新的用于平方根逆运算的 MPC 协议。</li>
+</ol>
+<p>首先，我们提出了一个高效的 MPC 协议——ReLU 注意力，用于计算注意力矩阵，这是 Transformer 编码器层中的核心组件。实现注意力层可以通过简单地结合现有的协议来实现，但这种简单的组合会因以下原因而导致效率低下。通过初步研究，我们揭示了在注意力层中，sigmoid 函数中的指数运算是整个计算的瓶颈（见第 4 节）。更精确地说，给定长度为 S 的输入序列，在 MPC 中，指数运算会在注意力层中调用 O(S²) 次。为了解决这一问题，我们引入了两种技术：（1）我们将注意力层中的 sigmoid 函数替换为 ReLU 函数（ReLU 注意力，见第 5 节），（2）我们使用 Performer [11] 对 Transformer 进行近似，Performer 是注意力的基于核的泛化方法。由于 ReLU 函数对 MPC 更友好，替换 sigmoid 为 ReLU 提高了计算效率。此外，Performer 使用随机正交矩阵对 ReLU 注意力进行近似，从而仅需 O(S) 次 ReLU 调用来处理注意力层。</p>
+<p>其次，我们通过实验研究了两种 MPC 协议处理遮罩注意力层的效率，遮罩注意力层是 Transformer 解码器层中的另一个核心组件。与用于（非遮罩）ReLU 注意力的 MPC 协议不同，处理遮罩注意力的 MPC 即使在近似的情况下，也需要 O(S²) 次 ReLU 调用（见第 5.2.1 节）。这是因为遮罩矩阵需要应用于 S × S 的注意力矩阵，无论是否进行近似。一个解决方法是按顺序应用遮罩到注意力向量，这样 MPC 就不需要处理整个注意力矩阵。通过这种修改，我们可以将 ReLU 的调用次数减少到 O(S) 次；但是，由于顺序遮罩，轮次复杂度增加到 O(S)（见第 5.2.2 节）。考虑到这一轮次和通信复杂度的差异，这两种协议的优越性取决于通信环境。通过实验评估，我们揭示了这些策略在遮罩注意力中的计算效率。</p>
+<p>第三，我们提出了一种新的用于平方根逆运算的 MPC 协议。平方根逆运算包含在批量归一化层或层归一化层中，通常不仅出现在 Transformer 中，也出现在各种神经网络中，并且已经在 SIRNN 和 FALCON 中进行了研究。据我们所知，只有 FALCON [31] 在诚实多数设置下研究了平方根逆运算的 MPC。一些协议的限制是，它们通过近似估算 log2 b，其中 b 是输入，并以明文形式在各方之间共享，这可能泄漏关于私有输入序列的信息（信号的方差）。我们提出了一种用于平方根逆运算的 MPC 协议，该协议不会泄漏任何中间值，并且在诚实多数设置下是安全的。</p>
+<p>本文的结构安排如下：第二节介绍了我们提出的方法所需的基本构件；第三节定义了我们的问题和威胁模型；第四节讨论了通过组合现有 MPC 协议来实现 Transformer 时的问题；第五节提出了 ReLU 注意力和遮罩 ReLU 注意力的 MPC 协议；第六节介绍了平方根逆运算的 MPC 协议；第七节我们构建了 Privformer，这是一个端到端的 MPC 协议，用于计算 Transformer，使用了所提出的构件；第八节讨论了所提出协议的安全性；第九节通过实验展示了这些协议的效率；第十节总结了我们的工作。</p>
+<h2 id="relus-revival-on-the-entropic-overload-in-normalization-free-large-language-models">ReLU’s Revival: On the Entropic Overload in Normalization-Free Large Language Models
+</h2><p>ReLU的复兴：关于无归一化大语言模型中的熵过载问题</p>
+<p>LayerNorm是现代大语言模型（LLM）中的一个关键组件，能够稳定训练并确保优化过程的顺利进行。然而，它在机制可解释性、异常特征抑制、信号传递的真实性以及私密推理的计算和通信复杂性方面带来了显著的挑战。本研究探索了无归一化解码器-only LLM中理想的激活函数。与传统上在基于Transformer的模型中偏好使用GELU不同，我们的实验证据表明了一个相反的趋势：在无LayerNorm的模型中，ReLU显著优于GELU，带来了8.2%的困惑度改进。我们发现GELU存在一个关键问题，即早期层会经历熵过载，导致注意力头的表征能力未得到充分利用。这表明，像GELU这样平滑的激活函数并不适合无LayerNorm架构，而ReLU的几何属性——在输入空间中的专业化和类内选择性——有助于在没有LayerNorm的情况下改善学习动态和信息保留。本研究为优化Transformer架构提供了关键见解，特别是在LayerNorm带来显著挑战的情况下。代码和实现可在relu-revival-normfree获得。</p>
+<p><strong>引言</strong>
+<strong>动机与挑战</strong>
+LayerNorm [1] 是现代大语言模型（LLM）成功的关键架构组件之一，通过对层内特征的输入进行归一化来稳定训练过程。此外，它在增强模型的非线性表征能力方面也起到了重要作用 [2-5]。尽管LayerNorm具有诸多优点，但它在特定场景下会带来一些实际挑战，具体包括：</p>
+<ol>
+<li><strong>私密推理（PI）</strong>：PI协议使得在加密数据上进行推理成为可能，且不暴露输入数据，从而确保数据隐私并保护模型权重 [6-14]。混合PI协议在处理LayerNorm中的逆平方根计算时遇到困难，这使得它成为仅次于GELU的第二大开销操作，贡献了22%的总延迟和通信开销 [11]。此外，纯同态加密（HE）PI需要对LayerNorm进行多项式近似，这在具有广泛方差范围的情况下非常具有挑战性 [8]。</li>
+<li><strong>机制可解释性</strong>：LayerNorm增加了残差流的复杂性，使得分析和理解Transformer模型内部工作变得更加困难 [15]，限制了LLM在要求透明性和可解释性的应用中的适用性。</li>
+<li><strong>低精度训练</strong>：LayerNorm中的可训练参数与异常特征的放大相关，这对LLM量化训练提出挑战，因为它加剧了数值不稳定性并降低了低精度训练下的性能 [16-19]。</li>
+<li><strong>信号传播</strong>：LayerNorm已被证明对信号传播产生负面影响 [20]。
+这些挑战突显了需要无LayerNorm架构的必要性，这样可以保留Transformer的优点，同时避免其缺点。然而，这一转变也带来了新的考虑，尤其是在选择前馈网络（FFN）激活函数时。此前的研究 [20-22] 探讨了设计无归一化LLM的各种架构启发式方法，但去除归一化层对FFN激活函数选择的影响仍未得到充分探索。</li>
+</ol>
+<p><strong>研究洞察与影响</strong>
+本研究超越了以往的工作，深入探讨了无归一化LLM中激活函数的设计选择，提供了关于这些选择如何影响学习动态、内部表征和整体模型性能的新见解。我们的研究揭示了几个关键发现：</p>
+<ul>
+<li>
+<p><strong>ReLU在无LayerNorm模型中优于GELU</strong>：与传统做法相反，我们表明在无LayerNorm的模型中，使用ReLU作为FFN激活函数的模型在困惑度上显著优于使用GELU的模型，困惑度提高了8.2%（见图2和表2）。</p>
+</li>
+<li>
+<p>具有可学习负斜率的学习动态</p>
+<p>：为了进一步探索，我们在泄漏ReLU激活函数中实验了可学习的负斜率，并使用了两种配置：</p>
+<ol>
+<li><strong>层级配置</strong>：每一层有一个独立的可学习斜率。最初，较浅的层学习正斜率，而较深的层学习负斜率。但随着训练的进行，所有层的斜率都逐渐收敛到接近零的值（见图3a）。</li>
+<li><strong>全局配置</strong>：所有层共享一个可学习的斜率。该斜率最初为正，然后逐渐收敛到接近零（见图3b）。这些结果表明，无LayerNorm模型本质上更倾向于使用具有零负斜率的ReLU类激活函数。</li>
+</ol>
+</li>
+<li>
+<p><strong>GELU激活中的熵过载</strong>：为了深入分析，我们检查了按头的熵值，发现使用GELU激活的无归一化模型中，早期层经历了熵过载，注意力头的大部分达到了接近最大熵水平，这表明注意力头的表征能力未得到充分利用。</p>
+</li>
+</ul>
+<p><strong>贡献</strong>
+我们的主要贡献如下：</p>
+<ol>
+<li>我们通过对无归一化解码器-only模型中激活函数的深入分析，研究了从头开始训练时的学习动态。</li>
+<li>我们从香农熵的角度探索了不同激活函数在基准模型和无归一化模型中对注意力得分分布的影响，为无LayerNorm模型架构设计提供了有价值的见解。</li>
+<li>我们在GPT-2和Pythia [23] 模型上进行了各种上下文大小（128和256）的实验，训练数据来自CodeParrot [24]，并使用了21亿训练token。</li>
+</ol>
+<h2 id="secure-transformer-inference-made-non-interactive">Secure Transformer Inference Made Non-interactive
+</h2><p>使得变换器推理安全且非交互式</p>
+<p>随着ChatGPT的普及，安全变换器推理已成为一个重要的研究课题。现有的解决方案通常是交互式的，涉及大量的通信负载以及客户端和服务器之间的多轮交互。在本文中，我们提出了NEXUS，首个用于安全变换器推理的非交互式协议。该协议要求客户端在整个推理过程中只与服务器进行一轮通信：提交加密输入并接收加密结果。NEXUS引入了几个新颖的原语，包括SIMD密文压缩/解压缩、SIMD槽折叠和安全Argmax，使其在通信方面显著超越现有技术，同时保持可比的运行时性能。具体而言，它与BOLT（Oakland ’24）相比，减少了372.5倍的带宽消耗，与Bumblebee（NDSS ’25）相比，减少了53.6倍。此外，它的非交互式特性允许进行最优的硬件加速，GPU版本在运行时实现了42.3倍的加速。这使得NEXUS能够在仅用164MB带宽的情况下，在37.3秒内完成基于BERT的模型推理。</p>
+<h3 id="引言-2">引言
+</h3><p>变换器模型，如GPT [48] 和 BERT [17]，已经彻底改变了人工智能领域。它们在语言翻译、内容生成和问答等多种应用中表现出色。然而，这些应用通常涉及敏感数据的处理，随着时间的推移，用户隐私的担忧也日益增加。最近，OpenAI 开发了 ChatGPT 作为一种在线推理服务，并为开发者提供了一个公共 API，使他们能够通过提交提示或消息轻松访问该平台。虽然这种方式便捷，但它对数据隐私构成了重大风险，因为用户提交的内容有时可能包含私人信息。</p>
+<p>安全推理是一种双方加密协议，旨在使模型推理以一种方式进行，即服务器 S 对客户端 C 提交的输入一无所知，且客户端 C 对服务器 S 的模型一无所知，除非推理结果。过去几年中，许多此类协议已被开发用于卷积神经网络（CNNs）[40]，[28]，[2]，[31]，而一些最新的研究也开始支持基于变换器的模型 [25]，[11]，[27]，[42]，[45]。</p>
+<p>值得注意的是，这些协议中的大多数是交互式的，要求大量的通信成本和客户端与服务器之间的多轮交互。例如，当前安全变换器推理的最先进解决方案 BOLT [45]，记录了单次推理消耗 59.61GB 带宽和 10,509 轮交互。如此庞大的通信开销显著增加了网络延迟，尤其在广域网（WAN）配置中，并使得传统的硬件加速技术，如 GPU 或 FPGA，失去效果。此外，通信负载的大小使得安全推理的财务成本非常高。根据 AWS 的定价标准 [1]，BOLT [45] 每个回复标记的成本为 5.44 美元，这意味着实际部署既昂贵又不可行。</p>
+<p>我们强调建立一种非交互式安全推理模型的重要性，其中客户端 C 只需提交一个加密输入，就能从服务器 S 获得加密的预测结果。对于需要实时响应的场景，现有的安全推理协议，无论是交互式还是非交互式，都无法满足速度要求。然而，非交互式协议在利用硬件加速时，在满足速度要求方面展现了潜力 [16]，[15]，[54]，[56]，[51]，[3]，[33]。在诸如数据仓库和医院诊断等非实时场景中，客户端 C 可以容忍响应的延迟，此时部署非交互式协议是可行的，而交互式协议则不可行。这是因为交互式协议要求客户端 C 的计算资源在等待期间持续占用，妨碍了 C 执行其他任务的能力。</p>
+<h3 id="在非交互式安全推理的背景下变换器与卷积神经网络cnn模型之间有两个关键区别">在非交互式安全推理的背景下，变换器与卷积神经网络（CNN）模型之间有两个关键区别。
+</h3><ol>
+<li><strong>更大规模的矩阵-矩阵乘法</strong>
+之前关于私有神经网络的研究，如Gazalle [31] 和 Cheetah [28]，提出了针对全连接层的安全矩阵-向量乘法的优化协议。然而，变换器需要进行大规模的矩阵-矩阵乘法。之前的研究 [31]，[28]，[25] 通过内积计算乘法，并在矩阵-矩阵乘法的情况下采用稀疏打包来处理生成的密文。由于这种技术，密文中的大部分数据槽经常被浪费，从而引入了额外的通信开销。此外，变换器模型中矩阵的输入维度通常更高，导致需要执行更多的乘法，从而增加了计算成本。因此，开发一种既节省时间又节省空间的新矩阵乘法协议是非常有用的。</li>
+<li><strong>更高维度的Argmax输入</strong>
+CNN和变换器的最后一层都是Argmax，其输入是一个概率向量，每个条目表示一个输出标签候选的概率（总共有m个标签）。推理输出是概率最高的标签。当前最先进的FHE（全同态加密）算法用于Argmax，由Phoenix（CCS'22）[30] 提出，其计算复杂度为O(m)。在CNN图像分类任务中，m的值通常不大（例如，在ImageNet-1k中，m = 1,000），因此这一度量被认为是可接受的。然而，对于基于变换器的NLP任务，m等于词汇表的大小，BERT中m为30,522，Llama-3-8B中m为128,256。显然，现有的算法不适用于变换器，因此需要一种低复杂度的解决方案。</li>
+</ol>
+<h3 id="a-我们的贡献">A. 我们的贡献
+</h3><p>本文提出了NEXUS，这是我们所知的首个用于安全变换器推理的非交互式协议。NEXUS的协议设计从客户端使用RNS-CKKS全同态加密（FHE）加密输入开始，使服务器能够在FHE加密的数据上评估变换器模型。我们的贡献总结如下：</p>
+<ul>
+<li><strong>高效且优化的通信矩阵乘法</strong>
+许多以前的安全推理协议，如Gazalle [31]、Cheetah [28] 和 Iron [25]，在输出密文中浪费了数据槽，从而引入了不必要的通信开销。BumbleBee [42] 通过密文交织消除了浪费的槽，但需要更多的计算。我们采用了密文压缩和解压缩策略，并利用我们矩阵乘法算法中的单项式特殊性质（参见Section-III.B）来减少通信成本。我们还提出了一种适合摊销的离线-在线计算策略（参见Section-III.C），以减少计算成本。</li>
+<li><strong>高效的Argmax和其他非线性函数评估</strong>
+为了防止成员推理攻击 [53]，[58]，[57]，一种常见的方法是输出Argmax后的logits向量，因为它泄漏关于模型的信息最少 [53]。对于长度为m的输入（BERT中m=30,522，Llama-3-8B中m=128,256），当前最先进的协议 [30] 需要执行m次SGN操作（参见Section-II.C）和m次密文旋转。而我们的方法仅需要(log m + 1)次SGN操作和(log m + 1)次密文旋转，从而大大减少了计算开销。此外，我们还使用RNS-CKKS实现了GELU、Softmax和Layer Normalization等非线性函数。</li>
+<li><strong>提供了NEXUS在CPU和GPU上的端到端实现</strong>
+图1展示了我们提出的协议与基线相比的改进。总之，与最先进的协议Bumblebee [42]相比，NEXUS（CPU）在计算上快了1.79倍，可以节省98.1%的通信开销，并将财务成本降低了2.38倍。利用我们协议的非交互式特性，我们进一步提供了GPU加速实现。NEXUS（GPU）将推理速度提高了42.3倍，并将财务成本降低了17.2倍，降至每个token仅0.05美元。我们的代码已经开源，地址是 <a class="link" href="https://github.com/zju-abclab/NEXUS"  target="_blank" rel="noopener"
+    >https://github.com/zju-abclab/NEXUS</a>。</li>
+</ul>
+<h2 id="selective-network-linearization-for-efficient-private-inference">Selective Network Linearization for Efficient Private Inference
+</h2><p>选择性网络线性化以实现高效的私密推理</p>
+<p><strong>摘要</strong>
+私密推理（Private Inference, PI）允许在加密保护的数据上直接进行推理。尽管这种技术有望解决许多隐私问题，但由于极长的运行时间，其应用仍然十分有限。与明文推理中延迟主要由浮点运算（FLOPs）主导不同，在私密推理中，非线性函数（特别是 ReLU）是主要瓶颈。因此，实用的私密推理需要针对 ReLU 的全新优化方法。为减少 PI 的延迟，我们提出了一种基于梯度的算法，能够选择性地线性化 ReLU，同时保持预测精度。我们在多个标准的私密推理基准上评估了该算法。实验结果表明，与当前最先进的方法相比，在相同 ReLU 数量（50K）的情况下，我们的算法可提高预测精度最多达 4.25%；在相同预测精度（70%）的情况下，延迟可减少最多 2.2 倍。这些改进推进了延迟-精度空间中的帕累托前沿。除了实验结果外，我们还提出了一项“无免费午餐”定理，阐明了在保持预测精度的前提下，网络线性化的可能性及适用条件。公共代码已开放，访问地址为：https://github.com/NYU-DICE-Lab/selective_network_linearization。</p>
+<p><strong>引言</strong>
+基于云的机器学习框架推动了私密推理（Private Inference, PI）的发展。总体而言，私密推理的愿景是使用户能够在云服务提供商拥有的模型上高效地对其数据进行推理，同时保护双方的隐私。在推理之前，用户的数据和服务提供商的模型均通过加密技术进行了加密。</p>
+<p>实现这一愿景的主要难点在于深度网络中的非线性操作。使用密文进行网络中线性操作的私密执行，可以通过秘密共享技术和与输入无关的预处理阶段，使其速度几乎与对相同操作的普通（明文）评估一样快。然而，为了在网络中私密地评估 ReLU，需要使用某种版本的 Yao 的混淆电路（Garbled Circuits, GC），这导致了高昂的延迟成本和存储开销。简单来说，标准的深度网络架构（例如 ResNet）并不适合高效的私密推理，因为它们包含了过多的 ReLU 操作。（参见 Mishra et al., 2020; Ghodsi et al., 2020; 2021; Jha et al., 2021，以及第 2 节的详细讨论。）</p>
+<p>因此，要充分释放快速、准确且私密的神经网络推理的潜力，需要重新设计网络架构，以尽可能减少 ReLU 的数量。针对这一方向，已经涌现了许多努力。早期工作如 MiniONN（Liu et al., 2017）关注于安全协议本身，而最近的工作如 Delphi（Mishra et al., 2020）和 Circa（Ghodsi et al., 2021）则提出用其他激活函数替换 ReLU。另一类研究工作则通过神经架构搜索（NAS）设计 ReLU 高效的网络结构。例如，CryptoNAS（Ghodsi et al., 2020）采用进化式 NAS，而 Sphynx（Cho et al., 2021a）则使用微搜索 NAS。</p>
+<p>本文探索了一条新的路径，适用于用于成像、计算机视觉或其他感知问题的多种架构（特别是具有/不具有残差连接和 ReLU 激活的深度卷积网络）。我们研究了一个我们称为“深度网络线性化”的问题，这指的是在此类网络中精心选择一部分神经元，并消除它们的非线性（即，用恒等或线性操作替换它们的 ReLU 操作），从而在整体性能和 ReLU 操作数量之间实现最小化的权衡。需要注意的是，通过这一过程，我们并未减少网络中的参数数量。由于 ReLU 激活是简单的标量操作，在正常情况下，这一过程在网络训练或测试期间不会显著减少浮点操作（FLOP）的数量。然而，在私密推理场景下，线性化的主要优势在于减少了 GC 计算的数量。</p>
+<p>本文提出了一种简单的基于梯度的算法（我们称之为选择性网络线性化，Selective Network Linearization, SNL）来解决深度网络线性化问题，验证了该算法在多种标准基准上的有效性，并提供了理论依据以阐明其观察到的行为。</p>
+<p>目前，私密推理的最先进方法是 DeepReDuce（Jha et al., 2021）。该方法引入了深度网络中的 ReLU 丢弃（ReLU Dropping）概念，从概念上看，与网络线性化等价。他们提出的算法包含三个阶段：ReLU “筛选”、ReLU “稀疏化”和 ReLU “重塑”，每个阶段都需要多个手动设计选择，并涉及多个超参数。候选架构的搜索空间非常大；将 DeepReDuce 应用于具有 D 个阶段的 ResNet 需要训练 Ω(D) 个不同的网络，并选择准确率最高的那个。此外，DeepReDuce 所做的保留/丢弃决策是分阶段的：要么线性化整个 ReLU 层，要么完全保留整个 ReLU 层不变。</p>
+<p>相比之下，我们提出的技术 SNL 高度自动化，仅涉及极少的超参数。SNL 通过单一的基于梯度的训练过程实现（具体细节将在后文描述），无需在多个网络骨架上进行搜索。此外，SNL 提供了精细的控制，能够细化到像素特征图级别，以决定保留或消除哪些 ReLU。</p>
+<p>SNL 的核心直觉简单明了，并适用于许多深度网络。考虑任何标准架构（例如 ResNet-34），但做一个变化：将所有 ReLU 替换为参数化 ReLU（parametric ReLUs，简称 pReLUs）（He et al., 2015），其中每个 ReLU 都有一个独立的、可训练的斜率参数。此外，每个斜率参数被进一步约束为二值（0 或 1）。定义此网络后，SNL 通过标准训练过程（例如使用 SGD 或 Adam）进行优化，无需其他人工干预。</p>
+<p>在实际实现中需要注意一些关键点。主要挑战在于：(a) 强制 pReLU 的斜率满足二值约束，以及 (b) 确保仅保留少量的 ReLU，即斜率参数向量是稀疏的（或反稀疏的）。借鉴某些网络剪枝算法的方法（Lee et al., 2019；Cho et al., 2021b），我们通过以下方式解决这些困难：在标准训练误差损失中增加一个作用于斜率系数的 $<code>l_1</code>$ 惩罚项，根据时间表逐渐降低该惩罚的权重，并在最后执行一个二值化步骤，将斜率参数取整为二值。详见第 3 节。</p>
+<p>我们在文献中常用的私密图像分类基准数据集上验证了 SNL，结果表明 SNL 在整个准确率-延迟权衡曲线中对现有所有方法实现了帕累托支配。如图 1 所示，在 CIFAR-100 数据集的上下文中验证了这一点；我们在后文以及附录中提供了针对 CIFAR-10 和 Tiny ImageNet 的额外实验结果（及消融研究），也展示了类似的优势。详见第 4 节和附录。</p>
+<p>深入分析 SNL 的结果揭示了一些有趣的现象：在较高比例上，网络早期层的 ReLU 被优先线性化，而晚期层的 ReLU 则较少被线性化。这与早期 PI 工作（如 DeepReDuce，Jha et al., 2021）的结论一致。这是否暗示了网络学习中的某些基本属性？为了严谨回答这个问题，我们证明了线性化会以牺牲 3 层网络记忆容量为代价的无免费午餐定理。此外，如果网络是收缩性的，即第二层的神经元数量少于第一层（分类问题中常见的情况），那么只有在第二层较少的神经元被线性化时，选择性线性化才能保留原始网络的容量。详见第 5 节。</p>
+<h2 id="sigma-secure-gpt-inference-with-function-secret-sharing">Sigma: Secure GPT Inference with Function Secret Sharing
+</h2><p>Sigma：通过功能秘密共享实现安全的 GPT 推理</p>
+<p>摘要：安全两方计算（2PC）支持安全推理，能够同时保护专有的机器学习（ML）模型及其敏感输入。然而，现有的安全推理解决方案，尤其是针对Transformer模型的解决方案，存在较高的延迟和通信开销。功能秘密共享（FSS）是一种新兴的范式，可通过预处理阶段实现高效的2PC协议。我们提出了Sigma，这是第一个基于FSS的端到端安全Transformer推理系统。通过为复杂的机器学习功能（如Softmax、GeLU和SiLU）构建新的FSS协议，并加速其在GPU上的计算，Sigma将Transformer安全推理的延迟相比现有基于预处理和GPU的最先进方法提高了12至19倍。我们展示了生成预训练Transformer（GPT）模型的首次安全推理。特别地，Sigma在38秒内执行了Meta的Llama2（HuggingFace提供，参数量为130亿），并在1.5秒内完成了GPT2的推理。</p>
+<p>基于Transformer的生成式语言模型近年来因其在各种自然语言任务上的卓越表现（例如，问答、摘要、语言翻译、代码生成等）[20, 21, 76]而受到广泛关注。除了确保模型和输入隐私外，对此类模型进行安全推理还带来了其他有趣的应用场景，例如“提示隐私（prompt privacy）”。人工智能公司正在投入大量精力构建能够产生良好推理结果的提示，并希望保持这些提示的隐秘性。安全推理允许持有专有提示的公司与持有敏感数据的客户，在不向彼此暴露输入的情况下，利用公开的语言模型生成推理结果。</p>
+<p>然而，目前用于安全推理的最先进系统在Transformer模型上表现不尽如人意。我们认为，安全机器学习推理系统必须满足以下需求：</p>
+<ol>
+<li><strong>准确性</strong> - 即安全推理下的准确性应与明文推理一致；</li>
+<li><strong>安全性</strong> - 系统应提供标准的两方计算（2PC）安全性；</li>
+<li><strong>效率</strong> - 安全推理的延迟和通信开销应较低；</li>
+<li><strong>可扩展性</strong> - 系统必须能够扩展至具有数十亿参数的模型。</li>
+</ol>
+<p>然而，我们发现现有系统往往无法满足（甚至多个）这些要求。现有的安全Transformer推理系统包括THE-X [25]、Iron [38] 和 CrypTen [47, 51, 84]（我们将在第8节讨论其他相关工作）。</p>
+<ul>
+<li><strong>THE-X</strong>：通过将基于基本函数（如 exe^x）的复杂非线性替换为简单的非线性（如 (\max(x, 0)\）），牺牲了准确性；此外，还通过暴露中间值牺牲了安全性。</li>
+<li><strong>Iron</strong>：在保持准确性和安全性的同时，通信开销巨大，即使是BERT模型也需要超过100 GB的通信量。</li>
+<li><strong>CrypTen</strong>：虽然利用GPU加速和预处理提升了效率，但其在线延迟和通信开销仍然显著。此外，由于使用了不安全的本地截断操作，未能提供标准的2PC安全性。而且，由于GPU内存溢出问题，它无法扩展到更大的模型。</li>
+</ul>
+<p><strong>我们的贡献</strong>
+本文提出了 <strong>Sigma2</strong> 系统，它在多个维度上推进了基于Transformer模型的安全推理技术的最先进水平。与CrypTen类似，Sigma在带有预处理的两方计算（2PC）模型中运行并利用GPU加速，但其延迟和通信效率提高了一个数量级，同时提供标准的2PC安全性保证。在安全推理中，Sigma通过精确逼近复杂非线性函数，保持模型的推理准确性，并能够高效扩展至具有数十亿参数的GPT模型。</p>
+<p>尽管现有的基于Transformer的安全推理最先进系统 [47, 51] 已经使用GPU加速计算，它们基于秘密共享协议的设计导致了大量通信开销，即使在高带宽环境下，这些开销仍然是性能瓶颈。与传统的基于秘密共享的2PC协议相比，基于函数秘密共享（FSS）的2PC协议通信量显著降低，但计算开销较高 [16, 19]。这促使了许多近期工作 [37, 43, 73, 80] 专注于在预处理模型中设计基于FSS的专用协议，用于简单神经网络的安全推理。例如，Orca [43] 是目前卷积神经网络（CNN）安全推理的最先进系统，它证明了GPU加速可以有效处理FSS的大量计算。然而，Orca仅适用于使用简单非线性（如ReLU和Maxpool）的CNN，对Transformer中大量复杂非线性函数（如Softmax）的处理则带来不可接受的开销（详见7.1.2节）。</p>
+<p>在Sigma中，我们设计了针对Transformer的高效基于FSS的2PC协议。由于Transformer安全推理的延迟主要由复杂非线性（如GeLU、SiLU、Softmax和层归一化 [38]）主导，我们提出了新的FSS协议处理这些操作，并通过GPU加速实现。这些操作需要准确计算各种基本函数（如指数、倒平方根、逆运算等）。之前的工作Pika [80] 使用大型查找表（LUTs）来处理这些函数。尽管这种方法通用，Grotto [73] 指出大型查找表效率低下，并在可能的情况下使用基于自定义样条的协议。Sigma的协议通过减小查找表大小在保持准确性的同时，比Grotto更高效（详见7.1.1节）。例如，对于50位的GeLU值，Pika需要大小为 $2^{50}$ 的查找表，而Sigma仅需大小为 $2^8$ 的查找表，并且在相同威胁模型下总计算量比Grotto降低9倍。</p>
+<p>我们评估了基于GPT [20]、BERT [29] 和 Llama2 [77] 的模型，这些模型广泛应用于下一个单词预测和分类任务。我们的创新协议能够安全且准确地评估具有13亿参数的GPT-Neo模型（“一个由EleutherAI基于GPT-3架构复现设计的Transformer模型”[5]），推理时间为7.2秒。Sigma还支持Meta AI最近发布的Llama2模型，并在Huggingface上可用。Llama2-7B需要23秒，Llama2-13B需要38秒。Sigma运行HuggingFace上的较小GPT2模型（每月下载量数千万次）仅需1.5秒，而运行BERT模型则耗时0.1−4.5秒。总体上，Sigma在安全推理的延迟上比现有最先进技术提高了12.2−19倍。</p>
+<p>为了保证标准的2PC安全性，Sigma摒弃了本地截断操作，转而使用安全的忠实截断。截断广泛用于线性层（如矩阵乘法后的操作）和非线性层。我们提出了一种新的忠实截断协议（详见4.2节），其效率比现有工作 [16] 提高最多30倍。尽管我们的截断比CrypTen中的“几乎免费”的本地截断更昂贵，但由于在GeLU、SiLU和Softmax上的巨大性能提升，Sigma的端到端推理速度仍比CrypTen快10倍以上。</p>
+<p>我们的大规模评估得益于Sigma的前端系统，它允许用户简洁地表达所需的Transformer架构，并使用Sigma针对CPU或GPU优化的协议运行（详见第6节）。针对CPU和GPU的协议设计有所不同，我们均提供支持（详见5.1节）。事实上，即使在CPU上运行的Sigma也比在GPU上运行的CrypTen更快。我们在附录A中讨论了使用Sigma的一些实际考量。Sigma的代码已公开，地址为：https://github.com/mpcmsri/EzPC/tree/master/GPU-MPC/experiments/sigma。</p>
+<h2 id="the-x-privacy-preserving-transformer-inference-with-homomorphic-encryption">THE-X: Privacy-Preserving Transformer Inference with Homomorphic Encryption
+</h2><p><strong>THE-X: 基于同态加密的隐私保护Transformer推理</strong></p>
+<p><strong>摘要</strong>
+随着越来越多的预训练语言模型采用云端部署，隐私问题也迅速增长，主要体现在明文用户数据（如搜索历史、医疗记录、银行账户等）的暴露。云服务用户对Transformer模型的隐私保护推理有着强烈的需求。为了保护隐私，使用同态加密（HE）仅在密文上进行计算是一种具有吸引力的选择。然而，由于Transformer模块中的复杂计算，目前的HE工具尚不支持在密文数据上进行推理。本文提出了THE-X，这是一种针对Transformer的近似方法，能够实现由流行框架开发的预训练模型的隐私保护推理。THE-X提出了一种处理Transformer网络中复杂计算的工作流程，涵盖了所有非多项式函数，如GELU、Softmax和LayerNorm。实验结果表明，我们提出的THE-X能够在加密数据上进行Transformer推理，并适用于不同的下游任务，所有任务在性能上几乎没有下降，同时享有理论上保证的隐私保护优势。</p>
+<p><strong>引言</strong>
+随着预训练模型在许多自然语言处理（NLP）应用中的革命性进展，如情感分析（Xu et al., 2019a）、问答系统（Yang et al., 2019b）、信息检索（Yang et al., 2019c）和文本生成（Raffel et al., 2020），许多相关技术已经被部署到云端，由工业服务提供商处理来自个人客户、小型企业和大型企业的用户数据。然而，云端预训练技术的便利性也带来了一系列隐私挑战，原因在于用户数据的敏感性。例如，用户请求中的输入文本甚至文本向量表示可能泄露私人信息，进而导致特定用户的身份泄露（Schwartz and Solove, 2011; Zhu and Han, 2020）。这种缺乏隐私保障的情况可能会阻碍注重隐私的用户将数据提供给服务提供商。因此，服务提供商可能面临无法利用用户数据发展模型的困境。此外，数据泄露和其他隐私漏洞可能导致服务提供商面临诉讼、罚款以及声誉损害。这些隐私担忧促使我们提出了THE-X，以实现Transformer模型的隐私保护推理。</p>
+<p>具体而言，我们识别出了预训练模型隐私保护推理中的两个挑战。第一个挑战是如何保护用户的明文数据不被第三方服务提供商访问（例如，诊疗记录或购物历史）。以往的工作应用了差分隐私（DP）（Dwork et al., 2006）及其变体来解决类似的隐私问题——最初用于统计数据库，最近也用于深度学习（DL）（Abadi et al., 2016）和NLP（Qu et al., 2021；Basu et al., 2021b；Fernandes et al., 2019；Lyu et al., 2020；Basu et al., 2021a）。然而，这种解决方案可能遭遇窃听攻击。有少数研究（Zhu and Han, 2020；Zhao et al., 2020）表明，攻击者有可能通过梯度泄露恢复原始数据。此外，隐私保护永远无法理论上保证。第二个挑战是性能问题，近期的研究如TextHide（Huang et al., 2020）和FedNLP（Lin et al., 2021）利用联邦学习（Yang et al., 2019a）在加密数据上训练模型，但代价是显著的性能下降。虽然它们集中关注训练数据的隐私保护，但并未充分探讨隐私保护推理问题。</p>
+<p>为了解决上述问题，我们在图1中描述了一种隐私保护推理的实践，其中一个微调后的语言模型可以通过THE-X转换为云服务模式，并在“闭眼”状态下处理用户数据。在推理过程中，用户查询的内容对Transformer模型来说是匿名的。计算结果也是密文，只有用户的私钥才能解密。此外，我们需要一个理论上保障的加密解决方案，如同态加密（HE）（Gentry, 2009），以便让服务提供商和用户在生产场景中确信隐私安全。HE的语义安全性由基于格的密码学保证，HE对密文的计算结果可以解密为与明文相同的结果，从而避免了性能降低的成本。同态加密的基本思想是在不先解密数据的情况下对加密数据进行计算，这可以在云服务场景中完全确保隐私安全。它允许将用户数据加密后外包到商业云环境进行处理。然而，由于Transformer模型中的复杂操作（例如GELU激活函数），流行的部分同态加密解决方案（仅支持加法或乘法）无法轻松适配到预训练模型的场景中。基于HE Transformer后端（Boemer et al., 2019b,a, 2020），我们设计了一系列近似组件，以完成主流Transformer骨干网络的整个推理流程。我们在GLUE基准（Wang et al., 2019）和CONLL2003任务（Tjong Kim Sang and De Meulder, 2003）上评估了THE-X对BERTtiny的表现。我们的结果表明，THE-X能够实现隐私保护推理，并且平均性能下降仅为1.49%。我们的贡献包括：</p>
+<ul>
+<li>我们是首个探索使用HE进行隐私保护Transformer推理的工作。</li>
+<li>我们设计了一种实用且有效的近似工作流程，用于将基于Transformer的模型转换为完全由HE操作组成的函数。</li>
+<li>一系列实验结果确认了我们提出的THE-X近似方法带来的性能损失几乎可以忽略不计。</li>
+</ul>
+<p>-</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function () {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+    </body>
+</html>

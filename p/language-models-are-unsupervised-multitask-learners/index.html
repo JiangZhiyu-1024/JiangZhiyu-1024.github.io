@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="GPT2的论文">
+<title>Language Models are Unsupervised Multitask Learners</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/language-models-are-unsupervised-multitask-learners/'>
+
+<link rel="stylesheet" href="/scss/style.min.819ac8ff77246a79c226a136382b6bcbe7c291f9fd1e0641c81bcb97ac7e8f89.css"><meta property='og:title' content="Language Models are Unsupervised Multitask Learners">
+<meta property='og:description' content="GPT2的论文">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/language-models-are-unsupervised-multitask-learners/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-01-08T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-01-08T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/language-models-are-unsupervised-multitask-learners/tree-3072431_1280.jpg' />
+<meta name="twitter:title" content="Language Models are Unsupervised Multitask Learners">
+<meta name="twitter:description" content="GPT2的论文"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/language-models-are-unsupervised-multitask-learners/tree-3072431_1280.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#introduction">Introduction</a>
+      <ol>
+        <li><a href="#21-训练数据集">2.1. 训练数据集</a></li>
+        <li><a href="#22-输入表示">2.2. 输入表示</a></li>
+        <li><a href="#23-模型">2.3. 模型</a></li>
+      </ol>
+    </li>
+    <li><a href="#3-实验">3. 实验</a>
+      <ol>
+        <li><a href="#31-语言建模">3.1. 语言建模</a></li>
+        <li><a href="#32-儿童图书测试-childrens-book-test-cbt">3.2. 儿童图书测试 (Children’s Book Test, CBT)</a></li>
+        <li><a href="#33-lambada">3.3. LAMBADA</a></li>
+        <li><a href="#34-winograd-schema-challenge">3.4. Winograd Schema Challenge</a></li>
+        <li><a href="#35-阅读理解">3.5. 阅读理解</a></li>
+        <li><a href="#36-摘要生成">3.6. 摘要生成</a></li>
+        <li><a href="#37-翻译">3.7. 翻译</a></li>
+        <li><a href="#38-问答">3.8. 问答</a></li>
+      </ol>
+    </li>
+    <li><a href="#4-泛化与记忆">4. 泛化与记忆</a></li>
+    <li><a href="#5相关工作">5.相关工作</a></li>
+    <li><a href="#6讨论">6.讨论</a></li>
+    <li><a href="#7结论">7.结论</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/language-models-are-unsupervised-multitask-learners/">
+                <img src="/p/language-models-are-unsupervised-multitask-learners/tree-3072431_1280_hu9843373682922199824.jpg"
+                        srcset="/p/language-models-are-unsupervised-multitask-learners/tree-3072431_1280_hu9843373682922199824.jpg 800w, /p/language-models-are-unsupervised-multitask-learners/tree-3072431_1280_hu11924967929679869527.jpg 1600w"
+                        width="800" 
+                        height="533" 
+                        loading="lazy"
+                        alt="Featured image of post Language Models are Unsupervised Multitask Learners" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/gpt2/" >
+                GPT2
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/language-models-are-unsupervised-multitask-learners/">Language Models are Unsupervised Multitask Learners</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            GPT2的论文
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-01-08</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="language-models-are-unsupervised-multitask-learners">Language Models are Unsupervised Multitask Learners
+</h1><h2 id="abstract">Abstract
+</h2><p>自然语言处理任务，如问答、机器翻译、阅读理解和摘要，通常通过在特定任务数据集上进行监督学习来解决。我们展示了当语言模型在一个名为 WebText 的新数据集上进行训练时，它们开始在没有任何显式监督的情况下学习这些任务。该数据集包含了数百万个网页。当条件是一个文档加上问题时，语言模型生成的答案在 CoQA 数据集上的 F1 分数达到了 55，匹配或超越了 4 个基线系统中的 3 个，而没有使用超过 127,000 个训练示例。语言模型的能力对零样本任务转移的成功至关重要，并且增加其能力会以对数线性方式提高各个任务的性能。我们的最大模型 GPT-2 是一个拥有 15 亿参数的 Transformer，在零样本设置下，在测试的 8 个语言建模数据集中的 7 个上达到了最先进的结果，但仍然没有完全拟合 WebText。来自该模型的样本反映了这些改进，并且包含了连贯的段落文本。这些发现表明，通过自然发生的示范学习执行任务的语言处理系统建设，可能是一条有前景的道路。</p>
+<h2 id="introduction">Introduction
+</h2><p>机器学习系统现在在它们所训练的任务上表现优异（预期中），通过结合大规模数据集、高容量模型和监督学习（Krizhevsky et al., 2012）（Sutskever et al., 2014）（Amodei et al., 2016）。然而，这些系统脆弱且对数据分布（Recht et al., 2018）和任务规范（Kirkpatrick et al., 2017）的细微变化敏感。当前的系统更适合被描述为狭窄的专家，而不是有能力的通才。我们希望朝着更加通用的系统发展，这些系统能够执行多个任务——最终无需手动为每个任务创建和标注训练数据集。</p>
+<p>创建机器学习系统的主流方法是收集一个训练示例数据集，展示期望任务的正确行为，训练系统模仿这些行为，然后在独立同分布（IID）的持出样本上测试其性能。这种方法在狭窄专家任务上取得了良好进展。但在处理可能输入的多样性和变化时，像图像字幕生成模型（Lake et al., 2017）、阅读理解系统（Jia &amp; Liang, 2017）和图像分类器（Alcorn et al., 2018）经常表现出不稳定的行为，突显了这种方法的一些局限性。我们怀疑，单任务训练在单一领域数据集上的普遍存在，是当前系统缺乏泛化能力的主要原因。要在现有架构下取得对鲁棒系统的进展，可能需要在广泛的领域和任务上进行训练和性能评估。最近，提出了一些基准测试，如 GLUE（Wang et al., 2018）和 decaNLP（McCann et al., 2018），开始研究这一问题。多任务学习（Caruana, 1997）是一个有前景的框架，可以提高总体性能。然而，多任务训练在自然语言处理中的应用仍处于初期阶段。最近的工作报告了适度的性能提升（Yogatama et al., 2019），迄今为止最雄心勃勃的两项工作分别在 10 和 17 对（数据集，目标）上进行了训练（McCann et al., 2018）（Bowman et al., 2018）。从元学习的角度来看，每对（数据集，目标）是从数据集和目标的分布中抽取的一个训练示例。当前的机器学习系统需要数百到数千个示例来归纳出能良好泛化的函数。这表明，多任务训练可能需要与当前方法一样多的有效训练对才能实现其潜力。继续以当前技术通过蛮力方式扩展数据集的创建和目标设计，达到可能要求的规模，将是非常困难的。这促使我们探索用于进行多任务学习的额外设置。</p>
+<p>方法
+我们方法的核心是语言建模。语言建模通常被视为从一组示例（x1, x2, &hellip;, xn）中进行无监督的分布估计，每个示例由变长的符号序列（s1, s2, &hellip;, sn）组成。由于语言具有自然的顺序性，通常将符号的联合概率分解为条件概率的乘积（Jelinek &amp; Mercer, 1980）（Bengio et al., 2003）：</p>
+<p>$p(x) = \prod_{i=1}^{n} p(s_n | s_1, &hellip;, s_{n-1})$</p>
+<p>这种方法使得从 p(x)p(x) 及其任何条件形式 p(sn−k,&hellip;,sn∣s1,&hellip;,sn−k−1)p(s_{n-k}, &hellip;, s_n | s_1, &hellip;, s_{n-k-1}) 进行可操作的采样和估计成为可能。近年来，能够计算这些条件概率的模型表现出了显著的改进，例如像 Transformer（Vaswani et al., 2017）这样的自注意力架构。</p>
+<p>这种方法使得从 p(x)p(x) 及其任何条件形式 p(sn−k,&hellip;,sn∣s1,&hellip;,sn−k−1)p(s_{n-k}, &hellip;, s_n | s_1, &hellip;, s_{n-k-1}) 进行可操作的采样和估计成为可能。近年来，能够计算这些条件概率的模型表现出了显著的改进，例如像 Transformer（Vaswani et al., 2017）这样的自注意力架构。</p>
+<p>学习执行单一任务可以在概率框架中表示为估计条件分布 p(output∣input)p(\text{output} | \text{input})。由于一个通用系统应该能够执行许多不同的任务，即使是针对相同的输入，它也应该不仅仅依赖于输入，还应依赖于将要执行的任务。换句话说，它应该建模 p(output∣input,task)p(\text{output} | \text{input}, \text{task})。在多任务学习和元学习设置中，这种任务条件化已被不同方式地形式化。任务条件化通常在架构层面实现，例如（Kaiser et al., 2017）中的任务特定编码器和解码器，或者在算法层面，如 MAML（Finn et al., 2017）中的内外循环优化框架。但正如 McCann et al.（2018）所示，语言提供了一种灵活的方式来指定任务、输入和输出，所有这些都可以作为符号序列。例如，翻译训练示例可以写为序列（translate to french, english text, french text）。同样，阅读理解训练示例可以写为（answer the question, document, question, answer）。McCann et al.（2018）证明，使用这种格式的示例，可以训练一个单一模型 MQAN 来推理并执行许多不同的任务。</p>
+<p>语言建模原则上也能够学习 McCann et al.（2018）中的任务，而无需明确监督哪些符号是需要预测的输出。由于监督目标与无监督目标相同，只是评估在序列的一个子集上，因此无监督目标的全局最小值也是监督目标的全局最小值。在这个略带玩具性质的设置中，讨论过的关于将密度估计作为原则性训练目标的问题（Sutskever et al., 2015）被绕开了。问题转变为我们是否能够在实践中将无监督目标优化到收敛。初步实验确认，足够大的语言模型能够在这种玩具式的设置中执行多任务学习，但学习速度远远慢于显式监督的方法。</p>
+<p>尽管从上述明确设置到“自然语言环境”中的混乱局面是一个巨大的跳跃，Weston（2016）在对话的背景下提出了开发能够直接从自然语言学习的系统的需求，并展示了一个概念验证——通过使用教师输出的前向预测，在没有奖励信号的情况下学习一个问答任务。虽然对话是一种有吸引力的方法，但我们担心它过于限制性。互联网包含了大量的信息，这些信息是被动可用的，无需互动交流。我们的猜测是，拥有足够容量的语言模型将开始学习推断和执行在自然语言序列中展示的任务，以便更好地预测它们，无论这些任务是如何获取的。如果语言模型能够做到这一点，它实际上就会执行无监督的多任务学习。我们通过分析语言模型在零样本设置下在各种任务上的表现来测试这一假设是否成立。</p>
+<h3 id="21-训练数据集">2.1. 训练数据集
+</h3><p>大多数先前的工作都在单一文本领域上训练语言模型，例如新闻文章（Jozefowicz et al., 2016）、维基百科（Merity et al., 2016）或小说书籍（Kiros et al., 2015）。我们的方法激励构建尽可能大且多样化的数据集，以收集尽可能多领域和背景中的自然语言任务示范。</p>
+<p>一个有前景的、多样且几乎无限的文本来源是网络抓取数据，如 Common Crawl。尽管这些档案比当前的语言建模数据集大几个数量级，但它们存在显著的数据质量问题。Trinh &amp; Le（2018）在他们的常识推理工作中使用了 Common Crawl，但指出有大量文档“其内容大多难以理解”。我们在使用 Common Crawl 进行初步实验时也观察到了类似的数据问题。Trinh &amp; Le（2018）取得的最佳结果是使用了 Common Crawl 的一个小子样本，仅包含最接近其目标数据集——Winograd Schema Challenge 的文档。虽然这是在特定任务上提高性能的务实方法，但我们希望避免事先对将要执行的任务做出假设。</p>
+<p>因此，我们创建了一个新的网页抓取，强调文档质量。为此，我们只抓取了那些经过人工策划/筛选的网页。手动筛选整个网页抓取将非常昂贵，因此作为起点，我们抓取了来自社交媒体平台 Reddit 的所有外链，这些链接至少获得了 3 个 karma 点数。这可以被视为一个启发式指标，表明其他用户是否认为该链接有趣、具有教育意义，或者仅仅是好笑。</p>
+<p>最终生成的数据集 WebText 包含了这些 4500万个链接的文本子集。为了从 HTML 响应中提取文本，我们使用了 Dragnet（Peters &amp; Lecocq, 2013）和 Newspaper1 内容提取器的组合。本文中所有呈现的结果均使用了 WebText 的初步版本，该版本不包含 2017年12月之后创建的链接，并且在去重和一些基于启发式的清理后，包含了略多于 800万个文档，总计 40 GB 的文本。我们从 WebText 中移除了所有维基百科文档，因为维基百科是其他数据集的常见数据来源，可能会由于训练数据与测试评估任务的重叠而复杂化分析。</p>
+<h3 id="22-输入表示">2.2. 输入表示
+</h3><p>一个通用的语言模型（LM）应该能够计算任何字符串的概率（并且生成它）。当前的大规模语言模型包括诸如小写化、分词和处理词汇外的符号等预处理步骤，这些步骤限制了模型可以表示的字符串空间。虽然将 Unicode 字符串处理为 UTF-8 字节序列，如 Gillick et al.（2015）等工作所示，优雅地满足了这一要求，但当前的字节级语言模型在像 One Billion Word Benchmark（Al-Rfou et al., 2018）这样的庞大数据集上，与基于词汇的语言模型相比并不具有竞争力。我们在尝试在 WebText 上训练标准字节级语言模型时也观察到了类似的性能差距。</p>
+<p>字节对编码（BPE）（Sennrich et al., 2015）是一种在字符级和词汇级语言建模之间的实际折衷方法，能够有效地在词汇级输入（针对常见符号序列）和字符级输入（针对不常见符号序列）之间进行插值。尽管其名为字节对编码，参考的 BPE 实现通常操作的是 Unicode 代码点，而不是字节序列。这些实现需要包括所有 Unicode 符号的完整空间，以便对所有 Unicode 字符串进行建模。这将导致一个超过 130,000 的基础词汇表，尚未添加任何多符号标记。这相比于 BPE 通常使用的 32,000 到 64,000 词汇量，显得过于庞大。相比之下，字节级版本的 BPE 只需要一个大小为 256 的基础词汇表。然而，直接将 BPE 应用于字节序列会导致不理想的合并，因为 BPE 使用基于贪心频率的启发式方法来构建标记词汇表。我们观察到，BPE 会将许多常见单词的不同版本（如 dog）合并，因为它们会有很多变体，如 dog, dog!, dog? 等。这样会导致有限词汇槽和模型容量的次优分配。</p>
+<p>为了避免这种情况，我们防止 BPE 在任何字节序列的字符类别之间进行合并。我们为空格添加了一个例外，这显著提高了压缩效率，同时仅在跨多个词汇标记的词语上产生最小的碎片化。</p>
+<p>这种输入表示方法使我们能够将词汇级语言模型的经验优势与字节级方法的通用性相结合。由于我们的方法可以为任何 Unicode 字符串分配概率，这使得我们能够在任何数据集上评估我们的语言模型，而不受预处理、分词或词汇表大小的影响。</p>
+<h3 id="23-模型">2.3. 模型
+</h3><p>我们为语言模型使用基于 Transformer（Vaswani et al., 2017）架构的设计。该模型大致遵循了 OpenAI GPT 模型（Radford et al., 2018）的细节，但进行了几处修改。层归一化（Ba et al., 2016）被移到了每个子模块的输入处，类似于预激活残差网络（He et al., 2016），并在最终的自注意力块之后增加了一个额外的层归一化。我们使用了修改过的初始化方法，考虑到模型深度对残差路径的累积影响。在初始化时，我们通过 1/√N 的因子缩放残差层的权重，其中 N 是残差层的数量。词汇表扩展到 50,257。我们还将上下文窗口大小从 512 扩展到 1024 个标记，并使用了更大的批次大小，设为 512。</p>
+<h2 id="3-实验">3. 实验
+</h2><p>我们训练并基准测试了四个大约按对数均匀间隔大小分布的语言模型（LM）。各架构的概况总结在表 2 中。最小的模型相当于原始的 GPT，第二小的模型与 BERT（Devlin et al., 2018）中的最大模型相当。我们的最大模型，我们称之为 GPT-2，参数量比 GPT 大了一个数量级。每个模型的学习率是手动调整的，以在 WebText 的 5% 留出样本上获得最佳的困惑度（perplexity）。所有模型在 WebText 上仍然存在欠拟合问题，且在更多训练时间下，留出样本的困惑度尚未显著改进。</p>
+<h3 id="31-语言建模">3.1. 语言建模
+</h3><p>作为零-shot 任务迁移的初步步骤，我们有兴趣了解 WebText 语言模型在其主要训练任务——语言建模上的零-shot 域迁移表现。由于我们的模型是在字节级别上操作，并且不需要有损的预处理或分词处理，我们可以在任何语言模型基准上评估它。语言建模数据集的结果通常以一种数量来报告，这个数量是每个标准化预测单元（通常是字符、字节或单词）的平均负对数概率的缩放或指数化版本。我们通过计算 WebText 语言模型的对数概率并除以标准单元的数量来评估相同的数量。</p>
+<p>对于许多数据集来说，WebText 语言模型在测试时会显著超出分布，需要预测经过严格标准化的文本、分词伪影（如断开的标点符号和缩写）、洗牌后的句子，甚至是字符串 ，后者在 WebText 中极为罕见——在 40 亿字节的文本中仅出现 26 次。我们在表 3 中报告了使用可逆的反分词器（去除尽可能多的分词/预处理伪影）所得到的主要结果。由于这些反分词器是可逆的，我们仍然可以计算数据集的对数概率，它们可以被视为一种简单的领域适应方法。我们观察到，使用这些反分词器时，GPT-2 的困惑度提高了 2.5 到 5。</p>
+<p>WebText 语言模型在不同领域和数据集之间迁移良好，在 8 个数据集中有 7 个数据集的零-shot 设置中提升了当前的最佳表现。在如 Penn Treebank 和 WikiText-2 等小型数据集上，取得了显著的改进，这些数据集的训练标记数仅为 100 万到 200 万个。在衡量长期依赖性的测量数据集（如 LAMBADA（Paperno et al., 2016）和儿童图书测试（Hill et al., 2015））上，也观察到了显著的改进。然而，在 One Billion Word Benchmark（Chelba et al., 2013）上，我们的模型仍显著逊色于先前的工作。这可能是由于 One Billion Word 数据集既是最大的数据集，又具有一些最具破坏性的预处理——1BW 的句子级洗牌去除了所有的长距离结构。</p>
+<h3 id="32-儿童图书测试-childrens-book-test-cbt">3.2. 儿童图书测试 (Children’s Book Test, CBT)
+</h3><p>儿童图书测试（CBT）（Hill et al., 2015）旨在考察语言模型在不同类别的词汇上的表现：命名实体、名词、动词和介词。与其报告困惑度作为评估指标，CBT 通过自动构建的完形填空测试（cloze test）来报告准确度，任务是预测在 10 个可能的选择中，哪个是正确的缺失词。按照原论文中提出的语言模型方法，我们计算每个选择的概率，并在给定该选择的条件下计算句子的其余部分的概率，最后预测具有最高概率的选项。正如图 2 所示，随着模型大小的增加，性能稳步提升，并缩小了与人类表现之间的大部分差距。数据重叠分析显示，CBT 测试集中有一本书《丛林之书》（The Jungle Book），其作者为鲁德亚德·吉卜林（Rudyard Kipling），它出现在 WebText 数据集中，因此我们报告在验证集上的结果，该验证集与 WebText 数据集没有显著重叠。GPT-2 在常见名词类别上取得了新的最先进成绩：93.3%，在命名实体类别上取得了 89.1%。我们还应用了反分词器，去除 CBT 中的 PTB 风格分词伪影。</p>
+<h3 id="33-lambada">3.3. LAMBADA
+</h3><p>LAMBADA 数据集（Paperno et al., 2016）测试系统建模文本中长程依赖关系的能力。任务是预测句子的最后一个词，这些句子至少需要 50 个标记的上下文才能让人类成功预测。GPT-2 将困惑度从 99.8（Grave et al., 2016）降低到 8.6，并将语言模型在该测试中的准确度从 19%（Dehghani et al., 2018）提高到 52.66%。对 GPT-2 错误的分析表明，大多数预测是句子的有效延续，但不是有效的最后词。这表明语言模型没有利用“该词必须是句子的最后一个词”这一附加约束。通过添加一个停用词过滤器来作为这种约束的近似方法，准确率进一步提高到 63.24%，在这一任务上提升了 4%的最先进水平。之前的最先进结果（Hoang et al., 2018）使用了不同的受限预测设置，其中模型的输出仅限于上下文中出现的单词。对于 GPT-2 来说，这种限制反而是有害的，因为 19% 的答案并不在上下文中。我们使用了没有预处理的数据集版本。</p>
+<h3 id="34-winograd-schema-challenge">3.4. Winograd Schema Challenge
+</h3><p>Winograd Schema Challenge（Levesque et al., 2012）旨在通过测量系统解决文本中歧义的能力，评估其常识推理能力。最近，Trinh &amp; Le（2018）通过使用语言模型（LMs）显著提高了这一挑战的表现，通过更高的概率预测歧义的解决方案。我们遵循他们的问题表述，并通过完整和部分评分技术可视化我们模型的表现（见图 3）。GPT-2 将最先进的准确率提高了 7%，达到了 70.70%。该数据集相对较小，仅有 273 个示例，因此我们建议阅读 Trichelair 等人（2018）的工作，以帮助理解这一结果。</p>
+<h3 id="35-阅读理解">3.5. 阅读理解
+</h3><p>对话式问答数据集（CoQA）（Reddy et al., 2018）包含来自 7 个不同领域的文档，并配有问题提问者与回答者之间关于文档的自然语言对话。CoQA 测试了阅读理解能力，以及模型回答依赖于对话历史的问题（例如，“为什么？”）的能力。</p>
+<p>在给定文档、相关对话历史以及最终标记 A: 的条件下，从 GPT-2 进行贪婪解码时，在开发集上达到了 55 的 F1 分数。这一成绩与 4 个基准系统中的 3 个匹配或超过，而这些基准系统使用了 127,000 多个手动收集的问答对进行训练。当前最先进的监督方法（基于 BERT 的系统）（Devlin et al., 2018）接近人类 89 F1 的表现。虽然 GPT-2 在没有任何监督训练的情况下取得的表现令人兴奋，但对其答案和错误的部分检查表明，GPT-2 经常使用简单的基于检索的启发式方法，例如在回答 “谁？” 问题时，返回文档中的某个名字。</p>
+<h3 id="36-摘要生成">3.6. 摘要生成
+</h3><p>我们测试了 GPT-2 在 CNN 和 Daily Mail 数据集（Nallapati et al., 2016）上的摘要生成能力。为了引导摘要生成行为，我们在文章后添加了文本 &ldquo;TL;DR:&quot;，然后使用 Top-k 随机采样（Fan et al., 2018）生成 100 个词，k 设置为 2，这可以减少重复，并鼓励生成比贪婪解码更抽象的摘要。我们使用这 100 个词中的前三个句子作为摘要。虽然从定性上看，生成的文本类似于摘要（见表 14），但它们通常聚焦于文章中的最近内容，或者混淆了具体细节，比如涉及多少辆车的事故，或者一个标志是出现在帽子上还是衬衫上。在常用的 ROUGE 1、2、L 指标上，生成的摘要只有在接近经典神经基准的表现时，才刚刚超越了从文章中随机选择 3 个句子的表现。当任务提示被移除时，GPT-2 在综合指标上的表现下降了 6.4 个点，这证明了通过自然语言在语言模型中引发特定任务行为的能力。</p>
+<h3 id="37-翻译">3.7. 翻译
+</h3><p>我们测试了 GPT-2 是否已经学会了如何将一种语言翻译成另一种语言。为了帮助模型推断这是一个期望的任务，我们将语言模型条件化在一组示例对的上下文中，格式为 &ldquo;英语句子 = 法语句子&rdquo;，然后在最后的提示 &ldquo;英语句子 = &quot; 后，从模型中进行贪婪解码并使用第一个生成的句子作为翻译。在 WMT-14 英法翻译测试集上，GPT-2 获得了 5 BLEU，略逊色于先前无监督词汇翻译研究（Conneau et al., 2017b）中通过双语词典推断的逐词替换的翻译结果。在 WMT-14 法英翻译测试集上，GPT-2 能够利用其非常强大的英语语言模型，表现显著更好，达到了 11.5 BLEU。这超过了几种无监督机器翻译基准（Artetxe et al., 2017；Lample et al., 2017），但仍然远远低于当前最好的无监督机器翻译方法（Artetxe et al., 2019）取得的 33.5 BLEU。这个任务的表现让我们感到意外，因为我们在 WebText 的过滤步骤中故意移除了非英语网页。为了确认这一点，我们对 WebText 进行了字节级语言检测，结果只检测到 10MB 的法语数据，这大约是先前无监督机器翻译研究中常见的单语法语语料库的 500 倍小。</p>
+<h3 id="38-问答">3.8. 问答
+</h3><p>测试语言模型中包含了哪些信息的一个潜在方法是评估它生成事实性问题正确答案的频率。之前在神经系统中展示的这种行为，如《神经对话模型》（Vinyals &amp; Le, 2015），由于缺乏高质量的评估数据集，结果仅限于定性的展示。最近推出的自然语言问题数据集（Kwiatkowski et al., 2019）是一个很有前景的资源，可以更定量地测试这一点。与翻译类似，语言模型的上下文是通过示例问答对进行初始化，帮助模型推断数据集的简短回答风格。</p>
+<p>在使用常见的精确匹配指标对问答进行评估时，GPT-2 正确回答了 4.1% 的问题，该指标通常用于诸如 SQUAD 之类的阅读理解数据集。作为对比，最小的模型的准确率不超过 1.0%，它仅仅返回每个问题类型（如谁、什么、哪里等）的最常见答案，这是一个极其简单的基线。GPT-2 正确回答了 5.3 倍更多的问题，这表明模型容量在神经系统在此类任务上的糟糕表现中起到了重要作用。</p>
+<p>GPT-2 对其生成的答案分配的概率已经很好地进行了校准，GPT-2 在最有信心的 1% 问题上的准确率为 63.1%。GPT-2 在开发集问题上生成的 30 个最有信心的答案显示在表 5 中。尽管如此，GPT-2 的表现仍然远远不及开放领域问答系统的 30% 到 50% 的表现范围，这些系统将信息检索与提取式文档问答相结合（Alberti et al., 2019）。</p>
+<h2 id="4-泛化与记忆">4. 泛化与记忆
+</h2><p>最近在计算机视觉领域的研究表明，常见的图像数据集包含大量几乎重复的图像。例如，CIFAR-10 的训练集和测试集之间有 3.3% 的重叠（Barz &amp; Denzler, 2019）。这导致了机器学习系统泛化性能的过度报告。随着数据集规模的增加，这一问题变得越来越可能，提示 WebText 可能也会出现类似的现象。因此，分析测试数据中有多少也出现在训练数据中是很重要的。</p>
+<p>为了研究这个问题，我们创建了包含 WebText 训练集标记的 8-gram 的布隆过滤器。为了提高召回率，字符串被规范化为只包含小写字母数字单词，并使用单个空格作为分隔符。布隆过滤器的构建方式使得假阳性率的上限为 $1 \times 10^{-8}$。我们通过生成 100 万个字符串来进一步验证假阳性率，其中没有一个被过滤器找到。</p>
+<p>这些布隆过滤器使我们能够计算给定数据集中的 8-gram 有多少也出现在 WebText 训练集中。表 6 显示了常见语言模型基准测试的测试集的重叠分析。常见语言模型数据集的测试集与 WebText 训练集之间的重叠率在 1% 到 6% 之间，平均重叠率为 3.2%。令人有些惊讶的是，许多数据集与它们自己训练集的重叠较大，平均重叠率为 5.9%。</p>
+<p>我们的方法优化了召回率，尽管手动检查重叠时发现了许多常见的短语，但也有许多较长的匹配是由于数据重复。这并不是 WebText 独有的现象。例如，我们发现 WikiText-103 的测试集中有一篇文章也出现在训练集中。由于测试集中只有 60 篇文章，因此至少有 1.6% 的重叠。更令人担忧的是，根据我们的程序，1BW 的测试集与其自身训练集的重叠率接近 13.2%。</p>
+<p>在 Winograd Schema 挑战中，我们发现只有 10 个 schema 与 WebText 训练集有 8-gram 重叠。其中 2 个是虚假的匹配。在剩下的 8 个 schema 中，只有 1 个 schema 出现在会泄露答案的上下文中。</p>
+<p>在 CoQA 中，约有 15% 的新闻领域文档已经出现在 WebText 中，模型在这些文档上表现好约 3 F1。CoQA 的开发集指标报告了 5 个不同领域的平均表现，我们由于不同领域之间的重叠，测得约 0.5-1.0 F1 的增益。然而，由于 CoQA 发布的时间晚于 WebText 中链接的截止日期，因此 WebText 中并没有实际的训练问题或答案。</p>
+<p>在 LAMBADA 中，平均重叠率为 1.2%。GPT-2 在具有超过 15% 重叠的样本上表现好约 2 个 perplexity。当排除所有具有任何重叠的样本时，重新计算指标，结果从 8.6 perplexity 改变为 8.7，并且准确率从 63.2% 降至 62.9%。这一非常小的整体结果变化可能是由于只有 1/200 的样本具有显著重叠。</p>
+<p>总体而言，我们的分析表明，WebText 训练数据与特定评估数据集之间的数据重叠对报告的结果提供了一个小但一致的益处。然而，对于大多数数据集，我们没有注意到比标准训练集和测试集之间已有的重叠更大的重叠，如表 6 所示。理解和量化高度相似的文本如何影响性能是一个重要的研究问题。更好的去重技术，如可扩展的模糊匹配，也可能有助于更好地回答这些问题。现在，我们建议在创建新的 NLP 数据集的训练和测试集时，使用基于 n-gram 重叠的去重作为一个重要的验证步骤和理性检查。</p>
+<p>另一种可能的确定 WebText LMs 性能是否归因于记忆化的方法是检查它们在自己的 held-out 集上的表现。如图 4 所示，WebText 的训练集和测试集上的表现相似，且随着模型大小的增加表现一起改善。这表明，即使是 GPT-2，在 WebText 上仍然在许多方面存在欠拟合。</p>
+<p>GPT-2 还能够写关于会说话的独角兽的新闻文章。一个示例见表 13。</p>
+<h2 id="5相关工作">5.相关工作
+</h2><p>本研究的一个重要部分是衡量在更大数据集上训练的大型语言模型的性能。这与 Jozefowicz 等人（2016）的工作类似，他们在 1 亿单词基准测试上扩展了基于 RNN 的语言模型。Bajgar 等人（2016）也通过创建一个更大的训练数据集，结合了 Project Gutenberg 的内容，以补充标准训练数据集，从而提高了在儿童书籍测试（Children’s Book Test）中的结果。Hestness 等人（2017）对各种深度学习模型的性能如何随模型容量和数据集大小的变化进行的深入分析也具有启发性。我们的实验虽然在任务间噪音较大，但也表明类似的趋势在目标的子任务上依然成立，并延续至超过 10 亿参数的模型范围。</p>
+<p>在生成模型中，已有研究记录了有趣的学习功能，例如在 RNN 语言模型中，单元执行行宽跟踪和引号/评论检测（Karpathy 等人，2015）。对我们工作的启发性观察来自 Liu 等人（2018）的发现，即训练生成 Wikipedia 文章的模型也学会了在不同语言之间翻译名字。</p>
+<p>此前的研究还探索了替代方法，用于过滤和构建大型网页文本语料库，如 iWeb 语料库（Davies，2018）。此外，针对语言任务的预训练方法也有大量研究。除了介绍中提到的那些，GloVe（Pennington 等人，2014）扩展了词向量表示学习到整个 Common Crawl 数据集。深度表示学习在文本中的影响力早期工作之一是 Skip-thought Vectors（Kiros 等人，2015）。McCann 等人（2017）探索了基于机器翻译模型得到的表示的使用，Howard &amp; Ruder（2018）则改进了（Dai &amp; Le，2015）提出的基于 RNN 的微调方法。Conneau 等人（2017a）研究了自然语言推理模型学习的表示的迁移性能，Subramanian 等人（2018）则探索了大规模多任务训练。</p>
+<p>Ramachandran 等人（2016）证明了 seq2seq 模型通过使用预训练语言模型作为编码器和解码器初始化时，会获得显著的性能提升。更近期的工作表明，当微调用于复杂的生成任务，如闲聊对话和基于对话的问题回答系统时，语言模型的预训练也是有帮助的（Wolf 等人，2019；Dinan 等人，2018）。</p>
+<h2 id="6讨论">6.讨论
+</h2><p>许多研究致力于学习（Hill 等人，2016）、理解（Levy &amp; Goldberg，2014）以及批判性地评估（Wieting &amp; Kiela，2019）监督和无监督预训练方法的表示。我们的结果表明，无监督任务学习是一个值得探索的额外有前景的研究领域。这些发现可能有助于解释预训练技术在下游 NLP 任务中广泛成功的原因，因为我们展示了在极限情况下，这些预训练技术之一开始直接学习执行任务，而无需监督适应或修改。</p>
+<p>在阅读理解方面，GPT-2 在零-shot 设置下的表现与监督基准模型相当。然而，在其他任务（如摘要生成）上，尽管它在定性上能够执行任务，但根据定量指标，其表现仍然只是初步的。尽管这一研究结果具有启示性，但在实际应用方面，GPT-2 的零-shot 性能仍然远未达到可用水平。</p>
+<p>我们已经研究了 WebText LMs 在许多经典 NLP 任务上的零-shot 性能，但仍有许多额外的任务可以进行评估。无疑，在许多实际任务中，GPT-2 的表现仍然不比随机更好。即使是在我们评估的常见任务（如问答和翻译）上，语言模型只有在具备足够的容量时，才会开始超越简单的基准模型。</p>
+<p>虽然零-shot 性能为 GPT-2 在许多任务中的潜在表现建立了基准，但目前尚不清楚在微调之后其性能的上限在哪里。在某些任务上，GPT-2 完全抽象化的输出与基于抽取式指针网络（Vinyals 等人，2015）的输出显著不同，后者目前在许多问答和阅读理解数据集上是最先进的。鉴于 GPT 微调的先前成功，我们计划在 decaNLP 和 GLUE 等基准测试上进一步研究微调，尤其是因为尚不清楚额外的微调训练数据和 GPT-2 的容量是否足以克服 BERT（Devlin 等人，2018）所展示的单向表示的低效性。</p>
+<h2 id="7结论">7.结论
+</h2><p>当一个大型语言模型在足够大且多样化的数据集上训练时，它能够在许多领域和数据集上表现良好。GPT-2 在8个测试的语言建模数据集中的7个上达到了最先进的零-shot表现。该模型在零-shot设置下能够执行的任务的多样性表明，经过训练以最大化足够多样化文本语料库的似然的高容量模型，开始学会在无需显式监督的情况下执行大量令人惊讶的任务。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function () {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+    </body>
+</html>

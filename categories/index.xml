@@ -7,20 +7,20 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Zion Blaze</copyright>
-        <lastBuildDate>Thu, 02 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>同态加密</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86/</link>
-        <pubDate>Thu, 02 Jan 2025 00:00:00 +0000</pubDate>
+        <lastBuildDate>Fri, 10 Jan 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://JiangZhiyu-1024.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>LLM</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/llm/</link>
+        <pubDate>Fri, 10 Jan 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86/</guid>
-        <description></description>
+        <guid>https://JiangZhiyu-1024.github.io/categories/llm/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/llm/LLM.jpg" alt="Featured image of post LLM" /&gt;</description>
         </item>
         <item>
-        <title>隐私推理</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E6%8E%A8%E7%90%86/</link>
-        <pubDate>Thu, 02 Jan 2025 00:00:00 +0000</pubDate>
+        <title>GPT2</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/gpt2/</link>
+        <pubDate>Wed, 08 Jan 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E6%8E%A8%E7%90%86/</guid>
+        <guid>https://JiangZhiyu-1024.github.io/categories/gpt2/</guid>
         <description></description>
         </item>
         <item>
@@ -45,14 +45,6 @@
         <pubDate>Sun, 15 Dec 2024 00:00:00 +0000</pubDate>
         
         <guid>https://JiangZhiyu-1024.github.io/categories/blog/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>DP</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/dp/</link>
-        <pubDate>Sun, 15 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/dp/</guid>
         <description></description>
         </item>
         <item>
@@ -96,62 +88,6 @@
         <description></description>
         </item>
         <item>
-        <title>GPT</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/gpt/</link>
-        <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/gpt/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>安全推理</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</link>
-        <pubDate>Sun, 08 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Bert</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/bert/</link>
-        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/bert/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>ChatGPT</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/chatgpt/</link>
-        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/chatgpt/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>黑盒LLM</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%BB%91%E7%9B%92llm/</link>
-        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%BB%91%E7%9B%92llm/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>隐私保护推理</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</link>
-        <pubDate>Fri, 06 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%8E%A8%E7%90%86/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Transformer</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
-        <pubDate>Tue, 03 Dec 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/transformer/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>哈达玛积</title>
         <link>https://JiangZhiyu-1024.github.io/categories/%E5%93%88%E8%BE%BE%E7%8E%9B%E7%A7%AF/</link>
         <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
@@ -184,131 +120,19 @@
         <description></description>
         </item>
         <item>
-        <title>隐私保护</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/</link>
-        <pubDate>Mon, 18 Nov 2024 00:00:00 +0000</pubDate>
+        <title>安全推理</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</link>
+        <pubDate>Sun, 10 Nov 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>多方机器学习</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E5%A4%9A%E6%96%B9%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
-        <pubDate>Thu, 14 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%A4%9A%E6%96%B9%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>隐私保护机器学习</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
-        <pubDate>Thu, 14 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>FL</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/fl/</link>
-        <pubDate>Tue, 12 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/fl/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>DL</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/dl/</link>
-        <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/dl/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>PPML</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/ppml/</link>
-        <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/ppml/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>SecAgg</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/secagg/</link>
-        <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/secagg/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>SMPC</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/smpc/</link>
-        <pubDate>Mon, 11 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/smpc/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Differential Privacy</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</link>
-        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/differential-privacy/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Homomorphic Encryption</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/homomorphic-encryption/</link>
-        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/homomorphic-encryption/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Privacy Violation</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/privacy-violation/</link>
-        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/privacy-violation/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Safe Multi-Party Computation</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/safe-multi-party-computation/</link>
-        <pubDate>Tue, 05 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/safe-multi-party-computation/</guid>
+        <guid>https://JiangZhiyu-1024.github.io/categories/%E5%AE%89%E5%85%A8%E6%8E%A8%E7%90%86/</guid>
         <description></description>
         </item>
         <item>
         <title>DifferentialPrivacy</title>
         <link>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</link>
-        <pubDate>Mon, 04 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>Survey</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/survey/</link>
-        <pubDate>Mon, 04 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/survey/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>LLM</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/llm/</link>
         <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/llm/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/llm/LLM.jpg" alt="Featured image of post LLM" /&gt;</description>
-        </item>
-        <item>
-        <title>论文笔记</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</link>
-        <pubDate>Sat, 02 Nov 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</guid>
+        <guid>https://JiangZhiyu-1024.github.io/categories/differentialprivacy/</guid>
         <description></description>
         </item>
         <item>
@@ -368,22 +192,6 @@
         <description></description>
         </item>
         <item>
-        <title>DPO</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/dpo/</link>
-        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/dpo/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>HumanAlignment</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/humanalignment/</link>
-        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/humanalignment/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>InstructionTuning</title>
         <link>https://JiangZhiyu-1024.github.io/categories/instructiontuning/</link>
         <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
@@ -398,14 +206,6 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/lora/</guid>
         <description></description>
-        </item>
-        <item>
-        <title>RLHF</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/rlhf/</link>
-        <pubDate>Thu, 31 Oct 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://JiangZhiyu-1024.github.io/categories/rlhf/</guid>
-        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/rlhf/plouzane-1758197_640.jpg" alt="Featured image of post RLHF" /&gt;</description>
         </item>
         <item>
         <title>FFN</title>
@@ -424,11 +224,11 @@
         <description></description>
         </item>
         <item>
-        <title>Tokenization</title>
-        <link>https://JiangZhiyu-1024.github.io/categories/tokenization/</link>
-        <pubDate>Mon, 28 Oct 2024 00:00:00 +0000</pubDate>
+        <title>Transformer</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/transformer/</link>
+        <pubDate>Tue, 29 Oct 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://JiangZhiyu-1024.github.io/categories/tokenization/</guid>
+        <guid>https://JiangZhiyu-1024.github.io/categories/transformer/</guid>
         <description></description>
         </item>
         <item>
@@ -494,6 +294,14 @@
         
         <guid>https://JiangZhiyu-1024.github.io/categories/attention/</guid>
         <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/attention/triangles-1430105_640.png" alt="Featured image of post Attention" /&gt;</description>
+        </item>
+        <item>
+        <title>RLHF</title>
+        <link>https://JiangZhiyu-1024.github.io/categories/rlhf/</link>
+        <pubDate>Sun, 20 Oct 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://JiangZhiyu-1024.github.io/categories/rlhf/</guid>
+        <description>&lt;img src="https://JiangZhiyu-1024.github.io/categories/rlhf/plouzane-1758197_640.jpg" alt="Featured image of post RLHF" /&gt;</description>
         </item>
         <item>
         <title>综述</title>

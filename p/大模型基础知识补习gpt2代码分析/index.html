@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="实操一下GPT2的代码，深刻理解transformer模型的结构">
+<title>大模型基础知识补习&amp;GPT2代码分析</title>
+
+<link rel='canonical' href='https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/'>
+
+<link rel="stylesheet" href="/scss/style.min.819ac8ff77246a79c226a136382b6bcbe7c291f9fd1e0641c81bcb97ac7e8f89.css"><meta property='og:title' content="大模型基础知识补习&GPT2代码分析">
+<meta property='og:description' content="实操一下GPT2的代码，深刻理解transformer模型的结构">
+<meta property='og:url' content='https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/'>
+<meta property='og:site_name' content='Zion Blaze'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-01-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-01-10T00:00:00&#43;00:00'/><meta property='og:image' content='https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280.jpg' />
+<meta name="twitter:title" content="大模型基础知识补习&GPT2代码分析">
+<meta name="twitter:description" content="实操一下GPT2的代码，深刻理解transformer模型的结构"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://JiangZhiyu-1024.github.io/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280.jpg' />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/fireflies1_hu11714070595552142014.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Zion Blaze</a></h1>
+            <h2 class="site-description">Welcome to my world!</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#model">model</a>
+      <ol>
+        <li><a href="#词汇表">词汇表</a>
+          <ol>
+            <li><a href="#词汇表的作用">词汇表的作用：</a></li>
+            <li><a href="#词汇表的组成">词汇表的组成：</a></li>
+          </ol>
+        </li>
+        <li><a href="#向量空间vector-space">向量空间（Vector Space）</a></li>
+        <li><a href="#嵌入embedding">嵌入（Embedding）</a></li>
+        <li><a href="#向量vector">向量（Vector）</a></li>
+        <li><a href="#为什么要使用嵌入">为什么要使用嵌入？</a></li>
+        <li><a href="#归一化步骤">归一化步骤：</a></li>
+        <li><a href="#代码解释">代码解释：</a></li>
+        <li><a href="#总结">总结：</a></li>
+        <li><a href="#主要特点">主要特点：</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">
+                <img src="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280_hu1105538485009176982.jpg"
+                        srcset="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280_hu1105538485009176982.jpg 800w, /p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/tree-838666_1280_hu14457667872741287151.jpg 1600w"
+                        width="800" 
+                        height="527" 
+                        loading="lazy"
+                        alt="Featured image of post 大模型基础知识补习&amp;GPT2代码分析" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/llm/" >
+                LLM
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E8%A1%A5%E4%B9%A0gpt2%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/">大模型基础知识补习&amp;GPT2代码分析</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            实操一下GPT2的代码，深刻理解transformer模型的结构
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-01-10</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="大模型基础知识">大模型基础知识
+</h1><p>代码来源：https://github.com/openai/gpt-2</p>
+<p>GPT2源代码提供了以下几个文件：</p>
+<p>encoder.py</p>
+<p>generate_unconditional_samples.py</p>
+<p>interactive_conditional_samples.py</p>
+<p>model.py</p>
+<p>sample.py</p>
+<h2 id="model">model
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def default_hparams():
+</span></span><span class="line"><span class="cl">    return HParams(
+</span></span><span class="line"><span class="cl">        n_vocab=0,        # 词汇表大小（通常是词汇表中包含的词语或符号数量）
+</span></span><span class="line"><span class="cl">        n_ctx=1024,       # 输入序列的最大长度（例如，一个输入文本序列的最大 token 数量）
+</span></span><span class="line"><span class="cl">        n_embd=768,       # 嵌入层的维度大小（每个词或符号在嵌入空间中的表示长度）
+</span></span><span class="line"><span class="cl">        n_head=12,        # 多头自注意力机制中的头数（即注意力头的数量）
+</span></span><span class="line"><span class="cl">        n_layer=12,       # Transformer 模型中的层数（即堆叠的 transformer 层数）
+</span></span><span class="line"><span class="cl">    )
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="词汇表">词汇表
+</h3><p>词汇表（Vocabulary）是自然语言处理（NLP）模型中用于将语言转换为数字表示的一组词或符号的集合。在深度学习模型中，词汇表用于将文本数据中的每个单词或符号映射为一个唯一的数字（通常是一个整数），以便计算机能够理解和处理。</p>
+<h4 id="词汇表的作用">词汇表的作用：
+</h4><ol>
+<li><strong>映射文本到数字</strong>：由于机器学习模型无法直接处理文本数据，必须将文本中的每个词或符号转换为数字。词汇表就是这个映射的核心工具。例如，对于句子“我爱自然语言处理”，我们需要将“我”、“爱”、“自然”、“语言”、“处理”这些词转化为模型可以理解的数字。</li>
+<li><strong>限制模型输入的规模</strong>：在实际操作中，词汇表的大小有限。通常，我们不会为每个可能的字词创建一个索引，而是根据训练数据中出现的词汇频率来限制词汇表的大小。这样，词汇表的规模可以控制模型的输入维度，避免过大的计算和内存开销。</li>
+<li><strong>处理未知词汇</strong>：词汇表通常会为所有未出现在训练数据中的词汇或符号保留一个特殊的“未知词”标记（如 <code>[UNK]</code>）。当模型遇到这些未见过的词时，会用这个特殊标记来代替。</li>
+</ol>
+<h4 id="词汇表的组成">词汇表的组成：
+</h4><ol>
+<li>
+<p><strong>词</strong>：如果你使用的是基于单词的词汇表，那么词汇表中的元素就是单词。例如，假设你有一个很小的词汇表：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">css
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">复制代码
+</span></span><span class="line"><span class="cl">[&#39;我&#39;, &#39;爱&#39;, &#39;自然&#39;, &#39;语言&#39;, &#39;处理&#39;]
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>子词</strong>（Subword）：对于一些较为复杂的语言模型，尤其是像 GPT-2 和 BERT 这样的模型，它们通常使用 <strong>子词</strong> 作为词汇表的基本单元。子词是一个比单词更小的语言单位，它可以是词的一部分或者是一个常见的词根、前缀、后缀等。例如，词汇表中可能包含 <code>##ing</code>、<code>un</code> 等子词单元，而不是整个单词 <code>running</code> 或 <code>undo</code>。这有助于模型更好地处理未见过的词汇，并减少词汇表的大小。</p>
+</li>
+<li>
+<p><strong>特殊标记</strong>：除了实际的词或子词，词汇表通常还会包含一些特殊标记：</p>
+<ul>
+<li><code>[PAD]</code>：填充标记，用于将输入文本填充到相同的长度。</li>
+<li><code>[UNK]</code>：未知标记，用于处理那些在训练集中没有出现过的词。</li>
+<li><code>[CLS]</code>：分类标记，通常用于标记输入的开始（特别是在 BERT 等模型中）。</li>
+<li><code>[SEP]</code>：分隔标记，通常用于分隔不同句子或文本段落（在 BERT 等模型中也有使用）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="向量空间vector-space">向量空间（Vector Space）
+</h3><p><strong>向量空间</strong>是一个数学概念，指的是所有向量的集合，可以在其中进行加法和标量乘法等操作。在机器学习和自然语言处理中，我们通常将每个词、子词或符号表示为一个高维空间中的向量。例如，一个简单的二维向量空间可能包含了这样的一组向量：</p>
+<ul>
+<li><code>(1, 0)</code></li>
+<li><code>(0, 1)</code></li>
+<li><code>(1, 1)</code></li>
+</ul>
+<p>在 NLP 中，这些向量并没有具体的几何含义，而是用来表示不同的语义特征。每个向量的元素（即各维度的值）代表了某种抽象的语义属性。</p>
+<p><strong>词向量空间</strong>意味着每个词都被映射为一个向量，且这些向量之间有一定的关系。例如，&ldquo;king&rdquo; 和 &ldquo;queen&rdquo; 可能在向量空间中非常接近，因为它们的语义相似，尽管它们的拼写不同。嵌入的目标就是将语言中的词语、句子或其他语言单位映射到这样一个向量空间中。</p>
+<h3 id="嵌入embedding">嵌入（Embedding）
+</h3><p>**嵌入（Embedding）**是将一个离散的词汇项（如单词、子词）转换为连续的向量表示的过程。这些向量通常具有固定的维度（例如 300 维、768 维等），并且能够捕捉该词的语义信息。</p>
+<p>换句话说，嵌入是对词汇的数字表示，它通过将每个词或符号映射到一个向量空间中，使得模型能够理解和处理语言中的复杂结构。</p>
+<p>例如，假设你有以下三个词汇：</p>
+<ul>
+<li>&ldquo;猫&rdquo;（cat）</li>
+<li>&ldquo;狗&rdquo;（dog）</li>
+<li>&ldquo;汽车&rdquo;（car）</li>
+</ul>
+<p>通过嵌入，这些词语会被映射为固定长度的向量，例如：</p>
+<ul>
+<li>&ldquo;猫&rdquo; → <code>[0.45, 0.87, 0.34, ...]</code></li>
+<li>&ldquo;狗&rdquo; → <code>[0.42, 0.89, 0.31, ...]</code></li>
+<li>&ldquo;汽车&rdquo; → <code>[0.21, 0.08, 0.76, ...]</code></li>
+</ul>
+<p>这些向量的维度（例如 300 维或 768 维）反映了嵌入空间的复杂度。模型通过训练来优化这些向量，使得语义相似的词在嵌入空间中距离更近，语义不同的词距离较远。</p>
+<h3 id="向量vector">向量（Vector）
+</h3><p><strong>向量</strong>是在数学和计算机科学中用来表示方向和大小的对象。每个词或符号被嵌入为一个<strong>向量</strong>，这个向量通常是一个浮动的数字数组。向量的每个元素都表示一个特定的特征维度。</p>
+<p>在 NLP 中，词的向量通常有以下几个特点：</p>
+<ul>
+<li><strong>稠密表示</strong>：每个词的向量是一个低维的稠密向量，不像传统的“one-hot”编码（仅使用0和1来表示词汇）。稠密向量包含了丰富的语义信息。</li>
+<li><strong>语义关系</strong>：通过训练，词向量可以捕捉到词汇之间的语义关系。例如，“king” 和 “queen” 可能有相似的向量，因为它们共享许多语义特征。</li>
+</ul>
+<p>例如，假设我们训练了一个模型，得到以下的词向量：</p>
+<ul>
+<li>&ldquo;苹果&rdquo; → <code>[0.5, -0.2, 0.1, 0.7]</code></li>
+<li>&ldquo;香蕉&rdquo; → <code>[0.4, -0.1, 0.2, 0.6]</code></li>
+</ul>
+<p>这些向量的数值表示了每个词的特征和语义信息。在训练过程中，模型会通过调整这些向量，使得语义相似的词的向量在空间中彼此接近。</p>
+<h3 id="为什么要使用嵌入">为什么要使用嵌入？
+</h3><ol>
+<li><strong>捕捉语义相似性</strong>：通过嵌入，模型可以理解哪些词是相似的，哪些是不同的。比如“猫”和“狗”虽然拼写不同，但它们都是“动物”，因此它们的向量会很接近。</li>
+<li><strong>降维</strong>：将词语从“one-hot”编码的高维空间（例如，假设有 10,000 个不同的词，one-hot 向量就是 10,000 维的）映射到一个低维空间（如 300 维）。这样可以减少计算的复杂度和内存消耗。</li>
+<li><strong>增强模型理解</strong>：通过将词转换为向量，模型可以更加有效地理解文本中的语义、句法关系和上下文信息。这对于复杂的任务（如文本分类、情感分析、翻译等）非常重要。</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">shape_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Deal with dynamic shape in tensorflow cleanly.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>  <span class="c1"># 获取静态形状</span>
+</span></span><span class="line"><span class="cl">    <span class="n">dynamic</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># 获取动态形状</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">[</span><span class="n">dynamic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span> <span class="n">is</span> <span class="n">None</span> <span class="k">else</span> <span class="n">s</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="k">static</span><span class="p">)]</span>  <span class="c1"># 返回合并后的形状</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li>
+<p><strong><code>static = x.shape.as_list()</code></strong>：</p>
+<ul>
+<li><code>x.shape</code> 是 TensorFlow 张量 <code>x</code> 的静态形状。</li>
+<li><code>as_list()</code> 将这个形状从 <code>TensorShape</code> 对象转换为 Python 列表。静态形状的值如果是已知的，会直接作为数值存在。如果某个维度的值是 <code>None</code>（表示该维度在静态形状中不确定），那么会是 <code>None</code>。</li>
+<li>例如，如果 <code>x</code> 的形状是 <code>[None, 32, 32, 3]</code>，则 <code>static</code> 会是 <code>[None, 32, 32, 3]</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>dynamic = tf.shape(x)</code></strong>：</p>
+<ul>
+<li><code>tf.shape(x)</code> 返回张量 <code>x</code> 的动态形状，它是一个 TensorFlow 张量，表示运行时该张量的形状。与静态形状不同，动态形状会根据实际运行时的输入数据进行计算。</li>
+<li>返回值是一个形状为 <code>[d0, d1, ..., dn]</code> 的张量（<code>d0</code>，<code>d1</code> 等是张量的各个维度的动态大小）。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>return [dynamic[i] if s is None else s for i, s in enumerate(static)]</code></strong>：</p>
+<ul>
+<li>这个列表推导式的目的是将静态形状和动态形状合并成一个形状列表。如果某个静态形状的维度是 <code>None</code>（即在静态形状中未指定），那么就使用对应的动态形状。</li>
+<li><code>enumerate(static)</code> 会遍历静态形状中的每个维度，如果该维度是 <code>None</code>，就从动态形状中取对应的维度值；如果该维度不是 <code>None</code>，则保留静态形状中的值。</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>假设 <code>static = [None, 32, 32, 3]</code>（第一维度 <code>None</code>，表示它是动态的）和 <code>dynamic = [64, 32, 32, 3]</code>（运行时该张量的实际形状是 <code>[64, 32, 32, 3]</code>）。</li>
+<li>那么，函数的返回值将是 <code>[64, 32, 32, 3]</code>。</li>
+</ul>
+</li>
+<li>
+<p>为什么需要这个函数？</p>
+</li>
+</ol>
+<p>在 TensorFlow 中，许多操作要求处理的张量形状是已知的（静态形状），但有些情况下形状在执行时才会动态确定，特别是在处理输入数据的批量大小、图像尺寸等变量时。<code>shape_list</code> 函数就是用来统一处理这两种情况的，使得无论是在静态还是动态形状下，代码都能够正常运行而不会出错。</p>
+<ol start="5">
+<li>举个例子：</li>
+</ol>
+<p>假设我们有一个张量 <code>x</code>，它的形状是 <code>[None, 64, 64, 3]</code>（批量大小未知）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">import tensorflow as tf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">x = tf.placeholder(tf.float32, shape=[None, 64, 64, 3])  # 动态批量大小
+</span></span><span class="line"><span class="cl">shape = shape_list(x)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">print(shape)  # 输出形状
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在这个例子中，如果你传递一个大小为 <code>[32, 64, 64, 3]</code> 的输入，<code>shape_list</code> 函数会返回 <code>[32, 64, 64, 3]</code>，即将 <code>None</code> 替换为实际的批量大小 <code>32</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def softmax(x, axis=-1): 
+</span></span><span class="line"><span class="cl">    x = x - tf.reduce_max(x, axis=axis, keepdims=True)
+</span></span><span class="line"><span class="cl">    ex = tf.exp(x)
+</span></span><span class="line"><span class="cl">    return ex / tf.reduce_sum(ex, axis=axis, keepdims=True)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个函数实现了 Softmax 操作，将输入 <code>x</code> 转换为概率分布，常用于多分类模型的输出层。通过减去最大值避免指数计算中的数值溢出，确保计算稳定性。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def gelu(x):
+</span></span><span class="line"><span class="cl">    return 0.5*x*(1+tf.tanh(np.sqrt(2/np.pi)*(x+0.044715*tf.pow(x, 3))))
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>GELU</strong> 是一种平滑的、概率性的激活函数，能够更自然地通过高斯分布近似非线性激活。相比于 ReLU，GELU 在训练时通常能更好地保留梯度，并且能够减少死神经元的问题。</p>
+<p>代码中使用了 <code>tf.tanh</code> 和 <code>tf.pow</code>（TensorFlow 的函数）与 NumPy 的常量进行计算，确保了在 TensorFlow 中的高效计算。</p>
+<p>Layer Normalization 是一种在深度学习中常用的技术，旨在对每个样本的特征进行归一化，使得特征的均值为0，方差为1，从而加速训练并提高模型的性能。</p>
+<p>代码解释：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Normalize to mean = 0, std = 1, then do a diagonal affine transform.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">n_state</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+</span></span><span class="line"><span class="cl">        <span class="n">g</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">n_state</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">n_state</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li><strong><code>x</code></strong>: 输入张量，通常是经过激活函数后的某一层的输出。</li>
+<li><strong><code>scope</code></strong>: 变量作用域，用于创建和管理变量。</li>
+<li><strong><code>axis=-1</code></strong>: 归一化时的维度，通常在 Layer Normalization 中是最后一维（即特征维度）。<code>axis=-1</code> 表示归一化最后一维，通常是一个样本的所有特征。</li>
+<li><strong><code>epsilon=1e-5</code></strong>: 为了避免在除法中出现除零错误，<code>epsilon</code> 是一个很小的常数（默认值为 1e−51e-51e−5）。</li>
+<li><strong><code>n_state = x.shape[-1].value</code></strong>: 获取输入张量 <code>x</code> 在最后一维的大小，代表特征数目。</li>
+</ol>
+<p>接下来，定义了两个变量 <code>g</code> 和 <code>b</code>，分别用于对归一化后的结果进行线性变换：</p>
+<ul>
+<li><strong><code>g</code></strong> 是缩放因子（通常称为 Gamma）。</li>
+<li><strong><code>b</code></strong> 是平移因子（通常称为 Beta）。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl">       <span class="n">g</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">n_state</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">n_state</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>g</code> 和 <code>b</code> 都是与输入 <code>x</code> 的最后一维特征数目相同的向量。<code>g</code> 初始化为 1，<code>b</code> 初始化为 0。</li>
+</ul>
+<h3 id="归一化步骤">归一化步骤：
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        u = tf.reduce_mean(x, axis=axis, keepdims=True)
+</span></span><span class="line"><span class="cl">        s = tf.reduce_mean(tf.square(x - u), axis=axis, keepdims=True)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong><code>u = tf.reduce_mean(x, axis=axis, keepdims=True)</code></strong>: 计算输入 <code>x</code> 在指定 <code>axis</code> 维度上的均值（平均值）。这里，<code>axis</code> 默认为 -1，即沿着最后一维计算均值。</li>
+<li><strong><code>s = tf.reduce_mean(tf.square(x - u), axis=axis, keepdims=True)</code></strong>: 计算输入 <code>x</code> 与均值 <code>u</code> 的差的平方的平均值，即方差。<code>keepdims=True</code> 保证输出维度与输入相同，便于后续操作。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        x = (x - u) * tf.rsqrt(s + epsilon)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<dl>
+<dt><code>x = (x - u) * tf.rsqrt(s + epsilon)</code></dt>
+<dd>
+<p>对输入</p>
+</dd>
+</dl>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">x
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>进行标准化（即归一化处理），使得均值为 0，方差为 1。</p>
+<ul>
+<li><code>x - u</code>：减去均值，使得每个元素的均值为 0。</li>
+<li><code>tf.rsqrt(s + epsilon)</code>：计算标准差的倒数并进行缩放，<code>rsqrt</code> 是 <code>1 / sqrt(x)</code>。<code>epsilon</code> 用于防止除 0 错误。</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        x = x * g + b
+</span></span><span class="line"><span class="cl">        return x
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong><code>x = x \* g + b</code></strong>: 最后，对标准化后的 <code>x</code> 进行线性变换，使用参数 <code>g</code>（缩放因子）和 <code>b</code>（平移因子）。这种变换使得归一化的结果可以恢复一定的表达能力，类似于 Batch Normalization 中的 affine 变换。</li>
+<li><strong><code>return x</code></strong>: 返回归一化并经过变换的结果。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def split_states(x, n):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Reshape the last dimension of x into [n, x.shape[-1]/n].&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    *start, m = shape_list(x)
+</span></span><span class="line"><span class="cl">    return tf.reshape(x, start + [n, m//n])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个函数 <code>split_states</code> 的作用是将输入张量 <code>x</code> 的最后一维拆分成两个部分，其中一个部分的大小是 <code>n</code>，另一个部分的大小是 <code>m // n</code>（<code>m</code> 是输入张量的最后一维大小）。</p>
+<p><strong><code>\*start, m = shape_list(x)</code></strong>：</p>
+<ul>
+<li><code>shape_list(x)</code> 会返回张量 <code>x</code> 的形状（作为一个列表）。<code>*start</code> 会将除了最后一维之外的所有维度（即张量的前几维）存入 <code>start</code> 变量中，<code>m</code> 则保存张量最后一维的大小。</li>
+<li>例如，如果 <code>x</code> 的形状是 <code>[batch_size, time_steps, features]</code>，那么 <code>start</code> 将保存 <code>[batch_size, time_steps]</code>，<code>m</code> 将保存 <code>features</code>。</li>
+</ul>
+<p><strong><code>tf.reshape(x, start + [n, m // n])</code></strong>：</p>
+<ul>
+<li><code>start</code> 是 <code>x</code> 的前几个维度的列表，<code>n</code> 是传入的参数，表示你想将最后一维拆分成 <code>n</code> 部分，<code>m // n</code> 是每一部分的大小。</li>
+<li><code>tf.reshape</code> 函数将输入张量 <code>x</code> 重新调整形状，形状变为 <code>[start, n, m // n]</code>。</li>
+<li>例如，如果 <code>x</code> 的形状是 <code>[batch_size, time_steps, features]</code>，并且传入 <code>n = 2</code>，那么新的形状将是 <code>[batch_size, time_steps, 2, features // 2]</code>。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def merge_states(x):
+</span></span><span class="line"><span class="cl">    &#34;&#34;&#34;Smash the last two dimensions of x into a single dimension.&#34;&#34;&#34;
+</span></span><span class="line"><span class="cl">    *start, a, b = shape_list(x)
+</span></span><span class="line"><span class="cl">    return tf.reshape(x, start + [a*b])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个函数 <code>merge_states</code> 的作用是将输入张量 <code>x</code> 的最后两个维度合并成一个维度。也就是说，它通过将最后两个维度相乘，将它们“压扁”为一个新的维度。</p>
+<p><strong><code>\*start, a, b = shape_list(x)</code></strong>:</p>
+<ul>
+<li><code>shape_list(x)</code> 返回张量 <code>x</code> 的形状，作为一个列表。</li>
+<li><code>*start</code> 会将 <code>x</code> 的所有维度（除了最后两个维度）存入 <code>start</code>，<code>a</code> 和 <code>b</code> 分别保存 <code>x</code> 的倒数第二维和最后一维的大小。</li>
+</ul>
+<p>举个例子：</p>
+<ul>
+<li>假设 <code>x</code> 的形状是 <code>[batch_size, time_steps, features, channels]</code>，那么 <code>start = [batch_size, time_steps, features]</code>，<code>a = features</code>，<code>b = channels</code>。</li>
+</ul>
+<p><strong><code>tf.reshape(x, start + [a \* b])</code></strong>:</p>
+<ul>
+<li><code>tf.reshape(x, start + [a * b])</code> 会将 <code>x</code> 重新调整形状，新的形状由 <code>start</code>（原先的所有维度，除了最后两个）和 <code>a * b</code>（将最后两个维度相乘的结果）组成。</li>
+<li><code>a * b</code> 是将原本的最后两个维度合并成一个新的维度。</li>
+</ul>
+<p>这个 <code>conv1d</code> 函数实现了一个 <strong>1D 卷积</strong> 操作。虽然它的名字和传统的 1D 卷积类似，但它实际上通过矩阵乘法和适当的形状变换来模拟 1D 卷积的操作。以下是代码逐行解释：</p>
+<h3 id="代码解释">代码解释：
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">w_init_stdev</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">start</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">shape_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">w</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nf</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal_initializer</span><span class="p">(</span><span class="n">stddev</span><span class="o">=</span><span class="n">w_init_stdev</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">nf</span><span class="p">],</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">constant_initializer</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">]),</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nf</span><span class="p">]))</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="p">[</span><span class="n">nf</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">c</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol>
+<li><strong><code>\*start, nx = shape_list(x)</code></strong>:
+<ul>
+<li><code>shape_list(x)</code> 返回张量 <code>x</code> 的形状，作为一个列表。<code>*start</code> 会将除了最后一维之外的所有维度（即张量的前几维）存入 <code>start</code>，<code>nx</code> 保存 <code>x</code> 的最后一维大小。</li>
+<li>比如，如果 <code>x</code> 的形状是 <code>[batch_size, length, in_channels]</code>，那么 <code>start</code> 将是 <code>[batch_size, length]</code>，<code>nx</code> 就是 <code>in_channels</code>。</li>
+</ul>
+</li>
+<li><strong><code>w = tf.get_variable('w', [1, nx, nf], initializer=tf.random_normal_initializer(stddev=w_init_stdev))</code></strong>:
+<ul>
+<li>创建一个卷积核（权重） <code>w</code>，其形状为 <code>[1, nx, nf]</code>。这里的 <code>1</code> 是卷积核的大小（即卷积操作是 1D 的），<code>nx</code> 是输入的最后一维大小（通常是输入通道数），<code>nf</code> 是卷积操作后输出通道的数量。</li>
+<li><code>initializer=tf.random_normal_initializer(stddev=w_init_stdev)</code> 初始化权重值为从正态分布中采样，标准差为 <code>w_init_stdev</code>，默认为 <code>0.02</code>。</li>
+</ul>
+</li>
+<li><strong><code>b = tf.get_variable('b', [nf], initializer=tf.constant_initializer(0))</code></strong>:
+<ul>
+<li>创建偏置 <code>b</code>，其形状为 <code>[nf]</code>，即与输出通道数相同，初始化为零。</li>
+</ul>
+</li>
+<li><strong><code>c = tf.reshape(tf.matmul(tf.reshape(x, [-1, nx]), tf.reshape(w, [-1, nf])) + b, start + [nf])</code></strong>:
+<ul>
+<li><strong><code>tf.reshape(x, [-1, nx])</code></strong>: 将输入张量 <code>x</code> 重塑为形状 <code>[-1, nx]</code>，即将所有前面的维度展平，保留最后一维 <code>nx</code>。这一步相当于将输入的多维张量展平成二维矩阵，每一行代表一个数据样本的输入通道。</li>
+<li><strong><code>tf.reshape(w, [-1, nf])</code></strong>: 将卷积核 <code>w</code> 重塑为形状 <code>[-1, nf]</code>，这意味着卷积核的权重被展平为一个矩阵，其中每个输入通道的权重被分配到输出通道。</li>
+<li><strong><code>tf.matmul(...)</code></strong>: 执行矩阵乘法。此处是将展平后的输入张量 <code>x</code> 与展平后的卷积核 <code>w</code> 相乘，类似于卷积操作中的加权求和过程。</li>
+<li><strong><code>+ b</code></strong>: 将偏置加到结果中。</li>
+<li><strong><code>tf.reshape(..., start + [nf])</code></strong>: 将矩阵乘法后的结果再重塑回原来的形状，保留除了最后一维以外的所有维度，最后一维变为 <code>nf</code>，即输出通道数。</li>
+</ul>
+</li>
+<li><strong><code>return c</code></strong>:
+<ul>
+<li>返回卷积操作后的结果 <code>c</code>，它的形状是 <code>[batch_size, length, nf]</code>，即输出的批次大小、长度和输出通道数。</li>
+</ul>
+</li>
+</ol>
+<h3 id="总结">总结：
+</h3><p>这个 <code>conv1d</code> 函数实现的是一种通过矩阵乘法模拟 1D 卷积操作的方式。传统的 1D 卷积通过滑动窗口对输入进行局部加权求和，而这个实现通过将输入展平成矩阵后与卷积核进行矩阵乘法，从而实现类似的效果。</p>
+<h3 id="主要特点">主要特点：
+</h3><ul>
+<li><strong>权重形状</strong>：<code>[1, nx, nf]</code>，表示卷积核的大小为 <code>1xnx</code>，即卷积操作是对输入的每个位置进行加权求和，输出通道数为 <code>nf</code>。</li>
+<li><strong>矩阵乘法实现卷积</strong>：通过 <code>tf.matmul</code> 将输入张量和卷积核做矩阵乘法，而不是传统的滑动窗口卷积。</li>
+<li><strong>展平操作</strong>：输入张量和卷积核都通过 <code>tf.reshape</code> 进行了展平处理，以便进行矩阵乘法。</li>
+</ul>
+<p>这种方法虽然在实现上与传统的卷积不同，但效果是相同的，并且可以通过矩阵乘法的方式提高计算效率或适应某些特定的任务需求。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.body, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="has-image">
+    <a href="/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/">
+        
+        
+            <div class="article-image">
+                <img src="/p/%E7%AC%AC4%E5%91%A8%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/colorful-2609978_1280.ff7347a9469275bbba133b27dec52763_hu9757057660502133537.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第4周工作总结"
+                        
+                        data-hash="md5-/3NHqUaSdbu6Ezsn3sUnYw==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第4周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/transformermodelbase/">
+        
+        
+            <div class="article-image">
+                <img src="/p/transformermodelbase/house-7497002_1280.db5d8d10c07a318d1548ccc1c8785778_hu3374130842880547652.png" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post transformer模型架构"
+                        data-key="transformerModelbase" 
+                        data-hash="md5-212NEMB6MY0VSMzByHhXeA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">transformer模型架构</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/third-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/third-week/cards-8594729_640.6d4d362b955a08c1ac2883a31f793424_hu4843113531480180974.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第3周工作总结"
+                        data-key="third-week" 
+                        data-hash="md5-bU02K5VaCMGsKIOjH3k0JA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第3周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/second-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/second-week/leaves-6729056_640.d8f540d517d89998772f4150b9222cbc_hu11404399883202129121.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第2周工作总结"
+                        data-key="second-week" 
+                        data-hash="md5-2PVA1RfYmZh3L0FQuSIsvA==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第2周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="has-image">
+    <a href="/p/first-week/">
+        
+        
+            <div class="article-image">
+                <img src="/p/first-week/banlan.c514d916917173a48a42e0114b469961_hu7626638945853200361.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy"
+                        alt="Featured image of post 第1周工作总结"
+                        data-key="first-week" 
+                        data-hash="md5-xRTZFpFxc6SKQuARS0aZYQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第1周工作总结</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Zion Blaze
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+<div id="particles-js"></div>
+
+<script src=https://JiangZhiyu-1024.github.io/background/particles.min.js></script>
+<script>
+  particlesJS.load('particles-js', "https://JiangZhiyu-1024.github.io/background/particlesjs-config.json", function () {
+    console.log('particles.js loaded - callback');
+  });
+</script>
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: -1;
+  }
+</style>
+
+<style>
+  @font-face {
+    font-family: 'PL';
+    src: url(https://JiangZhiyu-1024.github.io/font/PL.ttf) format('truetype');
+  }
+
+  :root {
+    --base-font-family: 'PL';
+    --code-font-family: 'PL';
+  }
+</style>
+    </body>
+</html>
